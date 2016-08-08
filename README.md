@@ -2,7 +2,7 @@
 
 ## Installation
 
-Copy the data source to /public/app/plugins/datasource/. Then restart grafana-server.
+Copy the data source to /public/app/plugins/datasource/ or /var/lib/grafana/plugins/. Then restart grafana-server.
 
 ## Usage
 

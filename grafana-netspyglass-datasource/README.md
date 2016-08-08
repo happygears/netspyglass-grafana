@@ -2,7 +2,16 @@
 
 ## Installation
 
-Copy the data source to /public/app/plugins/datasource/ or /var/lib/grafana/plugins/. Then restart grafana-server.
+1. make sure you have latest node.js
+2. install grunt:  http://gruntjs.com/getting-started   `npm install -g grunt-cli`
+3. install dependencies: `npm install`
+4. run grunt
+
+this should build the project and put all generated files in subdirectory `dist`
+
+Copy contents of the `dist` directory to /public/app/plugins/datasource/ or /var/lib/grafana/plugins/ on the server
+where Grafana runs and restart grafana-server.
+
 
 ## Usage
 

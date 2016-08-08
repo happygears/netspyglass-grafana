@@ -3,9 +3,9 @@
 ## Installation
 
 1. make sure you have latest node.js
-2. install grunt:  http://gruntjs.com/getting-started   `npm install -g grunt-cli`
+2. install grunt:  `npm install -g grunt-cli`  see  http://gruntjs.com/getting-started  
 3. install dependencies: `npm install`
-4. run grunt
+4. run `grunt`
 
 this should build the project and put all generated files in subdirectory `dist`
 

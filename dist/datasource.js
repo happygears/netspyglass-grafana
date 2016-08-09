@@ -69,10 +69,10 @@ System.register(['lodash'], function (_export, _context) {
               endpoint = '/v2/grafana/net/2/query?';
               endpoint += 'name=' + query.targets[0].variable;
               if (typeof query.targets[0].device !== "undefined" && query.targets[0].device !== "select device") {
-                endpoint += '&device=' + query.targets[0].device;
+                endpoint += '&devices=' + query.targets[0].device;
               }
               if (typeof query.targets[0].component !== "undefined" && query.targets[0].component !== "select component") {
-                endpoint += '&component=' + query.targets[0].component;
+                endpoint += '&components=' + query.targets[0].component;
               }
               return this.backendSrv.datasourceRequest({
                 url: this.url + endpoint,

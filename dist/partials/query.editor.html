@@ -1,0 +1,19 @@
+<query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row">
+  <div class="gf-form-inline">
+    <div class="gf-form">
+      <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    </div>
+    <div class="gf-form">
+      <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    </div>
+    <div class="gf-form">
+      <metric-segment-model property="ctrl.target.device" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    </div>
+    <div class="gf-form">
+      <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    </div>
+    <div class="gf-form">
+      <metric-segment-model property="ctrl.target.tag" get-options="ctrl.getTags()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    </div>
+  </div>
+</query-editor-row>

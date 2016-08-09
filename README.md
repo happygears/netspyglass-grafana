@@ -2,7 +2,7 @@
 
 ## Installation
 
-Copy the data source to /public/app/plugins/datasource/ or /var/lib/grafana/plugins/. Then restart grafana-server.
+Copy the data source to /var/lib/grafana/plugins/. Then restart grafana-server.
 
 ## Usage
 
@@ -14,7 +14,7 @@ Use the data source with the proxy connection. Direct connection and Http Auth a
 To create a Graph use Grafana menu - Dashboard -> New, then after click on small green block in the left choose Add Panel -> Graph.
 After that you will be able to set category and variable to build a Graph.
 
-Devices, Components and Tags not working so far too. They are showing categories and not affect on query because of request mechanism problems
+Tags not working so far too. They are showing categories and not affect on query
 
 ### Tested with Grafana 3.1.0
 Please, update your grafana-server if you are using previous version 

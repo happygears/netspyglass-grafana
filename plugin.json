@@ -1,12 +1,12 @@
 {
   "name": "NetSpyGlass",
-  "id": "grafana-netspyglass-datasource",
+  "id": "netspyglass",
   "type": "datasource",
 
   "staticRoot": ".",
 
   "partials": {
-    "config": "public/app/plugins/datasource/simplejson/partials/config.html"
+    "config": "public/app/plugins/datasource/netspyglass/partials/config.html"
   },
 
   "metrics": true,

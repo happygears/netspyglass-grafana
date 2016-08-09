@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['lodash'], function (_export, _context) {
+  "use strict";
+
   var _, _createClass, GenericDatasource;
 
   function _classCallCheck(instance, Constructor) {
@@ -50,32 +52,43 @@ System.register(['lodash'], function (_export, _context) {
         _createClass(GenericDatasource, [{
           key: 'query',
           value: function query(options) {
-
+            console.log('options');
+            console.log(options);
             var query = this.buildQueryParameters(options);
+            query.targets = query.targets.filter(function (t) {
+              return !t.hide;
+            });
 
             if (query.targets.length <= 0) {
-              return this.q.when([]);
+              return this.q.when({ data: [] });
             }
-              var endpoint = '';
-              if(typeof query.targets[0].variable !== "undefined" && query.targets[0].variable !== "select variable") {
-                  endpoint = '/v2/grafana/net/2/query?';
-                  endpoint += 'name='+query.targets[0].variable;
-                    return this.backendSrv.datasourceRequest({
-                      url: this.url + endpoint,
-                      data: query,
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' }
-                    });
+            console.log('query');
+            console.log(query);
+            var endpoint = '';
+            if (typeof query.targets[0].variable !== "undefined" && query.targets[0].variable !== "select variable") {
+              endpoint = '/v2/grafana/net/2/query?';
+              endpoint += 'name=' + query.targets[0].variable;
+              if (typeof query.targets[0].device !== "undefined" && query.targets[0].device !== "select device") {
+                endpoint += '&device=' + query.targets[0].device;
               }
-              else {
-                  return '';
+              if (typeof query.targets[0].component !== "undefined" && query.targets[0].component !== "select component") {
+                endpoint += '&component=' + query.targets[0].component;
               }
+              return this.backendSrv.datasourceRequest({
+                url: this.url + endpoint,
+                data: query,
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+              });
+            } else {
+              return '';
+            }
           }
         }, {
           key: 'testDatasource',
           value: function testDatasource() {
             return this.backendSrv.datasourceRequest({
-              url: this.url + '/v2/grafana/net/2/test',
+              url: this.url + '/',
               method: 'GET'
             }).then(function (response) {
               if (response.status === 200) {
@@ -108,82 +121,70 @@ System.register(['lodash'], function (_export, _context) {
             });
           }
         }, {
-          key: 'metricFindQuery',
-          value: function metricFindQuery(options) {
+          key: 'metricFindCategoryQuery',
+          value: function metricFindCategoryQuery(options) {
             return this.backendSrv.datasourceRequest({
-              url: this.url + '/v2/grafana/net/2/catalog/variables/list',
+              url: this.url + '/v2/grafana/net/2/catalog/categories/list',
               data: options,
               method: 'POST',
               headers: { 'Content-Type': 'application/json' }
             }).then(this.mapToTextValue);
           }
-        },
-          {
-            key: 'metricFindCategoryQuery',
-            value: function metricFindCategoryQuery(options) {
-              return this.backendSrv.datasourceRequest({
-                url: this.url + '/v2/grafana/net/2/catalog/categories/list',
-                data: options,
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-              }).then(this.mapToTextValue);
+        }, {
+          key: 'metricFindVariableQuery',
+          value: function metricFindVariableQuery(options) {
+            var endpoint = '/v2/grafana/net/2/catalog/categories/';
+            if (options.category !== 'select category') {
+              endpoint += options.category;
             }
-          },
-            {
-                key: 'metricFindVariableQuery',
-                value: function metricFindVariableQuery(options) {
-                    var endpoint = '/v2/grafana/net/2/catalog/categories/';
-                    if(options.category !== 'select category'){
-                        endpoint += options.category;
-                    }
-                    return this.backendSrv.datasourceRequest({
-                        url: this.url + endpoint,
-                        data: options,
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }
-                    }).then(this.mapToTextValue);
-                }
-            },
-            {
-                key: 'metricFindDeviceQuery',
-                value: function metricFindDeviceQuery(options) {
-                    var endpoint = '/v2/grafana/net/2/catalog/variables/';
-                    if(options.category !== 'select category' && options.variable !== 'select variable'){
-                        endpoint += options.variable;
-                    }
-
-                    return this.backendSrv.datasourceRequest({
-                        url: this.url + '/v2/grafana/net/2/catalog/categories/list',
-                        data: options,
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }
-                    }).then(this.mapToTextValue);
-                }
-            },
-            {
-                key: 'metricFindComponentQuery',
-                value: function metricFindComponentQuery(options) {
-                    return this.backendSrv.datasourceRequest({
-                        url: this.url + '/v2/grafana/net/2/catalog/categories/list',
-                        data: options,
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }
-                    }).then(this.mapToTextValue);
-                }
-            },
-            {
-                key: 'metricFindTagQuery',
-                value: function metricFindTagQuery(options) {
-                    return this.backendSrv.datasourceRequest({
-                        url: this.url + '/v2/grafana/net/2/catalog/categories/list',
-                        data: options,
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }
-                    }).then(this.mapToTextValue);
-                }
-            },
-
-          {
+            return this.backendSrv.datasourceRequest({
+              url: this.url + endpoint,
+              data: options,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            }).then(this.mapToTextValue);
+          }
+        }, {
+          key: 'metricFindDeviceQuery',
+          value: function metricFindDeviceQuery(options) {
+            var endpoint = '/v2/grafana/net/2/catalog/variables/';
+            if (options.category !== 'select category' && options.variable !== 'select variable') {
+              endpoint += options.variable;
+              endpoint += '/devices/list';
+            }
+            return this.backendSrv.datasourceRequest({
+              url: this.url + endpoint,
+              data: options,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            }).then(this.mapToTextValue);
+          }
+        }, {
+          key: 'metricFindComponentQuery',
+          value: function metricFindComponentQuery(options) {
+            var endpoint = '/v2/grafana/net/2/catalog/variables/';
+            if (options.category !== 'select category' && options.variable !== 'select variable') {
+              endpoint += options.variable;
+              endpoint += '/components/list';
+            }
+            return this.backendSrv.datasourceRequest({
+              url: this.url + endpoint,
+              data: options,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            }).then(this.mapToTextValue);
+          }
+        }, {
+          key: 'metricFindTagQuery',
+          value: function metricFindTagQuery(options) {
+            return this.backendSrv.datasourceRequest({
+              url: this.url + '/v2/grafana/net/2/catalog/categories/list',
+              data: options,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            }).then(this.mapToTextValue);
+          }
+        }, {
           key: 'mapToTextValue',
           value: function mapToTextValue(result) {
             return _.map(result.data, function (d, i) {
@@ -207,7 +208,8 @@ System.register(['lodash'], function (_export, _context) {
                 device: _this.templateSrv.replace(target.device),
                 component: _this.templateSrv.replace(target.component),
                 tag: _this.templateSrv.replace(target.tag),
-                refId: target.refId
+                refId: target.refId,
+                hide: target.hide
               };
             });
 

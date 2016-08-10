@@ -12,7 +12,9 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
     this.target.variable = this.target.variable || 'select variable';
     this.target.device = this.target.device || 'select device';
     this.target.component = this.target.component || 'select component';
-    this.target.tag = this.target.tag || 'select tag';
+    this.target.tagFacet = this.target.tagFacet || 'select tag facet';
+    this.target.tagOperation = this.target.tagOperation || 'select tag operation';
+    this.target.tagName = this.target.tagName || 'select tag name';
   }
 
   getCategories() {
@@ -35,8 +37,18 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
       .then(this.uiSegmentSrv.transformToSegments(false));
       // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
   }
-  getTags() {
-    return this.datasource.metricFindTagQuery(this.target)
+    getTagsFacet() {
+    return this.datasource.metricFindTagFacetQuery(this.target)
+      .then(this.uiSegmentSrv.transformToSegments(false));
+      // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+  }
+  getTagsOperation() {
+    return this.datasource.metricFindTagOperationQuery(this.target)
+      .then(this.uiSegmentSrv.transformToSegments(false));
+      // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+  }
+    getTagsName() {
+    return this.datasource.metricFindTagNameQuery(this.target)
       .then(this.uiSegmentSrv.transformToSegments(false));
       // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
   }

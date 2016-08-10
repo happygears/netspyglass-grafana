@@ -72,7 +72,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           _this.target.variable = _this.target.variable || 'select variable';
           _this.target.device = _this.target.device || 'select device';
           _this.target.component = _this.target.component || 'select component';
-          _this.target.tag = _this.target.tag || 'select tag';
+          _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
+          _this.target.tagOperation = _this.target.tagOperation || 'select tag operation';
+          _this.target.tagName = _this.target.tagName || 'select tag name';
           return _this;
         }
 
@@ -101,9 +103,21 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
             // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
           }
         }, {
-          key: 'getTags',
-          value: function getTags() {
-            return this.datasource.metricFindTagQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+          key: 'getTagsFacet',
+          value: function getTagsFacet() {
+            return this.datasource.metricFindTagFacetQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+            // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+          }
+        }, {
+          key: 'getTagsOperation',
+          value: function getTagsOperation() {
+            return this.datasource.metricFindTagOperationQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+            // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+          }
+        }, {
+          key: 'getTagsName',
+          value: function getTagsName() {
+            return this.datasource.metricFindTagNameQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
             // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
           }
         }, {

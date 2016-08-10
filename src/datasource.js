@@ -13,16 +13,12 @@ export class GenericDatasource {
 
   // Called once per panel (graph)
   query(options) {
-    console.log('options');
-    console.log(options);
     var query = this.buildQueryParameters(options);
     query.targets = query.targets.filter(t => !t.hide);
 
     if (query.targets.length <= 0) {
       return this.q.when({data: []});
     }
-      console.log('query');
-      console.log(query);
     var endpoint = '';
     if(typeof query.targets[0].variable !== "undefined" && query.targets[0].variable !== "select variable") {
       endpoint = '/v2/grafana/net/2/query?';
@@ -33,6 +29,10 @@ export class GenericDatasource {
       if(typeof query.targets[0].component !== "undefined" && query.targets[0].component !== "select component") {
         endpoint += '&components='+query.targets[0].component;
       }
+        if(typeof query.targets[0].tagFacet !== "undefined" && query.targets[0].tagFacet !== "select tag facet" && typeof query.targets[0].tagName !== "undefined" && query.targets[0].tagName !== "select tag name") {
+            endpoint += '&tags=' + query.targets[0].tagFacet + '.' + query.targets[0].tagName + '&tagMatch=AND';
+        }
+        console.log(endpoint);
       return this.backendSrv.datasourceRequest({
         url: this.url + endpoint,
         data: query,
@@ -104,10 +104,12 @@ export class GenericDatasource {
     }).then(this.mapToTextValue);
   }
   metricFindDeviceQuery(options) {
-    var endpoint = '/v2/grafana/net/2/catalog/variables/';
+    var endpoint = '';
     if(options.category !== 'select category' && options.variable !== 'select variable'){
-      endpoint += options.variable;
-      endpoint += '/devices/list';
+        endpoint = '/v2/grafana/net/2/catalog/devices?name=' + options.variable;
+        if(options.component !== 'select component'){
+            endpoint += '&components=' + options.component;
+        }
     }
     return this.backendSrv.datasourceRequest({
       url: this.url + endpoint,
@@ -117,11 +119,13 @@ export class GenericDatasource {
     }).then(this.mapToTextValue);
   }
   metricFindComponentQuery(options) {
-    var endpoint = '/v2/grafana/net/2/catalog/variables/';
-    if(options.category !== 'select category' && options.variable !== 'select variable'){
-      endpoint += options.variable;
-      endpoint += '/components/list';
-    }
+      var endpoint = '';
+      if(options.category !== 'select category' && options.variable !== 'select variable'){
+          endpoint = '/v2/grafana/net/2/catalog/components?name=' + options.variable;
+          if(options.devices !== 'select device'){
+              endpoint += '&devices=' + options.device;
+          }
+      }
     return this.backendSrv.datasourceRequest({
       url: this.url + endpoint,
       data: options,
@@ -129,14 +133,60 @@ export class GenericDatasource {
       headers: { 'Content-Type': 'application/json' }
     }).then(this.mapToTextValue);
   }
-  metricFindTagQuery(options) {
+  metricFindTagFacetQuery(options) {
+      var endpoint = '';
+      if(options.category !== 'select category' && options.variable !== 'select variable'){
+          endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+          if(options.device !== 'select device'){
+              endpoint += '&devices=' + options.device;
+          }
+          if(options.component !== 'select component'){
+              endpoint += '&components=' + options.component;
+          }
+      }
     return this.backendSrv.datasourceRequest({
-      url: this.url + '/v2/grafana/net/2/catalog/categories/list',
+      url: this.url + endpoint,
       data: options,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     }).then(this.mapToTextValue);
   }
+    metricFindTagOperationQuery(options) {
+      var endpoint = '';
+      if(options.category !== 'select category' && options.variable !== 'select variable'){
+          endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+          if(options.device !== 'select device'){
+              endpoint += '&devices=' + options.device;
+          }
+          if(options.component !== 'select component'){
+              endpoint += '&components=' + options.component;
+          }
+      }
+    return this.backendSrv.datasourceRequest({
+      url: this.url + endpoint,
+      data: options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(this.mapToTextValue);
+  }
+    metricFindTagNameQuery(options) {
+        var endpoint = '';
+        if(options.category !== 'select category' && options.variable !== 'select variable' && options.tagFacet !== 'select tag facet'){
+            endpoint = '/v2/grafana/net/2/catalog/tags/' + options.tagFacet + '?name=' + options.variable;
+            if(options.device !== 'select device'){
+                endpoint += '&devices=' + options.device;
+            }
+            if(options.component !== 'select component'){
+                endpoint += '&components=' + options.component;
+            }
+        }
+        return this.backendSrv.datasourceRequest({
+            url: this.url + endpoint,
+            data: options,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        }).then(this.mapToTextValue);
+    }
 
   mapToTextValue(result) {
     return _.map(result.data, (d, i) => {
@@ -156,7 +206,9 @@ export class GenericDatasource {
           variable: this.templateSrv.replace(target.variable),
           device: this.templateSrv.replace(target.device),
           component: this.templateSrv.replace(target.component),
-          tag: this.templateSrv.replace(target.tag),
+          tagFacet: this.templateSrv.replace(target.tagFacet),
+          tagOperation: this.templateSrv.replace(target.tagOperation),
+          tagName: this.templateSrv.replace(target.tagName),
         refId: target.refId,
         hide: target.hide
       };

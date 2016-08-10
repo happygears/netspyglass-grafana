@@ -1,19 +1,45 @@
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row">
-  <div class="gf-form-inline">
-    <div class="gf-form">
-      <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Category</span>
+            </label>
+            <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+        </div>
     </div>
-    <div class="gf-form">
-      <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Variable</span>
+            </label>
+            <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+        </div>
     </div>
-    <div class="gf-form">
-      <metric-segment-model property="ctrl.target.device" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Device</span>
+            </label>
+            <metric-segment-model property="ctrl.target.device" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+        </div>
     </div>
-    <div class="gf-form">
-      <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Component</span>
+            </label>
+            <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+        </div>
     </div>
-    <div class="gf-form">
-      <metric-segment-model property="ctrl.target.tag" get-options="ctrl.getTags()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Tags</span>
+            </label>
+            <metric-segment-model property="ctrl.target.tagFacet" get-options="ctrl.getTagsFacet()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+            <label class="gf-form-label"> == </label>
+            <metric-segment-model property="ctrl.target.tagName" get-options="ctrl.getTagsName()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+            <label class="gf-form-label"> + </label>
+        </div>
     </div>
-  </div>
 </query-editor-row>

@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-System.register(['lodash'], function (_export, _context) {
+System.register(["lodash"], function (_export, _context) {
   "use strict";
 
   var _, _createClass, GenericDatasource;
@@ -34,7 +34,7 @@ System.register(['lodash'], function (_export, _context) {
         };
       }();
 
-      _export('GenericDatasource', GenericDatasource = function () {
+      _export("GenericDatasource", GenericDatasource = function () {
         function GenericDatasource(instanceSettings, $q, backendSrv, templateSrv) {
           _classCallCheck(this, GenericDatasource);
 
@@ -50,10 +50,8 @@ System.register(['lodash'], function (_export, _context) {
 
 
         _createClass(GenericDatasource, [{
-          key: 'query',
+          key: "query",
           value: function query(options) {
-            console.log('options');
-            console.log(options);
             var query = this.buildQueryParameters(options);
             query.targets = query.targets.filter(function (t) {
               return !t.hide;
@@ -62,8 +60,6 @@ System.register(['lodash'], function (_export, _context) {
             if (query.targets.length <= 0) {
               return this.q.when({ data: [] });
             }
-            console.log('query');
-            console.log(query);
             var endpoint = '';
             if (typeof query.targets[0].variable !== "undefined" && query.targets[0].variable !== "select variable") {
               endpoint = '/v2/grafana/net/2/query?';
@@ -74,6 +70,10 @@ System.register(['lodash'], function (_export, _context) {
               if (typeof query.targets[0].component !== "undefined" && query.targets[0].component !== "select component") {
                 endpoint += '&components=' + query.targets[0].component;
               }
+              if (typeof query.targets[0].tagFacet !== "undefined" && query.targets[0].tagFacet !== "select tag facet" && typeof query.targets[0].tagName !== "undefined" && query.targets[0].tagName !== "select tag name") {
+                endpoint += '&tags=' + query.targets[0].tagFacet + '.' + query.targets[0].tagName + '&tagMatch=AND';
+              }
+              console.log(endpoint);
               return this.backendSrv.datasourceRequest({
                 url: this.url + endpoint,
                 data: query,
@@ -85,7 +85,7 @@ System.register(['lodash'], function (_export, _context) {
             }
           }
         }, {
-          key: 'testDatasource',
+          key: "testDatasource",
           value: function testDatasource() {
             return this.backendSrv.datasourceRequest({
               url: this.url + '/',
@@ -97,7 +97,7 @@ System.register(['lodash'], function (_export, _context) {
             });
           }
         }, {
-          key: 'annotationQuery',
+          key: "annotationQuery",
           value: function annotationQuery(options) {
             var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
             var annotationQuery = {
@@ -121,7 +121,7 @@ System.register(['lodash'], function (_export, _context) {
             });
           }
         }, {
-          key: 'metricFindCategoryQuery',
+          key: "metricFindCategoryQuery",
           value: function metricFindCategoryQuery(options) {
             return this.backendSrv.datasourceRequest({
               url: this.url + '/v2/grafana/net/2/catalog/categories/list',
@@ -131,7 +131,7 @@ System.register(['lodash'], function (_export, _context) {
             }).then(this.mapToTextValue);
           }
         }, {
-          key: 'metricFindVariableQuery',
+          key: "metricFindVariableQuery",
           value: function metricFindVariableQuery(options) {
             var endpoint = '/v2/grafana/net/2/catalog/categories/';
             if (options.category !== 'select category') {
@@ -145,12 +145,14 @@ System.register(['lodash'], function (_export, _context) {
             }).then(this.mapToTextValue);
           }
         }, {
-          key: 'metricFindDeviceQuery',
+          key: "metricFindDeviceQuery",
           value: function metricFindDeviceQuery(options) {
-            var endpoint = '/v2/grafana/net/2/catalog/variables/';
+            var endpoint = '';
             if (options.category !== 'select category' && options.variable !== 'select variable') {
-              endpoint += options.variable;
-              endpoint += '/devices/list';
+              endpoint = '/v2/grafana/net/2/catalog/devices?name=' + options.variable;
+              if (options.component !== 'select component') {
+                endpoint += '&components=' + options.component;
+              }
             }
             return this.backendSrv.datasourceRequest({
               url: this.url + endpoint,
@@ -160,12 +162,14 @@ System.register(['lodash'], function (_export, _context) {
             }).then(this.mapToTextValue);
           }
         }, {
-          key: 'metricFindComponentQuery',
+          key: "metricFindComponentQuery",
           value: function metricFindComponentQuery(options) {
-            var endpoint = '/v2/grafana/net/2/catalog/variables/';
+            var endpoint = '';
             if (options.category !== 'select category' && options.variable !== 'select variable') {
-              endpoint += options.variable;
-              endpoint += '/components/list';
+              endpoint = '/v2/grafana/net/2/catalog/components?name=' + options.variable;
+              if (options.devices !== 'select device') {
+                endpoint += '&devices=' + options.device;
+              }
             }
             return this.backendSrv.datasourceRequest({
               url: this.url + endpoint,
@@ -175,24 +179,74 @@ System.register(['lodash'], function (_export, _context) {
             }).then(this.mapToTextValue);
           }
         }, {
-          key: 'metricFindTagQuery',
-          value: function metricFindTagQuery(options) {
+          key: "metricFindTagFacetQuery",
+          value: function metricFindTagFacetQuery(options) {
+            var endpoint = '';
+            if (options.category !== 'select category' && options.variable !== 'select variable') {
+              endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+              if (options.device !== 'select device') {
+                endpoint += '&devices=' + options.device;
+              }
+              if (options.component !== 'select component') {
+                endpoint += '&components=' + options.component;
+              }
+            }
             return this.backendSrv.datasourceRequest({
-              url: this.url + '/v2/grafana/net/2/catalog/categories/list',
+              url: this.url + endpoint,
               data: options,
               method: 'POST',
               headers: { 'Content-Type': 'application/json' }
             }).then(this.mapToTextValue);
           }
         }, {
-          key: 'mapToTextValue',
+          key: "metricFindTagOperationQuery",
+          value: function metricFindTagOperationQuery(options) {
+            var endpoint = '';
+            if (options.category !== 'select category' && options.variable !== 'select variable') {
+              endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+              if (options.device !== 'select device') {
+                endpoint += '&devices=' + options.device;
+              }
+              if (options.component !== 'select component') {
+                endpoint += '&components=' + options.component;
+              }
+            }
+            return this.backendSrv.datasourceRequest({
+              url: this.url + endpoint,
+              data: options,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            }).then(this.mapToTextValue);
+          }
+        }, {
+          key: "metricFindTagNameQuery",
+          value: function metricFindTagNameQuery(options) {
+            var endpoint = '';
+            if (options.category !== 'select category' && options.variable !== 'select variable' && options.tagFacet !== 'select tag facet') {
+              endpoint = '/v2/grafana/net/2/catalog/tags/' + options.tagFacet + '?name=' + options.variable;
+              if (options.device !== 'select device') {
+                endpoint += '&devices=' + options.device;
+              }
+              if (options.component !== 'select component') {
+                endpoint += '&components=' + options.component;
+              }
+            }
+            return this.backendSrv.datasourceRequest({
+              url: this.url + endpoint,
+              data: options,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            }).then(this.mapToTextValue);
+          }
+        }, {
+          key: "mapToTextValue",
           value: function mapToTextValue(result) {
             return _.map(result.data, function (d, i) {
               return { text: d, value: i };
             });
           }
         }, {
-          key: 'buildQueryParameters',
+          key: "buildQueryParameters",
           value: function buildQueryParameters(options) {
             var _this = this;
 
@@ -207,7 +261,9 @@ System.register(['lodash'], function (_export, _context) {
                 variable: _this.templateSrv.replace(target.variable),
                 device: _this.templateSrv.replace(target.device),
                 component: _this.templateSrv.replace(target.component),
-                tag: _this.templateSrv.replace(target.tag),
+                tagFacet: _this.templateSrv.replace(target.tagFacet),
+                tagOperation: _this.templateSrv.replace(target.tagOperation),
+                tagName: _this.templateSrv.replace(target.tagName),
                 refId: target.refId,
                 hide: target.hide
               };
@@ -222,7 +278,7 @@ System.register(['lodash'], function (_export, _context) {
         return GenericDatasource;
       }());
 
-      _export('GenericDatasource', GenericDatasource);
+      _export("GenericDatasource", GenericDatasource);
     }
   };
 });

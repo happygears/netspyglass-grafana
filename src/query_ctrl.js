@@ -13,9 +13,22 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
     this.target.device = this.target.device || 'select device';
     this.target.component = this.target.component || 'select component';
     this.target.tagFacet = this.target.tagFacet || 'select tag facet';
-    this.target.tagOperation = this.target.tagOperation || 'select tag operation';
-    this.target.tagName = this.target.tagName || 'select tag name';
+    this.target.tagOperation = this.target.tagOperation || '==';
+    this.target.tagWord = this.target.tagWord || 'select tag name';
+    this.tagblocks = new Array('tags-1');
   }
+
+    addTagBlock() {
+        var len = this.tagblocks.length;
+        this.tagblocks.push('tags-'+(len+1));
+    }
+
+    removeTagBlock(element) {
+        var index = this.tagblocks.indexOf(element);
+        if (index > -1) {
+            this.tagblocks.splice(index, 1);
+        }
+    }
 
   getCategories() {
     return this.datasource.metricFindCategoryQuery(this.target)
@@ -47,12 +60,17 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
       .then(this.uiSegmentSrv.transformToSegments(false));
       // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
   }
-    getTagsName() {
-    return this.datasource.metricFindTagNameQuery(this.target)
+    getTagsWord() {
+    return this.datasource.metricFindTagWordQuery(this.target)
       .then(this.uiSegmentSrv.transformToSegments(false));
       // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
   }
 
+    addAdditionalTags(param) {
+        this.target.tagOperation = param;
+        this.panelCtrl.refresh();
+    }
+    
   toggleEditorMode() {
     this.target.rawQuery = !this.target.rawQuery;
   }

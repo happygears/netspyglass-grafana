@@ -4,7 +4,7 @@
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Category</span>
             </label>
-            <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+            <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="width-30">{{ctrl.target.category}}</metric-segment-model>
         </div>
     </div>
     <div class="gf-form-inline">
@@ -12,7 +12,7 @@
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Variable</span>
             </label>
-            <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+            <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
         </div>
     </div>
     <div class="gf-form-inline">
@@ -20,7 +20,7 @@
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Device</span>
             </label>
-            <metric-segment-model property="ctrl.target.device" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+            <metric-segment-model property="ctrl.target.device" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
         </div>
     </div>
     <div class="gf-form-inline">
@@ -28,18 +28,32 @@
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Component</span>
             </label>
-            <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
+            <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
         </div>
     </div>
-    <div class="gf-form-inline">
-        <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Tags</span>
-            </label>
-            <metric-segment-model property="ctrl.target.tagFacet" get-options="ctrl.getTagsFacet()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
-            <label class="gf-form-label"> == </label>
-            <metric-segment-model property="ctrl.target.tagName" get-options="ctrl.getTagsName()" on-change="ctrl.onChangeInternal()" css-class="tight-form-item-xxlarge"></metric-segment-model>
-            <label class="gf-form-label"> + </label>
-        </div>
+    <div class="gf-form-inline" ng-repeat="tagblock in ctrl.tagblocks">
+            <div class="gf-form">
+                <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                    <span class="gf-form-query-letter-cell-letter">Tags</span>
+                </label>
+            </div>
+            <div class="gf-form">
+                <metric-segment-model property="ctrl.target.tagFacet" get-options="ctrl.getTagsFacet()" on-change="ctrl.onChangeInternal()" css-class="width-13"></metric-segment-model>
+            </div>
+            <div class="gf-form">
+                <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'Set Tags Operation'" data-placement="right">
+                    <span>{{ctrl.target.tagOperation}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="ctrl.target.tagOperation = '=='; ctrl.panelCtrl.refresh()">==</a></li>
+                    <li><a ng-click="ctrl.target.tagOperation = '<>'; ctrl.panelCtrl.refresh()"><></a></li>
+                </ul>
+            </div>
+            <div class="gf-form">
+                <metric-segment-model property="ctrl.target.tagWord" get-options="ctrl.getTagsWord()" on-change="ctrl.onChangeInternalTag()" css-class="width-12"></metric-segment-model>
+                <a class="gf-form-label" ng-click="ctrl.addTagBlock();"> + </a>
+                <a class="gf-form-label" ng-if="tagblock != 'tags-1'" ng-click="ctrl.removeTagBlock(tagblock)"> x </a>
+            </div>
     </div>
+
 </query-editor-row>

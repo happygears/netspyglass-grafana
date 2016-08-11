@@ -70,10 +70,16 @@ System.register(["lodash"], function (_export, _context) {
               if (typeof query.targets[0].component !== "undefined" && query.targets[0].component !== "select component") {
                 endpoint += '&components=' + query.targets[0].component;
               }
-              if (typeof query.targets[0].tagFacet !== "undefined" && query.targets[0].tagFacet !== "select tag facet" && typeof query.targets[0].tagName !== "undefined" && query.targets[0].tagName !== "select tag name") {
-                endpoint += '&tags=' + query.targets[0].tagFacet + '.' + query.targets[0].tagName + '&tagMatch=AND';
+              if (typeof query.targets[0].tagFacet !== "undefined" && query.targets[0].tagFacet !== "select tag facet" && typeof query.targets[0].tagWord !== "undefined" && query.targets[0].tagWord !== "select tag name") {
+                var tagOperation = "";
+                if (typeof query.targets[0].tagOperation !== "undefined") {
+                  if (query.targets[0].tagOperation == "<>") {
+                    tagOperation = "!";
+                  }
+                }
+                endpoint += '&tags=' + tagOperation + query.targets[0].tagFacet + '.' + query.targets[0].tagWord + '&tagMatch=AND';
               }
-              console.log(endpoint);
+              console.log(query);
               return this.backendSrv.datasourceRequest({
                 url: this.url + endpoint,
                 data: query,
@@ -219,8 +225,8 @@ System.register(["lodash"], function (_export, _context) {
             }).then(this.mapToTextValue);
           }
         }, {
-          key: "metricFindTagNameQuery",
-          value: function metricFindTagNameQuery(options) {
+          key: "metricFindTagWordQuery",
+          value: function metricFindTagWordQuery(options) {
             var endpoint = '';
             if (options.category !== 'select category' && options.variable !== 'select variable' && options.tagFacet !== 'select tag facet') {
               endpoint = '/v2/grafana/net/2/catalog/tags/' + options.tagFacet + '?name=' + options.variable;
@@ -251,9 +257,9 @@ System.register(["lodash"], function (_export, _context) {
             var _this = this;
 
             //remove placeholder targets
-            options.targets = _.filter(options.targets, function (target) {
-              return target.target !== 'select metric';
-            });
+            // options.targets = _.filter(options.targets, target => {
+            //   return target.target !== 'select metric';
+            // });
 
             var targets = _.map(options.targets, function (target) {
               return {
@@ -263,7 +269,7 @@ System.register(["lodash"], function (_export, _context) {
                 component: _this.templateSrv.replace(target.component),
                 tagFacet: _this.templateSrv.replace(target.tagFacet),
                 tagOperation: _this.templateSrv.replace(target.tagOperation),
-                tagName: _this.templateSrv.replace(target.tagName),
+                tagWord: _this.templateSrv.replace(target.tagWord),
                 refId: target.refId,
                 hide: target.hide
               };

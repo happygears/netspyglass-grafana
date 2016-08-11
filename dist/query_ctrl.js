@@ -73,12 +73,27 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           _this.target.device = _this.target.device || 'select device';
           _this.target.component = _this.target.component || 'select component';
           _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
-          _this.target.tagOperation = _this.target.tagOperation || 'select tag operation';
-          _this.target.tagName = _this.target.tagName || 'select tag name';
+          _this.target.tagOperation = _this.target.tagOperation || '==';
+          _this.target.tagWord = _this.target.tagWord || 'select tag name';
+          _this.tagblocks = new Array('tags-1');
           return _this;
         }
 
         _createClass(GenericDatasourceQueryCtrl, [{
+          key: 'addTagBlock',
+          value: function addTagBlock() {
+            var len = this.tagblocks.length;
+            this.tagblocks.push('tags-' + (len + 1));
+          }
+        }, {
+          key: 'removeTagBlock',
+          value: function removeTagBlock(element) {
+            var index = this.tagblocks.indexOf(element);
+            if (index > -1) {
+              this.tagblocks.splice(index, 1);
+            }
+          }
+        }, {
           key: 'getCategories',
           value: function getCategories() {
             return this.datasource.metricFindCategoryQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
@@ -115,10 +130,16 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
             // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
           }
         }, {
-          key: 'getTagsName',
-          value: function getTagsName() {
-            return this.datasource.metricFindTagNameQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+          key: 'getTagsWord',
+          value: function getTagsWord() {
+            return this.datasource.metricFindTagWordQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
             // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+          }
+        }, {
+          key: 'addAdditionalTags',
+          value: function addAdditionalTags(param) {
+            this.target.tagOperation = param;
+            this.panelCtrl.refresh();
           }
         }, {
           key: 'toggleEditorMode',

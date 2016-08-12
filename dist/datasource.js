@@ -62,6 +62,28 @@ System.register(["lodash"], function (_export, _context) {
             }
             var endpoint = '';
             if (typeof query.targets[0].variable !== "undefined" && query.targets[0].variable !== "select variable") {
+              var myFunction = function myFunction(item, index) {
+                var temp = {};
+                if (typeof item.variable !== "undefined" && item.variable !== "select variable") {
+                  temp.variable = item.variable;
+                }
+                if (typeof item.device !== "undefined" && item.device !== "select device") {
+                  temp.device = item.device;
+                }
+                if (typeof item.component !== "undefined" && item.component !== "select component") {
+                  temp.component = item.component;
+                }
+                if (typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name") {
+
+                  temp.tags = {
+                    tagFacet: item.tagFacet,
+                    tagOperation: item.tagOperation,
+                    tagWord: item.tagWord
+                  };
+                }
+                queryObject.targets.push(temp);
+              };
+
               endpoint = '/v2/grafana/net/2/query?';
               endpoint += 'name=' + query.targets[0].variable;
               if (typeof query.targets[0].device !== "undefined" && query.targets[0].device !== "select device") {
@@ -80,9 +102,26 @@ System.register(["lodash"], function (_export, _context) {
                 endpoint += '&tags=' + tagOperation + query.targets[0].tagFacet + '.' + query.targets[0].tagWord + '&tagMatch=AND';
               }
               console.log(query);
+              var queryJson = '{"targets": [{"variable": "variable_name_1","device": "device_name_1","component": "component_name_1","tagFacet": "facet_1","tagWord":  "word_1","tagOperation": "tag_match_op"},{"variable": "variable_name_2","device": "device_name_2","component": "component_name_2","tagFacet": "facet_2","tagWord":  "word_2","tagOperation": "tag_match_op"}],"from": "-10min","until": "now"}';
+              var test = JSON.parse(queryJson);
+              // console.log(query.targets);
+
+
+              var queryObject = {
+                targets: Array(),
+                from: "-6h",
+                until: "now"
+              };
+
+              query.targets.forEach(myFunction);
+
+              queryObject.from = query.rangeRaw.from;
+              queryObject.until = query.rangeRaw.to;
+              var data = JSON.stringify(queryObject);
+              console.log(data);
               return this.backendSrv.datasourceRequest({
                 url: this.url + endpoint,
-                data: query,
+                data: data,
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
               });

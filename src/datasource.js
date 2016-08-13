@@ -66,11 +66,11 @@ export class GenericDatasource {
             }
             if(typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name") {
 
-                temp.tags = {
+                temp.tags = [{
                     tagFacet : item.tagFacet,
                     tagOperation : item.tagOperation,
                     tagWord : item.tagWord
-                }
+                }]
             }
             queryObject.targets.push(temp);
         }

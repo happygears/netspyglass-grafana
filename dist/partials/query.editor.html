@@ -20,7 +20,7 @@
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Device</span>
             </label>
-            <metric-segment-model property="ctrl.target.device" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <metric-segment-model property="ctrl.target.device" ng-disabled="true" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
         </div>
     </div>
     <div class="gf-form-inline">
@@ -31,29 +31,31 @@
             <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
         </div>
     </div>
-    <div class="gf-form-inline" ng-repeat="tagblock in ctrl.tagblocks">
+
+    <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData">
             <div class="gf-form">
                 <label class="gf-form-label width-8 gf-form-query-letter-cell">
                     <span class="gf-form-query-letter-cell-letter">Tags</span>
                 </label>
             </div>
             <div class="gf-form">
-                <metric-segment-model property="ctrl.target.tagFacet" get-options="ctrl.getTagsFacet()" on-change="ctrl.onChangeInternal()" css-class="width-13"></metric-segment-model>
+                <metric-segment-model property="ctrl.target.tagFacet" get-options="ctrl.getTagsFacet()" on-change="ctrl.onChangeInternalTagFacet($index)" css-class="width-13"></metric-segment-model>
             </div>
             <div class="gf-form">
                 <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'Set Tags Operation'" data-placement="right">
-                    <span>{{ctrl.target.tagOperation}}</span>
+                    <span>{{ctrl.target.tagData[$index].tagOperation}}</span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a ng-click="ctrl.target.tagOperation = '=='; ctrl.panelCtrl.refresh()">==</a></li>
-                    <li><a ng-click="ctrl.target.tagOperation = '<>'; ctrl.panelCtrl.refresh()"><></a></li>
+                    <li><a ng-click="ctrl.tagOperation($index, '==')">==</a></li>
+                    <li><a ng-click="ctrl.tagOperation($index, '<>')"><></a></li>
                 </ul>
             </div>
             <div class="gf-form">
-                <metric-segment-model property="ctrl.target.tagWord" get-options="ctrl.getTagsWord()" on-change="ctrl.onChangeInternal()" css-class="width-12"></metric-segment-model>
-                <!--<a class="gf-form-label" ng-click="ctrl.addTagBlock();"> + </a>-->
-                <!--<a class="gf-form-label" ng-click="ctrl.removeTagBlock(tagblock)"> x </a>-->
+                <metric-segment-model property="ctrl.target.tagWord" get-options="ctrl.getTagsWord()" on-change="ctrl.onChangeInternalTagWord($index)" css-class="width-12"></metric-segment-model>
+                <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>
+                <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> x </a>
             </div>
     </div>
+    <a class="gf-form-label width-8" ng-if="ctrl.target.tagData.length < 1" ng-click="ctrl.tagDataAdd()"> + Add new tag</a>
 
 </query-editor-row>

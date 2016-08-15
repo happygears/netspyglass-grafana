@@ -15,41 +15,24 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.tagFacet = this.target.tagFacet || 'select tag facet';
         this.target.tagOperation = this.target.tagOperation || '==';
         this.target.tagWord = this.target.tagWord || 'select tag name';
-        this.tagblocks = new Array('tags_1');
-        this.tagArray = {
-            tags_1 : {
-                tagFacet : '',
-                tagWord : '',
-                tagOperation : '=='
-            }
-        };
-        this.counter = 1;
+        this.target.tagData = [{
+            tagFacet : '',
+            tagWord : '',
+            tagOperation : '=='
+        }];
     }
 
-    addTagBlock() {
-        console.log('array_add');
-        console.log(this.tagblocks);
-        var len = this.tagblocks.length;
-        var name = 'tags_' + (this.counter++);
-        this.tagblocks.push('tags_' + (this.counter++));
-        this.tagArray[name] = {
-            tagFacet : '',
+    tagDataAdd() {
+        this.target.tagData[this.target.tagData.length] = {
+            tagFacet : this.target.tagData.length,
             tagWord : '',
             tagOperation : '=='
         };
         this.panelCtrl.refresh();
     }
 
-    removeTagBlock(element) {
-        var index = this.tagblocks.indexOf(element);
-        if (index > -1) {
-            this.tagblocks.splice(index, 1);
-        }
-        delete this.tagArray[name];
-        console.log('array_rmove');
-        console.log(this.tagblocks);
-        console.log('obj_rmove');
-        console.log(this.tagArray);
+    tagDataRemove(index) {
+        this.target.tagData.splice(index,1);
         this.panelCtrl.refresh();
     }
 
@@ -108,19 +91,18 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
-    onChangeInternalTagFacet(element) {
-        console.log(this.tagArray);
-        console.log(element);
-        this.tagArray[element].tagFacet = this.target.tagFacet;
-        console.log('options');
-        console.log(this.tagArray);
+    onChangeInternalTagFacet(index) {
+        this.target.tagData[index].tagFacet = this.target.tagFacet;
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
-    onChangeInternalTagWord(element) {
-        this.tagArray[element].tagWord = this.target.tagWord;
-        console.log('options');
-        console.log(this.tagArray);
+    onChangeInternalTagWord(index) {
+        this.target.tagData[index].tagWord = this.target.tagWord;
+        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+    }
+
+    tagOperation(index, operation) {
+        this.target.tagData[index].tagOperation = operation;
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 }

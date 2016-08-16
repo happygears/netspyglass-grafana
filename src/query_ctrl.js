@@ -36,6 +36,12 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.panelCtrl.refresh();
     }
 
+    categoryRemove() {
+        this.target.category = 'select category';
+        console.log(angular.element( document.querySelector( '#category' ).querySelector('.gf-form-label').text = 'select category' ));
+        this.panelCtrl.refresh();
+    }
+
     getCategories() {
         return this.datasource.metricFindCategoryQuery(this.target)
             .then(this.uiSegmentSrv.transformToSegments(false));

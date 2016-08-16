@@ -100,6 +100,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.panelCtrl.refresh();
                     }
                 }, {
+                    key: 'categoryRemove',
+                    value: function categoryRemove() {
+                        this.target.category = 'select category';
+                        console.log(angular.element(document.querySelector('#category').querySelector('.gf-form-label').text = 'select category'));
+                        this.panelCtrl.refresh();
+                    }
+                }, {
                     key: 'getCategories',
                     value: function getCategories() {
                         return this.datasource.metricFindCategoryQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));

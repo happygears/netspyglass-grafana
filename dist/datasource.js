@@ -93,23 +93,7 @@ System.register(["lodash"], function (_export, _context) {
                                 queryObject.targets.push(temp);
                             };
 
-                            endpoint = '/v2/grafana/net/2/query?';
-                            endpoint += 'name=' + query.targets[0].variable;
-                            if (typeof query.targets[0].device !== "undefined" && query.targets[0].device !== "select device") {
-                                endpoint += '&devices=' + query.targets[0].device;
-                            }
-                            if (typeof query.targets[0].component !== "undefined" && query.targets[0].component !== "select component") {
-                                endpoint += '&components=' + query.targets[0].component;
-                            }
-                            if (typeof query.targets[0].tagFacet !== "undefined" && query.targets[0].tagFacet !== "select tag facet" && typeof query.targets[0].tagWord !== "undefined" && query.targets[0].tagWord !== "select tag name") {
-                                var tagOperation = "";
-                                if (typeof query.targets[0].tagOperation !== "undefined") {
-                                    if (query.targets[0].tagOperation == "<>") {
-                                        tagOperation = "!";
-                                    }
-                                }
-                                endpoint += '&tags=' + tagOperation + query.targets[0].tagFacet + '.' + query.targets[0].tagWord + '&tagMatch=AND';
-                            }
+                            endpoint = '/v2/grafana/net/2/query';
 
                             var queryObject = {
                                 targets: [],
@@ -298,11 +282,6 @@ System.register(["lodash"], function (_export, _context) {
                     key: "buildQueryParameters",
                     value: function buildQueryParameters(options) {
                         var _this = this;
-
-                        //remove placeholder targets
-                        // options.targets = _.filter(options.targets, target => {
-                        //   return target.target !== 'select metric';
-                        // });
 
                         var targets = _.map(options.targets, function (target) {
                             return {

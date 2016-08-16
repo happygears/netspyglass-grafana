@@ -4,35 +4,39 @@
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Category</span>
             </label>
-            <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="width-30">{{ctrl.target.category}}</metric-segment-model>
+            <metric-segment-model id="category" property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('category')"> x </a>-->
         </div>
     </div>
-    <div class="gf-form-inline">
+    <div class="gf-form-inline" ng-if="ctrl.target.category !== 'select category'">
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Variable</span>
             </label>
-            <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <metric-segment-model id="variable" property="ctrl.target.variable" get-options="ctrl.getVariables()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('variable')"> x </a>-->
         </div>
     </div>
-    <div class="gf-form-inline">
+    <div class="gf-form-inline" ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.category !== 'select category'">
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Device</span>
             </label>
-            <metric-segment-model property="ctrl.target.device" ng-disabled="true" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <metric-segment-model id="device" property="ctrl.target.device" ng-disabled="true" get-options="ctrl.getDevices()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('device')"> x </a>-->
         </div>
     </div>
-    <div class="gf-form-inline">
+    <div class="gf-form-inline" ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.category !== 'select category'">
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Component</span>
             </label>
-            <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <metric-segment-model id="component" property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
+            <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('component')"> x </a>-->
         </div>
     </div>
 
-    <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData">
+    <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData" ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.category !== 'select category'">
             <div class="gf-form">
                 <label class="gf-form-label width-8 gf-form-query-letter-cell">
                     <span class="gf-form-query-letter-cell-letter">Tags</span>
@@ -53,7 +57,7 @@
             <div class="gf-form">
                 <metric-segment-model property="ctrl.target.tagWord" get-options="ctrl.getTagsWord()" on-change="ctrl.onChangeInternalTagWord($index)" css-class="width-12"></metric-segment-model>
                 <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>
-                <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> x </a>
+                <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> - </a>
             </div>
     </div>
     <a class="gf-form-label width-8" ng-if="ctrl.target.tagData.length < 1" ng-click="ctrl.tagDataAdd()"> + Add new tag</a>

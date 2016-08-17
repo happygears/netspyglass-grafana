@@ -1,4 +1,12 @@
-<section class="grafana-metric-options" >
-  <div class="gf-form">
-  </div>
+<section class="grafana-metric-options" query-ctrl="ctrl">
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-12 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Group by time interval</span>
+            </label>
+        </div>
+        <div class="gf-form">
+            <input ng-model="ctrl.target.group" ng-click="ctrl.tempNew = ctrl.target.group; ctrl.target.group =''" ng-blur="ctrl.setGroup()" type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 417px;" placeholder="example: 10">
+        </div>
+    </div>
 </section>

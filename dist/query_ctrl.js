@@ -72,6 +72,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.variable = _this.target.variable || 'select variable';
                     _this.target.device = _this.target.device || 'select device';
                     _this.target.component = _this.target.component || 'select component';
+                    _this.target.sortByEl = _this.target.sortByEl || 'select sorting';
+                    _this.target.selector = _this.target.selector || 'select selector';
+                    _this.target.limit = _this.target.limit || 'select limit';
+                    _this.target.group = _this.target.group || 'select group';
                     _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
                     _this.target.tagOperation = _this.target.tagOperation || '==';
                     _this.target.tagWord = _this.target.tagWord || 'select tag name';
@@ -80,6 +84,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         tagWord: '',
                         tagOperation: '=='
                     }];
+                    _this.temp = '';
+                    _this.tempNew = '';
                     return _this;
                 }
 
@@ -103,7 +109,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'categoryRemove',
                     value: function categoryRemove() {
                         this.target.category = 'select category';
-                        console.log(angular.element(document.querySelector('#category').querySelector('.gf-form-label').text = 'select category'));
+                        this.target.variable = 'select variable';
+                        this.target.device = 'select device';
+                        this.target.component = 'select component';
+                        this.target.tagFacet = 'select tag facet';
+                        // console.log(angular.element( document.querySelector( '#category' ).querySelector('.gf-form-label').text = 'select category' ));
                         this.panelCtrl.refresh();
                     }
                 }, {
@@ -180,6 +190,42 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'tagOperation',
                     value: function tagOperation(index, operation) {
                         this.target.tagData[index].tagOperation = operation;
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'setSortByEl',
+                    value: function setSortByEl(element) {
+                        this.target.sortByEl = element;
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'setSelector',
+                    value: function setSelector(element) {
+                        this.target.selector = element;
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'setLimit',
+                    value: function setLimit() {
+                        if (this.target.limit == '') {
+                            if (this.temp !== '') {
+                                this.target.limit = this.temp;
+                            } else {
+                                this.target.limit = 'select limit';
+                            }
+                        }
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'setGroup',
+                    value: function setGroup() {
+                        if (this.target.group == '') {
+                            if (this.tempNew !== '') {
+                                this.target.group = this.tempNew;
+                            } else {
+                                this.target.group = 'select group';
+                            }
+                        }
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }]);

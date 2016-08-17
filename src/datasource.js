@@ -42,6 +42,20 @@ export class GenericDatasource {
                 if (typeof item.component !== "undefined" && item.component !== "select component") {
                     temp.component = item.component;
                 }
+                if (typeof item.sortByEl !== "undefined" && item.sortByEl !== "select sorting") {
+                    if(item.sortByEl == 'ascending'){
+                        temp.sortBy = 'curr.asc';
+                    }
+                    if(item.sortByEl == 'descending'){
+                        temp.sortBy = 'curr.desc';
+                    }
+                }
+                if (typeof item.selector !== "undefined" && item.selector !== "select selector") {
+                    temp.selector = item.selector;
+                }
+                if (typeof item.limit !== "undefined" && item.limit !== "select limit") {
+                    temp.limit = item.limit;
+                }
                 if (typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name") {
 
                     var result = [];
@@ -240,6 +254,9 @@ export class GenericDatasource {
                 variable: this.templateSrv.replace(target.variable),
                 device: this.templateSrv.replace(target.device),
                 component: this.templateSrv.replace(target.component),
+                sortByEl: this.templateSrv.replace(target.sortByEl),
+                selector: this.templateSrv.replace(target.selector),
+                limit: this.templateSrv.replace(target.limit),
                 tagFacet: this.templateSrv.replace(target.tagFacet),
                 tagOperation: this.templateSrv.replace(target.tagOperation),
                 tagWord: this.templateSrv.replace(target.tagWord),

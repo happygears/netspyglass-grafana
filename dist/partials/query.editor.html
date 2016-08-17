@@ -5,7 +5,7 @@
                 <span class="gf-form-query-letter-cell-letter">Category</span>
             </label>
             <metric-segment-model id="category" property="ctrl.target.category" get-options="ctrl.getCategories()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
-            <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('category')"> x </a>-->
+            <!--<a class="gf-form-label" ng-click="ctrl.categoryRemove()"> x </a>-->
         </div>
     </div>
     <div class="gf-form-inline" ng-if="ctrl.target.category !== 'select category'">
@@ -34,6 +34,55 @@
             <metric-segment-model id="component" property="ctrl.target.component" get-options="ctrl.getComponents()" on-change="ctrl.onChangeInternal()" css-class="width-30"></metric-segment-model>
             <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('component')"> x </a>-->
         </div>
+    </div>
+    <div class="gf-form-inline" ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.category !== 'select category'">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Sorting</span>
+            </label>
+        </div>
+            <div class="gf-form">
+                <a class="gf-form-label pointer width-30" data-toggle="dropdown" data-placement="right">
+                    <span>{{ctrl.target.sortByEl}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="ctrl.setSortByEl('select sorting')">-- remove selected --</a></li>
+                    <li><a ng-click="ctrl.setSortByEl('none')">none</a></li>
+                    <li><a ng-click="ctrl.setSortByEl('ascending')">ascending</a></li>
+                    <li><a ng-click="ctrl.setSortByEl('descending')">descending</a></li>
+                </ul>
+            </div>
+            <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('component')"> x </a>-->
+    </div>
+    <div class="gf-form-inline" ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.category !== 'select category'">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Selector</span>
+            </label>
+        </div>
+        <div class="gf-form">
+            <a class="gf-form-label pointer width-30" data-toggle="dropdown" data-placement="right">
+                <span>{{ctrl.target.selector}}</span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a ng-click="ctrl.setSelector('select selector')">-- remove selected --</a></li>
+                <li><a ng-click="ctrl.setSelector('last')">last</a></li>
+                <li><a ng-click="ctrl.setSelector('min')">min</a></li>
+                <li><a ng-click="ctrl.setSelector('max')">max</a></li>
+            </ul>
+        </div>
+        <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('component')"> x </a>-->
+    </div>
+    <div class="gf-form-inline" ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.category !== 'select category'">
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Limit</span>
+            </label>
+        </div>
+            <div class="gf-form">
+                <input ng-model="ctrl.target.limit" ng-click="ctrl.temp = ctrl.target.limit; ctrl.target.limit =''" ng-blur="ctrl.setLimit()" type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 417px;" placeholder="example: 10">
+            </div>
+            <!--<a class="gf-form-label" ng-click="ctrl.elementRemove('component')"> x </a>-->
     </div>
 
     <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData" ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.category !== 'select category'">

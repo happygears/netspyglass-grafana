@@ -73,6 +73,20 @@ System.register(["lodash"], function (_export, _context) {
                                 if (typeof item.component !== "undefined" && item.component !== "select component") {
                                     temp.component = item.component;
                                 }
+                                if (typeof item.sortByEl !== "undefined" && item.sortByEl !== "select sorting") {
+                                    if (item.sortByEl == 'ascending') {
+                                        temp.sortBy = 'curr.asc';
+                                    }
+                                    if (item.sortByEl == 'descending') {
+                                        temp.sortBy = 'curr.desc';
+                                    }
+                                }
+                                if (typeof item.selector !== "undefined" && item.selector !== "select selector") {
+                                    temp.selector = item.selector;
+                                }
+                                if (typeof item.limit !== "undefined" && item.limit !== "select limit") {
+                                    temp.limit = item.limit;
+                                }
                                 if (typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name") {
                                     var tagsLoop = function tagsLoop(singleItem, index) {
                                         if (typeof singleItem.tagFacet !== "undefined" && singleItem.tagFacet !== "" && typeof singleItem.tagWord !== "undefined" && singleItem.tagWord !== "") {
@@ -289,6 +303,9 @@ System.register(["lodash"], function (_export, _context) {
                                 variable: _this.templateSrv.replace(target.variable),
                                 device: _this.templateSrv.replace(target.device),
                                 component: _this.templateSrv.replace(target.component),
+                                sortByEl: _this.templateSrv.replace(target.sortByEl),
+                                selector: _this.templateSrv.replace(target.selector),
+                                limit: _this.templateSrv.replace(target.limit),
                                 tagFacet: _this.templateSrv.replace(target.tagFacet),
                                 tagOperation: _this.templateSrv.replace(target.tagOperation),
                                 tagWord: _this.templateSrv.replace(target.tagWord),

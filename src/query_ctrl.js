@@ -12,6 +12,10 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.variable = this.target.variable || 'select variable';
         this.target.device = this.target.device || 'select device';
         this.target.component = this.target.component || 'select component';
+        this.target.sortByEl = this.target.sortByEl || 'select sorting';
+        this.target.selector = this.target.selector || 'select selector';
+        this.target.limit = this.target.limit || 'select limit';
+        this.target.group = this.target.group || 'select group';
         this.target.tagFacet = this.target.tagFacet || 'select tag facet';
         this.target.tagOperation = this.target.tagOperation || '==';
         this.target.tagWord = this.target.tagWord || 'select tag name';
@@ -20,6 +24,8 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
             tagWord : '',
             tagOperation : '=='
         }];
+        this.temp = ''
+        this.tempNew = ''
     }
 
     tagDataAdd() {
@@ -38,7 +44,11 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
 
     categoryRemove() {
         this.target.category = 'select category';
-        console.log(angular.element( document.querySelector( '#category' ).querySelector('.gf-form-label').text = 'select category' ));
+        this.target.variable = 'select variable';
+        this.target.device = 'select device';
+        this.target.component = 'select component';
+        this.target.tagFacet = 'select tag facet';
+        // console.log(angular.element( document.querySelector( '#category' ).querySelector('.gf-form-label').text = 'select category' ));
         this.panelCtrl.refresh();
     }
 
@@ -111,6 +121,42 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.tagData[index].tagOperation = operation;
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
+
+    setSortByEl(element) {
+        this.target.sortByEl = element;
+        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+    }
+
+    setSelector(element) {
+        this.target.selector = element;
+        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+    }
+
+    setLimit() {
+        if (this.target.limit == '') {
+            if(this.temp !== ''){
+                this.target.limit = this.temp;
+            }
+            else {
+                this.target.limit = 'select limit';
+            }
+        }
+        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+    }
+
+    setGroup() {
+        if (this.target.group == '') {
+            if(this.tempNew !== ''){
+                this.target.group = this.tempNew;
+            }
+            else {
+                this.target.group = 'select group';
+            }
+        }
+        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+    }
+
+
 }
 
 GenericDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';

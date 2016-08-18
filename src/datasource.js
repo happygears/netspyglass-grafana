@@ -20,7 +20,12 @@ export class GenericDatasource {
             return this.q.when({data: []});
         }
         var endpoint = '';
-        if (typeof query.targets[0].variable !== "undefined" && query.targets[0].variable !== "select variable") {
+
+        function isCategorySet(target) {
+            return typeof target.category !== "undefined" && target.category !== "select category" && typeof target.variable !== "undefined" && target.variable !== "select variable"
+        }
+
+        if (query.targets.filter(isCategorySet).length > 0) {
             endpoint = '/v2/grafana/net/2/query';
 
             var queryObject = {
@@ -33,13 +38,13 @@ export class GenericDatasource {
 
             function targetsLoop(item, index) {
                 var temp = {};
-                if (typeof item.variable !== "undefined" && item.variable !== "select variable") {
+                if (typeof item.variable !== "undefined" && item.variable !== "select variable" && item.variable !== "-- clear selection --") {
                     temp.variable = item.variable;
                 }
-                if (typeof item.device !== "undefined" && item.device !== "select device") {
+                if (typeof item.device !== "undefined" && item.device !== "select device" && item.device !== "-- clear selection --") {
                     temp.device = item.device;
                 }
-                if (typeof item.component !== "undefined" && item.component !== "select component") {
+                if (typeof item.component !== "undefined" && item.component !== "select component" && item.component !== "-- clear selection --") {
                     temp.component = item.component;
                 }
                 if (typeof item.sortByEl !== "undefined" && item.sortByEl !== "select sorting") {
@@ -56,7 +61,7 @@ export class GenericDatasource {
                 if (typeof item.limit !== "undefined" && item.limit !== "select limit") {
                     temp.limit = item.limit;
                 }
-                if (typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name") {
+                if (typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && item.tagFacet !== "-- clear selection --" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name" && item.tagWord !== "-- clear selection --") {
 
                     var result = [];
                     item.tagData.forEach(tagsLoop);

@@ -68,6 +68,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
                     _this.scope = $scope;
                     _this.uiSegmentSrv = uiSegmentSrv;
+                    _this.clearSelection = '-- clear selection --';
                     _this.target.category = _this.target.category || 'select category';
                     _this.target.variable = _this.target.variable || 'select variable';
                     _this.target.device = _this.target.device || 'select device';
@@ -108,54 +109,85 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'categoryRemove',
                     value: function categoryRemove() {
-                        this.target.category = 'select category';
-                        this.target.variable = 'select variable';
-                        this.target.device = 'select device';
-                        this.target.component = 'select component';
-                        this.target.tagFacet = 'select tag facet';
+                        // this.target.category = 'select category';
+                        // this.target.variable = 'select variable';
+                        // this.target.device = 'select device';
+                        // this.target.component = 'select component';
+                        // this.target.tagFacet = 'select tag facet';
                         // console.log(angular.element( document.querySelector( '#category' ).querySelector('.gf-form-label').text = 'select category' ));
                         this.panelCtrl.refresh();
                     }
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        return this.datasource.metricFindCategoryQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+                        // console.log(this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments('select category')));
+                        // console.log(this.datasource.metricFindCategoryQuery(this.target).then(this.uiSegmentSrv.newSegment({value: 'test'})).then(this.transformToSegments(false)));
+                        return this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments(this.target.category, 'select category'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+                    }
+                }, {
+                    key: 'transformToSegments',
+                    value: function transformToSegments(element, addTemplateVars) {
+                        var _this2 = this;
+
+                        // console.log(element);
+                        // console.log(addTemplateVars);
+                        return function (results) {
+                            var segments = _.map(results, function (segment) {
+                                return _this2.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
+                            });
+
+                            if (element !== addTemplateVars) {
+                                segments.unshift(_this2.uiSegmentSrv.newSegment({ fake: true, value: _this2.clearSelection, html: addTemplateVars }));
+                            }
+
+                            var temp = segments[0].html;
+                            // console.log(temp);
+                            // console.log(segments);
+                            return segments;
+                        };
+                    }
+                }, {
+                    key: 'testRemove',
+                    value: function testRemove() {
+                        this.target.variable = 'select variable';
+                        this.getVariables();
+                        this.panelCtrl.refresh();
                     }
                 }, {
                     key: 'getVariables',
                     value: function getVariables() {
-                        return this.datasource.metricFindVariableQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+                        return this.datasource.metricFindVariableQuery(this.target).then(this.transformToSegments(this.target.variable, 'select variable'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getDevices',
                     value: function getDevices() {
-                        return this.datasource.metricFindDeviceQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+                        return this.datasource.metricFindDeviceQuery(this.target).then(this.transformToSegments(this.target.device, 'select device'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getComponents',
                     value: function getComponents() {
-                        return this.datasource.metricFindComponentQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+                        return this.datasource.metricFindComponentQuery(this.target).then(this.transformToSegments(this.target.component, 'select component'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsFacet',
                     value: function getTagsFacet() {
-                        return this.datasource.metricFindTagFacetQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+                        return this.datasource.metricFindTagFacetQuery(this.target).then(this.transformToSegments(this.target.tagFacet, 'select tag facet'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsOperation',
                     value: function getTagsOperation() {
-                        return this.datasource.metricFindTagOperationQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+                        return this.datasource.metricFindTagOperationQuery(this.target).then(this.transformToSegments(false));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsWord',
                     value: function getTagsWord() {
-                        return this.datasource.metricFindTagWordQuery(this.target).then(this.uiSegmentSrv.transformToSegments(false));
+                        return this.datasource.metricFindTagWordQuery(this.target).then(this.transformToSegments(this.target.tagWord, 'select tag name'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
@@ -170,19 +202,52 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.target.rawQuery = !this.target.rawQuery;
                     }
                 }, {
-                    key: 'onChangeInternal',
-                    value: function onChangeInternal() {
+                    key: 'onChangeInternalCategory',
+                    value: function onChangeInternalCategory() {
+                        if (this.target.category == this.clearSelection) {
+                            this.target.category = 'select category';
+                        }
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'onChangeInternalVariable',
+                    value: function onChangeInternalVariable() {
+                        if (this.target.variable == this.clearSelection) {
+                            this.target.variable = 'select variable';
+                        }
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'onChangeInternalDevice',
+                    value: function onChangeInternalDevice() {
+                        if (this.target.device == this.clearSelection) {
+                            this.target.device = 'select device';
+                        }
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'onChangeInternalComponent',
+                    value: function onChangeInternalComponent() {
+                        if (this.target.component == this.clearSelection) {
+                            this.target.component = 'select component';
+                        }
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {
                     key: 'onChangeInternalTagFacet',
                     value: function onChangeInternalTagFacet(index) {
+                        if (this.target.tagFacet == this.clearSelection) {
+                            this.target.tagFacet = 'select tag facet';
+                        }
                         this.target.tagData[index].tagFacet = this.target.tagFacet;
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {
                     key: 'onChangeInternalTagWord',
                     value: function onChangeInternalTagWord(index) {
+                        if (this.target.tagWord == this.clearSelection) {
+                            this.target.tagWord = 'select tag name';
+                        }
                         this.target.tagData[index].tagWord = this.target.tagWord;
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }

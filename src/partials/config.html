@@ -1,2 +1,25 @@
 <datasource-http-settings current="ctrl.current">
 </datasource-http-settings>
+<datasource-auth-settings config-ctrl="ctrl">
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-7">
+                <span class="gf-form-query-letter-cell-letter">Network ID</span>
+            </label>
+        </div>
+        <div class="gf-form">
+            <input ng-model="ctrl.target.group" ng-click="ctrl.tempNew = ctrl.target.group; ctrl.target.group =''" ng-blur="ctrl.setGroup()" type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 315px;" placeholder="2">
+        </div>
+        </div>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-7">
+                <span class="gf-form-query-letter-cell-letter">Auth Token</span>
+            </label>
+        </div>
+        <div class="gf-form">
+            <input ng-model="ctrl.target.group" ng-click="ctrl.tempNew = ctrl.target.group; ctrl.target.group =''" ng-blur="ctrl.setGroup()" type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 315px;" placeholder="123">
+        </div>
+    </div>
+</datasource-auth-settings>
+

@@ -9,6 +9,8 @@ export class GenericDatasource {
         this.q = $q;
         this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;
+        this.networkId = instanceSettings.jsonData.networkId;
+        this.accessToken = (instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '') ? '?access_token='+instanceSettings.jsonData.accessToken :'';
     }
 
     // Called once per panel (graph)
@@ -26,7 +28,8 @@ export class GenericDatasource {
         }
 
         if (query.targets.filter(isCategorySet).length > 0) {
-            endpoint = '/v2/grafana/net/2/query';
+            endpoint = '/v2/grafana/net/' + this.networkId + '/query'+this.accessToken;
+            
 
             var queryObject = {
                 targets: [],
@@ -62,7 +65,6 @@ export class GenericDatasource {
                     temp.limit = item.limit;
                 }
                 if (typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && item.tagFacet !== "-- clear selection --" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name" && item.tagWord !== "-- clear selection --") {
-
                     var result = [];
                     item.tagData.forEach(tagsLoop);
                     function tagsLoop(singleItem, index) {
@@ -84,6 +86,8 @@ export class GenericDatasource {
             queryObject.until = query.rangeRaw.to;
             var data = JSON.stringify(queryObject);
             console.log(data);
+            console.log(endpoint);
+
             return this.backendSrv.datasourceRequest({
                 url: this.url + endpoint,
                 data: data,
@@ -99,8 +103,10 @@ export class GenericDatasource {
     // Required
     // Used for testing datasource in datasource configuration pange
     testDatasource() {
+        var endpoint = '/v2/grafana/net/' + this.networkId + '/test'+this.accessToken;
+        
         return this.backendSrv.datasourceRequest({
-            url: this.url + '/',
+            url: this.url + endpoint,
             method: 'GET'
         }).then(response => {
             if (response.status === 200) {
@@ -124,7 +130,7 @@ export class GenericDatasource {
         };
 
         return this.backendSrv.datasourceRequest({
-            url: this.url + '/annotations',
+            url: this.url + '/annotations'+this.accessToken,
             method: 'POST',
             data: annotationQuery
         }).then(result => {
@@ -136,7 +142,7 @@ export class GenericDatasource {
     // Required for templating
     metricFindCategoryQuery(options) {
         return this.backendSrv.datasourceRequest({
-            url: this.url + '/v2/grafana/net/2/catalog/categories/list',
+            url: this.url + '/v2/grafana/net/' + this.networkId + '/catalog/categories/list'+this.accessToken,
             data: options,
             method: 'POST',
             headers: {'Content-Type': 'application/json'}
@@ -144,10 +150,11 @@ export class GenericDatasource {
     }
 
     metricFindVariableQuery(options) {
-        var endpoint = '/v2/grafana/net/2/catalog/categories/';
+        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/categories/';
         if (options.category !== 'select category') {
             endpoint += options.category;
         }
+        
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,
             data: options,
@@ -159,11 +166,12 @@ export class GenericDatasource {
     metricFindDeviceQuery(options) {
         var endpoint = '';
         if (options.category !== 'select category' && options.variable !== 'select variable') {
-            endpoint = '/v2/grafana/net/2/catalog/devices?name=' + options.variable;
+            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/devices' + this.accessToken + '&name=' + options.variable;
             if (options.component !== 'select component') {
                 endpoint += '&components=' + options.component;
             }
         }
+        
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,
             data: options,
@@ -175,11 +183,12 @@ export class GenericDatasource {
     metricFindComponentQuery(options) {
         var endpoint = '';
         if (options.category !== 'select category' && options.variable !== 'select variable') {
-            endpoint = '/v2/grafana/net/2/catalog/components?name=' + options.variable;
+            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/components' + this.accessToken + '&name=' + options.variable;
             if (options.device !== 'select device') {
                 endpoint += '&devices=' + options.device;
             }
         }
+        
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,
             data: options,
@@ -191,7 +200,7 @@ export class GenericDatasource {
     metricFindTagFacetQuery(options) {
         var endpoint = '';
         if (options.category !== 'select category' && options.variable !== 'select variable') {
-            endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken + '&name=' + options.variable;
             if (options.device !== 'select device') {
                 endpoint += '&devices=' + options.device;
             }
@@ -199,6 +208,7 @@ export class GenericDatasource {
                 endpoint += '&components=' + options.component;
             }
         }
+        
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,
             data: options,
@@ -210,7 +220,7 @@ export class GenericDatasource {
     metricFindTagOperationQuery(options) {
         var endpoint = '';
         if (options.category !== 'select category' && options.variable !== 'select variable') {
-            endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken + '&name=' + options.variable;
             if (options.device !== 'select device') {
                 endpoint += '&devices=' + options.device;
             }
@@ -218,6 +228,7 @@ export class GenericDatasource {
                 endpoint += '&components=' + options.component;
             }
         }
+        
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,
             data: options,
@@ -229,7 +240,7 @@ export class GenericDatasource {
     metricFindTagWordQuery(options) {
         var endpoint = '';
         if (options.category !== 'select category' && options.variable !== 'select variable' && options.tagFacet !== 'select tag facet') {
-            endpoint = '/v2/grafana/net/2/catalog/tags/' + options.tagFacet + '?name=' + options.variable;
+            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + options.tagFacet + this.accessToken + '&name=' + options.variable;
             if (options.device !== 'select device') {
                 endpoint += '&devices=' + options.device;
             }
@@ -237,6 +248,7 @@ export class GenericDatasource {
                 endpoint += '&components=' + options.component;
             }
         }
+        
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,
             data: options,

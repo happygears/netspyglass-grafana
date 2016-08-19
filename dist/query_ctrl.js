@@ -80,13 +80,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
                     _this.target.tagOperation = _this.target.tagOperation || '==';
                     _this.target.tagWord = _this.target.tagWord || 'select tag name';
-                    _this.target.tagData = [{
+                    _this.target.tagData = _this.target.tagData || [{
                         tagFacet: '',
                         tagWord: '',
                         tagOperation: '=='
                     }];
                     _this.temp = '';
-                    _this.tempNew = '';
                     return _this;
                 }
 
@@ -107,21 +106,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.panelCtrl.refresh();
                     }
                 }, {
-                    key: 'categoryRemove',
-                    value: function categoryRemove() {
-                        // this.target.category = 'select category';
-                        // this.target.variable = 'select variable';
-                        // this.target.device = 'select device';
-                        // this.target.component = 'select component';
-                        // this.target.tagFacet = 'select tag facet';
-                        // console.log(angular.element( document.querySelector( '#category' ).querySelector('.gf-form-label').text = 'select category' ));
-                        this.panelCtrl.refresh();
-                    }
-                }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        // console.log(this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments('select category')));
-                        // console.log(this.datasource.metricFindCategoryQuery(this.target).then(this.uiSegmentSrv.newSegment({value: 'test'})).then(this.transformToSegments(false)));
                         return this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments(this.target.category, 'select category'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
@@ -130,8 +116,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     value: function transformToSegments(element, addTemplateVars) {
                         var _this2 = this;
 
-                        // console.log(element);
-                        // console.log(addTemplateVars);
                         return function (results) {
                             var segments = _.map(results, function (segment) {
                                 return _this2.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
@@ -142,8 +126,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                             }
 
                             var temp = segments[0].html;
-                            // console.log(temp);
-                            // console.log(segments);
                             return segments;
                         };
                     }

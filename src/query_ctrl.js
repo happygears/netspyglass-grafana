@@ -20,13 +20,13 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.tagFacet = this.target.tagFacet || 'select tag facet';
         this.target.tagOperation = this.target.tagOperation || '==';
         this.target.tagWord = this.target.tagWord || 'select tag name';
-        this.target.tagData = [{
+        this.target.tagData = this.target.tagData ||
+        [{
             tagFacet : '',
             tagWord : '',
             tagOperation : '=='
         }];
         this.temp = '';
-        this.tempNew = ''
     }
 
     tagDataAdd() {
@@ -43,27 +43,13 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.panelCtrl.refresh();
     }
 
-    categoryRemove() {
-        // this.target.category = 'select category';
-        // this.target.variable = 'select variable';
-        // this.target.device = 'select device';
-        // this.target.component = 'select component';
-        // this.target.tagFacet = 'select tag facet';
-        // console.log(angular.element( document.querySelector( '#category' ).querySelector('.gf-form-label').text = 'select category' ));
-        this.panelCtrl.refresh();
-    }
-
     getCategories() {
-        // console.log(this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments('select category')));
-        // console.log(this.datasource.metricFindCategoryQuery(this.target).then(this.uiSegmentSrv.newSegment({value: 'test'})).then(this.transformToSegments(false)));
         return this.datasource.metricFindCategoryQuery(this.target)
             .then(this.transformToSegments(this.target.category, 'select category'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     transformToSegments(element, addTemplateVars) {
-        // console.log(element);
-        // console.log(addTemplateVars);
         return (results) => {
             var segments = _.map(results, segment => {
                 return this.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
@@ -74,8 +60,6 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
             }
 
             var temp = segments[0].html;
-            // console.log(temp);
-            // console.log(segments);
             return segments;
         };
     }

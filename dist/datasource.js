@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-System.register(["lodash"], function (_export, _context) {
+System.register(['lodash'], function (_export, _context) {
     "use strict";
 
     var _, _createClass, GenericDatasource;
@@ -34,7 +34,7 @@ System.register(["lodash"], function (_export, _context) {
                 };
             }();
 
-            _export("GenericDatasource", GenericDatasource = function () {
+            _export('GenericDatasource', GenericDatasource = function () {
                 function GenericDatasource(instanceSettings, $q, backendSrv, templateSrv) {
                     _classCallCheck(this, GenericDatasource);
 
@@ -44,13 +44,15 @@ System.register(["lodash"], function (_export, _context) {
                     this.q = $q;
                     this.backendSrv = backendSrv;
                     this.templateSrv = templateSrv;
+                    this.networkId = instanceSettings.jsonData.networkId;
+                    this.accessToken = instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '' ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
                 }
 
                 // Called once per panel (graph)
 
 
                 _createClass(GenericDatasource, [{
-                    key: "query",
+                    key: 'query',
                     value: function query(options) {
                         var query = this.buildQueryParameters(options);
                         query.targets = query.targets.filter(function (t) {
@@ -112,7 +114,7 @@ System.register(["lodash"], function (_export, _context) {
                                 queryObject.targets.push(temp);
                             };
 
-                            endpoint = '/v2/grafana/net/2/query';
+                            endpoint = '/v2/grafana/net/' + this.networkId + '/query' + this.accessToken;
 
                             var queryObject = {
                                 targets: [],
@@ -126,6 +128,8 @@ System.register(["lodash"], function (_export, _context) {
                             queryObject.until = query.rangeRaw.to;
                             var data = JSON.stringify(queryObject);
                             console.log(data);
+                            console.log(endpoint);
+
                             return this.backendSrv.datasourceRequest({
                                 url: this.url + endpoint,
                                 data: data,
@@ -137,10 +141,12 @@ System.register(["lodash"], function (_export, _context) {
                         }
                     }
                 }, {
-                    key: "testDatasource",
+                    key: 'testDatasource',
                     value: function testDatasource() {
+                        var endpoint = '/v2/grafana/net/' + this.networkId + '/test' + this.accessToken;
+
                         return this.backendSrv.datasourceRequest({
-                            url: this.url + '/',
+                            url: this.url + endpoint,
                             method: 'GET'
                         }).then(function (response) {
                             if (response.status === 200) {
@@ -149,7 +155,7 @@ System.register(["lodash"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "annotationQuery",
+                    key: 'annotationQuery',
                     value: function annotationQuery(options) {
                         var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
                         var annotationQuery = {
@@ -165,7 +171,7 @@ System.register(["lodash"], function (_export, _context) {
                         };
 
                         return this.backendSrv.datasourceRequest({
-                            url: this.url + '/annotations',
+                            url: this.url + '/annotations' + this.accessToken,
                             method: 'POST',
                             data: annotationQuery
                         }).then(function (result) {
@@ -173,22 +179,23 @@ System.register(["lodash"], function (_export, _context) {
                         });
                     }
                 }, {
-                    key: "metricFindCategoryQuery",
+                    key: 'metricFindCategoryQuery',
                     value: function metricFindCategoryQuery(options) {
                         return this.backendSrv.datasourceRequest({
-                            url: this.url + '/v2/grafana/net/2/catalog/categories/list',
+                            url: this.url + '/v2/grafana/net/' + this.networkId + '/catalog/categories/list' + this.accessToken,
                             data: options,
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' }
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: "metricFindVariableQuery",
+                    key: 'metricFindVariableQuery',
                     value: function metricFindVariableQuery(options) {
-                        var endpoint = '/v2/grafana/net/2/catalog/categories/';
+                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/categories/';
                         if (options.category !== 'select category') {
                             endpoint += options.category;
                         }
+
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: options,
@@ -197,15 +204,16 @@ System.register(["lodash"], function (_export, _context) {
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: "metricFindDeviceQuery",
+                    key: 'metricFindDeviceQuery',
                     value: function metricFindDeviceQuery(options) {
                         var endpoint = '';
                         if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/2/catalog/devices?name=' + options.variable;
+                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/devices' + this.accessToken + '&name=' + options.variable;
                             if (options.component !== 'select component') {
                                 endpoint += '&components=' + options.component;
                             }
                         }
+
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: options,
@@ -214,15 +222,16 @@ System.register(["lodash"], function (_export, _context) {
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: "metricFindComponentQuery",
+                    key: 'metricFindComponentQuery',
                     value: function metricFindComponentQuery(options) {
                         var endpoint = '';
                         if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/2/catalog/components?name=' + options.variable;
+                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/components' + this.accessToken + '&name=' + options.variable;
                             if (options.device !== 'select device') {
                                 endpoint += '&devices=' + options.device;
                             }
                         }
+
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: options,
@@ -231,11 +240,11 @@ System.register(["lodash"], function (_export, _context) {
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: "metricFindTagFacetQuery",
+                    key: 'metricFindTagFacetQuery',
                     value: function metricFindTagFacetQuery(options) {
                         var endpoint = '';
                         if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken + '&name=' + options.variable;
                             if (options.device !== 'select device') {
                                 endpoint += '&devices=' + options.device;
                             }
@@ -243,6 +252,7 @@ System.register(["lodash"], function (_export, _context) {
                                 endpoint += '&components=' + options.component;
                             }
                         }
+
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: options,
@@ -251,11 +261,11 @@ System.register(["lodash"], function (_export, _context) {
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: "metricFindTagOperationQuery",
+                    key: 'metricFindTagOperationQuery',
                     value: function metricFindTagOperationQuery(options) {
                         var endpoint = '';
                         if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/2/catalog/tags/facets?name=' + options.variable;
+                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken + '&name=' + options.variable;
                             if (options.device !== 'select device') {
                                 endpoint += '&devices=' + options.device;
                             }
@@ -263,6 +273,7 @@ System.register(["lodash"], function (_export, _context) {
                                 endpoint += '&components=' + options.component;
                             }
                         }
+
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: options,
@@ -271,11 +282,11 @@ System.register(["lodash"], function (_export, _context) {
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: "metricFindTagWordQuery",
+                    key: 'metricFindTagWordQuery',
                     value: function metricFindTagWordQuery(options) {
                         var endpoint = '';
                         if (options.category !== 'select category' && options.variable !== 'select variable' && options.tagFacet !== 'select tag facet') {
-                            endpoint = '/v2/grafana/net/2/catalog/tags/' + options.tagFacet + '?name=' + options.variable;
+                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + options.tagFacet + this.accessToken + '&name=' + options.variable;
                             if (options.device !== 'select device') {
                                 endpoint += '&devices=' + options.device;
                             }
@@ -283,6 +294,7 @@ System.register(["lodash"], function (_export, _context) {
                                 endpoint += '&components=' + options.component;
                             }
                         }
+
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: options,
@@ -291,14 +303,14 @@ System.register(["lodash"], function (_export, _context) {
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: "mapToTextValue",
+                    key: 'mapToTextValue',
                     value: function mapToTextValue(result) {
                         return _.map(result.data, function (d, i) {
                             return { text: d, value: i };
                         });
                     }
                 }, {
-                    key: "buildQueryParameters",
+                    key: 'buildQueryParameters',
                     value: function buildQueryParameters(options) {
                         var _this = this;
 
@@ -329,7 +341,7 @@ System.register(["lodash"], function (_export, _context) {
                 return GenericDatasource;
             }());
 
-            _export("GenericDatasource", GenericDatasource);
+            _export('GenericDatasource', GenericDatasource);
         }
     };
 });

@@ -156,7 +156,7 @@ export class GenericDatasource {
         }
         
         return this.backendSrv.datasourceRequest({
-            url: this.url + endpoint,
+            url: this.url + endpoint + this.accessToken,
             data: options,
             method: 'POST',
             headers: {'Content-Type': 'application/json'}

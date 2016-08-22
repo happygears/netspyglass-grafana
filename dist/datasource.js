@@ -44,92 +44,104 @@ System.register(['lodash'], function (_export, _context) {
                     this.q = $q;
                     this.backendSrv = backendSrv;
                     this.templateSrv = templateSrv;
-                    this.networkId = instanceSettings.jsonData.networkId;
+                    this.networkId = instanceSettings.jsonData.networkId || 1;
                     this.accessToken = instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '' ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
+                    this.endpoints = {};
+                    this.endpoints.category = '/v2/grafana/net/' + this.networkId + '/catalog/categories/list' + this.accessToken;
+                    this.endpoints.variable = '/v2/grafana/net/' + this.networkId + '/catalog/categories/';
+                    this.endpoints.device = '/v2/grafana/net/' + this.networkId + '/catalog/devices' + this.accessToken;
+                    this.endpoints.component = '/v2/grafana/net/' + this.networkId + '/catalog/components' + this.accessToken;
+                    this.endpoints.tagFacet = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken;
+                    this.endpoints.query = '/v2/grafana/net/' + this.networkId + '/query' + this.accessToken;
+                    this.endpoints.test = '/v2/grafana/net/' + this.networkId + '/test' + this.accessToken;
+
+                    this.targetName = {};
+                    this.targetName.variable = 'select variable';
+                    this.targetName.device = 'select device';
+                    this.targetName.component = 'select component';
+                    this.targetName.sortByEl = 'select sorting';
+                    this.targetName.selector = 'select selector';
+                    this.targetName.limit = 'select limit';
+                    this.targetName.group = 'select group';
+                    this.targetName.tagFacet = 'select tag facet';
+                    this.targetName.tagWord = 'select tag name';
+                    this.targetName.interval = 'select interval';
+
+                    this.clearString = '-- clear selection --';
                 }
 
-                // Called once per panel (graph)
-
-
                 _createClass(GenericDatasource, [{
-                    key: 'query',
-                    value: function query(options) {
+                    key: 'buildNewData',
+                    value: function buildNewData(item) {
+                        var temp = {};
+                        for (var key in item) {
+                            if (key in this.targetName || key == 'tagData') {
+                                if (typeof item[key] !== 'undefined' && item[key] !== this.clearString && item[key] !== this.targetName[key]) {
+                                    if (key !== 'tagFacet' && key !== 'tagWord') {
+                                        if (key == 'tagData') {
+                                            var tagsLoop = function tagsLoop(singleItem, index) {
+                                                if (singleItem.tagFacet !== "" && singleItem.tagFacet !== "select tag facet" && singleItem.tagWord !== "" && singleItem.tagFacet !== "select tag name") {
+                                                    result.push({
+                                                        tagFacet: singleItem.tagFacet,
+                                                        tagOperation: singleItem.tagOperation,
+                                                        tagWord: singleItem.tagWord
+                                                    });
+                                                }
+                                            };
+
+                                            var result = [];
+                                            item[key].forEach(tagsLoop);
+
+
+                                            if (result.length > 0) {
+                                                temp.tags = result;
+                                            }
+                                        } else {
+                                            temp[key] = item[key];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return temp;
+                    }
+                }, {
+                    key: 'buildQuery',
+                    value: function buildQuery(options) {
                         var query = this.buildQueryParameters(options);
                         query.targets = query.targets.filter(function (t) {
                             return !t.hide;
                         });
-
+                        var queryObject = {
+                            targets: []
+                        };
+                        var temp;
                         if (query.targets.length <= 0) {
-                            return this.q.when({ data: [] });
-                        }
-                        var endpoint = '';
-
-                        function isCategorySet(target) {
-                            return typeof target.category !== "undefined" && target.category !== "select category" && typeof target.variable !== "undefined" && target.variable !== "select variable";
-                        }
-
-                        if (query.targets.filter(isCategorySet).length > 0) {
-                            var targetsLoop = function targetsLoop(item, index) {
-                                var temp = {};
-                                if (typeof item.variable !== "undefined" && item.variable !== "select variable" && item.variable !== "-- clear selection --") {
-                                    temp.variable = item.variable;
-                                }
-                                if (typeof item.device !== "undefined" && item.device !== "select device" && item.device !== "-- clear selection --") {
-                                    temp.device = item.device;
-                                }
-                                if (typeof item.component !== "undefined" && item.component !== "select component" && item.component !== "-- clear selection --") {
-                                    temp.component = item.component;
-                                }
-                                if (typeof item.sortByEl !== "undefined" && item.sortByEl !== "select sorting") {
-                                    if (item.sortByEl == 'ascending') {
-                                        temp.sortBy = 'curr.asc';
-                                    }
-                                    if (item.sortByEl == 'descending') {
-                                        temp.sortBy = 'curr.desc';
-                                    }
-                                }
-                                if (typeof item.selector !== "undefined" && item.selector !== "select selector") {
-                                    temp.selector = item.selector;
-                                }
-                                if (typeof item.limit !== "undefined" && item.limit !== "select limit") {
-                                    temp.limit = item.limit;
-                                }
-                                if (typeof item.tagFacet !== "undefined" && item.tagFacet !== "select tag facet" && item.tagFacet !== "-- clear selection --" && typeof item.tagOperation !== "undefined" && typeof item.tagWord !== "undefined" && item.tagWord !== "select tag name" && item.tagWord !== "-- clear selection --") {
-                                    var tagsLoop = function tagsLoop(singleItem, index) {
-                                        if (typeof singleItem.tagFacet !== "undefined" && singleItem.tagFacet !== "" && typeof singleItem.tagWord !== "undefined" && singleItem.tagWord !== "") {
-                                            result.push({
-                                                tagFacet: singleItem.tagFacet,
-                                                tagOperation: singleItem.tagOperation,
-                                                tagWord: singleItem.tagWord
-                                            });
-                                        }
-                                    };
-
-                                    var result = [];
-                                    item.tagData.forEach(tagsLoop);
-
-
-                                    temp.tags = result;
-                                }
+                            temp = this.buildNewData(query);
+                            queryObject.targets.push(temp);
+                        } else {
+                            var index;
+                            for (index = query.targets.length - 1; index >= 0; --index) {
+                                temp = this.buildNewData(query.targets[index]);
                                 queryObject.targets.push(temp);
-                            };
-
-                            endpoint = '/v2/grafana/net/' + this.networkId + '/query' + this.accessToken;
-
-                            var queryObject = {
-                                targets: [],
-                                from: "-6h",
-                                until: "now"
-                            };
-
-                            query.targets.forEach(targetsLoop);
-
+                            }
                             queryObject.from = query.rangeRaw.from;
                             queryObject.until = query.rangeRaw.to;
-                            var data = JSON.stringify(queryObject);
-                            console.log(data);
-                            console.log(endpoint);
-
+                            queryObject.groupByTime = query.interval;
+                        }
+                        var data = JSON.stringify(queryObject);
+                        return data;
+                    }
+                }, {
+                    key: 'query',
+                    value: function query(options) {
+                        var data = this.buildQuery(options);
+                        var temp = JSON.parse(data);
+                        console.log(data);
+                        if (temp.targets.filter(function (target) {
+                            return typeof target.variable !== "undefined" && target.variable !== "select variable";
+                        }).length > 0) {
+                            var endpoint = this.endpoints.query;
                             return this.backendSrv.datasourceRequest({
                                 url: this.url + endpoint,
                                 data: data,
@@ -137,14 +149,13 @@ System.register(['lodash'], function (_export, _context) {
                                 headers: { 'Content-Type': 'application/json' }
                             });
                         } else {
-                            return '';
+                            return null;
                         }
                     }
                 }, {
                     key: 'testDatasource',
                     value: function testDatasource() {
-                        var endpoint = '/v2/grafana/net/' + this.networkId + '/test' + this.accessToken;
-
+                        var endpoint = this.endpoints.test;
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             method: 'GET'
@@ -169,7 +180,6 @@ System.register(['lodash'], function (_export, _context) {
                             },
                             rangeRaw: options.rangeRaw
                         };
-
                         return this.backendSrv.datasourceRequest({
                             url: this.url + '/annotations' + this.accessToken,
                             method: 'POST',
@@ -179,6 +189,12 @@ System.register(['lodash'], function (_export, _context) {
                         });
                     }
                 }, {
+<<<<<<< HEAD
+                    key: 'metricFindQuery',
+                    value: function metricFindQuery(options, name) {
+                        var data = this.buildQuery(options);
+                        var endpoint = this.endpoints[name];
+=======
                     key: 'metricFindCategoryQuery',
                     value: function metricFindCategoryQuery(options) {
                         return this.backendSrv.datasourceRequest({
@@ -232,51 +248,31 @@ System.register(['lodash'], function (_export, _context) {
                             }
                         }
 
+>>>>>>> d51f64c6c14238f8ec8cd2e97cca9a2c483be5db
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
-                            data: options,
+                            data: data,
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' }
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: 'metricFindTagFacetQuery',
-                    value: function metricFindTagFacetQuery(options) {
-                        var endpoint = '';
-                        if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken + '&name=' + options.variable;
-                            if (options.device !== 'select device') {
-                                endpoint += '&devices=' + options.device;
-                            }
-                            if (options.component !== 'select component') {
-                                endpoint += '&components=' + options.component;
-                            }
-                        }
-
+                    key: 'metricFindCategoryQuery',
+                    value: function metricFindCategoryQuery() {
                         return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            data: options,
+                            url: this.url + this.endpoints.category,
+                            data: '',
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' }
                         }).then(this.mapToTextValue);
                     }
                 }, {
-                    key: 'metricFindTagOperationQuery',
-                    value: function metricFindTagOperationQuery(options) {
-                        var endpoint = '';
-                        if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken + '&name=' + options.variable;
-                            if (options.device !== 'select device') {
-                                endpoint += '&devices=' + options.device;
-                            }
-                            if (options.component !== 'select component') {
-                                endpoint += '&components=' + options.component;
-                            }
-                        }
-
+                    key: 'metricFindVariableQuery',
+                    value: function metricFindVariableQuery(options) {
+                        var endpoint = this.endpoints.variable + options.category + this.accessToken;
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
-                            data: options,
+                            data: '',
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' }
                         }).then(this.mapToTextValue);
@@ -284,20 +280,11 @@ System.register(['lodash'], function (_export, _context) {
                 }, {
                     key: 'metricFindTagWordQuery',
                     value: function metricFindTagWordQuery(options) {
-                        var endpoint = '';
-                        if (options.category !== 'select category' && options.variable !== 'select variable' && options.tagFacet !== 'select tag facet') {
-                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + options.tagFacet + this.accessToken + '&name=' + options.variable;
-                            if (options.device !== 'select device') {
-                                endpoint += '&devices=' + options.device;
-                            }
-                            if (options.component !== 'select component') {
-                                endpoint += '&components=' + options.component;
-                            }
-                        }
-
+                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + options.tagFacet + this.accessToken;
+                        var data = this.buildQuery(options);
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
-                            data: options,
+                            data: data,
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' }
                         }).then(this.mapToTextValue);

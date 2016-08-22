@@ -77,19 +77,19 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
     }
 
     getDevices() {
-        return this.datasource.metricFindDeviceQuery(this.target)
+        return this.datasource.metricFindQuery(this.target, 'device')
             .then(this.transformToSegments(this.target.device,'select device'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getComponents() {
-        return this.datasource.metricFindComponentQuery(this.target)
+        return this.datasource.metricFindQuery(this.target, 'component')
             .then(this.transformToSegments(this.target.component,'select component'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getTagsFacet() {
-        return this.datasource.metricFindTagFacetQuery(this.target)
+        return this.datasource.metricFindQuery(this.target, 'tagFacet')
             .then(this.transformToSegments(this.target.tagFacet,'select tag facet'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }

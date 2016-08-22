@@ -145,19 +145,19 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getDevices',
                     value: function getDevices() {
-                        return this.datasource.metricFindDeviceQuery(this.target).then(this.transformToSegments(this.target.device, 'select device'));
+                        return this.datasource.metricFindQuery(this.target, 'device').then(this.transformToSegments(this.target.device, 'select device'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getComponents',
                     value: function getComponents() {
-                        return this.datasource.metricFindComponentQuery(this.target).then(this.transformToSegments(this.target.component, 'select component'));
+                        return this.datasource.metricFindQuery(this.target, 'component').then(this.transformToSegments(this.target.component, 'select component'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsFacet',
                     value: function getTagsFacet() {
-                        return this.datasource.metricFindTagFacetQuery(this.target).then(this.transformToSegments(this.target.tagFacet, 'select tag facet'));
+                        return this.datasource.metricFindQuery(this.target, 'tagFacet').then(this.transformToSegments(this.target.tagFacet, 'select tag facet'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {

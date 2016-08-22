@@ -7,7 +7,7 @@
             </label>
         </div>
         <div class="gf-form">
-            <input ng-model="ctrl.current.jsonData.networkId" type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 315px;" placeholder="1" value="1">
+            <input ng-model="ctrl.current.jsonData.networkId" ng-init="ctrl.current.jsonData.networkId = ctrl.current.jsonData.networkId || 1"type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 315px;" placeholder="1" value="1">
         </div>
     </div>
     <div class="gf-form-inline">

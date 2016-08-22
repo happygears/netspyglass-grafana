@@ -159,13 +159,8 @@ export class GenericDatasource {
         var data = this.buildQuery(options);
         var endpoint = this.endpoints[name];
         return this.backendSrv.datasourceRequest({
-<<<<<<< HEAD
             url: this.url + endpoint,
             data: data,
-=======
-            url: this.url + endpoint + this.accessToken,
-            data: options,
->>>>>>> d51f64c6c14238f8ec8cd2e97cca9a2c483be5db
             method: 'POST',
             headers: {'Content-Type': 'application/json'}
         }).then(this.mapToTextValue);

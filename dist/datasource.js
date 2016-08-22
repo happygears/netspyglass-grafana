@@ -189,66 +189,10 @@ System.register(['lodash'], function (_export, _context) {
                         });
                     }
                 }, {
-<<<<<<< HEAD
                     key: 'metricFindQuery',
                     value: function metricFindQuery(options, name) {
                         var data = this.buildQuery(options);
                         var endpoint = this.endpoints[name];
-=======
-                    key: 'metricFindCategoryQuery',
-                    value: function metricFindCategoryQuery(options) {
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + '/v2/grafana/net/' + this.networkId + '/catalog/categories/list' + this.accessToken,
-                            data: options,
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
-                    }
-                }, {
-                    key: 'metricFindVariableQuery',
-                    value: function metricFindVariableQuery(options) {
-                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/categories/';
-                        if (options.category !== 'select category') {
-                            endpoint += options.category;
-                        }
-
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint + this.accessToken,
-                            data: options,
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
-                    }
-                }, {
-                    key: 'metricFindDeviceQuery',
-                    value: function metricFindDeviceQuery(options) {
-                        var endpoint = '';
-                        if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/devices' + this.accessToken + '&name=' + options.variable;
-                            if (options.component !== 'select component') {
-                                endpoint += '&components=' + options.component;
-                            }
-                        }
-
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            data: options,
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
-                    }
-                }, {
-                    key: 'metricFindComponentQuery',
-                    value: function metricFindComponentQuery(options) {
-                        var endpoint = '';
-                        if (options.category !== 'select category' && options.variable !== 'select variable') {
-                            endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/components' + this.accessToken + '&name=' + options.variable;
-                            if (options.device !== 'select device') {
-                                endpoint += '&devices=' + options.device;
-                            }
-                        }
-
->>>>>>> d51f64c6c14238f8ec8cd2e97cca9a2c483be5db
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: data,

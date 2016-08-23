@@ -91,7 +91,7 @@ System.register(['lodash'], function (_export, _context) {
                                     if (singleItem.tagFacet == "" || singleItem.tagFacet == "select tag facet") {
                                         return;
                                     }
-                                    if (singleItem.tagWord == "" || singleItem.tagFacet == "select tag word") {
+                                    if (singleItem.tagWord == "" || singleItem.tagWord == "select tag word") {
                                         return;
                                     }
                                     result.push({
@@ -144,7 +144,7 @@ System.register(['lodash'], function (_export, _context) {
                     value: function query(options) {
                         var data = this.buildQuery(options);
                         var temp = JSON.parse(data);
-                        // console.log(data);
+                        console.log(data);
                         if (temp.targets.filter(function (target) {
                             return typeof target.variable !== "undefined" && target.variable !== "select variable";
                         }).length > 0) {

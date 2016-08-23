@@ -79,7 +79,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.group = _this.target.group || 'select group';
                     _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
                     _this.target.tagOperation = _this.target.tagOperation || '==';
-                    _this.target.tagWord = _this.target.tagWord || 'select tag name';
+                    _this.target.tagWord = _this.target.tagWord || 'select tag word';
                     _this.target.tagData = _this.target.tagData || [{
                         tagFacet: '',
                         tagWord: '',
@@ -168,8 +168,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     }
                 }, {
                     key: 'getTagsWord',
-                    value: function getTagsWord() {
-                        return this.datasource.metricFindTagWordQuery(this.target).then(this.transformToSegments(this.target.tagWord, 'select tag name'));
+                    value: function getTagsWord(data) {
+                        return this.datasource.metricFindTagWordQuery(this.target, data).then(this.transformToSegments(this.target.tagWord, 'select tag word'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
@@ -221,6 +221,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         if (this.target.tagFacet == this.clearSelection) {
                             this.target.tagFacet = 'select tag facet';
                         }
+                        if (this.target.tagData[index].tagWord !== '') {
+                            this.target.tagData[index].tagWord = '';
+                        }
+                        angular.element('#tag-word-' + index).children().children("a.tag-word").html('select tag word');
                         this.target.tagData[index].tagFacet = this.target.tagFacet;
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
@@ -228,7 +232,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'onChangeInternalTagWord',
                     value: function onChangeInternalTagWord(index) {
                         if (this.target.tagWord == this.clearSelection) {
-                            this.target.tagWord = 'select tag name';
+                            this.target.tagWord = 'select tag word';
                         }
                         this.target.tagData[index].tagWord = this.target.tagWord;
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.

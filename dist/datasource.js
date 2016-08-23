@@ -64,8 +64,9 @@ System.register(['lodash'], function (_export, _context) {
                     this.targetName.limit = 'select limit';
                     this.targetName.group = 'select group';
                     this.targetName.tagFacet = 'select tag facet';
-                    this.targetName.tagWord = 'select tag name';
+                    this.targetName.tagWord = 'select tag word';
                     this.targetName.interval = 'select interval';
+                    this.targetName.tagData = [];
 
                     this.clearString = '-- clear selection --';
                 }
@@ -75,32 +76,38 @@ System.register(['lodash'], function (_export, _context) {
                     value: function buildNewData(item) {
                         var temp = {};
                         for (var key in item) {
-                            if (key in this.targetName || key == 'tagData') {
-                                if (typeof item[key] !== 'undefined' && item[key] !== this.clearString && item[key] !== this.targetName[key]) {
-                                    if (key !== 'tagFacet' && key !== 'tagWord') {
-                                        if (key == 'tagData') {
-                                            var tagsLoop = function tagsLoop(singleItem, index) {
-                                                if (singleItem.tagFacet !== "" && singleItem.tagFacet !== "select tag facet" && singleItem.tagWord !== "" && singleItem.tagFacet !== "select tag name") {
-                                                    result.push({
-                                                        tagFacet: singleItem.tagFacet,
-                                                        tagOperation: singleItem.tagOperation,
-                                                        tagWord: singleItem.tagWord
-                                                    });
-                                                }
-                                            };
-
-                                            var result = [];
-                                            item[key].forEach(tagsLoop);
-
-
-                                            if (result.length > 0) {
-                                                temp.tags = result;
-                                            }
-                                        } else {
-                                            temp[key] = item[key];
-                                        }
+                            var result = [];
+                            if (!(key in this.targetName)) {
+                                continue;
+                            }
+                            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.targetName[key]) {
+                                continue;
+                            }
+                            if (key == 'tagFacet' || key == 'tagWord') {
+                                continue;
+                            }
+                            if (key == 'tagData') {
+                                var tagsLoop = function tagsLoop(singleItem, index) {
+                                    if (singleItem.tagFacet == "" || singleItem.tagFacet == "select tag facet") {
+                                        return;
                                     }
-                                }
+                                    if (singleItem.tagWord == "" || singleItem.tagFacet == "select tag word") {
+                                        return;
+                                    }
+                                    result.push({
+                                        tagFacet: singleItem.tagFacet,
+                                        tagOperation: singleItem.tagOperation,
+                                        tagWord: singleItem.tagWord
+                                    });
+                                };
+
+                                item[key].forEach(tagsLoop);
+                            }
+                            if (result.length > 0) {
+                                temp.tags = result;
+                            }
+                            if (key !== 'tagData') {
+                                temp[key] = item[key];
                             }
                         }
                         return temp;
@@ -137,7 +144,7 @@ System.register(['lodash'], function (_export, _context) {
                     value: function query(options) {
                         var data = this.buildQuery(options);
                         var temp = JSON.parse(data);
-                        console.log(data);
+                        // console.log(data);
                         if (temp.targets.filter(function (target) {
                             return typeof target.variable !== "undefined" && target.variable !== "select variable";
                         }).length > 0) {
@@ -223,8 +230,8 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'metricFindTagWordQuery',
-                    value: function metricFindTagWordQuery(options) {
-                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + options.tagFacet + this.accessToken;
+                    value: function metricFindTagWordQuery(options, index) {
+                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + index.tagFacet + this.accessToken;
                         var data = this.buildQuery(options);
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,

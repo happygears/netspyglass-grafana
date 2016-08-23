@@ -19,7 +19,7 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.group = this.target.group || 'select group';
         this.target.tagFacet = this.target.tagFacet || 'select tag facet';
         this.target.tagOperation = this.target.tagOperation || '==';
-        this.target.tagWord = this.target.tagWord || 'select tag name';
+        this.target.tagWord = this.target.tagWord || 'select tag word';
         this.target.tagData = this.target.tagData ||
         [{
             tagFacet : '',
@@ -100,9 +100,9 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
-    getTagsWord() {
-        return this.datasource.metricFindTagWordQuery(this.target)
-            .then(this.transformToSegments(this.target.tagWord,'select tag name'));
+    getTagsWord(data) {
+        return this.datasource.metricFindTagWordQuery(this.target, data)
+            .then(this.transformToSegments(this.target.tagWord,'select tag word'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
@@ -145,13 +145,17 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         if(this.target.tagFacet == this.clearSelection){
             this.target.tagFacet = 'select tag facet';
         }
+        if(this.target.tagData[index].tagWord !== '') {
+            this.target.tagData[index].tagWord = '';
+        }
+        angular.element('#tag-word-'+index).children().children("a.tag-word").html('select tag word');
         this.target.tagData[index].tagFacet = this.target.tagFacet;
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
     onChangeInternalTagWord(index) {
         if(this.target.tagWord == this.clearSelection){
-            this.target.tagWord = 'select tag name';
+            this.target.tagWord = 'select tag word';
         }
         this.target.tagData[index].tagWord = this.target.tagWord;
         this.panelCtrl.refresh(); // Asks the panel to refresh data.

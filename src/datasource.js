@@ -34,6 +34,7 @@ export class GenericDatasource {
         this.targetName.tagWord = 'select tag word';
         this.targetName.interval = 'select interval';
         this.targetName.tagData = [];
+        this.targetName.resultFormat = '';
 
         this.clearString = '-- clear selection --';
     }
@@ -80,6 +81,7 @@ export class GenericDatasource {
 
 
     buildQuery(options) {
+        // console.log(options);
         var query = this.buildQueryParameters(options);
         query.targets = query.targets.filter(t => !t.hide);
         var queryObject = {
@@ -213,9 +215,13 @@ export class GenericDatasource {
         });
     }
 
+    debug(ctrl) {
+        console.log(ctrl);
+    }
 
     buildQueryParameters(options) {
 
+        console.log(options);
 
         var targets = _.map(options.targets, target => {
             return {
@@ -225,6 +231,7 @@ export class GenericDatasource {
                 component: this.templateSrv.replace(target.component),
                 sortByEl: this.templateSrv.replace(target.sortByEl),
                 selector: this.templateSrv.replace(target.selector),
+                resultFormat: this.templateSrv.replace(target.resultFormat),
                 limit: this.templateSrv.replace(target.limit),
                 tagFacet: this.templateSrv.replace(target.tagFacet),
                 tagOperation: this.templateSrv.replace(target.tagOperation),
@@ -235,9 +242,7 @@ export class GenericDatasource {
             };
         });
 
-
         options.targets = targets;
-
 
         return options;
     }

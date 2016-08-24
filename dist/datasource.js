@@ -67,6 +67,7 @@ System.register(['lodash'], function (_export, _context) {
                     this.targetName.tagWord = 'select tag word';
                     this.targetName.interval = 'select interval';
                     this.targetName.tagData = [];
+                    this.targetName.resultFormat = '';
 
                     this.clearString = '-- clear selection --';
                 }
@@ -115,6 +116,7 @@ System.register(['lodash'], function (_export, _context) {
                 }, {
                     key: 'buildQuery',
                     value: function buildQuery(options) {
+                        // console.log(options);
                         var query = this.buildQueryParameters(options);
                         query.targets = query.targets.filter(function (t) {
                             return !t.hide;
@@ -248,9 +250,16 @@ System.register(['lodash'], function (_export, _context) {
                         });
                     }
                 }, {
+                    key: 'debug',
+                    value: function debug(ctrl) {
+                        console.log(ctrl);
+                    }
+                }, {
                     key: 'buildQueryParameters',
                     value: function buildQueryParameters(options) {
                         var _this = this;
+
+                        console.log(options);
 
                         var targets = _.map(options.targets, function (target) {
                             return {
@@ -260,6 +269,7 @@ System.register(['lodash'], function (_export, _context) {
                                 component: _this.templateSrv.replace(target.component),
                                 sortByEl: _this.templateSrv.replace(target.sortByEl),
                                 selector: _this.templateSrv.replace(target.selector),
+                                resultFormat: _this.templateSrv.replace(target.resultFormat),
                                 limit: _this.templateSrv.replace(target.limit),
                                 tagFacet: _this.templateSrv.replace(target.tagFacet),
                                 tagOperation: _this.templateSrv.replace(target.tagOperation),

@@ -102,6 +102,21 @@
 				<i class="fa fa-question-circle" bs-tooltip="'Operates on groups of observations created using &quot;Group by time interval&quot; parameter value'" data-placement="right"></i>
 			</span>
         </div>
+
+        <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">Format as</span>
+            </label>
+        </div>
+        <div class="gf-form">
+            <a class="gf-form-label pointer width-8" data-toggle="dropdown" data-placement="right">
+                <span>{{ctrl.target.resultFormatDisplay}}</span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a ng-click="ctrl.setResultFormat('time_series', 'Time Series')">Time Series</a></li>
+                <li><a ng-click="ctrl.setResultFormat('table', 'Table')">Table</a></li>
+            </ul>
+        </div>
     </div>
 
 

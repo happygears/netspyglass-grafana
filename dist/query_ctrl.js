@@ -85,6 +85,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         tagWord: '',
                         tagOperation: '=='
                     }];
+
+                    _this.target.resultFormat = _this.target.resultFormat || 'time_series';
+                    _this.target.resultFormatDisplay = _this.target.resultFormatDisplay || 'Time Series';
+
                     _this.temp = '';
                     return _this;
                 }
@@ -265,6 +269,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                                 this.target.limit = 'select limit';
                             }
                         }
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'setResultFormat',
+                    value: function setResultFormat(element, elementDisplayStr) {
+                        this.target.resultFormat = element;
+                        this.target.resultFormatDisplay = elementDisplayStr;
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {

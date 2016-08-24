@@ -1,6 +1,6 @@
 {
   "name": "NetSpyGlass",
-  "id": "netspyglass-datasource",
+  "id": "netspyglass",
   "type": "datasource",
 
   "staticRoot": ".",

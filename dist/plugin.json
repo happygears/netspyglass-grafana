@@ -1,6 +1,6 @@
 {
   "name": "NetSpyGlass",
-  "id": "netspyglass",
+  "id": "netspyglass-datasource",
   "type": "datasource",
 
   "staticRoot": ".",
@@ -11,6 +11,16 @@
 
   "metrics": true,
   "annotations": true,
+
+  "info": {
+    "description": "NetSpyGlass Datasource",
+    "author": {
+      "name": "Happy Gears Inc.",
+      "url": "http://www.happygears.net"
+    },
+    "version": "0.9.0",
+    "updated": "2016-08-23"
+  },
 
   "dependencies": {
     "grafanaVersion": "3.x.x",

@@ -30,6 +30,8 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.resultFormat = this.target.resultFormat || 'time_series';
         this.target.resultFormatDisplay = this.target.resultFormatDisplay || 'Time Series';
 
+        this.target.columns = this.target.columns || 'time,variable,device,component,metric';
+
         this.temp = '';
     }
 
@@ -195,6 +197,11 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
     setResultFormat(element, elementDisplayStr) {
         this.target.resultFormat = element;
         this.target.resultFormatDisplay = elementDisplayStr;
+        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+    }
+
+    setColumns() {
+        console.log(this.target.columns);
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 

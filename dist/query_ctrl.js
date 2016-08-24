@@ -89,6 +89,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.resultFormat = _this.target.resultFormat || 'time_series';
                     _this.target.resultFormatDisplay = _this.target.resultFormatDisplay || 'Time Series';
 
+                    _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
+
                     _this.temp = '';
                     return _this;
                 }
@@ -276,6 +278,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     value: function setResultFormat(element, elementDisplayStr) {
                         this.target.resultFormat = element;
                         this.target.resultFormatDisplay = elementDisplayStr;
+                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    }
+                }, {
+                    key: 'setColumns',
+                    value: function setColumns() {
+                        console.log(this.target.columns);
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {

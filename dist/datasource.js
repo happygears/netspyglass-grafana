@@ -68,6 +68,7 @@ System.register(['lodash'], function (_export, _context) {
                     this.targetName.interval = 'select interval';
                     this.targetName.tagData = [];
                     this.targetName.resultFormat = '';
+                    this.targetName.columns = '';
 
                     this.clearString = '-- clear selection --';
                 }
@@ -274,6 +275,7 @@ System.register(['lodash'], function (_export, _context) {
                                 tagFacet: _this.templateSrv.replace(target.tagFacet),
                                 tagOperation: _this.templateSrv.replace(target.tagOperation),
                                 tagWord: _this.templateSrv.replace(target.tagWord),
+                                columns: _this.templateSrv.replace(target.columns),
                                 refId: target.refId,
                                 hide: target.hide,
                                 tagData: target.tagData

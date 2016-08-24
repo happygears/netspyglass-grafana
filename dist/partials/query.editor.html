@@ -38,7 +38,7 @@
                 <metric-segment-model property="ctrl.target.tagFacet" get-options="ctrl.getTagsFacet()" on-change="ctrl.onChangeInternalTagFacet($index)" css-class="width-13"></metric-segment-model>
             </div>
             <div class="gf-form">
-                <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'Set Tags Operation'" data-placement="right">
+                <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'Set Tags Operation'" data-placement="bottom">
                     <span>{{ctrl.target.tagData[$index].tagOperation}}</span>
                 </a>
                 <ul class="dropdown-menu">
@@ -61,7 +61,7 @@
             </label>
         </div>
         <div class="gf-form">
-            <a class="gf-form-label pointer width-13" data-toggle="dropdown" data-placement="right">
+            <a class="gf-form-label pointer width-13" data-toggle="dropdown" data-placement="bottom">
                 <span>{{ctrl.target.sortByEl}}</span>
             </a>
             <ul class="dropdown-menu">
@@ -70,7 +70,7 @@
                 <li><a ng-click="ctrl.setSortByEl('descending')">descending</a></li>
             </ul>
             <span class="gf-form-label">
-				<i class="fa fa-question-circle" bs-tooltip="'Sort variables by the value of the last observation group after applying selector function to each group'" data-placement="right"></i>
+				<i class="fa fa-question-circle" bs-tooltip="'Sort variables by the value of the last observation group after applying selector function to each group'" data-placement="bottom"></i>
 			</span>
         </div>
 
@@ -88,7 +88,7 @@
             </label>
         </div>
         <div class="gf-form">
-            <a class="gf-form-label pointer width-13" data-toggle="dropdown" data-placement="right">
+            <a class="gf-form-label pointer width-13" data-toggle="dropdown" data-placement="bottom">
                 <span>{{ctrl.target.selector}}</span>
             </a>
             <ul class="dropdown-menu">
@@ -98,26 +98,46 @@
                 <li><a ng-click="ctrl.setSelector('max')">max</a></li>
             </ul>
             <span class="gf-form-label">
-				<i class="fa fa-question-circle" bs-tooltip="'Operates on groups of observations created using &quot;Group by time interval&quot; parameter value'" data-placement="right"></i>
+				<i class="fa fa-question-circle" bs-tooltip="'Operates on groups of observations created using &quot;Group by time interval&quot; parameter value'" data-placement="bottom"></i>
 			</span>
         </div>
 
     </div>
 
     <div class="gf-form-inline" style="margin-bottom: 20px">
+
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Format as</span>
             </label>
         </div>
         <div class="gf-form">
-            <a class="gf-form-label pointer width-8" data-toggle="dropdown" data-placement="right">
+            <a class="gf-form-label pointer width-8" data-toggle="dropdown" data-placement="bottom">
                 <span>{{ctrl.target.resultFormatDisplay}}</span>
             </a>
             <ul class="dropdown-menu">
                 <li><a ng-click="ctrl.setResultFormat('time_series', 'Time Series')">Time Series</a></li>
                 <li><a ng-click="ctrl.setResultFormat('table', 'Table')">Table</a></li>
             </ul>
+        </div>
+
+        <div class="gf-form-inline" ng-if="ctrl.target.resultFormat === 'table'">
+            <div class="gf-form">
+                <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                    <span class="gf-form-query-letter-cell-letter">Columns</span>
+                </label>
+            </div>
+
+            <div class="gf-form">
+                <input ng-model="ctrl.target.columns" ng-click="" ng-blur="ctrl.setColumns()"
+                       type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false"
+                       style="width: 400px;" placeholder="Comma separated list of column names">
+            </div>
+
+            <span class="gf-form-label">
+				<i class="fa fa-question-circle" bs-tooltip="'Comma separated list of column names; use &quot;time&quot; to display time stamps, &quot;metric&quot; to display values, &quot;device&quot; for device name, &quot;component&quot; for the component name. Tag facet names are supported too.'"
+                   data-placement="bottom"></i>
+			</span>
         </div>
     </div>
 

@@ -14,7 +14,7 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.device = this.target.device || 'select device';
         this.target.component = this.target.component || 'select component';
         this.target.sortByEl = this.target.sortByEl || 'none';
-        this.target.selector = this.target.selector || 'select selector';
+        this.target.selector = this.target.selector || 'choose selector';
         this.target.limit = this.target.limit || 'select limit';
         this.target.group = this.target.group || 'select group';
         this.target.tagFacet = this.target.tagFacet || 'select tag facet';

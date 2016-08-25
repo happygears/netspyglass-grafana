@@ -1,5 +1,5 @@
-import {GenericDatasource} from './datasource';
-import {GenericDatasourceQueryCtrl} from './query_ctrl';
+import {NetSpyGlassDatasource} from './datasource';
+import {NetSpyGlassDatasourceQueryCtrl} from './query_ctrl';
 
 class GenericConfigCtrl {}
 GenericConfigCtrl.templateUrl = 'partials/config.html';
@@ -11,9 +11,9 @@ class GenericAnnotationsQueryCtrl {}
 GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
 
 export {
-  GenericDatasource as Datasource,
-  GenericDatasourceQueryCtrl as QueryCtrl,
-  GenericConfigCtrl as ConfigCtrl,
-  GenericQueryOptionsCtrl as QueryOptionsCtrl,
-  GenericAnnotationsQueryCtrl as AnnotationsQueryCtrl
+    NetSpyGlassDatasource as Datasource,
+    NetSpyGlassDatasourceQueryCtrl as QueryCtrl,
+    GenericConfigCtrl as ConfigCtrl,
+    GenericQueryOptionsCtrl as QueryOptionsCtrl,
+    GenericAnnotationsQueryCtrl as AnnotationsQueryCtrl
 };

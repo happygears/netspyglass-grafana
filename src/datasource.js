@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 
-export class GenericDatasource {
+export class NetSpyGlassDatasource {
 
 
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
@@ -101,6 +101,7 @@ export class GenericDatasource {
             queryObject.from = query.rangeRaw.from;
             queryObject.until = query.rangeRaw.to;
             queryObject.groupByTime = query.interval;
+            queryObject.scopedVars = '$variable';
         }
         var data = JSON.stringify(queryObject);
         return data;
@@ -110,7 +111,7 @@ export class GenericDatasource {
     query(options) {
         var data = this.buildQuery(options);
         var temp = JSON.parse(data);
-        console.log(data);
+        // console.log(data);
         if (temp.targets.filter(function (target) {
                 return typeof target.variable !== "undefined" && target.variable !== "select variable";
             }).length > 0) {
@@ -222,8 +223,6 @@ export class GenericDatasource {
 
     buildQueryParameters(options) {
 
-        console.log(options);
-
         var targets = _.map(options.targets, target => {
             return {
                 category: this.templateSrv.replace(target.category),
@@ -238,6 +237,7 @@ export class GenericDatasource {
                 tagOperation: this.templateSrv.replace(target.tagOperation),
                 tagWord: this.templateSrv.replace(target.tagWord),
                 columns: this.templateSrv.replace(target.columns),
+                alias: this.templateSrv.replace(target.alias, options.scopedVars),
                 refId: target.refId,
                 hide: target.hide,
                 tagData: target.tagData

@@ -1,7 +1,7 @@
 import {QueryCtrl} from 'app/plugins/sdk';
 import './css/query-editor.css!'
 
-export class GenericDatasourceQueryCtrl extends QueryCtrl {
+export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
     constructor($scope, $injector, uiSegmentSrv) {
         super($scope, $injector);
@@ -20,12 +20,8 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.tagFacet = this.target.tagFacet || 'select tag facet';
         this.target.tagOperation = this.target.tagOperation || '==';
         this.target.tagWord = this.target.tagWord || 'select tag word';
-        this.target.tagData = this.target.tagData ||
-        [{
-            tagFacet : '',
-            tagWord : '',
-            tagOperation : '=='
-        }];
+        this.target.alias = this.target.alias || '';
+        this.target.tagData = this.target.tagData || [];
 
         this.target.resultFormat = this.target.resultFormat || 'time_series';
         this.target.resultFormatDisplay = this.target.resultFormatDisplay || 'Time Series';
@@ -64,8 +60,6 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
             if (element !== addTemplateVars) {
                 segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: addTemplateVars}));
             }
-
-            var temp = segments[0].html;
             return segments;
         };
     }
@@ -108,7 +102,7 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
 
     getTagsWord(data) {
         return this.datasource.metricFindTagWordQuery(this.target, data)
-            .then(this.transformToSegments(this.target.tagWord,'select tag word'));
+            .then(this.transformToSegments(this.target.tagWord, 'select tag word'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
@@ -198,6 +192,10 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
+    setAlias() {
+        this.panelCtrl.refresh();
+    }
+
     setResultFormat(element, elementDisplayStr) {
         this.target.resultFormat = element;
         this.target.resultFormatDisplay = elementDisplayStr;
@@ -205,7 +203,7 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
     }
 
     setColumns() {
-        console.log(this.target.columns);
+        // console.log(this.target.columns);
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
@@ -224,5 +222,5 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
 
 }
 
-GenericDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+NetSpyGlassDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
 

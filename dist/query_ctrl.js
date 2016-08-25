@@ -3,7 +3,7 @@
 System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
     "use strict";
 
-    var QueryCtrl, _createClass, GenericDatasourceQueryCtrl;
+    var QueryCtrl, _createClass, NetSpyGlassDatasourceQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -58,13 +58,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 };
             }();
 
-            _export('GenericDatasourceQueryCtrl', GenericDatasourceQueryCtrl = function (_QueryCtrl) {
-                _inherits(GenericDatasourceQueryCtrl, _QueryCtrl);
+            _export('NetSpyGlassDatasourceQueryCtrl', NetSpyGlassDatasourceQueryCtrl = function (_QueryCtrl) {
+                _inherits(NetSpyGlassDatasourceQueryCtrl, _QueryCtrl);
 
-                function GenericDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
-                    _classCallCheck(this, GenericDatasourceQueryCtrl);
+                function NetSpyGlassDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
+                    _classCallCheck(this, NetSpyGlassDatasourceQueryCtrl);
 
-                    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GenericDatasourceQueryCtrl).call(this, $scope, $injector));
+                    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NetSpyGlassDatasourceQueryCtrl).call(this, $scope, $injector));
 
                     _this.scope = $scope;
                     _this.uiSegmentSrv = uiSegmentSrv;
@@ -80,11 +80,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
                     _this.target.tagOperation = _this.target.tagOperation || '==';
                     _this.target.tagWord = _this.target.tagWord || 'select tag word';
-                    _this.target.tagData = _this.target.tagData || [{
-                        tagFacet: '',
-                        tagWord: '',
-                        tagOperation: '=='
-                    }];
+                    _this.target.alias = _this.target.alias || '';
+                    _this.target.tagData = _this.target.tagData || [];
 
                     _this.target.resultFormat = _this.target.resultFormat || 'time_series';
                     _this.target.resultFormatDisplay = _this.target.resultFormatDisplay || 'Time Series';
@@ -95,7 +92,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     return _this;
                 }
 
-                _createClass(GenericDatasourceQueryCtrl, [{
+                _createClass(NetSpyGlassDatasourceQueryCtrl, [{
                     key: 'tagDataAdd',
                     value: function tagDataAdd() {
                         this.target.tagData[this.target.tagData.length] = {
@@ -130,8 +127,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                             if (element !== addTemplateVars) {
                                 segments.unshift(_this2.uiSegmentSrv.newSegment({ fake: true, value: _this2.clearSelection, html: addTemplateVars }));
                             }
-
-                            var temp = segments[0].html;
                             return segments;
                         };
                     }
@@ -279,6 +274,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {
+                    key: 'setAlias',
+                    value: function setAlias() {
+                        this.panelCtrl.refresh();
+                    }
+                }, {
                     key: 'setResultFormat',
                     value: function setResultFormat(element, elementDisplayStr) {
                         this.target.resultFormat = element;
@@ -288,7 +288,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'setColumns',
                     value: function setColumns() {
-                        console.log(this.target.columns);
+                        // console.log(this.target.columns);
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {
@@ -305,12 +305,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     }
                 }]);
 
-                return GenericDatasourceQueryCtrl;
+                return NetSpyGlassDatasourceQueryCtrl;
             }(QueryCtrl));
 
-            _export('GenericDatasourceQueryCtrl', GenericDatasourceQueryCtrl);
+            _export('NetSpyGlassDatasourceQueryCtrl', NetSpyGlassDatasourceQueryCtrl);
 
-            GenericDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+            NetSpyGlassDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
         }
     };
 });

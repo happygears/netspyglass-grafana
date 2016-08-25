@@ -3,7 +3,7 @@
 System.register(['lodash'], function (_export, _context) {
     "use strict";
 
-    var _, _createClass, GenericDatasource;
+    var _, _createClass, NetSpyGlassDatasource;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -34,9 +34,9 @@ System.register(['lodash'], function (_export, _context) {
                 };
             }();
 
-            _export('GenericDatasource', GenericDatasource = function () {
-                function GenericDatasource(instanceSettings, $q, backendSrv, templateSrv) {
-                    _classCallCheck(this, GenericDatasource);
+            _export('NetSpyGlassDatasource', NetSpyGlassDatasource = function () {
+                function NetSpyGlassDatasource(instanceSettings, $q, backendSrv, templateSrv) {
+                    _classCallCheck(this, NetSpyGlassDatasource);
 
                     this.type = instanceSettings.type;
                     this.url = instanceSettings.url;
@@ -73,7 +73,7 @@ System.register(['lodash'], function (_export, _context) {
                     this.clearString = '-- clear selection --';
                 }
 
-                _createClass(GenericDatasource, [{
+                _createClass(NetSpyGlassDatasource, [{
                     key: 'buildNewData',
                     value: function buildNewData(item) {
                         var temp = {};
@@ -138,6 +138,7 @@ System.register(['lodash'], function (_export, _context) {
                             queryObject.from = query.rangeRaw.from;
                             queryObject.until = query.rangeRaw.to;
                             queryObject.groupByTime = query.interval;
+                            queryObject.scopedVars = '$variable';
                         }
                         var data = JSON.stringify(queryObject);
                         return data;
@@ -147,7 +148,7 @@ System.register(['lodash'], function (_export, _context) {
                     value: function query(options) {
                         var data = this.buildQuery(options);
                         var temp = JSON.parse(data);
-                        console.log(data);
+                        // console.log(data);
                         if (temp.targets.filter(function (target) {
                             return typeof target.variable !== "undefined" && target.variable !== "select variable";
                         }).length > 0) {
@@ -260,6 +261,7 @@ System.register(['lodash'], function (_export, _context) {
                     value: function buildQueryParameters(options) {
                         var _this = this;
 
+                        console.log('old');
                         console.log(options);
 
                         var targets = _.map(options.targets, function (target) {
@@ -276,6 +278,7 @@ System.register(['lodash'], function (_export, _context) {
                                 tagOperation: _this.templateSrv.replace(target.tagOperation),
                                 tagWord: _this.templateSrv.replace(target.tagWord),
                                 columns: _this.templateSrv.replace(target.columns),
+                                alias: _this.templateSrv.replace(target.alias, options.scopedVars),
                                 refId: target.refId,
                                 hide: target.hide,
                                 tagData: target.tagData
@@ -284,14 +287,17 @@ System.register(['lodash'], function (_export, _context) {
 
                         options.targets = targets;
 
+                        console.log('new');
+                        console.log(options);
+
                         return options;
                     }
                 }]);
 
-                return GenericDatasource;
+                return NetSpyGlassDatasource;
             }());
 
-            _export('GenericDatasource', GenericDatasource);
+            _export('NetSpyGlassDatasource', NetSpyGlassDatasource);
         }
     };
 });

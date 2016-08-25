@@ -18,6 +18,10 @@
       "name": "Happy Gears Inc.",
       "url": "http://www.happygears.net"
     },
+    "logos": {
+      "small": "img/netspyglass_logo.svg",
+      "large": "img/netspyglass_logo.svg"
+    },
     "version": "0.9.0",
     "updated": "2016-08-23"
   },

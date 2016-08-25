@@ -233,7 +233,7 @@ export class GenericDatasource {
                 sortByEl: this.templateSrv.replace(target.sortByEl),
                 selector: this.templateSrv.replace(target.selector),
                 resultFormat: this.templateSrv.replace(target.resultFormat),
-                limit: this.templateSrv.replace(target.limit),
+                limit: (target.limit === '') ? -1 : this.templateSrv.replace(target.limit),
                 tagFacet: this.templateSrv.replace(target.tagFacet),
                 tagOperation: this.templateSrv.replace(target.tagOperation),
                 tagWord: this.templateSrv.replace(target.tagWord),

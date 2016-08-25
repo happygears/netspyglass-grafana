@@ -75,7 +75,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.component = _this.target.component || 'select component';
                     _this.target.sortByEl = _this.target.sortByEl || 'none';
                     _this.target.selector = _this.target.selector || 'choose selector';
-                    _this.target.limit = _this.target.limit || 'select limit';
+                    _this.target.limit = _this.target.limit || '';
                     _this.target.group = _this.target.group || 'select group';
                     _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
                     _this.target.tagOperation = _this.target.tagOperation || '==';
@@ -264,13 +264,18 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'setLimit',
                     value: function setLimit() {
-                        if (this.target.limit == '') {
-                            if (this.temp !== '') {
-                                this.target.limit = this.temp;
-                            } else {
-                                this.target.limit = 'select limit';
-                            }
-                        }
+                        // if (this.target.limit === 'select limit') {
+                        //     this.target.limit = 0;
+                        // }
+
+                        // if (this.target.limit == '') {
+                        //     if(this.temp !== ''){
+                        //         this.target.limit = this.temp;
+                        //     }
+                        //     else {
+                        //         this.target.limit = 'select limit';
+                        //     }
+                        // }
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {

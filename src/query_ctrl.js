@@ -15,7 +15,7 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
         this.target.component = this.target.component || 'select component';
         this.target.sortByEl = this.target.sortByEl || 'none';
         this.target.selector = this.target.selector || 'choose selector';
-        this.target.limit = this.target.limit || 'select limit';
+        this.target.limit = this.target.limit || '';
         this.target.group = this.target.group || 'select group';
         this.target.tagFacet = this.target.tagFacet || 'select tag facet';
         this.target.tagOperation = this.target.tagOperation || '==';
@@ -183,14 +183,18 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
     }
 
     setLimit() {
-        if (this.target.limit == '') {
-            if(this.temp !== ''){
-                this.target.limit = this.temp;
-            }
-            else {
-                this.target.limit = 'select limit';
-            }
-        }
+        // if (this.target.limit === 'select limit') {
+        //     this.target.limit = 0;
+        // }
+
+        // if (this.target.limit == '') {
+        //     if(this.temp !== ''){
+        //         this.target.limit = this.temp;
+        //     }
+        //     else {
+        //         this.target.limit = 'select limit';
+        //     }
+        // }
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 

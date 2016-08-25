@@ -271,7 +271,7 @@ System.register(['lodash'], function (_export, _context) {
                                 sortByEl: _this.templateSrv.replace(target.sortByEl),
                                 selector: _this.templateSrv.replace(target.selector),
                                 resultFormat: _this.templateSrv.replace(target.resultFormat),
-                                limit: _this.templateSrv.replace(target.limit),
+                                limit: target.limit === '' ? -1 : _this.templateSrv.replace(target.limit),
                                 tagFacet: _this.templateSrv.replace(target.tagFacet),
                                 tagOperation: _this.templateSrv.replace(target.tagOperation),
                                 tagWord: _this.templateSrv.replace(target.tagWord),

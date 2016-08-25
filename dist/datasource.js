@@ -261,9 +261,6 @@ System.register(['lodash'], function (_export, _context) {
                     value: function buildQueryParameters(options) {
                         var _this = this;
 
-                        console.log('old');
-                        console.log(options);
-
                         var targets = _.map(options.targets, function (target) {
                             return {
                                 category: _this.templateSrv.replace(target.category),
@@ -286,9 +283,6 @@ System.register(['lodash'], function (_export, _context) {
                         });
 
                         options.targets = targets;
-
-                        console.log('new');
-                        console.log(options);
 
                         return options;
                     }

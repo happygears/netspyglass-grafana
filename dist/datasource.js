@@ -148,6 +148,7 @@ System.register(['lodash'], function (_export, _context) {
                     value: function query(options) {
                         var data = this.buildQuery(options);
                         var temp = JSON.parse(data);
+                        // console.log('result');
                         // console.log(data);
                         if (temp.targets.filter(function (target) {
                             return typeof target.variable !== "undefined" && target.variable !== "select variable";
@@ -261,6 +262,9 @@ System.register(['lodash'], function (_export, _context) {
                     value: function buildQueryParameters(options) {
                         var _this = this;
 
+                        // console.log('old');
+                        // console.log(options);
+
                         var targets = _.map(options.targets, function (target) {
                             return {
                                 category: _this.templateSrv.replace(target.category),
@@ -271,9 +275,6 @@ System.register(['lodash'], function (_export, _context) {
                                 selector: _this.templateSrv.replace(target.selector),
                                 resultFormat: _this.templateSrv.replace(target.resultFormat),
                                 limit: target.limit === '' ? -1 : _this.templateSrv.replace(target.limit),
-                                tagFacet: _this.templateSrv.replace(target.tagFacet),
-                                tagOperation: _this.templateSrv.replace(target.tagOperation),
-                                tagWord: _this.templateSrv.replace(target.tagWord),
                                 columns: _this.templateSrv.replace(target.columns),
                                 alias: _this.templateSrv.replace(target.alias, options.scopedVars),
                                 refId: target.refId,
@@ -283,6 +284,9 @@ System.register(['lodash'], function (_export, _context) {
                         });
 
                         options.targets = targets;
+
+                        // console.log('new');
+                        // console.log(options);
 
                         return options;
                     }

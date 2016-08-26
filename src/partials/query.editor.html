@@ -45,7 +45,7 @@
             </label>
         </div>
         <div class="gf-form">
-            <metric-segment-model property="ctrl.target.tagFacet" get-options="ctrl.getTagsFacet()"
+            <metric-segment-model property="ctrl.target.tagData[$index].tagFacet" get-options="ctrl.getTagsFacet()"
                                   on-change="ctrl.onChangeInternalTagFacet($index)"
                                   css-class="width-13"></metric-segment-model>
         </div>
@@ -60,7 +60,7 @@
             </ul>
         </div>
         <div class="gf-form">
-            <metric-segment-model property="ctrl.target.tagWord" get-options="ctrl.getTagsWord(data)"
+            <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord(data)"
                                   on-change="ctrl.onChangeInternalTagWord($index)" id="tag-word-{{$index}}"
                                   css-class="tag-word width-12" custom="false"></metric-segment-model>
             <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>

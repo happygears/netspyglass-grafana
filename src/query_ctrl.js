@@ -101,6 +101,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     getTagsWord(data) {
+        console.log('fire');
         return this.datasource.metricFindTagWordQuery(this.target, data)
             .then(this.transformToSegments(this.target.tagWord, 'select tag word'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive

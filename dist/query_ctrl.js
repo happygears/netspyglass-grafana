@@ -170,6 +170,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getTagsWord',
                     value: function getTagsWord(data) {
+                        console.log('fire');
                         return this.datasource.metricFindTagWordQuery(this.target, data).then(this.transformToSegments(this.target.tagWord, 'select tag word'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }

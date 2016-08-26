@@ -82,7 +82,6 @@ export class NetSpyGlassDatasource {
 
 
     buildQuery(options) {
-        // console.log(options);
         var query = this.buildQueryParameters(options);
         query.targets = query.targets.filter(t => !t.hide);
         var queryObject = {
@@ -111,8 +110,7 @@ export class NetSpyGlassDatasource {
     query(options) {
         var data = this.buildQuery(options);
         var temp = JSON.parse(data);
-        // console.log('result');
-        // console.log(data);
+        console.log(data);
         if (temp.targets.filter(function (target) {
                 return typeof target.variable !== "undefined" && target.variable !== "select variable";
             }).length > 0) {
@@ -230,6 +228,9 @@ export class NetSpyGlassDatasource {
                 variable: this.templateSrv.replace(target.variable),
                 device: this.templateSrv.replace(target.device),
                 component: this.templateSrv.replace(target.component),
+                tagFacet: this.templateSrv.replace(target.tagFacet),
+                tagOperation: this.templateSrv.replace(target.tagOperation),
+                tagWord: this.templateSrv.replace(target.tagWord),
                 sortByEl: this.templateSrv.replace(target.sortByEl),
                 selector: this.templateSrv.replace(target.selector),
                 resultFormat: this.templateSrv.replace(target.resultFormat),

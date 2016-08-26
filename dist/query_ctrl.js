@@ -96,8 +96,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'tagDataAdd',
                     value: function tagDataAdd() {
                         this.target.tagData[this.target.tagData.length] = {
-                            tagFacet: this.target.tagData.length,
-                            tagWord: '',
+                            tagFacet: 'select tag facet',
+                            tagWord: 'select tag word',
                             tagOperation: '=='
                         };
                         this.panelCtrl.refresh();
@@ -170,7 +170,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getTagsWord',
                     value: function getTagsWord(data) {
-                        console.log('fire');
                         return this.datasource.metricFindTagWordQuery(this.target, data).then(this.transformToSegments(this.target.tagWord, 'select tag word'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }

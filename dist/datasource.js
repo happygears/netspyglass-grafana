@@ -117,7 +117,6 @@ System.register(['lodash'], function (_export, _context) {
                 }, {
                     key: 'buildQuery',
                     value: function buildQuery(options) {
-                        // console.log(options);
                         var query = this.buildQueryParameters(options);
                         query.targets = query.targets.filter(function (t) {
                             return !t.hide;
@@ -148,8 +147,7 @@ System.register(['lodash'], function (_export, _context) {
                     value: function query(options) {
                         var data = this.buildQuery(options);
                         var temp = JSON.parse(data);
-                        // console.log('result');
-                        // console.log(data);
+                        console.log(data);
                         if (temp.targets.filter(function (target) {
                             return typeof target.variable !== "undefined" && target.variable !== "select variable";
                         }).length > 0) {
@@ -262,15 +260,15 @@ System.register(['lodash'], function (_export, _context) {
                     value: function buildQueryParameters(options) {
                         var _this = this;
 
-                        // console.log('old');
-                        // console.log(options);
-
                         var targets = _.map(options.targets, function (target) {
                             return {
                                 category: _this.templateSrv.replace(target.category),
                                 variable: _this.templateSrv.replace(target.variable),
                                 device: _this.templateSrv.replace(target.device),
                                 component: _this.templateSrv.replace(target.component),
+                                tagFacet: _this.templateSrv.replace(target.tagFacet),
+                                tagOperation: _this.templateSrv.replace(target.tagOperation),
+                                tagWord: _this.templateSrv.replace(target.tagWord),
                                 sortByEl: _this.templateSrv.replace(target.sortByEl),
                                 selector: _this.templateSrv.replace(target.selector),
                                 resultFormat: _this.templateSrv.replace(target.resultFormat),
@@ -284,9 +282,6 @@ System.register(['lodash'], function (_export, _context) {
                         });
 
                         options.targets = targets;
-
-                        // console.log('new');
-                        // console.log(options);
 
                         return options;
                     }

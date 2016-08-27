@@ -87,8 +87,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.resultFormatDisplay = _this.target.resultFormatDisplay || 'Time Series';
 
                     _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
-
-                    _this.temp = '';
                     return _this;
                 }
 
@@ -110,13 +108,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                             tagWord: 'select tag word',
                             tagOperation: '=='
                         };
-                        this.panelCtrl.refresh();
+                        this.refresh();
                     }
                 }, {
                     key: 'tagDataRemove',
                     value: function tagDataRemove(index) {
                         this.target.tagData.splice(index, 1);
-                        this.panelCtrl.refresh();
+                        this.refresh();
                     }
                 }, {
                     key: 'getCategories',
@@ -194,7 +192,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         if (this.target.category == this.clearSelection) {
                             this.target.category = 'select category';
                         }
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalVariable',
@@ -202,7 +200,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         if (this.target.variable == this.clearSelection) {
                             this.target.variable = 'select variable';
                         }
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalDevice',
@@ -210,7 +208,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         if (this.target.device == this.clearSelection) {
                             this.target.device = 'select device';
                         }
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalComponent',
@@ -218,7 +216,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         if (this.target.component == this.clearSelection) {
                             this.target.component = 'select component';
                         }
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalTagFacet',
@@ -227,65 +225,53 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                             this.target.tagData[index].tagWord = '';
                         }
                         angular.element('#tag-word-' + index).children().children("a.tag-word").html('select tag word');
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalTagWord',
                     value: function onChangeInternalTagWord(index) {
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'tagOperation',
                     value: function tagOperation(index, operation) {
                         this.target.tagData[index].tagOperation = operation;
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'setSortByEl',
                     value: function setSortByEl(element) {
                         this.target.sortByEl = element;
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'setSelector',
                     value: function setSelector(element) {
                         this.target.selector = element;
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
-                    }
-                }, {
-                    key: 'refresh',
-                    value: function refresh() {
-                        this.panelCtrl.refresh();
+                        this.refresh();
                     }
                 }, {
                     key: 'setAlias',
                     value: function setAlias() {
-                        this.panelCtrl.refresh();
+                        this.refresh();
                     }
                 }, {
                     key: 'setResultFormat',
                     value: function setResultFormat(element, elementDisplayStr) {
                         this.target.resultFormat = element;
                         this.target.resultFormatDisplay = elementDisplayStr;
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
                     key: 'setColumns',
                     value: function setColumns() {
                         // console.log(this.target.columns);
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                        this.refresh();
                     }
                 }, {
-                    key: 'setGroup',
-                    value: function setGroup() {
-                        if (this.target.group == '') {
-                            if (this.tempNew !== '') {
-                                this.target.group = this.tempNew;
-                            } else {
-                                this.target.group = 'select group';
-                            }
-                        }
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    key: 'refresh',
+                    value: function refresh() {
+                        this.panelCtrl.refresh();
                     }
                 }]);
 

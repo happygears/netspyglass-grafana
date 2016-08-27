@@ -27,8 +27,6 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.resultFormatDisplay = this.target.resultFormatDisplay || 'Time Series';
 
         this.target.columns = this.target.columns || 'time,variable,device,component,metric';
-
-        this.temp = '';
     }
 
     isCategorySelected() {
@@ -45,12 +43,12 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             tagWord : 'select tag word',
             tagOperation : '=='
         };
-        this.panelCtrl.refresh();
+        this.refresh();
     }
 
     tagDataRemove(index) {
         this.target.tagData.splice(index,1);
-        this.panelCtrl.refresh();
+        this.refresh();
     }
 
     getCategories() {
@@ -122,25 +120,25 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         if(this.target.category == this.clearSelection) {
             this.target.category = 'select category';
         }
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
     onChangeInternalVariable() {
         if(this.target.variable == this.clearSelection) {
             this.target.variable = 'select variable';
         }
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
     onChangeInternalDevice() {
         if(this.target.device == this.clearSelection) {
             this.target.device = 'select device';
         }
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
     onChangeInternalComponent() {
         if(this.target.component == this.clearSelection) {
             this.target.component = 'select component';
         }
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
     
 
@@ -149,59 +147,59 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             this.target.tagData[index].tagWord = '';
         }
         angular.element('#tag-word-'+index).children().children("a.tag-word").html('select tag word');
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
 
+    //noinspection JSUnusedLocalSymbols
     onChangeInternalTagWord(index) {
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
 
     tagOperation(index, operation) {
         this.target.tagData[index].tagOperation = operation;
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
 
     setSortByEl(element) {
         this.target.sortByEl = element;
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
 
     setSelector(element) {
         this.target.selector = element;
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
-    }
-
-    refresh() {
-        this.panelCtrl.refresh();
+        this.refresh();
     }
 
     setAlias() {
-        this.panelCtrl.refresh();
+        this.refresh();
     }
 
     setResultFormat(element, elementDisplayStr) {
         this.target.resultFormat = element;
         this.target.resultFormatDisplay = elementDisplayStr;
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
 
     setColumns() {
         // console.log(this.target.columns);
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+        this.refresh();
     }
 
-    setGroup() {
-        if (this.target.group == '') {
-            if(this.tempNew !== ''){
-                this.target.group = this.tempNew;
-            }
-            else {
-                this.target.group = 'select group';
-            }
-        }
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
-    }
+    // setGroup() {
+    //     if (this.target.group == '') {
+    //         if(this.tempNew !== ''){
+    //             this.target.group = this.tempNew;
+    //         }
+    //         else {
+    //             this.target.group = 'select group';
+    //         }
+    //     }
+    //     this.refresh();
+    // }
 
+    refresh() {
+        this.panelCtrl.refresh();
+    }
 
 }
 

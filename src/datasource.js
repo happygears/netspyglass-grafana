@@ -24,8 +24,8 @@ export class NetSpyGlassDatasource {
 
         this.targetName = {};
         this.targetName.variable = 'select variable';
-        this.targetName.device = 'select device';
-        this.targetName.component = 'select component';
+        this.targetName.device = '*';
+        this.targetName.component = '*';
         this.targetName.sortByEl = 'select sorting';
         this.targetName.selector = 'select selector';
         this.targetName.limit = 'select limit';

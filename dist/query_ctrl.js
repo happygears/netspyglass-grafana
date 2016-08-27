@@ -69,11 +69,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.prompts = {
                         'category': 'select category',
                         'variable': 'select variable',
-                        'device': 'select device',
-                        'component': 'select component'
+                        'device': '*',
+                        'component': '*'
                     };
 
                     _this.scope = $scope;
+                    _this.injector = $injector;
                     _this.uiSegmentSrv = uiSegmentSrv;
                     _this.clearSelection = '-- clear selection --';
                     _this.blankDropDownElement = '---';
@@ -132,16 +133,19 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     }
                 }, {
                     key: 'transformToSegments',
-                    value: function transformToSegments(element, addTemplateVars) {
+                    value: function transformToSegments(currentValue, prompt) {
                         var _this2 = this;
 
+                        console.log('transformToSegments called:  currentValue=' + currentValue + ' prompt=' + prompt);
                         return function (results) {
                             var segments = _.map(results, function (segment) {
                                 return _this2.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
                             });
+                            // segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
 
-                            if (element !== addTemplateVars) {
-                                segments.unshift(_this2.uiSegmentSrv.newSegment({ fake: true, value: _this2.clearSelection, html: addTemplateVars }));
+                            // there is no need to add "clear selection" item if current value is already equal to prompt
+                            if (currentValue !== prompt) {
+                                segments.unshift(_this2.uiSegmentSrv.newSegment({ fake: true, value: _this2.clearSelection, html: prompt }));
                             }
                             return segments;
                         };
@@ -190,7 +194,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'onChangeInternalCategory',
                     value: function onChangeInternalCategory() {
-                        console.log('Category has changed to ' + this.target.category);
                         if (this.target.category == this.clearSelection) {
                             this.target.category = this.prompts['category'];
                         }
@@ -201,18 +204,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.target.component = this.prompts['component'];
                         this.target.tagData = [];
                         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-                        // angular.element('#variable-field').children().children('a').html(this.target.variable);
-                        // this.panelCtrl.render();
-                        // this.refresh();
+                        angular.element('#variable-field').children().children('a').html(this.target.variable);
                     }
                 }, {
                     key: 'onChangeInternalVariable',
                     value: function onChangeInternalVariable() {
                         console.log('Variable has changed to ' + this.target.variable);
-                        if (this.target.variable == this.clearSelection) {
-                            this.target.variable = this.prompts['variable'];
-                        }
-                        this.refresh();
+                        if (this.target.variable != this.clearSelection) this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalDevice',

@@ -9,11 +9,12 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.prompts = {
             'category': 'select category',
             'variable': 'select variable',
-            'device': 'select device',
-            'component': 'select component'
+            'device': '*',
+            'component': '*'
         };
 
         this.scope = $scope;
+        this.injector = $injector;
         this.uiSegmentSrv = uiSegmentSrv;
         this.clearSelection = '-- clear selection --';
         this.blankDropDownElement = '---';
@@ -73,14 +74,17 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
-    transformToSegments(element, addTemplateVars) {
+    transformToSegments(currentValue, prompt) {
+        console.log('transformToSegments called:  currentValue=' + currentValue + ' prompt=' + prompt);
         return (results) => {
             var segments = _.map(results, segment => {
                 return this.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
             });
+            // segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
 
-            if (element !== addTemplateVars) {
-                segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: addTemplateVars}));
+            // there is no need to add "clear selection" item if current value is already equal to prompt
+            if (currentValue !== prompt) {
+                segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
             }
             return segments;
         };
@@ -126,7 +130,6 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     onChangeInternalCategory() {
-        console.log('Category has changed to ' + this.target.category);
         if (this.target.category == this.clearSelection) {
             this.target.category = this.prompts['category'];
         }
@@ -137,18 +140,14 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.component = this.prompts['component'];
         this.target.tagData = [];
         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-        // angular.element('#variable-field').children().children('a').html(this.target.variable);
-        // this.panelCtrl.render();
-        // this.refresh();
+        angular.element('#variable-field').children().children('a').html(this.target.variable);
     }
 
     onChangeInternalVariable() {
         console.log('Variable has changed to ' + this.target.variable);
-        if(this.target.variable == this.clearSelection) {
-            this.target.variable = this.prompts['variable'];
-        }
-        this.refresh();
+        if (this.target.variable != this.clearSelection) this.refresh();
     }
+
     onChangeInternalDevice() {
         if(this.target.device == this.clearSelection) {
             this.target.device = this.prompts['device'];

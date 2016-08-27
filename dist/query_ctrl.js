@@ -69,6 +69,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.scope = $scope;
                     _this.uiSegmentSrv = uiSegmentSrv;
                     _this.clearSelection = '-- clear selection --';
+                    _this.blankDropDownElement = '---';
                     _this.target.category = _this.target.category || 'select category';
                     _this.target.variable = _this.target.variable || 'select variable';
                     _this.target.device = _this.target.device || 'select device';
@@ -77,9 +78,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.selector = _this.target.selector || 'choose selector';
                     _this.target.limit = _this.target.limit || '';
                     _this.target.group = _this.target.group || 'select group';
-                    _this.target.tagFacet = _this.target.tagFacet || '';
+                    _this.target.tagFacet = _this.target.tagFacet || _this.blankDropDownElement;
                     _this.target.tagOperation = _this.target.tagOperation || '==';
-                    _this.target.tagWord = _this.target.tagWord || '';
+                    _this.target.tagWord = _this.target.tagWord || _this.blankDropDownElement;
                     _this.target.tagData = _this.target.tagData || [];
 
                     _this.target.resultFormat = _this.target.resultFormat || 'time_series';
@@ -104,8 +105,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'tagDataAdd',
                     value: function tagDataAdd() {
                         this.target.tagData[this.target.tagData.length] = {
-                            tagFacet: '',
-                            tagWord: '',
+                            tagFacet: this.blankDropDownElement,
+                            tagWord: this.blankDropDownElement,
                             tagOperation: '=='
                         };
                         this.refresh();
@@ -173,7 +174,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'getTagsWord',
                     value: function getTagsWord(facet) {
                         return this.datasource.metricFindTagWordQuery(this.target, facet).then(this.transformToSegments(this.target.tagWord, this.target.tagWord)); // do not add "-- clear selection --" item
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'toggleEditorMode',
@@ -218,9 +218,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         // clear tag word when user changes tag facet. The dialog enters state where tag facet is selected
                         // but tag word is not. This state is invalid and should be transient, it does not make sense
                         // to call this.refresh() because query is yet incomplete
-                        this.target.tagData[index].tagWord = '';
+                        this.target.tagData[index].tagWord = this.blankDropDownElement;
                         // this does not look right, there must be a way to update element without manipulating it directly in DOM
-                        angular.element('#tag-word-' + index).children().children("a.tag-word").html('');
+                        angular.element('#tag-word-' + index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
                     }
                 }, {
                     key: 'onChangeInternalTagWord',

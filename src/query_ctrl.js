@@ -9,6 +9,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.scope = $scope;
         this.uiSegmentSrv = uiSegmentSrv;
         this.clearSelection = '-- clear selection --';
+        this.blankDropDownElement = '---';
         this.target.category = this.target.category || 'select category';
         this.target.variable = this.target.variable || 'select variable';
         this.target.device = this.target.device || 'select device';
@@ -17,9 +18,9 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.selector = this.target.selector || 'choose selector';
         this.target.limit = this.target.limit || '';
         this.target.group = this.target.group || 'select group';
-        this.target.tagFacet = this.target.tagFacet || '';
+        this.target.tagFacet = this.target.tagFacet || this.blankDropDownElement;
         this.target.tagOperation = this.target.tagOperation || '==';
-        this.target.tagWord = this.target.tagWord || '';
+        this.target.tagWord = this.target.tagWord || this.blankDropDownElement;
         this.target.tagData = this.target.tagData || [];
 
         this.target.resultFormat = this.target.resultFormat || 'time_series';
@@ -37,10 +38,18 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         return this.target.variable !== 'select variable' && this.target.variable !== this.clearSelection;
     }
 
+    /**
+     * add new tag matching rule that consists of tag facet, operation ('==' or '<>') and tag word.
+     * Unfortunately if input fields for the tag facet and word are blank, the height of the corresponding
+     * visible element is reduced (element <a> is visible and its height is 0 when it has no contents, so
+     * all we see is the margin around it). To work around that I put "-" in these fields. It is unobtrusive
+     * enough and looks like some sort of a prompt, but it is a hack nonetheless.
+     * TODO: find a way to fix the height of the visible element without adding any contents.
+     */
     tagDataAdd() {
         this.target.tagData[this.target.tagData.length] = {
-            tagFacet : '',
-            tagWord : '',
+            tagFacet : this.blankDropDownElement,
+            tagWord : this.blankDropDownElement,
             tagOperation : '=='
         };
         this.refresh();
@@ -103,7 +112,6 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     getTagsWord(facet) {
         return this.datasource.metricFindTagWordQuery(this.target, facet)
             .then(this.transformToSegments(this.target.tagWord, this.target.tagWord));  // do not add "-- clear selection --" item
-        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     toggleEditorMode() {
@@ -139,9 +147,9 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // clear tag word when user changes tag facet. The dialog enters state where tag facet is selected
         // but tag word is not. This state is invalid and should be transient, it does not make sense
         // to call this.refresh() because query is yet incomplete
-        this.target.tagData[index].tagWord = '';
+        this.target.tagData[index].tagWord = this.blankDropDownElement;
         // this does not look right, there must be a way to update element without manipulating it directly in DOM
-        angular.element('#tag-word-'+index).children().children("a.tag-word").html('');
+        angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
     }
 
     //noinspection JSUnusedLocalSymbols

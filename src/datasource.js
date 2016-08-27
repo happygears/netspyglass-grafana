@@ -209,7 +209,6 @@ export class NetSpyGlassDatasource {
         }).then(this.mapToTextValue);
     }
 
-
     mapToTextValue(result) {
         return _.map(result.data, (d, i) => {
             return {text: d, value: i};

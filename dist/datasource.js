@@ -233,8 +233,8 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'metricFindTagWordQuery',
-                    value: function metricFindTagWordQuery(options, index) {
-                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + index.tagFacet + this.accessToken;
+                    value: function metricFindTagWordQuery(options, facet) {
+                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + facet + this.accessToken;
                         var data = this.buildQuery(options);
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,

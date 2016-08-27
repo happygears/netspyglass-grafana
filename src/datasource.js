@@ -198,8 +198,8 @@ export class NetSpyGlassDatasource {
     }
 
 
-    metricFindTagWordQuery(options, index) {
-        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + index.tagFacet + this.accessToken;
+    metricFindTagWordQuery(options, facet) {
+        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + facet + this.accessToken;
         var data = this.buildQuery(options);
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,

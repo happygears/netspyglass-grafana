@@ -93,6 +93,16 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }
 
                 _createClass(NetSpyGlassDatasourceQueryCtrl, [{
+                    key: 'isCategorySelected',
+                    value: function isCategorySelected() {
+                        return this.target.category !== 'select category' && this.target.category !== '-- clear selection --';
+                    }
+                }, {
+                    key: 'isVariableSelected',
+                    value: function isVariableSelected() {
+                        return this.target.variable !== 'select variable' && this.target.variable !== '-- clear selection --';
+                    }
+                }, {
                     key: 'tagDataAdd',
                     value: function tagDataAdd() {
                         this.target.tagData[this.target.tagData.length] = {
@@ -169,15 +179,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     }
                 }, {
                     key: 'getTagsWord',
-                    value: function getTagsWord(data) {
-                        return this.datasource.metricFindTagWordQuery(this.target, data).then(this.transformToSegments(this.target.tagWord, 'select tag word'));
+                    value: function getTagsWord(facet) {
+                        return this.datasource.metricFindTagWordQuery(this.target, facet).then(this.transformToSegments(this.target.tagWord, 'select tag word'));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-                    }
-                }, {
-                    key: 'addAdditionalTags',
-                    value: function addAdditionalTags(param) {
-                        this.target.tagOperation = param;
-                        this.panelCtrl.refresh();
                     }
                 }, {
                     key: 'toggleEditorMode',
@@ -219,23 +223,15 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'onChangeInternalTagFacet',
                     value: function onChangeInternalTagFacet(index) {
-                        if (this.target.tagFacet == this.clearSelection) {
-                            this.target.tagFacet = 'select tag facet';
-                        }
                         if (this.target.tagData[index].tagWord !== '') {
                             this.target.tagData[index].tagWord = '';
                         }
                         angular.element('#tag-word-' + index).children().children("a.tag-word").html('select tag word');
-                        this.target.tagData[index].tagFacet = this.target.tagFacet;
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {
                     key: 'onChangeInternalTagWord',
                     value: function onChangeInternalTagWord(index) {
-                        if (this.target.tagWord == this.clearSelection) {
-                            this.target.tagWord = 'select tag word';
-                        }
-                        this.target.tagData[index].tagWord = this.target.tagWord;
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {
@@ -257,21 +253,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.panelCtrl.refresh(); // Asks the panel to refresh data.
                     }
                 }, {
-                    key: 'setLimit',
-                    value: function setLimit() {
-                        // if (this.target.limit === 'select limit') {
-                        //     this.target.limit = 0;
-                        // }
-
-                        // if (this.target.limit == '') {
-                        //     if(this.temp !== ''){
-                        //         this.target.limit = this.temp;
-                        //     }
-                        //     else {
-                        //         this.target.limit = 'select limit';
-                        //     }
-                        // }
-                        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                    key: 'refresh',
+                    value: function refresh() {
+                        this.panelCtrl.refresh();
                     }
                 }, {
                     key: 'setAlias',

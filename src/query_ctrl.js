@@ -31,6 +31,14 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.temp = '';
     }
 
+    isCategorySelected() {
+        return this.target.category !== 'select category' && this.target.category !== '-- clear selection --';
+    }
+
+    isVariableSelected() {
+        return this.target.variable !== 'select variable' && this.target.variable !== '-- clear selection --';
+    }
+
     tagDataAdd() {
         this.target.tagData[this.target.tagData.length] = {
             tagFacet : 'select tag facet',
@@ -100,15 +108,10 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
-    getTagsWord(data) {
-        return this.datasource.metricFindTagWordQuery(this.target, data)
+    getTagsWord(facet) {
+        return this.datasource.metricFindTagWordQuery(this.target, facet)
             .then(this.transformToSegments(this.target.tagWord, 'select tag word'));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-    }
-
-    addAdditionalTags(param) {
-        this.target.tagOperation = param;
-        this.panelCtrl.refresh();
     }
 
     toggleEditorMode() {
@@ -142,22 +145,14 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     
 
     onChangeInternalTagFacet(index) {
-        if(this.target.tagFacet == this.clearSelection){
-            this.target.tagFacet = 'select tag facet';
-        }
         if(this.target.tagData[index].tagWord !== '') {
             this.target.tagData[index].tagWord = '';
         }
         angular.element('#tag-word-'+index).children().children("a.tag-word").html('select tag word');
-        this.target.tagData[index].tagFacet = this.target.tagFacet;
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
     onChangeInternalTagWord(index) {
-        if(this.target.tagWord == this.clearSelection){
-            this.target.tagWord = 'select tag word';
-        }
-        this.target.tagData[index].tagWord = this.target.tagWord;
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
@@ -176,20 +171,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.panelCtrl.refresh(); // Asks the panel to refresh data.
     }
 
-    setLimit() {
-        // if (this.target.limit === 'select limit') {
-        //     this.target.limit = 0;
-        // }
-
-        // if (this.target.limit == '') {
-        //     if(this.temp !== ''){
-        //         this.target.limit = this.temp;
-        //     }
-        //     else {
-        //         this.target.limit = 'select limit';
-        //     }
-        // }
-        this.panelCtrl.refresh(); // Asks the panel to refresh data.
+    refresh() {
+        this.panelCtrl.refresh();
     }
 
     setAlias() {

@@ -19,8 +19,7 @@
         </div>
     </div>
 
-    <div class="gf-form-inline"
-         ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.variable !== '-- clear selection --' && ctrl.target.category !== 'select category' && ctrl.target.category !== '-- clear selection --'">
+    <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected();">
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Device</span>
@@ -37,8 +36,9 @@
                                   css-class="width-20"></metric-segment-model>
         </div>
     </div>
-    <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData"
-         ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.variable !== '-- clear selection --' && ctrl.target.category !== 'select category' && ctrl.target.category !== '-- clear selection --'">
+
+    <!-- Tag matching rules -->
+    <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Tags</span>
@@ -50,7 +50,7 @@
                                   css-class="width-13" custom="false"></metric-segment-model>
         </div>
         <div class="gf-form">
-            <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'Set Tags Operation'"
+            <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'== or <>'"
                data-placement="bottom">
                 <span>{{ctrl.target.tagData[$index].tagOperation}}</span>
             </a>
@@ -60,21 +60,22 @@
             </ul>
         </div>
         <div class="gf-form">
-            <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord(data)"
+            <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord(ctrl.target.tagData[$index].tagFacet)"
                                   on-change="ctrl.onChangeInternalTagWord($index)" id="tag-word-{{$index}}"
                                   css-class="tag-word width-12" custom="false"></metric-segment-model>
             <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>
             <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> - </a>
         </div>
     </div>
-    <div class="gf-form-inline" ng-if="ctrl.target.tagData.length < 1 && ctrl.target.variable !== 'select variable' && ctrl.target.variable !== '-- clear selection --'">
+    <div class="gf-form-inline" ng-if="ctrl.target.tagData.length < 1 && ctrl.isVariableSelected()">
         <div class="gf-form">
-            <a class="gf-form-label width-12" ng-click="ctrl.tagDataAdd()"> + Add tag
-                match</a>
+            <a class="gf-form-label width-12" ng-click="ctrl.tagDataAdd()"> + Add tag match</a>
         </div>
     </div>
+
+    <!-- SortBy , Limit, Selector -->
     <div class="gf-form-inline"
-         ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.variable !== '-- clear selection --' && ctrl.target.category !== 'select category' && ctrl.target.category !== '-- clear selection --'">
+         ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Sorting</span>
@@ -102,7 +103,7 @@
             </label>
         </div>
         <div class="gf-form">
-            <input ng-model="ctrl.target.limit" ng-blur="ctrl.setLimit()" type="text" data-provide="typeahead"
+            <input ng-model="ctrl.target.limit" ng-blur="ctrl.panelCtrl.refresh();" type="text" data-provide="typeahead"
                    class="gf-form-input input-medium" spellcheck="false" style="width: 110px;">
             <span class="gf-form-label">
                 <i class="fa fa-question-circle"

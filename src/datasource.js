@@ -111,19 +111,27 @@ export class NetSpyGlassDatasource {
         var data = this.buildQuery(options);
         var temp = JSON.parse(data);
         console.log(data);
-        if (temp.targets.filter(function (target) {
-                return typeof target.variable !== "undefined" && target.variable !== "select variable";
-            }).length > 0) {
-            var endpoint = this.endpoints.query;
-            return this.backendSrv.datasourceRequest({
-                url: this.url + endpoint,
-                data: data,
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'}
-            });
-        } else {
-            return null;
-        }
+        var endpoint = this.endpoints.query;
+        return this.backendSrv.datasourceRequest({
+            url: this.url + endpoint,
+            data: data,
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+
+        // if (temp.targets.filter(function (target) {
+        //         return typeof target.variable !== "undefined" && target.variable !== "select variable";
+        //     }).length > 0) {
+        //     var endpoint = this.endpoints.query;
+        //     return this.backendSrv.datasourceRequest({
+        //         url: this.url + endpoint,
+        //         data: data,
+        //         method: 'POST',
+        //         headers: {'Content-Type': 'application/json'}
+        //     });
+        // } else {
+        //     return null;
+        // }
     }
 
 
@@ -187,8 +195,8 @@ export class NetSpyGlassDatasource {
     }
 
 
-    metricFindVariableQuery(options) {
-        var endpoint = this.endpoints.variable + options.category + this.accessToken;
+    metricFindVariableQuery(category) {
+        var endpoint = this.endpoints.variable + category + this.accessToken;
         return this.backendSrv.datasourceRequest({
             url: this.url + endpoint,
             data: '',
@@ -196,7 +204,6 @@ export class NetSpyGlassDatasource {
             headers: {'Content-Type': 'application/json'}
         }).then(this.mapToTextValue);
     }
-
 
     metricFindTagWordQuery(options, facet) {
         var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + facet + this.accessToken;

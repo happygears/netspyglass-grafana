@@ -6,14 +6,21 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     constructor($scope, $injector, uiSegmentSrv) {
         super($scope, $injector);
 
+        this.prompts = {
+            'category': 'select category',
+            'variable': 'select variable',
+            'device': 'select device',
+            'component': 'select component'
+        };
+
         this.scope = $scope;
         this.uiSegmentSrv = uiSegmentSrv;
         this.clearSelection = '-- clear selection --';
         this.blankDropDownElement = '---';
-        this.target.category = this.target.category || 'select category';
-        this.target.variable = this.target.variable || 'select variable';
-        this.target.device = this.target.device || 'select device';
-        this.target.component = this.target.component || 'select component';
+        this.target.category = this.target.category || this.prompts['category'];
+        this.target.variable = this.target.variable || this.prompts['variable'];
+        this.target.device = this.target.device || this.prompts['device'];
+        this.target.component = this.target.component || this.prompts['component'];
         this.target.sortByEl = this.target.sortByEl || 'none';
         this.target.selector = this.target.selector || 'choose selector';
         this.target.limit = this.target.limit || '';
@@ -31,11 +38,11 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     isCategorySelected() {
-        return this.target.category !== 'select category' && this.target.category !== this.clearSelection;
+        return this.target.category !== this.prompts['category'] && this.target.category !== this.clearSelection;
     }
 
     isVariableSelected() {
-        return this.target.variable !== 'select variable' && this.target.variable !== this.clearSelection;
+        return this.target.variable !== this.prompts['variable'] && this.target.variable !== this.clearSelection;
     }
 
     /**
@@ -62,7 +69,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
     getCategories() {
         return this.datasource.metricFindCategoryQuery(this.target)
-            .then(this.transformToSegments(this.target.category, 'select category'));
+            .then(this.transformToSegments(this.target.category, this.prompts['category']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
@@ -80,26 +87,26 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     testRemove() {
-        this.target.variable = 'select variable';
+        this.target.variable = this.prompts['variable'];
         this.getVariables();
         this.refresh();
     }
 
     getVariables() {
-        return this.datasource.metricFindVariableQuery(this.target)
-            .then(this.transformToSegments(this.target.variable,'select variable'));
+        return this.datasource.metricFindVariableQuery(this.target.category)
+            .then(this.transformToSegments(this.target.variable, this.prompts['variable']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getDevices() {
         return this.datasource.metricFindQuery(this.target, 'device')
-            .then(this.transformToSegments(this.target.device,'select device'));
+            .then(this.transformToSegments(this.target.device, this.prompts['device']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getComponents() {
         return this.datasource.metricFindQuery(this.target, 'component')
-            .then(this.transformToSegments(this.target.component,'select component'));
+            .then(this.transformToSegments(this.target.component, this.prompts['component']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
@@ -119,26 +126,38 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     onChangeInternalCategory() {
-        if(this.target.category == this.clearSelection) {
-            this.target.category = 'select category';
+        console.log('Category has changed to ' + this.target.category);
+        if (this.target.category == this.clearSelection) {
+            this.target.category = this.prompts['category'];
         }
-        this.refresh();
+        // user has changed category, we should erase variable and other selections because they are
+        // not valid anymore
+        this.target.variable = this.prompts['variable'];
+        this.target.device = this.prompts['device'];
+        this.target.component = this.prompts['component'];
+        this.target.tagData = [];
+        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
+        // angular.element('#variable-field').children().children('a').html(this.target.variable);
+        // this.panelCtrl.render();
+        // this.refresh();
     }
+
     onChangeInternalVariable() {
+        console.log('Variable has changed to ' + this.target.variable);
         if(this.target.variable == this.clearSelection) {
-            this.target.variable = 'select variable';
+            this.target.variable = this.prompts['variable'];
         }
         this.refresh();
     }
     onChangeInternalDevice() {
         if(this.target.device == this.clearSelection) {
-            this.target.device = 'select device';
+            this.target.device = this.prompts['device'];
         }
         this.refresh();
     }
     onChangeInternalComponent() {
         if(this.target.component == this.clearSelection) {
-            this.target.component = 'select component';
+            this.target.component = this.prompts['component'];
         }
         this.refresh();
     }
@@ -148,7 +167,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // but tag word is not. This state is invalid and should be transient, it does not make sense
         // to call this.refresh() because query is yet incomplete
         this.target.tagData[index].tagWord = this.blankDropDownElement;
-        // this does not look right, there must be a way to update element without manipulating it directly in DOM
+        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
         angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
     }
 

@@ -148,19 +148,27 @@ System.register(['lodash'], function (_export, _context) {
                         var data = this.buildQuery(options);
                         var temp = JSON.parse(data);
                         console.log(data);
-                        if (temp.targets.filter(function (target) {
-                            return typeof target.variable !== "undefined" && target.variable !== "select variable";
-                        }).length > 0) {
-                            var endpoint = this.endpoints.query;
-                            return this.backendSrv.datasourceRequest({
-                                url: this.url + endpoint,
-                                data: data,
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' }
-                            });
-                        } else {
-                            return null;
-                        }
+                        var endpoint = this.endpoints.query;
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + endpoint,
+                            data: data,
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+
+                        // if (temp.targets.filter(function (target) {
+                        //         return typeof target.variable !== "undefined" && target.variable !== "select variable";
+                        //     }).length > 0) {
+                        //     var endpoint = this.endpoints.query;
+                        //     return this.backendSrv.datasourceRequest({
+                        //         url: this.url + endpoint,
+                        //         data: data,
+                        //         method: 'POST',
+                        //         headers: {'Content-Type': 'application/json'}
+                        //     });
+                        // } else {
+                        //     return null;
+                        // }
                     }
                 }, {
                     key: 'testDatasource',
@@ -222,8 +230,8 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'metricFindVariableQuery',
-                    value: function metricFindVariableQuery(options) {
-                        var endpoint = this.endpoints.variable + options.category + this.accessToken;
+                    value: function metricFindVariableQuery(category) {
+                        var endpoint = this.endpoints.variable + category + this.accessToken;
                         return this.backendSrv.datasourceRequest({
                             url: this.url + endpoint,
                             data: '',

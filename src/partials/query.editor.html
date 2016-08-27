@@ -8,13 +8,13 @@
                                   on-change="ctrl.onChangeInternalCategory()"
                                   css-class="width-20"></metric-segment-model>
         </div>
-        <div class="gf-form"
-             ng-if="ctrl.target.category !== 'select category' && ctrl.target.category !== '-- clear selection --'">
+
+        <div class="gf-form" ng-if="ctrl.isCategorySelected()">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Variable</span>
             </label>
-            <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()"
-                                  on-change="ctrl.onChangeInternalVariable()"
+            <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" id="variable-field"
+                                  on-change="ctrl.onChangeInternalVariable()" custom="false"
                                   css-class="width-20"></metric-segment-model>
         </div>
     </div>
@@ -76,8 +76,7 @@
     </div>
 
     <!-- SortBy , Limit, Selector -->
-    <div class="gf-form-inline"
-         ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
+    <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Sorting</span>

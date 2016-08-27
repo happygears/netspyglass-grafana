@@ -66,14 +66,21 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
                     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NetSpyGlassDatasourceQueryCtrl).call(this, $scope, $injector));
 
+                    _this.prompts = {
+                        'category': 'select category',
+                        'variable': 'select variable',
+                        'device': 'select device',
+                        'component': 'select component'
+                    };
+
                     _this.scope = $scope;
                     _this.uiSegmentSrv = uiSegmentSrv;
                     _this.clearSelection = '-- clear selection --';
                     _this.blankDropDownElement = '---';
-                    _this.target.category = _this.target.category || 'select category';
-                    _this.target.variable = _this.target.variable || 'select variable';
-                    _this.target.device = _this.target.device || 'select device';
-                    _this.target.component = _this.target.component || 'select component';
+                    _this.target.category = _this.target.category || _this.prompts['category'];
+                    _this.target.variable = _this.target.variable || _this.prompts['variable'];
+                    _this.target.device = _this.target.device || _this.prompts['device'];
+                    _this.target.component = _this.target.component || _this.prompts['component'];
                     _this.target.sortByEl = _this.target.sortByEl || 'none';
                     _this.target.selector = _this.target.selector || 'choose selector';
                     _this.target.limit = _this.target.limit || '';
@@ -94,12 +101,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 _createClass(NetSpyGlassDatasourceQueryCtrl, [{
                     key: 'isCategorySelected',
                     value: function isCategorySelected() {
-                        return this.target.category !== 'select category' && this.target.category !== this.clearSelection;
+                        return this.target.category !== this.prompts['category'] && this.target.category !== this.clearSelection;
                     }
                 }, {
                     key: 'isVariableSelected',
                     value: function isVariableSelected() {
-                        return this.target.variable !== 'select variable' && this.target.variable !== this.clearSelection;
+                        return this.target.variable !== this.prompts['variable'] && this.target.variable !== this.clearSelection;
                     }
                 }, {
                     key: 'tagDataAdd',
@@ -120,7 +127,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        return this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments(this.target.category, 'select category'));
+                        return this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments(this.target.category, this.prompts['category']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
@@ -142,26 +149,26 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'testRemove',
                     value: function testRemove() {
-                        this.target.variable = 'select variable';
+                        this.target.variable = this.prompts['variable'];
                         this.getVariables();
                         this.refresh();
                     }
                 }, {
                     key: 'getVariables',
                     value: function getVariables() {
-                        return this.datasource.metricFindVariableQuery(this.target).then(this.transformToSegments(this.target.variable, 'select variable'));
+                        return this.datasource.metricFindVariableQuery(this.target.category).then(this.transformToSegments(this.target.variable, this.prompts['variable']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getDevices',
                     value: function getDevices() {
-                        return this.datasource.metricFindQuery(this.target, 'device').then(this.transformToSegments(this.target.device, 'select device'));
+                        return this.datasource.metricFindQuery(this.target, 'device').then(this.transformToSegments(this.target.device, this.prompts['device']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getComponents',
                     value: function getComponents() {
-                        return this.datasource.metricFindQuery(this.target, 'component').then(this.transformToSegments(this.target.component, 'select component'));
+                        return this.datasource.metricFindQuery(this.target, 'component').then(this.transformToSegments(this.target.component, this.prompts['component']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
@@ -183,16 +190,27 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'onChangeInternalCategory',
                     value: function onChangeInternalCategory() {
+                        console.log('Category has changed to ' + this.target.category);
                         if (this.target.category == this.clearSelection) {
-                            this.target.category = 'select category';
+                            this.target.category = this.prompts['category'];
                         }
-                        this.refresh();
+                        // user has changed category, we should erase variable and other selections because they are
+                        // not valid anymore
+                        this.target.variable = this.prompts['variable'];
+                        this.target.device = this.prompts['device'];
+                        this.target.component = this.prompts['component'];
+                        this.target.tagData = [];
+                        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
+                        // angular.element('#variable-field').children().children('a').html(this.target.variable);
+                        // this.panelCtrl.render();
+                        // this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalVariable',
                     value: function onChangeInternalVariable() {
+                        console.log('Variable has changed to ' + this.target.variable);
                         if (this.target.variable == this.clearSelection) {
-                            this.target.variable = 'select variable';
+                            this.target.variable = this.prompts['variable'];
                         }
                         this.refresh();
                     }
@@ -200,7 +218,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'onChangeInternalDevice',
                     value: function onChangeInternalDevice() {
                         if (this.target.device == this.clearSelection) {
-                            this.target.device = 'select device';
+                            this.target.device = this.prompts['device'];
                         }
                         this.refresh();
                     }
@@ -208,7 +226,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'onChangeInternalComponent',
                     value: function onChangeInternalComponent() {
                         if (this.target.component == this.clearSelection) {
-                            this.target.component = 'select component';
+                            this.target.component = this.prompts['component'];
                         }
                         this.refresh();
                     }
@@ -219,7 +237,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         // but tag word is not. This state is invalid and should be transient, it does not make sense
                         // to call this.refresh() because query is yet incomplete
                         this.target.tagData[index].tagWord = this.blankDropDownElement;
-                        // this does not look right, there must be a way to update element without manipulating it directly in DOM
+                        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
                         angular.element('#tag-word-' + index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
                     }
                 }, {

@@ -52,7 +52,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
      * visible element is reduced (element <a> is visible and its height is 0 when it has no contents, so
      * all we see is the margin around it). To work around that I put "-" in these fields. It is unobtrusive
      * enough and looks like some sort of a prompt, but it is a hack nonetheless.
-     * TODO: find a way to fix the height of the visible element without adding any contents.
+     * FIXME: find a way to fix height of the visible element without adding any contents.
      */
     tagDataAdd() {
         this.target.tagData[this.target.tagData.length] = {
@@ -141,11 +141,14 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.tagData = [];
         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
         angular.element('#variable-field').children().children('a').html(this.target.variable);
+        // call refresh to force graph reload (which should turn blank since we dont have enough data
+        // to build valid query)
+        this.refresh();
     }
 
     onChangeInternalVariable() {
         console.log('Variable has changed to ' + this.target.variable);
-        if (this.target.variable != this.clearSelection) this.refresh();
+        this.refresh();
     }
 
     onChangeInternalDevice() {
@@ -168,6 +171,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.tagData[index].tagWord = this.blankDropDownElement;
         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
         angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
+        this.refresh();
     }
 
     //noinspection JSUnusedLocalSymbols

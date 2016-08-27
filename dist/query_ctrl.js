@@ -205,12 +205,15 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.target.tagData = [];
                         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
                         angular.element('#variable-field').children().children('a').html(this.target.variable);
+                        // call refresh to force graph reload (which should turn blank since we dont have enough data
+                        // to build valid query)
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalVariable',
                     value: function onChangeInternalVariable() {
                         console.log('Variable has changed to ' + this.target.variable);
-                        if (this.target.variable != this.clearSelection) this.refresh();
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalDevice',
@@ -237,6 +240,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.target.tagData[index].tagWord = this.blankDropDownElement;
                         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
                         angular.element('#tag-word-' + index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
+                        this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalTagWord',

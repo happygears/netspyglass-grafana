@@ -77,35 +77,35 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.selector = _this.target.selector || 'choose selector';
                     _this.target.limit = _this.target.limit || '';
                     _this.target.group = _this.target.group || 'select group';
-                    _this.target.tagFacet = _this.target.tagFacet || 'select tag facet';
+                    _this.target.tagFacet = _this.target.tagFacet || '';
                     _this.target.tagOperation = _this.target.tagOperation || '==';
-                    _this.target.tagWord = _this.target.tagWord || 'select tag word';
-                    _this.target.alias = _this.target.alias || '';
+                    _this.target.tagWord = _this.target.tagWord || '';
                     _this.target.tagData = _this.target.tagData || [];
 
                     _this.target.resultFormat = _this.target.resultFormat || 'time_series';
                     _this.target.resultFormatDisplay = _this.target.resultFormatDisplay || 'Time Series';
 
                     _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
+                    _this.target.alias = _this.target.alias || '';
                     return _this;
                 }
 
                 _createClass(NetSpyGlassDatasourceQueryCtrl, [{
                     key: 'isCategorySelected',
                     value: function isCategorySelected() {
-                        return this.target.category !== 'select category' && this.target.category !== '-- clear selection --';
+                        return this.target.category !== 'select category' && this.target.category !== this.clearSelection;
                     }
                 }, {
                     key: 'isVariableSelected',
                     value: function isVariableSelected() {
-                        return this.target.variable !== 'select variable' && this.target.variable !== '-- clear selection --';
+                        return this.target.variable !== 'select variable' && this.target.variable !== this.clearSelection;
                     }
                 }, {
                     key: 'tagDataAdd',
                     value: function tagDataAdd() {
                         this.target.tagData[this.target.tagData.length] = {
-                            tagFacet: 'select tag facet',
-                            tagWord: 'select tag word',
+                            tagFacet: '',
+                            tagWord: '',
                             tagOperation: '=='
                         };
                         this.refresh();
@@ -143,7 +143,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     value: function testRemove() {
                         this.target.variable = 'select variable';
                         this.getVariables();
-                        this.panelCtrl.refresh();
+                        this.refresh();
                     }
                 }, {
                     key: 'getVariables',
@@ -166,19 +166,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getTagsFacet',
                     value: function getTagsFacet() {
-                        return this.datasource.metricFindQuery(this.target, 'tagFacet').then(this.transformToSegments(this.target.tagFacet, 'select tag facet'));
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-                    }
-                }, {
-                    key: 'getTagsOperation',
-                    value: function getTagsOperation() {
-                        return this.datasource.metricFindTagOperationQuery(this.target).then(this.transformToSegments(false));
+                        return this.datasource.metricFindQuery(this.target, 'tagFacet').then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet)); // do not add "-- clear selection --" item
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsWord',
                     value: function getTagsWord(facet) {
-                        return this.datasource.metricFindTagWordQuery(this.target, facet).then(this.transformToSegments(this.target.tagWord, 'select tag word'));
+                        return this.datasource.metricFindTagWordQuery(this.target, facet).then(this.transformToSegments(this.target.tagWord, this.target.tagWord)); // do not add "-- clear selection --" item
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
@@ -221,11 +215,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'onChangeInternalTagFacet',
                     value: function onChangeInternalTagFacet(index) {
-                        if (this.target.tagData[index].tagWord !== '') {
-                            this.target.tagData[index].tagWord = '';
-                        }
-                        angular.element('#tag-word-' + index).children().children("a.tag-word").html('select tag word');
-                        this.refresh();
+                        // clear tag word when user changes tag facet. The dialog enters state where tag facet is selected
+                        // but tag word is not. This state is invalid and should be transient, it does not make sense
+                        // to call this.refresh() because query is yet incomplete
+                        this.target.tagData[index].tagWord = '';
+                        // this does not look right, there must be a way to update element without manipulating it directly in DOM
+                        angular.element('#tag-word-' + index).children().children("a.tag-word").html('');
                     }
                 }, {
                     key: 'onChangeInternalTagWord',
@@ -267,11 +262,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     value: function setColumns() {
                         // console.log(this.target.columns);
                         this.refresh();
-                    }
-                }, {
-                    key: 'refresh',
-                    value: function refresh() {
-                        this.panelCtrl.refresh();
                     }
                 }]);
 

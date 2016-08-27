@@ -17,30 +17,30 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.selector = this.target.selector || 'choose selector';
         this.target.limit = this.target.limit || '';
         this.target.group = this.target.group || 'select group';
-        this.target.tagFacet = this.target.tagFacet || 'select tag facet';
+        this.target.tagFacet = this.target.tagFacet || '';
         this.target.tagOperation = this.target.tagOperation || '==';
-        this.target.tagWord = this.target.tagWord || 'select tag word';
-        this.target.alias = this.target.alias || '';
+        this.target.tagWord = this.target.tagWord || '';
         this.target.tagData = this.target.tagData || [];
 
         this.target.resultFormat = this.target.resultFormat || 'time_series';
         this.target.resultFormatDisplay = this.target.resultFormatDisplay || 'Time Series';
 
         this.target.columns = this.target.columns || 'time,variable,device,component,metric';
+        this.target.alias = this.target.alias || '';
     }
 
     isCategorySelected() {
-        return this.target.category !== 'select category' && this.target.category !== '-- clear selection --';
+        return this.target.category !== 'select category' && this.target.category !== this.clearSelection;
     }
 
     isVariableSelected() {
-        return this.target.variable !== 'select variable' && this.target.variable !== '-- clear selection --';
+        return this.target.variable !== 'select variable' && this.target.variable !== this.clearSelection;
     }
 
     tagDataAdd() {
         this.target.tagData[this.target.tagData.length] = {
-            tagFacet : 'select tag facet',
-            tagWord : 'select tag word',
+            tagFacet : '',
+            tagWord : '',
             tagOperation : '=='
         };
         this.refresh();
@@ -73,7 +73,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     testRemove() {
         this.target.variable = 'select variable';
         this.getVariables();
-        this.panelCtrl.refresh();
+        this.refresh();
     }
 
     getVariables() {
@@ -96,19 +96,13 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
     getTagsFacet() {
         return this.datasource.metricFindQuery(this.target, 'tagFacet')
-            .then(this.transformToSegments(this.target.tagFacet,'select tag facet'));
-        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-    }
-
-    getTagsOperation() {
-        return this.datasource.metricFindTagOperationQuery(this.target)
-            .then(this.transformToSegments(false));
+            .then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet));  // do not add "-- clear selection --" item
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getTagsWord(facet) {
         return this.datasource.metricFindTagWordQuery(this.target, facet)
-            .then(this.transformToSegments(this.target.tagWord, 'select tag word'));
+            .then(this.transformToSegments(this.target.tagWord, this.target.tagWord));  // do not add "-- clear selection --" item
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
@@ -141,13 +135,13 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.refresh();
     }
     
-
     onChangeInternalTagFacet(index) {
-        if(this.target.tagData[index].tagWord !== '') {
-            this.target.tagData[index].tagWord = '';
-        }
-        angular.element('#tag-word-'+index).children().children("a.tag-word").html('select tag word');
-        this.refresh();
+        // clear tag word when user changes tag facet. The dialog enters state where tag facet is selected
+        // but tag word is not. This state is invalid and should be transient, it does not make sense
+        // to call this.refresh() because query is yet incomplete
+        this.target.tagData[index].tagWord = '';
+        // this does not look right, there must be a way to update element without manipulating it directly in DOM
+        angular.element('#tag-word-'+index).children().children("a.tag-word").html('');
     }
 
     //noinspection JSUnusedLocalSymbols
@@ -196,10 +190,6 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     //     }
     //     this.refresh();
     // }
-
-    refresh() {
-        this.panelCtrl.refresh();
-    }
 
 }
 

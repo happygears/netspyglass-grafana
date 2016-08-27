@@ -179,8 +179,7 @@
         </div>
     </div>
 
-    <div class="gf-form-inline"
-         ng-if="ctrl.target.variable !== 'select variable' && ctrl.target.variable !== '-- clear selection --' && ctrl.target.category !== 'select category' && ctrl.target.category !== '-- clear selection --'">
+    <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
 
         <div class="gf-form max-width-30">
             <label class="gf-form-label query-keyword width-8">ALIAS BY</label>

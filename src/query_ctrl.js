@@ -31,8 +31,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.tagWord = this.target.tagWord || this.blankDropDownElement;
         this.target.tagData = this.target.tagData || [];
 
-        this.target.format = this.target.format || 'time_series';
-        this.target.formatDisplay = this.target.formatDisplay || 'Time Series';
+        this.target.resultFormat = this.target.resultFormat || 'time_series';
+        this.target.resultFormatDisplay = this.target.resultFormatDisplay || 'Time Series';
 
         this.target.columns = this.target.columns || 'time,variable,device,component,metric';
         this.target.alias = this.target.alias || '';
@@ -198,9 +198,9 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.refresh();
     }
 
-    setFormat(element, elementDisplayStr) {
-        this.target.format = element;
-        this.target.formatDisplay = elementDisplayStr;
+    setResultFormat(element, elementDisplayStr) {
+        this.target.resultFormat = element;
+        this.target.resultFormatDisplay = elementDisplayStr;
         this.refresh();
     }
 

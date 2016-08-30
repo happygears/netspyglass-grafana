@@ -1,0 +1,18 @@
+<datasource-http-settings current="ctrl.current">
+</datasource-http-settings>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+            <label class="gf-form-label width-7">
+                <span class="gf-form-query-letter-cell-letter">Network ID</span>
+            </label>
+        </div>
+        <div class="gf-form">
+            <input ng-model="ctrl.current.jsonData.networkId" ng-init="ctrl.current.jsonData.networkId = ctrl.current.jsonData.networkId || 1"type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 315px;" placeholder="1" value="1">
+        </div>
+    </div>
+    <div class="gf-form-inline">
+        <gf-form-switch class="gf-form" label="Auth Token" label-class="width-7" checked="ctrl.current.jsonData.useToken" on-change="ctrl.render()"></gf-form-switch>
+        <div class="gf-form" ng-if="ctrl.current.jsonData.useToken">
+            <input ng-model="ctrl.current.jsonData.accessToken" type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 256px;" placeholder="access token">
+        </div>
+    </div>

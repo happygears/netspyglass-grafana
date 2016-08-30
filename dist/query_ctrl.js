@@ -91,8 +91,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.tagWord = _this.target.tagWord || _this.blankDropDownElement;
                     _this.target.tagData = _this.target.tagData || [];
 
-                    _this.target.format = _this.target.format || 'time_series';
-                    _this.target.formatDisplay = _this.target.formatDisplay || 'Time Series';
+                    _this.target.resultFormat = _this.target.resultFormat || 'time_series';
+                    _this.target.resultFormatDisplay = _this.target.resultFormatDisplay || 'Time Series';
 
                     _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
                     _this.target.alias = _this.target.alias || '';
@@ -271,10 +271,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         this.refresh();
                     }
                 }, {
-                    key: 'setFormat',
+                    key: 'setResultFormat',
                     value: function setResultFormat(element, elementDisplayStr) {
-                        this.target.format = element;
-                        this.target.formatDisplay = elementDisplayStr;
+                        this.target.resultFormat = element;
+                        this.target.resultFormatDisplay = elementDisplayStr;
                         this.refresh();
                     }
                 }, {

@@ -1,0 +1,23 @@
+<section class="grafana-metric-options">
+    <div class="gf-form-group">
+        <div class="gf-form-inline">
+            <span class="gf-form-label">
+                <i class="fa fa-wrench"></i>
+            </span>
+
+            <span class="gf-form-label">Group by time interval</span>
+
+            <div class="gf-form">
+                <input type="text" class="gf-form-input input-medium" data-provide="typeahead"
+                       ng-model="ctrl.panelCtrl.panel.interval" ng-blur="ctrl.panelCtrl.refresh();"
+                       spellcheck='false' placeholder="example: 1m"/>
+            </div>
+
+            <span class="gf-form-label">
+                    <i class="fa fa-question-circle"
+                       bs-tooltip="'Collect observations in groups by time interval of this duration. Selector operates on observations in each group.'"
+                       data-placement="right"></i>
+            </span>
+        </div>
+    </div>
+</section>

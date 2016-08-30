@@ -204,7 +204,6 @@ System.register(['lodash'], function (_export, _context) {
                     value: function metricFindQuery(query) {
                         var interpolated;
                         try {
-                            // interpolated = this.templateSrv.replace(query, null, 'regex');
                             // replace templated variables
                             interpolated = this.templateSrv.replace(query, query.scopedVars);
                         } catch (err) {
@@ -230,6 +229,7 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'findDevices',
                     value: function findDevices(options) {
                         var data = this.buildQuery(options);
+                        data.targets[0].device = ''; // erase to ignore current selection in the dialog
                         var query = JSON.stringify(data);
                         // replace templated variables
                         query = this.templateSrv.replace(query, options.scopedVars);
@@ -239,7 +239,7 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'findComponents',
                     value: function findComponents(options) {
                         var data = this.buildQuery(options);
-                        data.targets[0].component = ''; // erase it to ignore current selection in the dialog 
+                        data.targets[0].component = ''; // erase to ignore current selection in the dialog
                         var query = JSON.stringify(data);
                         // replace templated variables
                         query = this.templateSrv.replace(query, options.scopedVars);

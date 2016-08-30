@@ -35,7 +35,7 @@ export class NetSpyGlassDatasource {
         this.targetName.tagWord = 'select tag word';
         this.targetName.interval = 'select interval';
         this.targetName.tagData = [];
-        this.targetName.resultFormat = '';
+        this.targetName.format = '';
         this.targetName.columns = '';
 
         this.clearString = '-- clear selection --';
@@ -291,7 +291,7 @@ export class NetSpyGlassDatasource {
                 tagWord: this.templateSrv.replace(target.tagWord),
                 sortByEl: this.templateSrv.replace(target.sortByEl),
                 selector: this.templateSrv.replace(target.selector),
-                resultFormat: this.templateSrv.replace(target.resultFormat),
+                format: this.templateSrv.replace(target.format),
                 limit: (target.limit === '') ? -1 : this.templateSrv.replace(target.limit),
                 columns: this.templateSrv.replace(target.columns),
                 alias: this.templateSrv.replace(target.alias, options.scopedVars),

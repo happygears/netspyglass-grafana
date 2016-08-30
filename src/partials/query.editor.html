@@ -149,15 +149,15 @@
         </div>
         <div class="gf-form">
             <a class="gf-form-label pointer width-8" data-toggle="dropdown" data-placement="bottom">
-                <span>{{ctrl.target.resultFormatDisplay}}</span>
+                <span>{{ctrl.target.formatDisplay}}</span>
             </a>
             <ul class="dropdown-menu">
-                <li><a ng-click="ctrl.setResultFormat('time_series', 'Time Series')">Time Series</a></li>
-                <li><a ng-click="ctrl.setResultFormat('table', 'Table')">Table</a></li>
+                <li><a ng-click="ctrl.setFormat('time_series', 'Time Series')">Time Series</a></li>
+                <li><a ng-click="ctrl.setFormat('table', 'Table')">Table</a></li>
             </ul>
         </div>
 
-        <div class="gf-form-inline" ng-if="ctrl.target.resultFormat === 'table'">
+        <div class="gf-form-inline" ng-if="ctrl.target.format === 'table'">
             <div class="gf-form">
                 <label class="gf-form-label width-8 gf-form-query-letter-cell">
                     <span class="gf-form-query-letter-cell-letter">Columns</span>

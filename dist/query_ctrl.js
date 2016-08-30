@@ -69,8 +69,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.prompts = {
                         'category': 'select category',
                         'variable': 'select variable',
-                        'device': '*',
-                        'component': '*'
+                        'device': 'select device',
+                        'component': 'select component'
                     };
 
                     _this.scope = $scope;

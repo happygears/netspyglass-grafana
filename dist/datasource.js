@@ -58,8 +58,8 @@ System.register(['lodash'], function (_export, _context) {
 
                     this.targetName = {};
                     this.targetName.variable = 'select variable';
-                    this.targetName.device = '*';
-                    this.targetName.component = '*';
+                    this.targetName.device = 'select device';
+                    this.targetName.component = 'select component';
                     this.targetName.sortByEl = 'select sorting';
                     this.targetName.selector = 'select selector';
                     this.targetName.limit = 'select limit';
@@ -158,7 +158,6 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'query',
                     value: function query(options) {
                         var data = this.buildQuery(options);
-                        // console.log(data);
                         var query = JSON.stringify(data);
                         // replace templated variables
                         query = this.templateSrv.replace(query, options.scopedVars);
@@ -231,26 +230,39 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'findDevices',
                     value: function findDevices(options) {
                         var data = this.buildQuery(options);
-                        return this._apiCall(this.endpoints.device, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+                        var query = JSON.stringify(data);
+                        // replace templated variables
+                        query = this.templateSrv.replace(query, options.scopedVars);
+                        return this._apiCall(this.endpoints.device, 'POST', query).then(this.mapToTextValue);
                     }
                 }, {
                     key: 'findComponents',
                     value: function findComponents(options) {
                         var data = this.buildQuery(options);
-                        return this._apiCall(this.endpoints.component, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+                        data.targets[0].component = ''; // erase it to ignore current selection in the dialog 
+                        var query = JSON.stringify(data);
+                        // replace templated variables
+                        query = this.templateSrv.replace(query, options.scopedVars);
+                        return this._apiCall(this.endpoints.component, 'POST', query).then(this.mapToTextValue);
                     }
                 }, {
                     key: 'findTagFacets',
                     value: function findTagFacets(options) {
                         var data = this.buildQuery(options);
-                        return this._apiCall(this.endpoints.tagFacet, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+                        var query = JSON.stringify(data);
+                        // replace templated variables
+                        query = this.templateSrv.replace(query, options.scopedVars);
+                        return this._apiCall(this.endpoints.tagFacet, 'POST', query).then(this.mapToTextValue);
                     }
                 }, {
                     key: 'findTagWordsQuery',
                     value: function findTagWordsQuery(options, facet) {
                         var data = this.buildQuery(options);
+                        var query = JSON.stringify(data);
+                        // replace templated variables
+                        query = this.templateSrv.replace(query, options.scopedVars);
                         var endpoint = this.endpointsBase + '/catalog/tags/' + facet + this.accessToken;
-                        return this._apiCall(endpoint, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+                        return this._apiCall(endpoint, 'POST', query).then(this.mapToTextValue);
                     }
                 }, {
                     key: 'mapToTextValue',

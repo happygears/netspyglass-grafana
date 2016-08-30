@@ -25,8 +25,8 @@ export class NetSpyGlassDatasource {
 
         this.targetName = {};
         this.targetName.variable = 'select variable';
-        this.targetName.device = '*';
-        this.targetName.component = '*';
+        this.targetName.device = 'select device';
+        this.targetName.component = 'select component';
         this.targetName.sortByEl = 'select sorting';
         this.targetName.selector = 'select selector';
         this.targetName.limit = 'select limit';
@@ -134,7 +134,6 @@ export class NetSpyGlassDatasource {
      */
     query(options) {
         var data = this.buildQuery(options);
-        // console.log(data);
         var query = JSON.stringify(data)
         // replace templated variables
         query = this.templateSrv.replace(query, options.scopedVars);
@@ -190,7 +189,6 @@ export class NetSpyGlassDatasource {
     metricFindQuery(query) {
         var interpolated;
         try {
-            // interpolated = this.templateSrv.replace(query, null, 'regex');
             // replace templated variables
             interpolated = this.templateSrv.replace(query, query.scopedVars);
         } catch (err) {
@@ -213,23 +211,37 @@ export class NetSpyGlassDatasource {
 
     findDevices(options) {
         var data = this.buildQuery(options);
-        return this._apiCall(this.endpoints.device, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+        data.targets[0].device = '';  // erase to ignore current selection in the dialog
+        var query = JSON.stringify(data)
+        // replace templated variables
+        query = this.templateSrv.replace(query, options.scopedVars);
+        return this._apiCall(this.endpoints.device, 'POST', query).then(this.mapToTextValue);
     }
 
     findComponents(options) {
         var data = this.buildQuery(options);
-        return this._apiCall(this.endpoints.component, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+        data.targets[0].component = '';  // erase to ignore current selection in the dialog
+        var query = JSON.stringify(data);
+        // replace templated variables
+        query = this.templateSrv.replace(query, options.scopedVars);
+        return this._apiCall(this.endpoints.component, 'POST', query).then(this.mapToTextValue);
     }
 
     findTagFacets(options) {
         var data = this.buildQuery(options);
-        return this._apiCall(this.endpoints.tagFacet, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+        var query = JSON.stringify(data)
+        // replace templated variables
+        query = this.templateSrv.replace(query, options.scopedVars);
+        return this._apiCall(this.endpoints.tagFacet, 'POST', query).then(this.mapToTextValue);
     }
 
     findTagWordsQuery(options, facet) {
         var data = this.buildQuery(options);
+        var query = JSON.stringify(data)
+        // replace templated variables
+        query = this.templateSrv.replace(query, options.scopedVars);
         var endpoint = this.endpointsBase + '/catalog/tags/' + facet + this.accessToken;
-        return this._apiCall(endpoint, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+        return this._apiCall(endpoint, 'POST', query).then(this.mapToTextValue);
     }
 
     mapToTextValue(result) {

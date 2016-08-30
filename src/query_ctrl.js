@@ -9,8 +9,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.prompts = {
             'category': 'select category',
             'variable': 'select variable',
-            'device': '*',
-            'component': '*'
+            'device': 'select device',
+            'component': 'select component'
         };
 
         this.scope = $scope;

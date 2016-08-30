@@ -69,7 +69,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     getCategories() {
-        return this.datasource.metricFindCategoryQuery(this.target)
+        return this.datasource.findCategoriesQuery(this.target)
             .then(this.transformToSegments(this.target.category, this.prompts['category']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
@@ -97,31 +97,31 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     getVariables() {
-        return this.datasource.metricFindVariableQuery(this.target.category)
+        return this.datasource.findVariablesQuery(this.target)
             .then(this.transformToSegments(this.target.variable, this.prompts['variable']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getDevices() {
-        return this.datasource.metricFindQuery(this.target, 'device')
+        return this.datasource.findDevices(this.target)
             .then(this.transformToSegments(this.target.device, this.prompts['device']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getComponents() {
-        return this.datasource.metricFindQuery(this.target, 'component')
+        return this.datasource.findComponents(this.target)
             .then(this.transformToSegments(this.target.component, this.prompts['component']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getTagsFacet() {
-        return this.datasource.metricFindQuery(this.target, 'tagFacet')
+        return this.datasource.findTagFacets(this.target)
             .then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet));  // do not add "-- clear selection --" item
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
     getTagsWord(facet) {
-        return this.datasource.metricFindTagWordQuery(this.target, facet)
+        return this.datasource.findTagWordsQuery(this.target, facet)
             .then(this.transformToSegments(this.target.tagWord, this.target.tagWord));  // do not add "-- clear selection --" item
     }
 

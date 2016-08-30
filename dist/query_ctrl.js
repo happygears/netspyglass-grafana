@@ -128,7 +128,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        return this.datasource.metricFindCategoryQuery(this.target).then(this.transformToSegments(this.target.category, this.prompts['category']));
+                        return this.datasource.findCategoriesQuery(this.target).then(this.transformToSegments(this.target.category, this.prompts['category']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
@@ -160,31 +160,31 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getVariables',
                     value: function getVariables() {
-                        return this.datasource.metricFindVariableQuery(this.target.category).then(this.transformToSegments(this.target.variable, this.prompts['variable']));
+                        return this.datasource.findVariablesQuery(this.target).then(this.transformToSegments(this.target.variable, this.prompts['variable']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getDevices',
                     value: function getDevices() {
-                        return this.datasource.metricFindQuery(this.target, 'device').then(this.transformToSegments(this.target.device, this.prompts['device']));
+                        return this.datasource.findDevices(this.target).then(this.transformToSegments(this.target.device, this.prompts['device']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getComponents',
                     value: function getComponents() {
-                        return this.datasource.metricFindQuery(this.target, 'component').then(this.transformToSegments(this.target.component, this.prompts['component']));
+                        return this.datasource.findComponents(this.target).then(this.transformToSegments(this.target.component, this.prompts['component']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsFacet',
                     value: function getTagsFacet() {
-                        return this.datasource.metricFindQuery(this.target, 'tagFacet').then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet)); // do not add "-- clear selection --" item
+                        return this.datasource.findTagFacets(this.target).then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet)); // do not add "-- clear selection --" item
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsWord',
                     value: function getTagsWord(facet) {
-                        return this.datasource.metricFindTagWordQuery(this.target, facet).then(this.transformToSegments(this.target.tagWord, this.target.tagWord)); // do not add "-- clear selection --" item
+                        return this.datasource.findTagWordsQuery(this.target, facet).then(this.transformToSegments(this.target.tagWord, this.target.tagWord)); // do not add "-- clear selection --" item
                     }
                 }, {
                     key: 'toggleEditorMode',

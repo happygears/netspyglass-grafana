@@ -41,19 +41,20 @@ System.register(['lodash'], function (_export, _context) {
                     this.type = instanceSettings.type;
                     this.url = instanceSettings.url;
                     this.name = instanceSettings.name;
-                    this.q = $q;
+                    this.$q = $q;
                     this.backendSrv = backendSrv;
                     this.templateSrv = templateSrv;
                     this.networkId = instanceSettings.jsonData.networkId || 1;
                     this.accessToken = instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '' ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
+                    this.endpointsBase = '/v2/grafana/net/' + this.networkId;
                     this.endpoints = {};
-                    this.endpoints.category = '/v2/grafana/net/' + this.networkId + '/catalog/categories/list' + this.accessToken;
-                    this.endpoints.variable = '/v2/grafana/net/' + this.networkId + '/catalog/categories/';
-                    this.endpoints.device = '/v2/grafana/net/' + this.networkId + '/catalog/devices' + this.accessToken;
-                    this.endpoints.component = '/v2/grafana/net/' + this.networkId + '/catalog/components' + this.accessToken;
-                    this.endpoints.tagFacet = '/v2/grafana/net/' + this.networkId + '/catalog/tags/facets' + this.accessToken;
-                    this.endpoints.query = '/v2/grafana/net/' + this.networkId + '/query' + this.accessToken;
-                    this.endpoints.test = '/v2/grafana/net/' + this.networkId + '/test' + this.accessToken;
+                    this.endpoints.category = this.endpointsBase + '/catalog/categories/list' + this.accessToken;
+                    this.endpoints.variable = this.endpointsBase + '/catalog/categories/';
+                    this.endpoints.device = this.endpointsBase + '/catalog/devices' + this.accessToken;
+                    this.endpoints.component = this.endpointsBase + '/catalog/components' + this.accessToken;
+                    this.endpoints.tagFacet = this.endpointsBase + '/catalog/tags/facets' + this.accessToken;
+                    this.endpoints.query = this.endpointsBase + '/query' + this.accessToken;
+                    this.endpoints.test = this.endpointsBase + '/test' + this.accessToken;
 
                     this.targetName = {};
                     this.targetName.variable = 'select variable';
@@ -134,41 +135,34 @@ System.register(['lodash'], function (_export, _context) {
                                 temp = this.buildNewData(query.targets[index]);
                                 queryObject.targets.push(temp);
                             }
-                            queryObject.from = query.rangeRaw.from;
-                            queryObject.until = query.rangeRaw.to;
-                            queryObject.groupByTime = query.interval;
+                            if (typeof query.rangeRaw != 'undefined') {
+                                queryObject.from = query.rangeRaw.from;
+                                queryObject.until = query.rangeRaw.to;
+                                queryObject.groupByTime = query.interval;
+                            }
                             queryObject.scopedVars = '$variable';
                         }
-                        var data = JSON.stringify(queryObject);
-                        return data;
+                        return queryObject;
+                    }
+                }, {
+                    key: '_apiCall',
+                    value: function _apiCall(endpoint, method, query) {
+                        return this.backendSrv.datasourceRequest({
+                            url: this.url + endpoint,
+                            data: query,
+                            method: method,
+                            headers: { 'Content-Type': 'application/json' }
+                        });
                     }
                 }, {
                     key: 'query',
                     value: function query(options) {
                         var data = this.buildQuery(options);
-                        var temp = JSON.parse(data);
-                        console.log(data);
-                        var endpoint = this.endpoints.query;
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            data: data,
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-
-                        // if (temp.targets.filter(function (target) {
-                        //         return typeof target.variable !== "undefined" && target.variable !== "select variable";
-                        //     }).length > 0) {
-                        //     var endpoint = this.endpoints.query;
-                        //     return this.backendSrv.datasourceRequest({
-                        //         url: this.url + endpoint,
-                        //         data: data,
-                        //         method: 'POST',
-                        //         headers: {'Content-Type': 'application/json'}
-                        //     });
-                        // } else {
-                        //     return null;
-                        // }
+                        // console.log(data);
+                        var query = JSON.stringify(data);
+                        // replace templated variables
+                        query = this.templateSrv.replace(query, options.scopedVars);
+                        return this._apiCall(this.endpoints.query, 'POST', query);
                     }
                 }, {
                     key: 'testDatasource',
@@ -208,54 +202,68 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'metricFindQuery',
-                    value: function metricFindQuery(options, name) {
+                    value: function metricFindQuery(query) {
+                        var interpolated;
+                        try {
+                            // interpolated = this.templateSrv.replace(query, null, 'regex');
+                            // replace templated variables
+                            interpolated = this.templateSrv.replace(query, query.scopedVars);
+                        } catch (err) {
+                            return this.$q.reject(err);
+                        }
+                        var data = this.buildQuery(interpolated);
+                        var columns = data.targets[0].columns;
+                        var endpoint = this.endpointsBase + '/catalog/' + columns;
+                        return this._apiCall(endpoint, 'POST', JSON.stringify(data)).then(this.mapToTextText);
+                    }
+                }, {
+                    key: 'findCategoriesQuery',
+                    value: function findCategoriesQuery() {
+                        return this._apiCall(this.endpoints.category, 'POST', '').then(this.mapToTextValue);
+                    }
+                }, {
+                    key: 'findVariablesQuery',
+                    value: function findVariablesQuery(options) {
+                        var endpoint = this.endpoints.variable + options.category + this.accessToken;
+                        return this._apiCall(endpoint, 'POST', '').then(this.mapToTextValue);
+                    }
+                }, {
+                    key: 'findDevices',
+                    value: function findDevices(options) {
                         var data = this.buildQuery(options);
-                        var endpoint = this.endpoints[name];
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            data: data,
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
+                        return this._apiCall(this.endpoints.device, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
                     }
                 }, {
-                    key: 'metricFindCategoryQuery',
-                    value: function metricFindCategoryQuery() {
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + this.endpoints.category,
-                            data: '',
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
-                    }
-                }, {
-                    key: 'metricFindVariableQuery',
-                    value: function metricFindVariableQuery(category) {
-                        var endpoint = this.endpoints.variable + category + this.accessToken;
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            data: '',
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
-                    }
-                }, {
-                    key: 'metricFindTagWordQuery',
-                    value: function metricFindTagWordQuery(options, facet) {
-                        var endpoint = '/v2/grafana/net/' + this.networkId + '/catalog/tags/' + facet + this.accessToken;
+                    key: 'findComponents',
+                    value: function findComponents(options) {
                         var data = this.buildQuery(options);
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            data: data,
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        }).then(this.mapToTextValue);
+                        return this._apiCall(this.endpoints.component, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+                    }
+                }, {
+                    key: 'findTagFacets',
+                    value: function findTagFacets(options) {
+                        var data = this.buildQuery(options);
+                        return this._apiCall(this.endpoints.tagFacet, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
+                    }
+                }, {
+                    key: 'findTagWordsQuery',
+                    value: function findTagWordsQuery(options, facet) {
+                        var data = this.buildQuery(options);
+                        var endpoint = this.endpointsBase + '/catalog/tags/' + facet + this.accessToken;
+                        return this._apiCall(endpoint, 'POST', JSON.stringify(data)).then(this.mapToTextValue);
                     }
                 }, {
                     key: 'mapToTextValue',
                     value: function mapToTextValue(result) {
                         return _.map(result.data, function (d, i) {
                             return { text: d, value: i };
+                        });
+                    }
+                }, {
+                    key: 'mapToTextText',
+                    value: function mapToTextText(result) {
+                        return _.map(result.data, function (d, i) {
+                            return { text: d, value: d };
                         });
                     }
                 }, {
@@ -267,6 +275,14 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'buildQueryParameters',
                     value: function buildQueryParameters(options) {
                         var _this = this;
+
+                        if (typeof options === 'string') {
+                            var obj = {
+                                'targets': []
+                            };
+                            obj.targets.push(JSON.parse(options));
+                            return obj;
+                        }
 
                         var targets = _.map(options.targets, function (target) {
                             return {

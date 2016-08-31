@@ -255,8 +255,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     }
                 }, {
                     key: 'setSortByEl',
-                    value: function setSortByEl(element) {
-                        this.target.sortByEl = element;
+                    value: function setSortByEl(sortOrder) {
+                        this.target.sortByEl = sortOrder;
                         this.refresh();
                     }
                 }, {

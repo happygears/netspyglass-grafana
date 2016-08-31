@@ -184,8 +184,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.refresh();
     }
 
-    setSortByEl(element) {
-        this.target.sortByEl = element;
+    setSortByEl(sortOrder) {
+        this.target.sortByEl = sortOrder;
         this.refresh();
     }
 

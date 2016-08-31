@@ -3,6 +3,27 @@ import _ from "lodash";
 
 export class NetSpyGlassDatasource {
 
+    /**
+     * Convert server's response to a map where key and value are taken from the first
+     * column. Request is assumed to have been in the format "table".
+     *
+     * Server returns data in the following format:
+     *
+     * [ {
+          "columns" : [ { "text" : "device" } ],
+          "rows" : [ [ "synas1" ], [ "ex2200" ] ],
+          "type" : "table"
+        } ]
+     *
+     * "rows" is a list of lists because normally this query can return multiple columns.
+     * For the purpose of dashboard template we use only the first column if request specified multiple.
+     *
+     */
+    static tableResponseRowsToMap(response) {
+        return _.map(response.data[0].rows, (d, i) => {
+            return {text: d[0], value: i};
+        });
+    }
 
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
         this.type = instanceSettings.type;
@@ -12,16 +33,18 @@ export class NetSpyGlassDatasource {
         this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;
         this.networkId = instanceSettings.jsonData.networkId || 1;
-        this.accessToken = (instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '') ? '?access_token='+instanceSettings.jsonData.accessToken :'';
+        this.accessToken = (instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '') ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
         this.endpointsBase = '/v2/grafana/net/' + this.networkId;
         this.endpoints = {};
-        this.endpoints.category =  this.endpointsBase + '/catalog/categories/list' + this.accessToken;
-        this.endpoints.variable =  this.endpointsBase + '/catalog/categories/';
-        this.endpoints.device =    this.endpointsBase + '/catalog/devices' + this.accessToken;
-        this.endpoints.component = this.endpointsBase + '/catalog/components' + this.accessToken;
-        this.endpoints.tagFacet =  this.endpointsBase + '/catalog/tags/facets' + this.accessToken;
-        this.endpoints.query =     this.endpointsBase + '/query' + this.accessToken;
-        this.endpoints.test =      this.endpointsBase + '/test' + this.accessToken;
+        this.endpoints.category = this.endpointsBase + '/catalog/categories/list' + this.accessToken;
+        this.endpoints.variable = this.endpointsBase + '/catalog/categories/';
+        // this.endpoints.device = this.endpointsBase + '/catalog/devices' + this.accessToken;
+        // this.endpoints.component = this.endpointsBase + '/catalog/components' + this.accessToken;
+        // this.endpoints.tagFacet = this.endpointsBase + '/catalog/tags/facets' + this.accessToken;
+        this.endpoints.query = this.endpointsBase + '/query' + this.accessToken;
+        this.endpoints.test = this.endpointsBase + '/test' + this.accessToken;
+
+        this.blankDropDownElement = '---';
 
         this.targetName = {};
         this.targetName.variable = 'select variable';
@@ -31,20 +54,21 @@ export class NetSpyGlassDatasource {
         this.targetName.selector = 'select selector';
         this.targetName.limit = 'select limit';
         this.targetName.group = 'select group';
-        this.targetName.tagFacet = 'select tag facet';
-        this.targetName.tagWord = 'select tag word';
+        this.targetName.tagFacet = this.blankDropDownElement;
+        this.targetName.tagWord = this.blankDropDownElement;
         this.targetName.interval = 'select interval';
         this.targetName.tagData = [];
         this.targetName.format = '';
         this.targetName.columns = '';
+        this.targetName.unique = '';
 
         this.clearString = '-- clear selection --';
     }
 
-    buildNewData(item) {
+
+    removePrompts(item) {
         var temp = {};
         for (var key in item) {
-            var result = [];
             if (!(key in this.targetName)) {
                 continue;
             }
@@ -55,32 +79,18 @@ export class NetSpyGlassDatasource {
                 continue;
             }
             if (key == 'tagData') {
-                item[key].forEach(tagsLoop);
-                function tagsLoop(singleItem, index) {
-                    if (singleItem.tagFacet == "" || singleItem.tagFacet == "select tag facet"){
-                       return;
-                    }
-                    if(singleItem.tagWord == "" || singleItem.tagWord == "select tag word") {
-                        return;
-                    }
-                    result.push({
-                        tagFacet: singleItem.tagFacet,
-                        tagOperation: singleItem.tagOperation,
-                        tagWord: singleItem.tagWord
-                    });
-
-                }
-            }
-            if (result.length > 0) {
-                temp.tags = result;
-            }
-            if(key !== 'tagData') {
+                temp[key] = item[key].filter(t => !this.isBlankTagMatch(t));
+            } else {
                 temp[key] = item[key];
             }
         }
         return temp;
     }
 
+    isBlankTagMatch(tm) {
+        if (tm.tagFacet === "" || tm.tagFacet === this.blankDropDownElement) return true;
+        return !!(tm.tagWord === "" || tm.tagWord === this.blankDropDownElement);
+    }
 
     buildQuery(options) {
         var query = this.buildQueryParameters(options);
@@ -90,12 +100,12 @@ export class NetSpyGlassDatasource {
         };
         var temp;
         if (query.targets.length <= 0) {
-            temp = this.buildNewData(query);
+            temp = this.removePrompts(query);
             queryObject.targets.push(temp);
         } else {
             var index;
             for (index = query.targets.length - 1; index >= 0; --index) {
-                temp = this.buildNewData(query.targets[index]);
+                temp = this.removePrompts(query.targets[index]);
                 queryObject.targets.push(temp);
             }
             if (typeof query.rangeRaw != 'undefined') {
@@ -134,8 +144,10 @@ export class NetSpyGlassDatasource {
      */
     query(options) {
         var data = this.buildQuery(options);
-        var query = JSON.stringify(data)
-        // replace templated variables
+        var target = data.targets[0];
+        // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
+        target.sortByEl = (target.sortByEl !== 'none') ? 'metric:' + target.sortByEl : target.sortByEl;
+        var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
         return this._apiCall(this.endpoints.query, 'POST', query);
     }
@@ -180,8 +192,25 @@ export class NetSpyGlassDatasource {
      * generic query. Grafana calls this function when it needs to get list of values for a dashboard
      * template variable.
      *
-     * Note that NetSpyGlass /catalog/ requests return a list of strings, but plugin requires
-     * list of {text: AA, value: BB} (where AA and BB can be the same)
+     * User enters query in JSON Format, e.g.
+     *
+     * {"variable":"cpuUtil","columns":"device"}
+     *
+     * User is responsible for setting value of the "columns" to what they want to receive back. This can be
+     * "device", "component" or tag facet
+     *
+     * This function forces request type=table even if user specified something else.
+     *
+     * Server returns data in the following format:
+     *
+     * [ {
+     *   "columns" : [ { "text" : "device" } ],
+     *   "rows" : [ [ "synas1" ], [ "ex2200" ] ],
+     *   "type" : "table"
+     * } ]
+     *
+     * "rows" is a list of lists because normally this query can return multiple columns.
+     * For the purpose of dashboard template we use only the first column if request specified multiple.
      *
      * @param query     query object as text string
      * @returns {Promise.<TResult>}
@@ -189,15 +218,14 @@ export class NetSpyGlassDatasource {
     metricFindQuery(query) {
         var interpolated;
         try {
-            // replace templated variables
             interpolated = this.templateSrv.replace(query, query.scopedVars);
         } catch (err) {
             return this.$q.reject(err);
         }
         var data = this.buildQuery(interpolated);
-        var columns = data.targets[0].columns;
-        var endpoint = this.endpointsBase + '/catalog/' + columns;
-        return this._apiCall(endpoint, 'POST', JSON.stringify(data)).then(this.mapToTextText);
+        var target = data.targets[0];
+        target.format = 'table';
+        return this._apiCall(this.endpoints.query, 'POST', JSON.stringify(data)).then(NetSpyGlassDatasource.tableResponseRowsToMap);
     }
 
     findCategoriesQuery() {
@@ -211,37 +239,57 @@ export class NetSpyGlassDatasource {
 
     findDevices(options) {
         var data = this.buildQuery(options);
-        data.targets[0].device = '';  // erase to ignore current selection in the dialog
-        var query = JSON.stringify(data)
-        // replace templated variables
+        var target = data.targets[0];
+        target.device = '';  // erase to ignore current selection in the dialog
+        target.component = '';
+        target.columns = 'device';
+        target.unique = 'device';
+        target.sortByEl = 'device:ascending';
+        target.format = 'table';
+        target.limit = -1;
+        var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.device, 'POST', query).then(this.mapToTextValue);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
     }
 
     findComponents(options) {
         var data = this.buildQuery(options);
-        data.targets[0].component = '';  // erase to ignore current selection in the dialog
+        var target = data.targets[0];
+        target.component = '';  // erase to ignore current selection in the dialog
+        target.columns = 'component';
+        target.unique = 'component';
+        target.sortByEl = 'component:ascending';
+        target.format = 'table';
+        target.limit = -1;
         var query = JSON.stringify(data);
-        // replace templated variables
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.component, 'POST', query).then(this.mapToTextValue);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
     }
 
     findTagFacets(options) {
         var data = this.buildQuery(options);
-        var query = JSON.stringify(data)
-        // replace templated variables
+        var target = data.targets[0];
+        target.columns = 'tagFacet';
+        target.unique = 'tagFacet';
+        target.sortByEl = 'tagFacet:ascending';
+        target.format = 'table';
+        target.limit = -1;
+        var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.tagFacet, 'POST', query).then(this.mapToTextValue);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
     }
 
     findTagWordsQuery(options, facet) {
         var data = this.buildQuery(options);
-        var query = JSON.stringify(data)
-        // replace templated variables
+        var target = data.targets[0];
+        target.columns = facet;
+        target.unique = facet;
+        target.sortByEl = facet + ':ascending';
+        target.format = 'table';
+        target.limit = -1;
+        var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        var endpoint = this.endpointsBase + '/catalog/tags/' + facet + this.accessToken;
-        return this._apiCall(endpoint, 'POST', query).then(this.mapToTextValue);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
     }
 
     mapToTextValue(result) {
@@ -292,7 +340,7 @@ export class NetSpyGlassDatasource {
                 sortByEl: this.templateSrv.replace(target.sortByEl),
                 selector: this.templateSrv.replace(target.selector),
                 format: this.templateSrv.replace(target.format),
-                limit: (target.limit === '') ? -1 : this.templateSrv.replace(target.limit),
+                limit: (target.limit === '') ? -1 : target.limit,
                 columns: this.templateSrv.replace(target.columns),
                 alias: this.templateSrv.replace(target.alias, options.scopedVars),
                 refId: target.refId,

@@ -25,6 +25,18 @@ export class NetSpyGlassDatasource {
         });
     }
 
+    static mapToTextValue(result) {
+        return _.map(result.data, (d, i) => {
+            return {text: d, value: i};
+        });
+    }
+
+    static mapToTextText(result) {
+        return _.map(result.data, (d, i) => {
+            return {text: d, value: d};
+        });
+    }
+
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
         this.type = instanceSettings.type;
         this.url = instanceSettings.url;
@@ -51,7 +63,7 @@ export class NetSpyGlassDatasource {
         this.targetName.device = 'select device';
         this.targetName.component = 'select component';
         this.targetName.sortByEl = 'select sorting';
-        this.targetName.selector = 'select selector';
+        this.targetName.selector = 'choose selector';
         this.targetName.limit = 'select limit';
         this.targetName.group = 'select group';
         this.targetName.tagFacet = this.blankDropDownElement;
@@ -63,59 +75,6 @@ export class NetSpyGlassDatasource {
         this.targetName.unique = '';
 
         this.clearString = '-- clear selection --';
-    }
-
-
-    removePrompts(item) {
-        var temp = {};
-        for (var key in item) {
-            if (!(key in this.targetName)) {
-                continue;
-            }
-            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.targetName[key]) {
-                continue;
-            }
-            if (key == 'tagFacet' || key == 'tagWord') {
-                continue;
-            }
-            if (key == 'tagData') {
-                temp[key] = item[key].filter(t => !this.isBlankTagMatch(t));
-            } else {
-                temp[key] = item[key];
-            }
-        }
-        return temp;
-    }
-
-    isBlankTagMatch(tm) {
-        if (tm.tagFacet === "" || tm.tagFacet === this.blankDropDownElement) return true;
-        return !!(tm.tagWord === "" || tm.tagWord === this.blankDropDownElement);
-    }
-
-    buildQuery(options) {
-        var query = this.buildQueryParameters(options);
-        query.targets = query.targets.filter(t => !t.hide);
-        var queryObject = {
-            targets: []
-        };
-        var temp;
-        if (query.targets.length <= 0) {
-            temp = this.removePrompts(query);
-            queryObject.targets.push(temp);
-        } else {
-            var index;
-            for (index = query.targets.length - 1; index >= 0; --index) {
-                temp = this.removePrompts(query.targets[index]);
-                queryObject.targets.push(temp);
-            }
-            if (typeof query.rangeRaw != 'undefined') {
-                queryObject.from = query.rangeRaw.from;
-                queryObject.until = query.rangeRaw.to;
-                queryObject.groupByTime = query.interval;
-            }
-            queryObject.scopedVars = '$variable';
-        }
-        return queryObject;
     }
 
     /**
@@ -143,7 +102,7 @@ export class NetSpyGlassDatasource {
      * @returns {*}
      */
     query(options) {
-        var data = this.buildQuery(options);
+        var data = this.buildQueryFromQueryDialogData(options);
         var target = data.targets[0];
         // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
         target.sortByEl = (target.sortByEl !== 'none') ? 'metric:' + target.sortByEl : target.sortByEl;
@@ -222,19 +181,19 @@ export class NetSpyGlassDatasource {
         } catch (err) {
             return this.$q.reject(err);
         }
-        var data = this.buildQuery(interpolated);
+        var data = this.buildQueryFromText(interpolated);
         var target = data.targets[0];
-        target.format = 'table';
-        return this._apiCall(this.endpoints.query, 'POST', JSON.stringify(data)).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+        target.format = 'list';
+        return this._apiCall(this.endpoints.query, 'POST', JSON.stringify(data)).then(NetSpyGlassDatasource.mapToTextText);
     }
 
     findCategoriesQuery() {
-        return this._apiCall(this.endpoints.category, 'POST', '').then(this.mapToTextValue);
+        return this._apiCall(this.endpoints.category, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
     }
 
     findVariablesQuery(options) {
         var endpoint = this.endpoints.variable + options.category + this.accessToken;
-        return this._apiCall(endpoint, 'POST', '').then(this.mapToTextValue);
+        return this._apiCall(endpoint, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
     }
 
     findDevices(options) {
@@ -245,11 +204,11 @@ export class NetSpyGlassDatasource {
         target.columns = 'device';
         target.unique = 'device';
         target.sortByEl = 'device:ascending';
-        target.format = 'table';
+        target.format = 'list';
         target.limit = -1;
         var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
     }
 
     findComponents(options) {
@@ -259,11 +218,11 @@ export class NetSpyGlassDatasource {
         target.columns = 'component';
         target.unique = 'component';
         target.sortByEl = 'component:ascending';
-        target.format = 'table';
+        target.format = 'list';
         target.limit = -1;
         var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
     }
 
     findTagFacets(options) {
@@ -272,11 +231,11 @@ export class NetSpyGlassDatasource {
         target.columns = 'tagFacet';
         target.unique = 'tagFacet';
         target.sortByEl = 'tagFacet:ascending';
-        target.format = 'table';
+        target.format = 'list';
         target.limit = -1;
         var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
     }
 
     findTagWordsQuery(options, facet) {
@@ -285,48 +244,18 @@ export class NetSpyGlassDatasource {
         target.columns = facet;
         target.unique = facet;
         target.sortByEl = facet + ':ascending';
-        target.format = 'table';
+        target.format = 'list';
         target.limit = -1;
         var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
-    }
-
-    mapToTextValue(result) {
-        return _.map(result.data, (d, i) => {
-            return {text: d, value: i};
-        });
-    }
-
-    mapToTextText(result) {
-        return _.map(result.data, (d, i) => {
-            return {text: d, value: d};
-        });
-    }
-
-    debug(ctrl) {
-        console.log(ctrl);
+        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
     }
 
     /**
      * when building graphing query, this function is called with JS object that has at least
      * attribute 'targets'
-     *
-     * when building query for the templating variable in dashboard template, this is called with
-     * whatever user entered in the Query Options -> Query input field (a string)
-     *
-     * @param options
-     * @returns {*}
      */
-    buildQueryParameters(options) {
-
-        if (typeof options === 'string') {
-            var obj = {
-                'targets': []
-            };
-            obj.targets.push(JSON.parse(options));
-            return obj;
-        }
+    templateSrvParameters(options) {
 
         var targets = _.map(options.targets, target => {
             return {
@@ -353,4 +282,80 @@ export class NetSpyGlassDatasource {
 
         return options;
     }
+
+    removePrompts(item) {
+        var temp = {};
+        for (var key in item) {
+            if (!(key in this.targetName)) {
+                continue;
+            }
+            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.targetName[key]) {
+                continue;
+            }
+            if (key == 'tagFacet' || key == 'tagWord') {
+                continue;
+            }
+            if (key == 'tagData') {
+                temp[key] = item[key].filter(t => !this.isBlankTagMatch(t));
+            } else {
+                temp[key] = item[key];
+            }
+        }
+        return temp;
+    }
+
+    isBlankTagMatch(tm) {
+        if (tm.tagFacet === "" || tm.tagFacet === this.blankDropDownElement) return true;
+        return !!(tm.tagWord === "" || tm.tagWord === this.blankDropDownElement);
+    }
+
+    /**
+     * build query object from an object that represents single query target. This
+     * is called to get items for drop-down lists in the graph or table panel query dialog.
+     */
+    buildQuery(options) {
+        var query = this.templateSrvParameters(options);
+        query.targets = query.targets.filter(t => !t.hide);
+        var queryObject = {
+            targets: []
+        };
+        queryObject.targets.push(this.removePrompts(query));
+        return queryObject;
+    }
+
+    /**
+     * this function is called when we need to build query object from
+     * query entered as text string (e.g. in dashboard template dialog)
+     */
+    buildQueryFromText(options) {
+        var query = {
+            'targets': []
+        };
+        query.targets.push(JSON.parse(options));
+        return this.buildQueryFromQueryDialogData(query);
+    }
+
+    /**
+     * build query object from query dialog that can have multiple targets. This
+     * is used when plugin builds query for the graph or table panel
+     */
+    buildQueryFromQueryDialogData(options) {
+        var query = this.templateSrvParameters(options);
+        query.targets = query.targets.filter(t => !t.hide);
+        var queryObject = {
+            targets: []
+        };
+        var index;
+        for (index = query.targets.length - 1; index >= 0; --index) {
+            queryObject.targets.push(this.removePrompts(query.targets[index]));
+        }
+        if (typeof query.rangeRaw != 'undefined') {
+            queryObject.from = query.rangeRaw.from;
+            queryObject.until = query.rangeRaw.to;
+            queryObject.groupByTime = query.interval;
+        }
+        queryObject.scopedVars = '$variable';
+        return queryObject;
+    }
+
 }

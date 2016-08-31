@@ -42,6 +42,20 @@ System.register(['lodash'], function (_export, _context) {
                             return { text: d[0], value: i };
                         });
                     }
+                }, {
+                    key: 'mapToTextValue',
+                    value: function mapToTextValue(result) {
+                        return _.map(result.data, function (d, i) {
+                            return { text: d, value: i };
+                        });
+                    }
+                }, {
+                    key: 'mapToTextText',
+                    value: function mapToTextText(result) {
+                        return _.map(result.data, function (d, i) {
+                            return { text: d, value: d };
+                        });
+                    }
                 }]);
 
                 function NetSpyGlassDatasource(instanceSettings, $q, backendSrv, templateSrv) {
@@ -72,7 +86,7 @@ System.register(['lodash'], function (_export, _context) {
                     this.targetName.device = 'select device';
                     this.targetName.component = 'select component';
                     this.targetName.sortByEl = 'select sorting';
-                    this.targetName.selector = 'select selector';
+                    this.targetName.selector = 'choose selector';
                     this.targetName.limit = 'select limit';
                     this.targetName.group = 'select group';
                     this.targetName.tagFacet = this.blankDropDownElement;
@@ -86,68 +100,18 @@ System.register(['lodash'], function (_export, _context) {
                     this.clearString = '-- clear selection --';
                 }
 
-                _createClass(NetSpyGlassDatasource, [{
-                    key: 'removePrompts',
-                    value: function removePrompts(item) {
-                        var _this = this;
+                /**
+                 * makes actual API call to NetSpyGlass server
+                 *
+                 * @param endpoint   API call endpoint
+                 * @param method     GET or POST
+                 * @param query      query object
+                 * @returns {*}
+                 * @private
+                 */
 
-                        var temp = {};
-                        for (var key in item) {
-                            if (!(key in this.targetName)) {
-                                continue;
-                            }
-                            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.targetName[key]) {
-                                continue;
-                            }
-                            if (key == 'tagFacet' || key == 'tagWord') {
-                                continue;
-                            }
-                            if (key == 'tagData') {
-                                temp[key] = item[key].filter(function (t) {
-                                    return !_this.isBlankTagMatch(t);
-                                });
-                            } else {
-                                temp[key] = item[key];
-                            }
-                        }
-                        return temp;
-                    }
-                }, {
-                    key: 'isBlankTagMatch',
-                    value: function isBlankTagMatch(tm) {
-                        if (tm.tagFacet === "" || tm.tagFacet === this.blankDropDownElement) return true;
-                        return !!(tm.tagWord === "" || tm.tagWord === this.blankDropDownElement);
-                    }
-                }, {
-                    key: 'buildQuery',
-                    value: function buildQuery(options) {
-                        var query = this.buildQueryParameters(options);
-                        query.targets = query.targets.filter(function (t) {
-                            return !t.hide;
-                        });
-                        var queryObject = {
-                            targets: []
-                        };
-                        var temp;
-                        if (query.targets.length <= 0) {
-                            temp = this.removePrompts(query);
-                            queryObject.targets.push(temp);
-                        } else {
-                            var index;
-                            for (index = query.targets.length - 1; index >= 0; --index) {
-                                temp = this.removePrompts(query.targets[index]);
-                                queryObject.targets.push(temp);
-                            }
-                            if (typeof query.rangeRaw != 'undefined') {
-                                queryObject.from = query.rangeRaw.from;
-                                queryObject.until = query.rangeRaw.to;
-                                queryObject.groupByTime = query.interval;
-                            }
-                            queryObject.scopedVars = '$variable';
-                        }
-                        return queryObject;
-                    }
-                }, {
+
+                _createClass(NetSpyGlassDatasource, [{
                     key: '_apiCall',
                     value: function _apiCall(endpoint, method, query) {
                         return this.backendSrv.datasourceRequest({
@@ -160,7 +124,7 @@ System.register(['lodash'], function (_export, _context) {
                 }, {
                     key: 'query',
                     value: function query(options) {
-                        var data = this.buildQuery(options);
+                        var data = this.buildQueryFromQueryDialogData(options);
                         var target = data.targets[0];
                         // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
                         target.sortByEl = target.sortByEl !== 'none' ? 'metric:' + target.sortByEl : target.sortByEl;
@@ -213,21 +177,21 @@ System.register(['lodash'], function (_export, _context) {
                         } catch (err) {
                             return this.$q.reject(err);
                         }
-                        var data = this.buildQuery(interpolated);
+                        var data = this.buildQueryFromText(interpolated);
                         var target = data.targets[0];
-                        target.format = 'table';
-                        return this._apiCall(this.endpoints.query, 'POST', JSON.stringify(data)).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+                        target.format = 'list';
+                        return this._apiCall(this.endpoints.query, 'POST', JSON.stringify(data)).then(NetSpyGlassDatasource.mapToTextText);
                     }
                 }, {
                     key: 'findCategoriesQuery',
                     value: function findCategoriesQuery() {
-                        return this._apiCall(this.endpoints.category, 'POST', '').then(this.mapToTextValue);
+                        return this._apiCall(this.endpoints.category, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
                     }
                 }, {
                     key: 'findVariablesQuery',
                     value: function findVariablesQuery(options) {
                         var endpoint = this.endpoints.variable + options.category + this.accessToken;
-                        return this._apiCall(endpoint, 'POST', '').then(this.mapToTextValue);
+                        return this._apiCall(endpoint, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
                     }
                 }, {
                     key: 'findDevices',
@@ -239,11 +203,11 @@ System.register(['lodash'], function (_export, _context) {
                         target.columns = 'device';
                         target.unique = 'device';
                         target.sortByEl = 'device:ascending';
-                        target.format = 'table';
+                        target.format = 'list';
                         target.limit = -1;
                         var query = JSON.stringify(data);
                         query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
                     }
                 }, {
                     key: 'findComponents',
@@ -254,11 +218,11 @@ System.register(['lodash'], function (_export, _context) {
                         target.columns = 'component';
                         target.unique = 'component';
                         target.sortByEl = 'component:ascending';
-                        target.format = 'table';
+                        target.format = 'list';
                         target.limit = -1;
                         var query = JSON.stringify(data);
                         query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
                     }
                 }, {
                     key: 'findTagFacets',
@@ -268,11 +232,11 @@ System.register(['lodash'], function (_export, _context) {
                         target.columns = 'tagFacet';
                         target.unique = 'tagFacet';
                         target.sortByEl = 'tagFacet:ascending';
-                        target.format = 'table';
+                        target.format = 'list';
                         target.limit = -1;
                         var query = JSON.stringify(data);
                         query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
                     }
                 }, {
                     key: 'findTagWordsQuery',
@@ -282,59 +246,32 @@ System.register(['lodash'], function (_export, _context) {
                         target.columns = facet;
                         target.unique = facet;
                         target.sortByEl = facet + ':ascending';
-                        target.format = 'table';
+                        target.format = 'list';
                         target.limit = -1;
                         var query = JSON.stringify(data);
                         query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.tableResponseRowsToMap);
+                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
                     }
                 }, {
-                    key: 'mapToTextValue',
-                    value: function mapToTextValue(result) {
-                        return _.map(result.data, function (d, i) {
-                            return { text: d, value: i };
-                        });
-                    }
-                }, {
-                    key: 'mapToTextText',
-                    value: function mapToTextText(result) {
-                        return _.map(result.data, function (d, i) {
-                            return { text: d, value: d };
-                        });
-                    }
-                }, {
-                    key: 'debug',
-                    value: function debug(ctrl) {
-                        console.log(ctrl);
-                    }
-                }, {
-                    key: 'buildQueryParameters',
-                    value: function buildQueryParameters(options) {
-                        var _this2 = this;
-
-                        if (typeof options === 'string') {
-                            var obj = {
-                                'targets': []
-                            };
-                            obj.targets.push(JSON.parse(options));
-                            return obj;
-                        }
+                    key: 'templateSrvParameters',
+                    value: function templateSrvParameters(options) {
+                        var _this = this;
 
                         var targets = _.map(options.targets, function (target) {
                             return {
-                                category: _this2.templateSrv.replace(target.category),
-                                variable: _this2.templateSrv.replace(target.variable),
-                                device: _this2.templateSrv.replace(target.device),
-                                component: _this2.templateSrv.replace(target.component),
-                                tagFacet: _this2.templateSrv.replace(target.tagFacet),
-                                tagOperation: _this2.templateSrv.replace(target.tagOperation),
-                                tagWord: _this2.templateSrv.replace(target.tagWord),
-                                sortByEl: _this2.templateSrv.replace(target.sortByEl),
-                                selector: _this2.templateSrv.replace(target.selector),
-                                format: _this2.templateSrv.replace(target.format),
+                                category: _this.templateSrv.replace(target.category),
+                                variable: _this.templateSrv.replace(target.variable),
+                                device: _this.templateSrv.replace(target.device),
+                                component: _this.templateSrv.replace(target.component),
+                                tagFacet: _this.templateSrv.replace(target.tagFacet),
+                                tagOperation: _this.templateSrv.replace(target.tagOperation),
+                                tagWord: _this.templateSrv.replace(target.tagWord),
+                                sortByEl: _this.templateSrv.replace(target.sortByEl),
+                                selector: _this.templateSrv.replace(target.selector),
+                                format: _this.templateSrv.replace(target.format),
                                 limit: target.limit === '' ? -1 : target.limit,
-                                columns: _this2.templateSrv.replace(target.columns),
-                                alias: _this2.templateSrv.replace(target.alias, options.scopedVars),
+                                columns: _this.templateSrv.replace(target.columns),
+                                alias: _this.templateSrv.replace(target.alias, options.scopedVars),
                                 refId: target.refId,
                                 hide: target.hide,
                                 tagData: target.tagData
@@ -344,6 +281,82 @@ System.register(['lodash'], function (_export, _context) {
                         options.targets = targets;
 
                         return options;
+                    }
+                }, {
+                    key: 'removePrompts',
+                    value: function removePrompts(item) {
+                        var _this2 = this;
+
+                        var temp = {};
+                        for (var key in item) {
+                            if (!(key in this.targetName)) {
+                                continue;
+                            }
+                            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.targetName[key]) {
+                                continue;
+                            }
+                            if (key == 'tagFacet' || key == 'tagWord') {
+                                continue;
+                            }
+                            if (key == 'tagData') {
+                                temp[key] = item[key].filter(function (t) {
+                                    return !_this2.isBlankTagMatch(t);
+                                });
+                            } else {
+                                temp[key] = item[key];
+                            }
+                        }
+                        return temp;
+                    }
+                }, {
+                    key: 'isBlankTagMatch',
+                    value: function isBlankTagMatch(tm) {
+                        if (tm.tagFacet === "" || tm.tagFacet === this.blankDropDownElement) return true;
+                        return !!(tm.tagWord === "" || tm.tagWord === this.blankDropDownElement);
+                    }
+                }, {
+                    key: 'buildQuery',
+                    value: function buildQuery(options) {
+                        var query = this.templateSrvParameters(options);
+                        query.targets = query.targets.filter(function (t) {
+                            return !t.hide;
+                        });
+                        var queryObject = {
+                            targets: []
+                        };
+                        queryObject.targets.push(this.removePrompts(query));
+                        return queryObject;
+                    }
+                }, {
+                    key: 'buildQueryFromText',
+                    value: function buildQueryFromText(options) {
+                        var query = {
+                            'targets': []
+                        };
+                        query.targets.push(JSON.parse(options));
+                        return this.buildQueryFromQueryDialogData(query);
+                    }
+                }, {
+                    key: 'buildQueryFromQueryDialogData',
+                    value: function buildQueryFromQueryDialogData(options) {
+                        var query = this.templateSrvParameters(options);
+                        query.targets = query.targets.filter(function (t) {
+                            return !t.hide;
+                        });
+                        var queryObject = {
+                            targets: []
+                        };
+                        var index;
+                        for (index = query.targets.length - 1; index >= 0; --index) {
+                            queryObject.targets.push(this.removePrompts(query.targets[index]));
+                        }
+                        if (typeof query.rangeRaw != 'undefined') {
+                            queryObject.from = query.rangeRaw.from;
+                            queryObject.until = query.rangeRaw.to;
+                            queryObject.groupByTime = query.interval;
+                        }
+                        queryObject.scopedVars = '$variable';
+                        return queryObject;
                     }
                 }]);
 

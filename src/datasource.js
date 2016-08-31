@@ -15,6 +15,27 @@ export class NetSpyGlassDatasource {
         });
     }
 
+    /**
+     * we get tag matches from the dialog in the form
+     *
+     * [{"tagFacet":"Explicit","tagWord":"core","tagOperation":"=="}, {"tagFacet":"Vendor","tagWord":"Cisco","tagOperation":"<>"}]
+     *
+     * transform this to
+     *
+     * "Explicit.core, !Vendor.Cisco"
+     *
+     */
+    static transformTagMatch(tagMatches) {
+        var tags = [];
+        var idx;
+        for (idx = 0; idx < tagMatches.length; idx++) {
+            var tm = tagMatches[idx];
+            var tt = ((tm.tagOperation === '<>') ? '!' : '') + tm.tagFacet + ((tm.tagWord !== '') ? ('.' + tm.tagWord) : '');
+            tags.push(tt);
+        }
+        return tags.join(',');
+    }
+
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
         this.type = instanceSettings.type;
         this.url = instanceSettings.url;
@@ -314,7 +335,10 @@ export class NetSpyGlassDatasource {
         };
         var index;
         for (index = query.targets.length - 1; index >= 0; --index) {
-            queryObject.targets.push(this.removeBlanks(query.targets[index]));
+            var target = this.removeBlanks(query.targets[index]);
+            target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
+            delete target.tagData;
+            queryObject.targets.push(target);
         }
         if (typeof query.rangeRaw != 'undefined') {
             queryObject.from = query.rangeRaw.from;

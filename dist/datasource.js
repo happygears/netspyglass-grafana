@@ -49,6 +49,18 @@ System.register(['lodash'], function (_export, _context) {
                             return { text: d, value: d };
                         });
                     }
+                }, {
+                    key: 'transformTagMatch',
+                    value: function transformTagMatch(tagMatches) {
+                        var tags = [];
+                        var idx;
+                        for (idx = 0; idx < tagMatches.length; idx++) {
+                            var tm = tagMatches[idx];
+                            var tt = (tm.tagOperation === '<>' ? '!' : '') + tm.tagFacet + (tm.tagWord !== '' ? '.' + tm.tagWord : '');
+                            tags.push(tt);
+                        }
+                        return tags.join(',');
+                    }
                 }]);
 
                 function NetSpyGlassDatasource(instanceSettings, $q, backendSrv, templateSrv) {
@@ -329,7 +341,10 @@ System.register(['lodash'], function (_export, _context) {
                         };
                         var index;
                         for (index = query.targets.length - 1; index >= 0; --index) {
-                            queryObject.targets.push(this.removeBlanks(query.targets[index]));
+                            var target = this.removeBlanks(query.targets[index]);
+                            target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
+                            delete target.tagData;
+                            queryObject.targets.push(target);
                         }
                         if (typeof query.rangeRaw != 'undefined') {
                             queryObject.from = query.rangeRaw.from;

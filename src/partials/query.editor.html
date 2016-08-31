@@ -142,6 +142,14 @@
 
     <div class="gf-form-inline" style="margin-bottom: 20px">
 
+        <div class="gf-form" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
+
+            <div class="gf-form max-width-30">
+                <label class="gf-form-label query-keyword width-8">Alias by</label>
+                <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck="false" placeholder="Naming pattern" ng-blur="ctrl.refresh()">
+            </div>
+        </div>
+
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">Format as</span>
@@ -180,12 +188,5 @@
         </div>
     </div>
 
-    <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
-
-        <div class="gf-form max-width-30">
-            <label class="gf-form-label query-keyword width-8">ALIAS BY</label>
-            <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck="false" placeholder="Naming pattern" ng-blur="ctrl.refresh()">
-        </div>
-    </div>
 
 </query-editor-row>

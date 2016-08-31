@@ -55,6 +55,7 @@ export class NetSpyGlassDatasource {
         this.blankDropDownElement = '---';
 
         this.targetName = {};
+        this.targetName.alias = '';
         this.targetName.variable = 'select variable';
         this.targetName.device = 'select device';
         this.targetName.component = 'select component';
@@ -69,6 +70,7 @@ export class NetSpyGlassDatasource {
         this.targetName.format = '';
         this.targetName.columns = '';
         this.targetName.unique = '';
+        this.targetName.refId = '';
 
         this.clearString = '-- clear selection --';
     }
@@ -98,14 +100,71 @@ export class NetSpyGlassDatasource {
      * @returns {*}
      */
     query(options) {
+        var self = this;
         var data = this.buildQueryFromQueryDialogData(options);
-        var target = data.targets[0];
-        // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
-        target.sortByEl = (target.sortByEl !== 'none') ? 'metric:' + target.sortByEl : target.sortByEl;
+        var queryTargets = {};
+        for (var i = 0; i < data.targets.length; i++) {
+            var target = data.targets[i];
+            // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
+            target.sortByEl = (target.sortByEl !== 'none') ? 'metric:' + target.sortByEl : target.sortByEl;
+            queryTargets[target.id] = target;
+        }
         var query = JSON.stringify(data);
         query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query);
+        var response = this._apiCall(this.endpoints.query, 'POST', query);
+        // then: function(a,b,c)
+        return response.then( response => {
+            var data = response.data;
+            if (!data) {
+                return [];
+            }
+
+            // data is an Array of these:
+            //
+            // component:  "eth0"
+            // datapoints: Array[121]
+            // device:     "synas1"
+            // target:     "ifInRate:synas1:eth0"
+            // variable:   "ifInRate"
+
+            var seriesList = [];
+            for (i = 0; i < data.length; i++) {
+                var series = data[i];
+                if (!series || !series.datapoints) { continue; }
+
+                var target = queryTargets[series.id];
+                if (!target) continue;
+
+                var alias = target.alias;
+                if (alias) {
+                    series.target = self.getSeriesName(series, alias);
+                }
+
+                seriesList.push(series);
+            }
+
+            response.data = seriesList;
+            return response;
+        });
     }
+
+    getSeriesName(series, alias) {
+        var regex = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
+
+        return alias.replace(regex, function(match, g1, g2) {
+            var group = g1 || g2;
+            var segIndex = parseInt(group, 10);
+
+            if (group === 'm' || group === 'measurement') { return series.variable; }
+            if (group === 'device') return series.device;
+            if (group === 'component') return series.component;
+            if (group.indexOf('tag_') !== 0) { return match; }
+
+            var tag = group.replace('tag_', '');
+            if (!series.tags) { return match; }
+            return series.tags[tag];
+        });
+    };
 
     // Required
     // Used for testing datasource in datasource configuration page
@@ -338,6 +397,7 @@ export class NetSpyGlassDatasource {
             var target = this.removeBlanks(query.targets[index]);
             target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
             delete target.tagData;
+            target.id = target.refId;
             queryObject.targets.push(target);
         }
         if (typeof query.rangeRaw != 'undefined') {

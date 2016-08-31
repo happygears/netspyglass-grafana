@@ -36,13 +36,6 @@ System.register(['lodash'], function (_export, _context) {
 
             _export('NetSpyGlassDatasource', NetSpyGlassDatasource = function () {
                 _createClass(NetSpyGlassDatasource, null, [{
-                    key: 'tableResponseRowsToMap',
-                    value: function tableResponseRowsToMap(response) {
-                        return _.map(response.data[0].rows, function (d, i) {
-                            return { text: d[0], value: i };
-                        });
-                    }
-                }, {
                     key: 'mapToTextValue',
                     value: function mapToTextValue(result) {
                         return _.map(result.data, function (d, i) {
@@ -73,9 +66,6 @@ System.register(['lodash'], function (_export, _context) {
                     this.endpoints = {};
                     this.endpoints.category = this.endpointsBase + '/catalog/categories/list' + this.accessToken;
                     this.endpoints.variable = this.endpointsBase + '/catalog/categories/';
-                    // this.endpoints.device = this.endpointsBase + '/catalog/devices' + this.accessToken;
-                    // this.endpoints.component = this.endpointsBase + '/catalog/components' + this.accessToken;
-                    // this.endpoints.tagFacet = this.endpointsBase + '/catalog/tags/facets' + this.accessToken;
                     this.endpoints.query = this.endpointsBase + '/query' + this.accessToken;
                     this.endpoints.test = this.endpointsBase + '/test' + this.accessToken;
 
@@ -254,10 +244,10 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'templateSrvParameters',
-                    value: function templateSrvParameters(options) {
+                    value: function templateSrvParameters(queryObject) {
                         var _this = this;
 
-                        var targets = _.map(options.targets, function (target) {
+                        queryObject.targets = _.map(queryObject.targets, function (target) {
                             return {
                                 category: _this.templateSrv.replace(target.category),
                                 variable: _this.templateSrv.replace(target.variable),
@@ -271,20 +261,17 @@ System.register(['lodash'], function (_export, _context) {
                                 format: _this.templateSrv.replace(target.format),
                                 limit: target.limit === '' ? -1 : target.limit,
                                 columns: _this.templateSrv.replace(target.columns),
-                                alias: _this.templateSrv.replace(target.alias, options.scopedVars),
+                                alias: _this.templateSrv.replace(target.alias, queryObject.scopedVars),
                                 refId: target.refId,
                                 hide: target.hide,
                                 tagData: target.tagData
                             };
                         });
-
-                        options.targets = targets;
-
-                        return options;
+                        return queryObject;
                     }
                 }, {
-                    key: 'removePrompts',
-                    value: function removePrompts(item) {
+                    key: 'removeBlanks',
+                    value: function removeBlanks(item) {
                         var _this2 = this;
 
                         var temp = {};
@@ -317,29 +304,23 @@ System.register(['lodash'], function (_export, _context) {
                 }, {
                     key: 'buildQuery',
                     value: function buildQuery(options) {
-                        var query = this.templateSrvParameters(options);
-                        query.targets = query.targets.filter(function (t) {
-                            return !t.hide;
-                        });
                         var queryObject = {
-                            targets: []
+                            targets: [options]
                         };
-                        queryObject.targets.push(this.removePrompts(query));
-                        return queryObject;
+                        return this.buildQueryFromQueryDialogData(queryObject);
                     }
                 }, {
                     key: 'buildQueryFromText',
                     value: function buildQueryFromText(options) {
-                        var query = {
-                            'targets': []
+                        var queryObject = {
+                            targets: [JSON.parse(options)]
                         };
-                        query.targets.push(JSON.parse(options));
-                        return this.buildQueryFromQueryDialogData(query);
+                        return this.buildQueryFromQueryDialogData(queryObject);
                     }
                 }, {
                     key: 'buildQueryFromQueryDialogData',
-                    value: function buildQueryFromQueryDialogData(options) {
-                        var query = this.templateSrvParameters(options);
+                    value: function buildQueryFromQueryDialogData(query) {
+                        this.templateSrvParameters(query);
                         query.targets = query.targets.filter(function (t) {
                             return !t.hide;
                         });
@@ -348,7 +329,7 @@ System.register(['lodash'], function (_export, _context) {
                         };
                         var index;
                         for (index = query.targets.length - 1; index >= 0; --index) {
-                            queryObject.targets.push(this.removePrompts(query.targets[index]));
+                            queryObject.targets.push(this.removeBlanks(query.targets[index]));
                         }
                         if (typeof query.rangeRaw != 'undefined') {
                             queryObject.from = query.rangeRaw.from;

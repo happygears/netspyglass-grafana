@@ -3,28 +3,6 @@ import _ from "lodash";
 
 export class NetSpyGlassDatasource {
 
-    /**
-     * Convert server's response to a map where key and value are taken from the first
-     * column. Request is assumed to have been in the format "table".
-     *
-     * Server returns data in the following format:
-     *
-     * [ {
-          "columns" : [ { "text" : "device" } ],
-          "rows" : [ [ "synas1" ], [ "ex2200" ] ],
-          "type" : "table"
-        } ]
-     *
-     * "rows" is a list of lists because normally this query can return multiple columns.
-     * For the purpose of dashboard template we use only the first column if request specified multiple.
-     *
-     */
-    static tableResponseRowsToMap(response) {
-        return _.map(response.data[0].rows, (d, i) => {
-            return {text: d[0], value: i};
-        });
-    }
-
     static mapToTextValue(result) {
         return _.map(result.data, (d, i) => {
             return {text: d, value: i};
@@ -50,9 +28,6 @@ export class NetSpyGlassDatasource {
         this.endpoints = {};
         this.endpoints.category = this.endpointsBase + '/catalog/categories/list' + this.accessToken;
         this.endpoints.variable = this.endpointsBase + '/catalog/categories/';
-        // this.endpoints.device = this.endpointsBase + '/catalog/devices' + this.accessToken;
-        // this.endpoints.component = this.endpointsBase + '/catalog/components' + this.accessToken;
-        // this.endpoints.tagFacet = this.endpointsBase + '/catalog/tags/facets' + this.accessToken;
         this.endpoints.query = this.endpointsBase + '/query' + this.accessToken;
         this.endpoints.test = this.endpointsBase + '/test' + this.accessToken;
 
@@ -255,9 +230,8 @@ export class NetSpyGlassDatasource {
      * when building graphing query, this function is called with JS object that has at least
      * attribute 'targets'
      */
-    templateSrvParameters(options) {
-
-        var targets = _.map(options.targets, target => {
+    templateSrvParameters(queryObject) {
+        queryObject.targets = _.map(queryObject.targets, target => {
             return {
                 category: this.templateSrv.replace(target.category),
                 variable: this.templateSrv.replace(target.variable),
@@ -271,19 +245,16 @@ export class NetSpyGlassDatasource {
                 format: this.templateSrv.replace(target.format),
                 limit: (target.limit === '') ? -1 : target.limit,
                 columns: this.templateSrv.replace(target.columns),
-                alias: this.templateSrv.replace(target.alias, options.scopedVars),
+                alias: this.templateSrv.replace(target.alias, queryObject.scopedVars),
                 refId: target.refId,
                 hide: target.hide,
                 tagData: target.tagData
             };
         });
-
-        options.targets = targets;
-
-        return options;
+        return queryObject;
     }
 
-    removePrompts(item) {
+    removeBlanks(item) {
         var temp = {};
         for (var key in item) {
             if (!(key in this.targetName)) {
@@ -314,13 +285,10 @@ export class NetSpyGlassDatasource {
      * is called to get items for drop-down lists in the graph or table panel query dialog.
      */
     buildQuery(options) {
-        var query = this.templateSrvParameters(options);
-        query.targets = query.targets.filter(t => !t.hide);
         var queryObject = {
-            targets: []
+            targets: [ options ]
         };
-        queryObject.targets.push(this.removePrompts(query));
-        return queryObject;
+        return this.buildQueryFromQueryDialogData(queryObject);
     }
 
     /**
@@ -328,26 +296,25 @@ export class NetSpyGlassDatasource {
      * query entered as text string (e.g. in dashboard template dialog)
      */
     buildQueryFromText(options) {
-        var query = {
-            'targets': []
+        var queryObject = {
+            targets: [ JSON.parse(options) ]
         };
-        query.targets.push(JSON.parse(options));
-        return this.buildQueryFromQueryDialogData(query);
+        return this.buildQueryFromQueryDialogData(queryObject);
     }
 
     /**
      * build query object from query dialog that can have multiple targets. This
      * is used when plugin builds query for the graph or table panel
      */
-    buildQueryFromQueryDialogData(options) {
-        var query = this.templateSrvParameters(options);
+    buildQueryFromQueryDialogData(query) {
+        this.templateSrvParameters(query);
         query.targets = query.targets.filter(t => !t.hide);
         var queryObject = {
             targets: []
         };
         var index;
         for (index = query.targets.length - 1; index >= 0; --index) {
-            queryObject.targets.push(this.removePrompts(query.targets[index]));
+            queryObject.targets.push(this.removeBlanks(query.targets[index]));
         }
         if (typeof query.rangeRaw != 'undefined') {
             queryObject.from = query.rangeRaw.from;

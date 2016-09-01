@@ -1,7 +1,7 @@
 {
-  "name": "kentik-app",
+  "name": "grafana-netspyglass",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,13 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raintank/kentik-app-poc.git"
+    "url": "https://github.com/happygears/netspyglass-grafana.git"
   },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/raintank/kentik-app-poc/issues"
-  },
+  "license": "Happy Gears EULA",
   "devDependencies": {
     "grunt": "~0.4.5",
     "babel": "~6.5.1",
@@ -40,5 +37,5 @@
     "lodash": "~4.0.0",
     "mocha": "^2.4.5"
   },
-  "homepage": "https://github.com/raintank/kentik-app-poc#readme"
+  "homepage": "http://www.happygears.net"
 }

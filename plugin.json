@@ -10,7 +10,7 @@
   },
 
   "metrics": true,
-  "annotations": true,
+  "annotations": false,
 
   "info": {
     "description": "NetSpyGlass Datasource",

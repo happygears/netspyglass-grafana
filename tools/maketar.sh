@@ -13,6 +13,11 @@ case $(uname -s) in
         ;;
 esac
 
+test -d dist || {
+    echo "Run this script at the top level of the directory tree"
+    exit 1
+}
+
 # "-s" used like this is BSD tar option. GNU tar also has "-s" but it has different function
 # Options "-c", "-f" and "--exclude" work the same way for BSD and GNU tar
 #

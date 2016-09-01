@@ -46,8 +46,7 @@ way to build interactive dashboards.
 
 Install using `grafana-cli`
 
-    ```sh
-    grafana-cli plugins install netspyglass-grafana
-    ```
+```sh  grafana-cli plugins install netspyglass-grafana
+```
 
 ### Tested with Grafana 3.1.1

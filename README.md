@@ -1,27 +1,53 @@
-## NetSpyGlass Data source 
+# NetSpyGlass data source plugin for Grafana 
+
+This data source enabled Grafana to query metrics collected and stored
+by [NetSpyGlass](http://www.happygears.net) server.
+
+NetSpyGlass is integrated network mapping and monitoring system that presents live monitoring 
+data as series of animated network maps. NetSpyGlass discovers your network using SNMP,
+builds a model that represents Layer2 connections and automatically configures itself to 
+monitor all aspects of network devices and servers, striving to be useful “out of the box” 
+with very little initial configuration and ongoing maintenance. 
+
+Administrator can write Python scripts that run inside of the server
+on every polling interval. These scripts operate with monitoring
+data and can be used to calculate new metrics derived from the collected "raw" data,
+for example various aggregates. Results produced by these scripts become
+part of the general data pool and are available for graphing with
+Grafana, as well as for alerts and reports.
+
+NetSpyGlass requires little effort to set up and keep up with your network 
+as it grows and can scale to thousands of devices and millions of metrics.
+
+
+## Features
+
+  - Flexible query editor with device, component and tags match
+  - Support for the Graph and Table panels
+  - Support for Dashboard template variables
+  - With this plugin, Grafana makes queries directly to NetSpyGlass
+    server to receive lists of available metrics, devices, components
+    and tags. This means it is agnostic with respect to the time series
+    database used by the NetSpyGlass server and can work with any of 
+    them (rrd, graphite, InfluxDb, hbase)
+  - 
+
+## Templated dashboards support
+
+Device name, component name or any tag defined in NetSpyGlass can be used
+as template variable. For example, this can be used to build an interactive 
+dashboard that can display information for a device you choose. Dashboard
+makes special query to NetSpyGlass server to receive list of devices. Once
+you choose the device, all panels in the dashboard switch to show data
+collected from this device. Component names or tags can be used in a similar
+way to build interactive dashboards.
 
 ## Installation
 
-1. make sure you have latest `node.js`
-2. install grunt:  `npm install -g grunt-cli` (see http://gruntjs.com/getting-started )
-3. install dependencies: `npm install`
-4. run `grunt`. This should build the project and put all generated files in subdirectory `dist`
-5. run script `maketar.sh`. This script produces archive `netspyglass-datasource.tar`
+Install using `grafana-cli`
 
-Unpack `netspyglass-datasource.tar` in the directory `/var/lib/grafana/plugins/`
-on the server where Grafana runs and run `service grafana-server restart`.
- 
-## Usage
+    ```sh
+    grafana-cli plugins install netspyglass-grafana
+    ```
 
-Create new data source in grafana admin panel. 
-Then choose NetSpyGlass datasource from the data source type dropdown in the Add Data Source View.
-Set Http settings to http://lab.happygears.net:9100.
-Use the data source with the proxy connection. Direct connection and Http Auth are not working so far. 
-
-To create a Graph use Grafana menu - Dashboard -> New, then after click on small green block in the left choose Add Panel -> Graph.
-After that you will be able to set category and variable to build a Graph.
-
-Tags not working so far too. They are showing categories and not affect on query
-
-### Tested with Grafana 3.1.0
-Please, update your grafana-server if you are using previous version 
+### Tested with Grafana 3.1.1

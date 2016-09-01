@@ -74,12 +74,12 @@ System.register(['lodash'], function (_export, _context) {
                     this.templateSrv = templateSrv;
                     this.networkId = instanceSettings.jsonData.networkId || 1;
                     this.accessToken = instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '' ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
-                    this.endpointsBase = '/v2/grafana/net/' + this.networkId;
+                    this.endpointsBase = '/v2/query/net/' + this.networkId;
                     this.endpoints = {};
-                    this.endpoints.category = this.endpointsBase + '/catalog/categories/list' + this.accessToken;
-                    this.endpoints.variable = this.endpointsBase + '/catalog/categories/';
-                    this.endpoints.query = this.endpointsBase + '/query' + this.accessToken;
-                    this.endpoints.test = this.endpointsBase + '/test' + this.accessToken;
+                    this.endpoints.category = this.endpointsBase + '/categories/' + this.accessToken;
+                    this.endpoints.variable = this.endpointsBase + '/variables/';
+                    this.endpoints.query = this.endpointsBase + '/data/' + this.accessToken;
+                    this.endpoints.test = '/v2/ping/net/' + this.networkId + "/test/" + this.accessToken;
 
                     this.blankDropDownElement = '---';
 

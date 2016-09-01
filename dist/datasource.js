@@ -130,12 +130,15 @@ System.register(['lodash'], function (_export, _context) {
                     value: function query(options) {
                         var self = this;
                         var data = this.buildQueryFromQueryDialogData(options);
-                        var queryTargets = {};
+                        var aliases = {};
+                        for (var idx = 0; idx < options.targets.length; idx++) {
+                            var targetDlg = options.targets[idx];
+                            aliases[targetDlg.refId] = targetDlg.alias;
+                        }
                         for (var i = 0; i < data.targets.length; i++) {
                             var target = data.targets[i];
                             // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
                             target.sortByEl = target.sortByEl !== 'none' ? 'metric:' + target.sortByEl : target.sortByEl;
-                            queryTargets[target.id] = target;
                         }
                         var query = JSON.stringify(data);
                         query = this.templateSrv.replace(query, options.scopedVars);
@@ -153,24 +156,12 @@ System.register(['lodash'], function (_export, _context) {
                             // target:     "ifInRate:synas1:eth0"
                             // variable:   "ifInRate"
 
-                            var seriesList = [];
-                            for (i = 0; i < data.length; i++) {
-                                var series = data[i];
-                                if (!series || !series.datapoints) continue;
-                                if (series.type === 'table') continue;
-
-                                var target = queryTargets[series.id];
-                                if (!target) continue;
-
-                                var alias = target.alias;
-                                if (alias) {
-                                    series.target = self.getSeriesName(series, alias);
-                                }
-
-                                seriesList.push(series);
+                            for (idx = 0; idx < data.length; idx++) {
+                                var series = data[idx];
+                                if (!series || !series.datapoints || !series.target) continue;
+                                var alias = aliases[series.id];
+                                if (alias) series.target = self.getSeriesName(series, alias);
                             }
-
-                            if (seriesList.length > 0) response.data = seriesList;
 
                             return response;
                         });
@@ -410,7 +401,9 @@ System.register(['lodash'], function (_export, _context) {
                             var target = this.removeBlanks(query.targets[index]);
                             target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
                             delete target.tagData;
+                            delete target.alias;
                             target.id = target.refId;
+                            delete target.refId;
                             queryObject.targets.push(target);
                         }
                         if (typeof query.rangeRaw != 'undefined') {
@@ -418,7 +411,7 @@ System.register(['lodash'], function (_export, _context) {
                             queryObject.until = query.rangeRaw.to;
                             queryObject.groupByTime = query.interval;
                         }
-                        queryObject.scopedVars = '$variable';
+                        // queryObject.scopedVars = '$variable';
                         return queryObject;
                     }
                 }]);

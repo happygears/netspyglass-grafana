@@ -115,9 +115,7 @@ export class NetSpyGlassDatasource {
         // then: function(a,b,c)
         return response.then( response => {
             var data = response.data;
-            if (!data) {
-                return [];
-            }
+            if (!data) return response;
 
             // data is an Array of these:
             //
@@ -130,7 +128,8 @@ export class NetSpyGlassDatasource {
             var seriesList = [];
             for (i = 0; i < data.length; i++) {
                 var series = data[i];
-                if (!series || !series.datapoints) { continue; }
+                if (!series || !series.datapoints) continue;
+                if (series.type === 'table') continue;
 
                 var target = queryTargets[series.id];
                 if (!target) continue;
@@ -143,7 +142,8 @@ export class NetSpyGlassDatasource {
                 seriesList.push(series);
             }
 
-            response.data = seriesList;
+            if (seriesList.length > 0) response.data = seriesList;
+
             return response;
         });
     }

@@ -143,9 +143,7 @@ System.register(['lodash'], function (_export, _context) {
                         // then: function(a,b,c)
                         return response.then(function (response) {
                             var data = response.data;
-                            if (!data) {
-                                return [];
-                            }
+                            if (!data) return response;
 
                             // data is an Array of these:
                             //
@@ -158,9 +156,8 @@ System.register(['lodash'], function (_export, _context) {
                             var seriesList = [];
                             for (i = 0; i < data.length; i++) {
                                 var series = data[i];
-                                if (!series || !series.datapoints) {
-                                    continue;
-                                }
+                                if (!series || !series.datapoints) continue;
+                                if (series.type === 'table') continue;
 
                                 var target = queryTargets[series.id];
                                 if (!target) continue;
@@ -173,7 +170,8 @@ System.register(['lodash'], function (_export, _context) {
                                 seriesList.push(series);
                             }
 
-                            response.data = seriesList;
+                            if (seriesList.length > 0) response.data = seriesList;
+
                             return response;
                         });
                     }

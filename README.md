@@ -49,3 +49,10 @@ Install using `grafana-cli`
     sh  grafana-cli plugins install netspyglass-grafana
 
 ### Tested with Grafana 3.1.1
+
+## Screenshots
+
+<img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/graph_matching_by_tags.png">
+<img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/selecting_variables_to_graph.png">
+<img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/top_n_table_panel_editor.png">
+

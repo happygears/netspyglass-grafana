@@ -178,6 +178,9 @@ System.register(['lodash'], function (_export, _context) {
                             if (group === 'm' || group === 'measurement') {
                                 return series.variable;
                             }
+                            if (group === 'variable') {
+                                return series.variable;
+                            }
                             if (group === 'device') return series.device;
                             if (group === 'component') return series.component;
                             if (group.indexOf('tag_') !== 0) {

@@ -52,7 +52,7 @@ Install using `grafana-cli`
 
 ## Screenshots
 
-### Example of a graph query that matches metrics by tag "Excplicit.Infrastructure":
+### Example of a graph query that matches metrics by tag "Explicit.Infrastructure":
 
 <img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/graph_matching_by_tags.png">
 

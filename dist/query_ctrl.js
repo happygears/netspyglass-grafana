@@ -177,14 +177,14 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     }
                 }, {
                     key: 'getTagsFacet',
-                    value: function getTagsFacet() {
-                        return this.datasource.findTagFacets(this.target).then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet)); // do not add "-- clear selection --" item
+                    value: function getTagsFacet(index) {
+                        return this.datasource.findTagFacets(this.target, index).then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet)); // do not add "-- clear selection --" item
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'getTagsWord',
-                    value: function getTagsWord(facet) {
-                        return this.datasource.findTagWordsQuery(this.target, facet).then(this.transformToSegments(this.target.tagWord, this.target.tagWord)); // do not add "-- clear selection --" item
+                    value: function getTagsWord(index) {
+                        return this.datasource.findTagWordsQuery(this.target, index).then(this.transformToSegments(this.target.tagWord, this.target.tagWord)); // do not add "-- clear selection --" item
                     }
                 }, {
                     key: 'toggleEditorMode',

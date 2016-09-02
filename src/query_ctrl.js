@@ -114,14 +114,14 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
-    getTagsFacet() {
-        return this.datasource.findTagFacets(this.target)
+    getTagsFacet(index) {
+        return this.datasource.findTagFacets(this.target, index)
             .then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet));  // do not add "-- clear selection --" item
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 
-    getTagsWord(facet) {
-        return this.datasource.findTagWordsQuery(this.target, facet)
+    getTagsWord(index) {
+        return this.datasource.findTagWordsQuery(this.target, index)
             .then(this.transformToSegments(this.target.tagWord, this.target.tagWord));  // do not add "-- clear selection --" item
     }
 

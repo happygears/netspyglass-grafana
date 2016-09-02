@@ -272,8 +272,11 @@ export class NetSpyGlassDatasource {
         return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
     }
 
-    findTagFacets(options) {
-        var data = this.buildQuery(options);
+    findTagFacets(options, index) {
+        var clonedOptions = jQuery.extend(true, {}, options);
+        clonedOptions.tagData[index].tagFacet = '';
+        clonedOptions.tagData[index].tagWord = '';
+        var data = this.buildQuery(clonedOptions);
         var target = data.targets[0];
         target.columns = 'tagFacet';
         target.unique = 'tagFacet';
@@ -285,8 +288,11 @@ export class NetSpyGlassDatasource {
         return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
     }
 
-    findTagWordsQuery(options, facet) {
-        var data = this.buildQuery(options);
+    findTagWordsQuery(options, index) {
+        var clonedOptions = jQuery.extend(true, {}, options);
+        var facet = clonedOptions.tagData[index].tagFacet;
+        clonedOptions.tagData[index].tagWord = '';
+        var data = this.buildQuery(clonedOptions);
         var target = data.targets[0];
         target.columns = facet;
         target.unique = facet;

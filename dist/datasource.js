@@ -288,8 +288,11 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'findTagFacets',
-                    value: function findTagFacets(options) {
-                        var data = this.buildQuery(options);
+                    value: function findTagFacets(options, index) {
+                        var clonedOptions = jQuery.extend(true, {}, options);
+                        clonedOptions.tagData[index].tagFacet = '';
+                        clonedOptions.tagData[index].tagWord = '';
+                        var data = this.buildQuery(clonedOptions);
                         var target = data.targets[0];
                         target.columns = 'tagFacet';
                         target.unique = 'tagFacet';
@@ -302,8 +305,11 @@ System.register(['lodash'], function (_export, _context) {
                     }
                 }, {
                     key: 'findTagWordsQuery',
-                    value: function findTagWordsQuery(options, facet) {
-                        var data = this.buildQuery(options);
+                    value: function findTagWordsQuery(options, index) {
+                        var clonedOptions = jQuery.extend(true, {}, options);
+                        var facet = clonedOptions.tagData[index].tagFacet;
+                        clonedOptions.tagData[index].tagWord = '';
+                        var data = this.buildQuery(clonedOptions);
                         var target = data.targets[0];
                         target.columns = facet;
                         target.unique = facet;

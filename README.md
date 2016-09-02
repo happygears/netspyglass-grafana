@@ -52,7 +52,15 @@ Install using `grafana-cli`
 
 ## Screenshots
 
+### Example of a graph query that matches metrics by tag "Excplicit.Infrastructure":
+
 <img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/graph_matching_by_tags.png">
+
+### Selecting metrics to graph from a list retrieved from NetSpyGlass server:
+
 <img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/selecting_variables_to_graph.png">
+
+### Building "top N" report in Grafana table panel using tag match (selects only Juniper devices): 
+
 <img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/top_n_table_panel_editor.png">
 

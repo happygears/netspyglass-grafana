@@ -54,23 +54,24 @@ export class NetSpyGlassDatasource {
 
         this.blankDropDownElement = '---';
 
-        this.targetName = {};
-        this.targetName.alias = '';
-        this.targetName.variable = 'select variable';
-        this.targetName.device = 'select device';
-        this.targetName.component = 'select component';
-        this.targetName.sortByEl = 'select sorting';
-        this.targetName.selector = 'choose selector';
-        this.targetName.limit = 'select limit';
-        this.targetName.group = 'select group';
-        this.targetName.tagFacet = this.blankDropDownElement;
-        this.targetName.tagWord = this.blankDropDownElement;
-        this.targetName.interval = 'select interval';
-        this.targetName.tagData = [];
-        this.targetName.format = '';
-        this.targetName.columns = '';
-        this.targetName.unique = '';
-        this.targetName.refId = '';
+        this.blankValues = {};
+        this.blankValues.alias = '';
+        this.blankValues.variable = 'select variable';
+        this.blankValues.device = 'select device';
+        this.blankValues.component = 'select component';
+        this.blankValues.description = '';
+        this.blankValues.sortByEl = 'select sorting';
+        this.blankValues.selector = 'choose selector';
+        this.blankValues.limit = 'select limit';
+        this.blankValues.group = 'select group';
+        this.blankValues.tagFacet = this.blankDropDownElement;
+        this.blankValues.tagWord = this.blankDropDownElement;
+        this.blankValues.interval = 'select interval';
+        this.blankValues.tagData = [];
+        this.blankValues.format = '';
+        this.blankValues.columns = '';
+        this.blankValues.unique = '';
+        this.blankValues.refId = '';
 
         this.clearString = '-- clear selection --';
     }
@@ -307,6 +308,13 @@ export class NetSpyGlassDatasource {
     /**
      * when building graphing query, this function is called with JS object that has at least
      * attribute 'targets'
+     *
+     * This must include all fields we support in queries, both constructed from the query dialog
+     * (where each field corresponds to the input element in the dialog) and from the input field in
+     * the dashboard templates where user enters query as json.
+     *
+     * field "description" is allowed in dashboard template query but does not have corresponding
+     * input field in the query dialog at this time.
      */
     templateSrvParameters(queryObject) {
         queryObject.targets = _.map(queryObject.targets, target => {
@@ -315,6 +323,7 @@ export class NetSpyGlassDatasource {
                 variable: this.templateSrv.replace(target.variable),
                 device: this.templateSrv.replace(target.device),
                 component: this.templateSrv.replace(target.component),
+                description: this.templateSrv.replace(target.description),
                 tagFacet: this.templateSrv.replace(target.tagFacet),
                 tagOperation: this.templateSrv.replace(target.tagOperation),
                 tagWord: this.templateSrv.replace(target.tagWord),
@@ -335,10 +344,10 @@ export class NetSpyGlassDatasource {
     removeBlanks(item) {
         var temp = {};
         for (var key in item) {
-            if (!(key in this.targetName)) {
+            if (!(key in this.blankValues)) {
                 continue;
             }
-            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.targetName[key]) {
+            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.blankValues[key]) {
                 continue;
             }
             if (key == 'tagFacet' || key == 'tagWord') {

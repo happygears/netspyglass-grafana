@@ -151,6 +151,7 @@ export class NetSpyGlassDatasource {
             if (group === 'variable') { return series.variable; }
             if (group === 'device') return series.device;
             if (group === 'component') return series.component;
+            if (group === 'description') return series.description;
             if (group.indexOf('tag_') !== 0) { return match; }
 
             var tag = group.replace('tag_', '');
@@ -318,27 +319,21 @@ export class NetSpyGlassDatasource {
      */
     templateSrvParameters(queryObject) {
         queryObject.targets = _.map(queryObject.targets, target => {
-            return {
-                category: this.templateSrv.replace(target.category),
-                variable: this.templateSrv.replace(target.variable),
-                device: this.templateSrv.replace(target.device),
-                component: this.templateSrv.replace(target.component),
-                description: this.templateSrv.replace(target.description),
-                tagFacet: this.templateSrv.replace(target.tagFacet),
-                tagOperation: this.templateSrv.replace(target.tagOperation),
-                tagWord: this.templateSrv.replace(target.tagWord),
-                sortByEl: this.templateSrv.replace(target.sortByEl),
-                selector: this.templateSrv.replace(target.selector),
-                format: this.templateSrv.replace(target.format),
-                limit: (target.limit === '') ? -1 : target.limit,
-                columns: this.templateSrv.replace(target.columns),
-                alias: this.templateSrv.replace(target.alias, queryObject.scopedVars),
-                refId: target.refId,
-                hide: target.hide,
-                tagData: target.tagData
-            };
+            var updatedTarget = jQuery.extend(true, {}, target);
+            updatedTarget.category = this.replaceTemplateVars(updatedTarget.category);
+            updatedTarget.device = this.replaceTemplateVars(updatedTarget.device);
+            updatedTarget.component = this.replaceTemplateVars(updatedTarget.component);
+            updatedTarget.description = this.replaceTemplateVars(updatedTarget.description);
+            updatedTarget.limit = (updatedTarget.limit === '') ? -1 : updatedTarget.limit;
+            // target.alias = this.replaceTemplateVars(target.alias);
+            return updatedTarget;
         });
         return queryObject;
+    }
+
+    replaceTemplateVars(field) {
+        if (typeof field !== 'undefined') return this.templateSrv.replace(field);
+        return field;
     }
 
     removeBlanks(item) {

@@ -184,6 +184,7 @@ System.register(['lodash'], function (_export, _context) {
                             }
                             if (group === 'device') return series.device;
                             if (group === 'component') return series.component;
+                            if (group === 'description') return series.description;
                             if (group.indexOf('tag_') !== 0) {
                                 return match;
                             }
@@ -327,27 +328,22 @@ System.register(['lodash'], function (_export, _context) {
                         var _this = this;
 
                         queryObject.targets = _.map(queryObject.targets, function (target) {
-                            return {
-                                category: _this.templateSrv.replace(target.category),
-                                variable: _this.templateSrv.replace(target.variable),
-                                device: _this.templateSrv.replace(target.device),
-                                component: _this.templateSrv.replace(target.component),
-                                description: _this.templateSrv.replace(target.description),
-                                tagFacet: _this.templateSrv.replace(target.tagFacet),
-                                tagOperation: _this.templateSrv.replace(target.tagOperation),
-                                tagWord: _this.templateSrv.replace(target.tagWord),
-                                sortByEl: _this.templateSrv.replace(target.sortByEl),
-                                selector: _this.templateSrv.replace(target.selector),
-                                format: _this.templateSrv.replace(target.format),
-                                limit: target.limit === '' ? -1 : target.limit,
-                                columns: _this.templateSrv.replace(target.columns),
-                                alias: _this.templateSrv.replace(target.alias, queryObject.scopedVars),
-                                refId: target.refId,
-                                hide: target.hide,
-                                tagData: target.tagData
-                            };
+                            var updatedTarget = jQuery.extend(true, {}, target);
+                            updatedTarget.category = _this.replaceTemplateVars(updatedTarget.category);
+                            updatedTarget.device = _this.replaceTemplateVars(updatedTarget.device);
+                            updatedTarget.component = _this.replaceTemplateVars(updatedTarget.component);
+                            updatedTarget.description = _this.replaceTemplateVars(updatedTarget.description);
+                            updatedTarget.limit = updatedTarget.limit === '' ? -1 : updatedTarget.limit;
+                            // target.alias = this.replaceTemplateVars(target.alias);
+                            return updatedTarget;
                         });
                         return queryObject;
+                    }
+                }, {
+                    key: 'replaceTemplateVars',
+                    value: function replaceTemplateVars(field) {
+                        if (typeof field !== 'undefined') return this.templateSrv.replace(field);
+                        return field;
                     }
                 }, {
                     key: 'removeBlanks',

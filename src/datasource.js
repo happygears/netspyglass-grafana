@@ -393,7 +393,9 @@ export class NetSpyGlassDatasource {
         var index;
         for (index = query.targets.length - 1; index >= 0; --index) {
             var target = this.removeBlanks(query.targets[index]);
-            target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
+            if (typeof target.tagData !== 'undefined') {
+                target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
+            }
             delete target.tagData;
             delete target.alias;
             target.id = target.refId;

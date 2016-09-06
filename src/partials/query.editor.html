@@ -1,36 +1,26 @@
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row">
     <div class="gf-form-inline">
         <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Category</span>
-            </label>
+            <label class="gf-form-label query-keyword width-7">FROM</label>
             <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()"
                                   on-change="ctrl.onChangeInternalCategory()"
-                                  css-class="width-20"></metric-segment-model>
+                                  css-class="width-10"></metric-segment-model>
         </div>
 
         <div class="gf-form" ng-if="ctrl.isCategorySelected()">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Variable</span>
-            </label>
+            <label class="gf-form-label query-keyword width-7">SELECT</label>
             <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" id="variable-field"
                                   on-change="ctrl.onChangeInternalVariable()" custom="false"
-                                  css-class="width-20"></metric-segment-model>
+                                  css-class="width-14"></metric-segment-model>
         </div>
     </div>
 
     <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected();">
         <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Device</span>
-            </label>
+            <label class="gf-form-label query-keyword width-7">WHERE</label>
             <metric-segment-model property="ctrl.target.device" ng-disabled="true" get-options="ctrl.getDevices()"
-                                  on-change="ctrl.onChangeInternalDevice()" css-class="width-20"></metric-segment-model>
-        </div>
-        <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Component</span>
-            </label>
+                                  on-change="ctrl.onChangeInternalDevice()"
+                                  css-class="width-20"></metric-segment-model>
             <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()"
                                   on-change="ctrl.onChangeInternalComponent()"
                                   css-class="width-20"></metric-segment-model>
@@ -40,17 +30,12 @@
     <!-- Tag matching rules -->
     <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
         <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Tags</span>
-            </label>
-        </div>
-        <div class="gf-form">
+            <label class="gf-form-label query-keyword width-7" ng-if="$index == 0">TAGS</label>
+            <label class="gf-form-label query-keyword width-7" ng-if="$index > 0">&nbsp;</label>
             <metric-segment-model property="ctrl.target.tagData[$index].tagFacet" get-options="ctrl.getTagsFacet($index)"
                                   on-change="ctrl.onChangeInternalTagFacet($index)"
                                   css-class="width-13" custom="false"></metric-segment-model>
-        </div>
 
-        <div class="gf-form">
             <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'== or <>'"
                data-placement="bottom">
                 <span>{{ctrl.target.tagData[$index].tagOperation}}</span>
@@ -59,9 +44,7 @@
                 <li><a ng-click="ctrl.tagOperation($index, '==')">==</a></li>
                 <li><a ng-click="ctrl.tagOperation($index, '<>')"><></a></li>
             </ul>
-        </div>
 
-        <div class="gf-form">
             <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord($index)"
                                   on-change="ctrl.onChangeInternalTagWord($index)" id="tag-word-{{$index}}"
                                   css-class="tag-word width-12" custom="false"></metric-segment-model>
@@ -78,8 +61,8 @@
     <!-- SortBy , Limit, Selector -->
     <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
         <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Sorting</span>
+            <label class="gf-form-label width-7 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">ORDER</span>
             </label>
         </div>
         <div class="gf-form">
@@ -100,12 +83,12 @@
 
         <div class="gf-form">
             <label class="gf-form-label width-6 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Limit</span>
+                <span class="gf-form-query-letter-cell-letter">LIMIT</span>
             </label>
         </div>
         <div class="gf-form">
             <input ng-model="ctrl.target.limit" ng-blur="ctrl.refresh();" type="text" data-provide="typeahead"
-                   class="gf-form-input input-medium" spellcheck="false" style="width: 110px;">
+                   class="gf-form-input input-medium width-5" spellcheck="false">
             <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'Restrict number of time series returned by this query. ' +
@@ -118,7 +101,7 @@
 
         <div class="gf-form">
             <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Selector</span>
+                <span class="gf-form-query-letter-cell-letter">SELECTOR</span>
             </label>
         </div>
         <div class="gf-form">
@@ -142,12 +125,10 @@
 
     <div class="gf-form-inline" style="margin-bottom: 20px" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
 
-        <div class="gf-form">
-
-            <div class="gf-form max-width-30">
-                <label class="gf-form-label query-keyword width-8">Alias by</label>
-                <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck="false" placeholder="Naming pattern" ng-blur="ctrl.refresh()">
-            </div>
+        <div class="gf-form max-width-30">
+            <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
+            <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck="false"
+                   placeholder="Naming pattern" ng-blur="ctrl.refresh()">
         </div>
 
         <div class="gf-form">

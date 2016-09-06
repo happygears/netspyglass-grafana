@@ -83,23 +83,24 @@ System.register(['lodash'], function (_export, _context) {
 
                     this.blankDropDownElement = '---';
 
-                    this.targetName = {};
-                    this.targetName.alias = '';
-                    this.targetName.variable = 'select variable';
-                    this.targetName.device = 'select device';
-                    this.targetName.component = 'select component';
-                    this.targetName.sortByEl = 'select sorting';
-                    this.targetName.selector = 'choose selector';
-                    this.targetName.limit = 'select limit';
-                    this.targetName.group = 'select group';
-                    this.targetName.tagFacet = this.blankDropDownElement;
-                    this.targetName.tagWord = this.blankDropDownElement;
-                    this.targetName.interval = 'select interval';
-                    this.targetName.tagData = [];
-                    this.targetName.format = '';
-                    this.targetName.columns = '';
-                    this.targetName.unique = '';
-                    this.targetName.refId = '';
+                    this.blankValues = {};
+                    this.blankValues.alias = '';
+                    this.blankValues.variable = 'select variable';
+                    this.blankValues.device = 'select device';
+                    this.blankValues.component = 'select component';
+                    this.blankValues.description = '';
+                    this.blankValues.sortByEl = 'select sorting';
+                    this.blankValues.selector = 'choose selector';
+                    this.blankValues.limit = 'select limit';
+                    this.blankValues.group = 'select group';
+                    this.blankValues.tagFacet = this.blankDropDownElement;
+                    this.blankValues.tagWord = this.blankDropDownElement;
+                    this.blankValues.interval = 'select interval';
+                    this.blankValues.tagData = [];
+                    this.blankValues.format = '';
+                    this.blankValues.columns = '';
+                    this.blankValues.unique = '';
+                    this.blankValues.refId = '';
 
                     this.clearString = '-- clear selection --';
                 }
@@ -183,6 +184,7 @@ System.register(['lodash'], function (_export, _context) {
                             }
                             if (group === 'device') return series.device;
                             if (group === 'component') return series.component;
+                            if (group === 'description') return series.description;
                             if (group.indexOf('tag_') !== 0) {
                                 return match;
                             }
@@ -326,26 +328,22 @@ System.register(['lodash'], function (_export, _context) {
                         var _this = this;
 
                         queryObject.targets = _.map(queryObject.targets, function (target) {
-                            return {
-                                category: _this.templateSrv.replace(target.category),
-                                variable: _this.templateSrv.replace(target.variable),
-                                device: _this.templateSrv.replace(target.device),
-                                component: _this.templateSrv.replace(target.component),
-                                tagFacet: _this.templateSrv.replace(target.tagFacet),
-                                tagOperation: _this.templateSrv.replace(target.tagOperation),
-                                tagWord: _this.templateSrv.replace(target.tagWord),
-                                sortByEl: _this.templateSrv.replace(target.sortByEl),
-                                selector: _this.templateSrv.replace(target.selector),
-                                format: _this.templateSrv.replace(target.format),
-                                limit: target.limit === '' ? -1 : target.limit,
-                                columns: _this.templateSrv.replace(target.columns),
-                                alias: _this.templateSrv.replace(target.alias, queryObject.scopedVars),
-                                refId: target.refId,
-                                hide: target.hide,
-                                tagData: target.tagData
-                            };
+                            var updatedTarget = jQuery.extend(true, {}, target);
+                            updatedTarget.category = _this.replaceTemplateVars(updatedTarget.category);
+                            updatedTarget.device = _this.replaceTemplateVars(updatedTarget.device);
+                            updatedTarget.component = _this.replaceTemplateVars(updatedTarget.component);
+                            updatedTarget.description = _this.replaceTemplateVars(updatedTarget.description);
+                            updatedTarget.limit = updatedTarget.limit === '' ? -1 : updatedTarget.limit;
+                            // target.alias = this.replaceTemplateVars(target.alias);
+                            return updatedTarget;
                         });
                         return queryObject;
+                    }
+                }, {
+                    key: 'replaceTemplateVars',
+                    value: function replaceTemplateVars(field) {
+                        if (typeof field !== 'undefined') return this.templateSrv.replace(field);
+                        return field;
                     }
                 }, {
                     key: 'removeBlanks',
@@ -354,10 +352,10 @@ System.register(['lodash'], function (_export, _context) {
 
                         var temp = {};
                         for (var key in item) {
-                            if (!(key in this.targetName)) {
+                            if (!(key in this.blankValues)) {
                                 continue;
                             }
-                            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.targetName[key]) {
+                            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.blankValues[key]) {
                                 continue;
                             }
                             if (key == 'tagFacet' || key == 'tagWord') {
@@ -408,7 +406,9 @@ System.register(['lodash'], function (_export, _context) {
                         var index;
                         for (index = query.targets.length - 1; index >= 0; --index) {
                             var target = this.removeBlanks(query.targets[index]);
-                            if (typeof target.tagData !== 'undefined') target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
+                            if (typeof target.tagData !== 'undefined') {
+                                target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
+                            }
                             delete target.tagData;
                             delete target.alias;
                             target.id = target.refId;

@@ -11,3 +11,7 @@
 Unpack `netspyglass-datasource.tar` in the directory `/var/lib/grafana/plugins/`
 on the server where Grafana runs and restart the server `service grafana-server restart`.
  
+## Using Grunt Task Runner with Intellij IDEA
+
+https://www.jetbrains.com/help/idea/2016.2/using-grunt-task-runner.html
+

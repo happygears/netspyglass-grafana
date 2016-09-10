@@ -65,6 +65,6 @@ Install using `grafana-cli`
 <img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/top_n_table_panel_editor.png">
 
 ---
-:copyright: 2016 Happy Gears Inc  info@happygears.net
+:copyright: 2016 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License

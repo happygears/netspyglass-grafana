@@ -52,17 +52,13 @@ Install using `grafana-cli`
 
 ## Screenshots
 
-### Example of a graph query that matches metrics by tag "Explicit.Infrastructure":
+### Example of a graph query that matches metrics by tag "Role.Switch":
 
-<img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/graph_matching_by_tags.png">
+<img src="https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/graph_query_with_tag_match_annotated.png">
 
-### Selecting metrics to graph from a list retrieved from NetSpyGlass server:
+### Building "top N" report in Grafana table panel (selects top 5):
 
-<img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/selecting_variables_to_graph.png">
-
-### Building "top N" report in Grafana table panel using tag match (selects only Juniper devices): 
-
-<img src="http://s3-us-west-2.amazonaws.com/nsg-static-assets/top_n_table_panel_editor.png">
+<img src="https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png">
 
 ---
 :copyright: 2016 Happy Gears, Inc  www.happygears.net

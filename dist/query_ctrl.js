@@ -64,7 +64,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 function NetSpyGlassDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
                     _classCallCheck(this, NetSpyGlassDatasourceQueryCtrl);
 
-                    var _this = _possibleConstructorReturn(this, (NetSpyGlassDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(NetSpyGlassDatasourceQueryCtrl)).call(this, $scope, $injector));
+                    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NetSpyGlassDatasourceQueryCtrl).call(this, $scope, $injector));
 
                     _this.prompts = {
                         'category': 'select category',

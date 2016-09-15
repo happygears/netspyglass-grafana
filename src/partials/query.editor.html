@@ -47,7 +47,7 @@
 
             <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord($index)"
                                   on-change="ctrl.onChangeInternalTagWord($index)" id="tag-word-{{$index}}"
-                                  css-class="tag-word width-12" custom="false"></metric-segment-model>
+                                  css-class="tag-word width-12" custom="true"></metric-segment-model>
             <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>
             <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> - </a>
         </div>

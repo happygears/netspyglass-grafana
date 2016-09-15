@@ -34,7 +34,7 @@
             <label class="gf-form-label query-keyword width-7" ng-if="$index > 0">&nbsp;</label>
             <metric-segment-model property="ctrl.target.tagData[$index].tagFacet" get-options="ctrl.getTagsFacet($index)"
                                   on-change="ctrl.onChangeInternalTagFacet($index)"
-                                  css-class="width-13" custom="false"></metric-segment-model>
+                                  css-class="width-13"></metric-segment-model>
 
             <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'== or <>'"
                data-placement="bottom">
@@ -47,7 +47,7 @@
 
             <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord($index)"
                                   on-change="ctrl.onChangeInternalTagWord($index)" id="tag-word-{{$index}}"
-                                  css-class="tag-word width-12" custom="true"></metric-segment-model>
+                                  css-class="tag-word width-12"></metric-segment-model>
             <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>
             <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> - </a>
         </div>

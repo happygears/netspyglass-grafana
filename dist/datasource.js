@@ -185,15 +185,17 @@ System.register(['lodash'], function (_export, _context) {
                             if (group === 'device') return series.device;
                             if (group === 'component') return series.component;
                             if (group === 'description') return series.description;
-                            if (group.indexOf('tag_') !== 0) {
-                                return match;
-                            }
+                            // if (group.indexOf('tag_') !== 0) { return match; }
 
-                            var tag = group.replace('tag_', '');
                             if (!series.tags) {
                                 return match;
                             }
-                            return series.tags[tag];
+
+                            // var tag = group.replace('tag_', '');
+                            // see if it is tag facet
+                            var tag = series.tags[group];
+                            if (typeof tag === 'undefined') return match;
+                            return tag;
                         });
                     }
                 }, {

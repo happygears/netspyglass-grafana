@@ -129,6 +129,12 @@
             <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
             <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck="false"
                    placeholder="Naming pattern" ng-blur="ctrl.refresh()">
+
+            <span class="gf-form-label">
+                <i class="fa fa-question-circle"
+                   bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
+                   data-placement="bottom"></i>
+            </span>
         </div>
 
         <div class="gf-form">

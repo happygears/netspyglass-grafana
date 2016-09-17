@@ -130,20 +130,21 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'query',
                     value: function query(options) {
                         var self = this;
-                        var data = this.buildQueryFromQueryDialogData(options);
+                        // build query object (this replaces dashboard template vars)
+                        var query = this.buildQueryFromQueryDialogData(options);
                         var aliases = {};
                         for (var idx = 0; idx < options.targets.length; idx++) {
                             var targetDlg = options.targets[idx];
                             aliases[targetDlg.refId] = targetDlg.alias;
                         }
-                        for (var i = 0; i < data.targets.length; i++) {
-                            var target = data.targets[i];
+                        for (var i = 0; i < query.targets.length; i++) {
+                            var target = query.targets[i];
                             // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
                             target.sortByEl = target.sortByEl !== 'none' ? 'metric:' + target.sortByEl : target.sortByEl;
                         }
-                        var query = JSON.stringify(data);
-                        query = this.templateSrv.replace(query, options.scopedVars);
-                        var response = this._apiCall(this.endpoints.query, 'POST', query);
+                        var queryAsStr = JSON.stringify(query);
+                        queryAsStr = this.templateSrv.replace(queryAsStr, options.scopedVars);
+                        var response = this._apiCall(this.endpoints.query, 'POST', queryAsStr);
                         // then: function(a,b,c)
                         return response.then(function (response) {
                             var data = response.data;
@@ -174,7 +175,6 @@ System.register(['lodash'], function (_export, _context) {
 
                         return alias.replace(regex, function (match, g1, g2) {
                             var group = g1 || g2;
-                            var segIndex = parseInt(group, 10);
 
                             if (group === 'm' || group === 'measurement') {
                                 return series.variable;
@@ -185,13 +185,11 @@ System.register(['lodash'], function (_export, _context) {
                             if (group === 'device') return series.device;
                             if (group === 'component') return series.component;
                             if (group === 'description') return series.description;
-                            // if (group.indexOf('tag_') !== 0) { return match; }
 
                             if (!series.tags) {
                                 return match;
                             }
 
-                            // var tag = group.replace('tag_', '');
                             // see if it is tag facet
                             var tag = series.tags[group];
                             if (typeof tag === 'undefined') return match;
@@ -344,8 +342,11 @@ System.register(['lodash'], function (_export, _context) {
                 }, {
                     key: 'replaceTemplateVars',
                     value: function replaceTemplateVars(field) {
-                        if (typeof field !== 'undefined') return this.templateSrv.replace(field);
-                        return field;
+                        if (typeof field === 'undefined') return field;
+                        var replaced = this.templateSrv.replace(field);
+                        // if templateSrc could not replace macro with a value, replace it with an empty string
+                        if (field.startsWith('$') && replaced.startsWith('$')) replaced = '';
+                        return replaced;
                     }
                 }, {
                     key: 'removeBlanks',
@@ -399,6 +400,8 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'buildQueryFromQueryDialogData',
                     value: function buildQueryFromQueryDialogData(query) {
                         this.templateSrvParameters(query);
+                        // if we have any "$word" left in the query, those are leftover template
+                        // variables that did not get expanded because they have no value
                         query.targets = query.targets.filter(function (t) {
                             return !t.hide;
                         });

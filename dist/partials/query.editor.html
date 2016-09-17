@@ -21,9 +21,15 @@
             <metric-segment-model property="ctrl.target.device" ng-disabled="true" get-options="ctrl.getDevices()"
                                   on-change="ctrl.onChangeInternalDevice()"
                                   css-class="width-16"></metric-segment-model>
+            <span class="gf-form-label">
+                <i class="fa fa-question-circle"
+                   bs-tooltip="'Device name or dashboard template variable as \'$device\''" data-placement="bottom"></i>
+            </span>
             <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()"
                                   on-change="ctrl.onChangeInternalComponent()"
                                   css-class="width-16"></metric-segment-model>
+            <i class="fa fa-question-circle"
+               bs-tooltip="'component name, dashboard template variable as \'$interface\' or regex surrounded with \'/ /\''" data-placement="bottom"></i>
         </div>
     </div>
 

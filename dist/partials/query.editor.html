@@ -67,6 +67,28 @@
     <!-- SortBy , Limit, Selector -->
     <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
         <div class="gf-form">
+            <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                <span class="gf-form-query-letter-cell-letter">SELECTOR</span>
+            </label>
+        </div>
+        <div class="gf-form">
+            <a class="gf-form-label pointer width-13" data-toggle="dropdown" data-placement="bottom">
+                <span>{{ctrl.target.selector}}</span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a ng-click="ctrl.setSelector('choose selector')">-- clear selection --</a></li>
+                <li><a ng-click="ctrl.setSelector('last')">last</a></li>
+                <li><a ng-click="ctrl.setSelector('min')">min</a></li>
+                <li><a ng-click="ctrl.setSelector('max')">max</a></li>
+            </ul>
+            <span class="gf-form-label">
+                <i class="fa fa-question-circle"
+                   bs-tooltip="'Operates on groups of observations created using &quot;Group by time interval&quot; parameter value'"
+                   data-placement="bottom"></i>
+            </span>
+        </div>
+
+        <div class="gf-form">
             <label class="gf-form-label width-7 gf-form-query-letter-cell">
                 <span class="gf-form-query-letter-cell-letter">ORDER</span>
             </label>
@@ -101,29 +123,6 @@
                                'Limit is applied after sorting. If this field is empty, result is unrestricted, ' +
                                'however the server may apply its own restriction to avoid sending ' +
                                'thousands of time series to Grafana'" data-placement="bottom"></i>
-            </span>
-        </div>
-
-
-        <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">SELECTOR</span>
-            </label>
-        </div>
-        <div class="gf-form">
-            <a class="gf-form-label pointer width-13" data-toggle="dropdown" data-placement="bottom">
-                <span>{{ctrl.target.selector}}</span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a ng-click="ctrl.setSelector('choose selector')">-- clear selection --</a></li>
-                <li><a ng-click="ctrl.setSelector('last')">last</a></li>
-                <li><a ng-click="ctrl.setSelector('min')">min</a></li>
-                <li><a ng-click="ctrl.setSelector('max')">max</a></li>
-            </ul>
-            <span class="gf-form-label">
-                <i class="fa fa-question-circle"
-                   bs-tooltip="'Operates on groups of observations created using &quot;Group by time interval&quot; parameter value'"
-                   data-placement="bottom"></i>
             </span>
         </div>
 

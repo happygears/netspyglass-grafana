@@ -84,6 +84,7 @@ export class NetSpyGlassDatasource {
         this.blankValues.tagWord = this.blankDropDownElement;
         this.blankValues.interval = 'select interval';
         this.blankValues.tagData = [];
+        this.blankValues.tags = '';
         this.blankValues.format = '';
         this.blankValues.columns = '';
         this.blankValues.unique = '';

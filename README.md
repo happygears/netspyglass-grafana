@@ -44,6 +44,15 @@ way to build interactive dashboards.
 
 ## Installation
 
+1. clone this git repository
+2. run script `./tools/maketar.sh`. This script produces archive `netspyglass-datasource.tar`
+
+Copy this archive to the server where Grafana runs and unpack it in 
+the directory `/var/lib/grafana/plugins/`, then restart the server with command
+`sudo service grafana-server restart`.
+ 
+
+
 Install using `grafana-cli`
 
     sh  grafana-cli plugins install netspyglass-grafana

@@ -63,13 +63,13 @@ Install using `grafana-cli`
 
 ### Example of a graph query that matches metrics by tag "Role.Switch":
 
-<img src="https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/graph_query_with_tag_match_annotated.png">
+![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/graph_query_with_tag_match_annotated.png)
 
 ### Building "top N" report in Grafana table panel (selects top 5):
 
-<img src="https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png">
+![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png)
 
 ---
-:copyright: 2016 Happy Gears, Inc  www.happygears.net
+(C) 2016 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License

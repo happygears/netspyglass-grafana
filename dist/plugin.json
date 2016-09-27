@@ -19,14 +19,15 @@
       "url": "http://www.happygears.net"
     },
     "links":[
-      {"name": "GitHub", "url": "https://github.com/happygears/netspyglass-grafana"}
+      {"name": "GitHub", "url": "https://github.com/happygears/netspyglass-grafana"},
+      {"name": "NetSpyGlass", "url": "http://www.happygears.net/"}
     ],
     "logos": {
       "small": "img/netspyglass_logo.svg",
       "large": "img/netspyglass_logo.svg"
     },
-    "version": "0.9.1",
-    "updated": "2016-09-10"
+    "version": "1.0.0",
+    "updated": "2016-09-26"
   },
 
   "dependencies": {

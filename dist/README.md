@@ -44,6 +44,15 @@ way to build interactive dashboards.
 
 ## Installation
 
+1. clone this git repository
+2. run script `./tools/maketar.sh`. This script produces archive `netspyglass-datasource.tar`
+
+Copy this archive to the server where Grafana runs and unpack it in 
+the directory `/var/lib/grafana/plugins/`, then restart the server with command
+`sudo service grafana-server restart`.
+ 
+
+
 Install using `grafana-cli`
 
     sh  grafana-cli plugins install netspyglass-grafana
@@ -54,13 +63,13 @@ Install using `grafana-cli`
 
 ### Example of a graph query that matches metrics by tag "Role.Switch":
 
-<img src="https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/graph_query_with_tag_match_annotated.png">
+![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/graph_query_with_tag_match_annotated.png)
 
 ### Building "top N" report in Grafana table panel (selects top 5):
 
-<img src="https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png">
+![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png)
 
 ---
-:copyright: 2016 Happy Gears, Inc  www.happygears.net
+(C) 2016 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License

@@ -85,7 +85,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.sortByEl = _this.target.sortByEl || 'none';
                     _this.target.selector = _this.target.selector || ' -- ';
                     _this.target.aggregator = _this.target.aggregator || ' -- ';
-                    _this.target.limit = _this.target.limit || '';
+                    _this.target.limit = _this.target.limit || '100';
                     _this.target.group = _this.target.group || 'select group';
                     _this.target.tagFacet = _this.target.tagFacet || _this.blankDropDownElement;
                     _this.target.tagOperation = _this.target.tagOperation || '==';

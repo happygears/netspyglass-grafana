@@ -41,7 +41,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.sortByEl = this.target.sortByEl || 'none';
         this.target.selector = this.target.selector || ' -- ';
         this.target.aggregator = this.target.aggregator || ' -- ';
-        this.target.limit = this.target.limit || '';
+        this.target.limit = this.target.limit || '100';
         this.target.group = this.target.group || 'select group';
         this.target.tagFacet = this.target.tagFacet || this.blankDropDownElement;
         this.target.tagOperation = this.target.tagOperation || '==';

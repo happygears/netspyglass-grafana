@@ -83,7 +83,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     _this.target.device = _this.target.device || _this.prompts['device'];
                     _this.target.component = _this.target.component || _this.prompts['component'];
                     _this.target.sortByEl = _this.target.sortByEl || 'none';
-                    _this.target.selector = _this.target.selector || 'choose selector';
+                    _this.target.selector = _this.target.selector || ' -- ';
+                    _this.target.aggregator = _this.target.aggregator || ' -- ';
                     _this.target.limit = _this.target.limit || '';
                     _this.target.group = _this.target.group || 'select group';
                     _this.target.tagFacet = _this.target.tagFacet || _this.blankDropDownElement;
@@ -263,6 +264,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     key: 'setSelector',
                     value: function setSelector(element) {
                         this.target.selector = element;
+                        this.refresh();
+                    }
+                }, {
+                    key: 'setAggregator',
+                    value: function setAggregator(element) {
+                        this.target.aggregator = element;
                         this.refresh();
                     }
                 }, {

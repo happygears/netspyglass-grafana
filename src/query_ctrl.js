@@ -39,7 +39,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.device = this.target.device || this.prompts['device'];
         this.target.component = this.target.component || this.prompts['component'];
         this.target.sortByEl = this.target.sortByEl || 'none';
-        this.target.selector = this.target.selector || 'choose selector';
+        this.target.selector = this.target.selector || ' -- ';
+        this.target.aggregator = this.target.aggregator || ' -- ';
         this.target.limit = this.target.limit || '';
         this.target.group = this.target.group || 'select group';
         this.target.tagFacet = this.target.tagFacet || this.blankDropDownElement;
@@ -207,6 +208,11 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
     setSelector(element) {
         this.target.selector = element;
+        this.refresh();
+    }
+
+    setAggregator(element) {
+        this.target.aggregator = element;
         this.refresh();
     }
 

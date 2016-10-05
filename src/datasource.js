@@ -77,7 +77,8 @@ export class NetSpyGlassDatasource {
         this.blankValues.component = 'select component';
         this.blankValues.description = '';
         this.blankValues.sortByEl = 'select sorting';
-        this.blankValues.selector = 'choose selector';
+        this.blankValues.selector = ' -- ';
+        this.blankValues.aggregator = ' -- ';
         this.blankValues.limit = 'select limit';
         this.blankValues.group = 'select group';
         this.blankValues.tagFacet = this.blankDropDownElement;

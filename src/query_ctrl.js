@@ -156,8 +156,10 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.device = this.prompts['device'];
         this.target.component = this.prompts['component'];
         this.target.tagData = [];
+        // TODO: clear variable name when category changes. Only variable name field in the same target should change,
+        // variable name fields in other targets should not change
         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-        angular.element('#variable-field').children().children('a').html(this.target.variable);
+        // angular.element('#variable-field').children().children('a').html(this.target.variable);
         // call refresh to force graph reload (which should turn blank since we dont have enough data
         // to build valid query)
         this.refresh();
@@ -186,8 +188,10 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // but tag word is not. This state is invalid and should be transient, it does not make sense
         // to call this.refresh() because query is yet incomplete
         this.target.tagData[index].tagWord = this.blankDropDownElement;
+        // TODO: clear field "tag word" when "tag facet" changes. Only associated tag word should change,
+        // tag word fields in another tag matches in the same target or other targets should not change.
         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-        angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
+        // angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
         this.refresh();
     }
 

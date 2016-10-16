@@ -15,7 +15,7 @@
  */
 
 import _ from "lodash";
-
+import * as dateMath from './datemath';
 
 export class NetSpyGlassDatasource {
 
@@ -435,12 +435,31 @@ export class NetSpyGlassDatasource {
             queryObject.targets.push(target);
         }
         if (typeof query.rangeRaw != 'undefined') {
-            queryObject.from = query.rangeRaw.from;
-            queryObject.until = query.rangeRaw.to;
+            // queryObject.from = this.getTimeFilter(query.rangeRaw.from);
+            // queryObject.until = this.getTimeFilter(query.rangeRaw.to);
+            queryObject.from = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.from, false);
+            queryObject.until = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.to, true);
             queryObject.groupByTime = query.interval;
         }
         // queryObject.scopedVars = '$variable';
         return queryObject;
     }
 
+    static getTimeForApiCall(date, roundUp) {
+        if (_.isString(date)) {
+            if (date === 'now') {
+                return 'now';
+            }
+
+            var parts = /^now-(\d+)([d|h|m|s|M])$/.exec(date);
+            if (parts) {
+                return date;
+                // var amount = parseInt(parts[1]);
+                // var unit = parts[2];
+                // return 'now-' + amount + unit;
+            }
+            date = dateMath.parse(date, roundUp);
+        }
+        return (date.valueOf() / 1000).toFixed(0) + 's';
+    }
 }

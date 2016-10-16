@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash'], function (_export, _context) {
+System.register(['lodash', './datemath'], function (_export, _context) {
     "use strict";
 
-    var _, _createClass, NetSpyGlassDatasource;
+    var _, dateMath, _createClass, NetSpyGlassDatasource;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -14,6 +14,8 @@ System.register(['lodash'], function (_export, _context) {
     return {
         setters: [function (_lodash) {
             _ = _lodash.default;
+        }, function (_datemath) {
+            dateMath = _datemath;
         }],
         execute: function () {
             _createClass = function () {
@@ -423,12 +425,33 @@ System.register(['lodash'], function (_export, _context) {
                             queryObject.targets.push(target);
                         }
                         if (typeof query.rangeRaw != 'undefined') {
-                            queryObject.from = query.rangeRaw.from;
-                            queryObject.until = query.rangeRaw.to;
+                            // queryObject.from = this.getTimeFilter(query.rangeRaw.from);
+                            // queryObject.until = this.getTimeFilter(query.rangeRaw.to);
+                            queryObject.from = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.from, false);
+                            queryObject.until = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.to, true);
                             queryObject.groupByTime = query.interval;
                         }
                         // queryObject.scopedVars = '$variable';
                         return queryObject;
+                    }
+                }], [{
+                    key: 'getTimeForApiCall',
+                    value: function getTimeForApiCall(date, roundUp) {
+                        if (_.isString(date)) {
+                            if (date === 'now') {
+                                return 'now';
+                            }
+
+                            var parts = /^now-(\d+)([d|h|m|s|M])$/.exec(date);
+                            if (parts) {
+                                return date;
+                                // var amount = parseInt(parts[1]);
+                                // var unit = parts[2];
+                                // return 'now-' + amount + unit;
+                            }
+                            date = dateMath.parse(date, roundUp);
+                        }
+                        return (date.valueOf() / 1000).toFixed(0) + 's';
                     }
                 }]);
 

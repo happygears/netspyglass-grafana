@@ -175,21 +175,21 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                 }, {
                     key: 'getSeriesName',
                     value: function getSeriesName(series, alias) {
-                        var regex = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
+                        // NSGDB-82: we want to be able to use template vars as aliases
+                        var aliasWithVarsReplaced = this.templateSrv.replace(alias);
 
-                        return alias.replace(regex, function (match, g1, g2) {
+                        var regex = /\$(\w+)|\[\[([\s\S]+?)]]/g;
+                        return aliasWithVarsReplaced.replace(regex, function (match, g1, g2) {
                             var group = g1 || g2;
 
-                            if (group === 'm' || group === 'measurement') {
-                                return series.variable;
-                            }
-                            if (group === 'variable') {
+                            if (group === 'm' || group === 'measurement' || group === 'variable') {
                                 return series.variable;
                             }
                             if (group === 'device') return series.device;
                             if (group === 'component') return series.component;
                             if (group === 'description') return series.description;
 
+                            // if variable has no tags, we can't substitute tag words
                             if (!series.tags) {
                                 return match;
                             }
@@ -442,7 +442,7 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                                 return 'now';
                             }
 
-                            var parts = /^now-(\d+)([d|h|m|s|M])$/.exec(date);
+                            var parts = /^now-(\d+)([dhmsM])$/.exec(date);
                             if (parts) {
                                 return date;
                                 // var amount = parseInt(parts[1]);

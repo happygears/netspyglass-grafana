@@ -69,3 +69,12 @@ Building "top N" report in Grafana table panel (selects top 5):
 (C) 2016 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
+
+# Change Log
+
+## v 1.0.2
+
+1. fixed bug that prevented the data source from properly fetching graph
+data for graphs with fixed time intervals or time intervals in the past,
+such as "yesterday" or "day before yesterday"
+

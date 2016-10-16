@@ -70,6 +70,8 @@ Building "top N" report in Grafana table panel (selects top 5):
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
+
+
 # Change Log
 
 ### v 1.0.2
@@ -77,7 +79,6 @@ Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 1. fixed bug that prevented the data source from properly fetching graph
 data for graphs with fixed time intervals or time intervals in the past,
 such as "yesterday" or "day before yesterday"
-
 2. made it possible to use dashboard template variables in "ALIAS BY"
 query field.
 

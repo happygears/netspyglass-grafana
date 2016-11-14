@@ -46,13 +46,23 @@ way to build interactive dashboards.
 
 1. clone this git repository
 2. run script `./tools/maketar.sh`. This script produces archive `netspyglass-datasource.tar`
-
-Copy this archive to the server where Grafana runs and unpack it in 
+3. Copy this archive to the server where Grafana runs and unpack it in 
 the directory `/var/lib/grafana/plugins/`, then restart the server with command
 `sudo service grafana-server restart`.
+4. After the restart, NetSpyGlass should appear in the list of available
+ data sources. If your NetSpyGlass server requires user authentication,
+ add access token to the data source configuration. The token should be 
+ defined in NetSpyGlass configuration file `nw2.conf` using parameter 
+ key `api.accessTokens.grafana`
+5. Click "Add" and then "Save and Test" to test communication with
+ the server
  
 
 ## Screenshots
+
+Data Source configuration:
+
+![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/netspyglass_data_source.png)
 
 
 Example of a graph query that matches metrics by tag "Role.Switch":

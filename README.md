@@ -51,9 +51,8 @@ the directory `/var/lib/grafana/plugins/`, then restart the server with command
 `sudo service grafana-server restart`.
 4. After the restart, NetSpyGlass should appear in the list of available
  data sources. If your NetSpyGlass server requires user authentication,
- add access token to the data source configuration. The token should be 
- defined in NetSpyGlass configuration file `nw2.conf` using parameter 
- key `api.accessTokens.grafana`
+ add enable and configure access token. The token is set in NetSpyGlass
+ configuration file `nw2.conf` using parameter key `api.accessTokens.grafana`
 5. Click "Add" and then "Save and Test" to test communication with
  the server
  

@@ -46,13 +46,22 @@ way to build interactive dashboards.
 
 1. clone this git repository
 2. run script `./tools/maketar.sh`. This script produces archive `netspyglass-datasource.tar`
-
-Copy this archive to the server where Grafana runs and unpack it in 
+3. Copy this archive to the server where Grafana runs and unpack it in 
 the directory `/var/lib/grafana/plugins/`, then restart the server with command
 `sudo service grafana-server restart`.
+4. After the restart, NetSpyGlass should appear in the list of available
+ data sources. If your NetSpyGlass server requires user authentication,
+ add enable and configure access token. The token is set in NetSpyGlass
+ configuration file `nw2.conf` using parameter key `api.accessTokens.grafana`
+5. Click "Add" and then "Save and Test" to test communication with
+ the server
  
 
 ## Screenshots
+
+Data Source configuration:
+
+![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/netspyglass_data_source.png)
 
 
 Example of a graph query that matches metrics by tag "Role.Switch":
@@ -64,15 +73,18 @@ Building "top N" report in Grafana table panel (selects top 5):
 
 ![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png)
 
-## Tested with Grafana 3.1.1
+## Tested with Grafana 4.0.1
 
 (C) 2016 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
-
-
 # Change Log
+
+### v 1.0.3
+1. Fixed regression caused by "Grafana" bug [#6912](https://github.com/grafana/grafana/pull/6912) 
+that break ability to build queries/fields.
+
 
 ### v 1.0.2
 

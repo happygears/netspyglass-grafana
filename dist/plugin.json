@@ -26,12 +26,12 @@
       "small": "img/netspyglass_logo.svg",
       "large": "img/netspyglass_logo.svg"
     },
-    "version": "1.0.2",
-    "updated": "2016-10-05"
+    "version": "1.0.3",
+    "updated": "2016-12-21"
   },
 
   "dependencies": {
-    "grafanaVersion": "3.x.x",
+    "grafanaVersion": "4.x.x",
     "plugins": [ ]
   }
 }

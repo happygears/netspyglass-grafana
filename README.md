@@ -73,15 +73,18 @@ Building "top N" report in Grafana table panel (selects top 5):
 
 ![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png)
 
-## Tested with Grafana 3.1.1
+## Tested with Grafana 4.0.1
 
 (C) 2016 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
-
-
 # Change Log
+
+### v 1.0.3
+1. Fixed regression caused by "Grafana" bug [#6912](https://github.com/grafana/grafana/pull/6912) 
+that break ability to build queries/fields.
+
 
 ### v 1.0.2
 

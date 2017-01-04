@@ -81,6 +81,12 @@ Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
 # Change Log
 
+### v 1.0.4
+
+1. fixed regression caused by the switch to lodash 4.x. This bug broke time intervals "today", 
+   "yesterday" and others like that.
+
+
 ### v 1.0.3
 1. Fixed regression caused by "Grafana" bug [#6912](https://github.com/grafana/grafana/pull/6912) 
 that break ability to build queries/fields.

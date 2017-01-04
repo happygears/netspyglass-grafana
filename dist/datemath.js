@@ -105,7 +105,7 @@ System.register(['lodash', 'moment'], function (_export, _context) {
             }
             unit = mathString.charAt(i++);
 
-            if (!_.contains(units, unit)) {
+            if (!_.includes(units, unit)) {
                 return undefined;
             } else {
                 if (type === 0) {

@@ -125,29 +125,29 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             orderBy: ['category']
         }).compile();
 
-        return this.datasource.executeQuery(this.SQLBuilder.factory({
-            select: ['category,name'],
-            distinct: true,
-            from: 'variables',
-            where: ['AND', {
-                category: ['<>', '']
-            }],
-            orderBy: ['category']
-        }).compile(), 'json')
-            .then( (data) => {
-                console.log('category,name',data);
-                // this.transformToSegments(this.target.category, this.prompts['category'])
+        // return this.datasource.executeQuery(this.SQLBuilder.factory({
+        //     select: ['category,name'],
+        //     distinct: true,
+        //     from: 'variables',
+        //     where: ['AND', {
+        //         category: ['<>', '']
+        //     }],
+        //     orderBy: ['category']
+        // }).compile(), 'json')
+        //     .then( (data) => {
+        //         console.log('category,name',data);
+        //         // this.transformToSegments(this.target.category, this.prompts['category'])
+        //
+        //         return [
+        //             this.uiSegmentSrv.newSegment({ value: 'test1', expandable: true }),
+        //             this.uiSegmentSrv.newSegment({ value: 'test2', expandable: false }),
+        //             this.uiSegmentSrv.newSegment({ value: 'test3', expandable: false }),
+        //         ]
+        //     });
 
-                return [
-                    this.uiSegmentSrv.newSegment({ value: 'test1', expandable: true }),
-                    this.uiSegmentSrv.newSegment({ value: 'test2', expandable: false }),
-                    this.uiSegmentSrv.newSegment({ value: 'test3', expandable: false }),
-                ]
-            });
 
-
-        // return this.datasource.executeQuery(query, 'list')
-        //     .then(this.transformToSegments(this.target.category, this.prompts['category']));
+        return this.datasource.executeQuery(query, 'list')
+            .then(this.transformToSegments(this.target.category, this.prompts['category']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
     }
 

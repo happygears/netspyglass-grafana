@@ -1,209 +1,277 @@
-<query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row">
-    <div class="gf-form-inline">
-        <div class="gf-form">
-            <label class="gf-form-label query-keyword width-7">FROM</label>
-            <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()"
-                                  on-change="ctrl.onChangeInternalCategory()"
-                                  css-class="width-10"></metric-segment-model>
-        </div>
+<h3>query-editor-row</h3>
 
-        <div class="gf-form" ng-if="ctrl.isCategorySelected()">
-            <label class="gf-form-label query-keyword width-7">SELECT</label>
-            <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" id="variable-field"
-                                  on-change="ctrl.onChangeInternalVariable()"
-                                  css-class="width-14"></metric-segment-model>
+<query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" can-collapse="true" has-text-edit-mode="true">
+
+    <div class="editor-part editor-part--row" data-ng-if="ctrl.rowMode">
+        <div class="gf-form">
+            <input type="text" class="gf-form-input input-medium max-width" data-provide="typeahead"
+                   ng-model="ctrl.target.customNsgqlQuery" ng-blur="ctrl.onChangeNsgQl()"
+                   spellcheck='false' placeholder="SELECT tag FROM tagFacet WHERE id=1"/>
         </div>
     </div>
 
-    <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected();">
-        <div class="gf-form">
-            <label class="gf-form-label query-keyword width-7">WHERE</label>
-            <metric-segment-model property="ctrl.target.device" ng-disabled="true" get-options="ctrl.getDevices()"
-                                  on-change="ctrl.onChangeInternalDevice()"
-                                  css-class="width-16"></metric-segment-model>
-            <span class="gf-form-label">
+
+    <div class="editor-part editor-part--filter" data-ng-if="!ctrl.rowMode">
+
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">FROM</label>
+
+                <!--<metric-segment segment="ctrl.category"-->
+                                <!--get-options="ctrl.getCategories()"-->
+                                <!--on-change="ctrl.onFromChanges(val, $index)"></metric-segment>-->
+
+                <metric-segment-model property="ctrl.category"
+                                      get-options="ctrl.getCategories()"
+                                      on-change="ctrl.onFromChange()"></metric-segment-model>
+            </div>
+
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">SELECT</label>
+            </div>
+
+            <div class="gf-form">
+                <metric-segment-model property="ctrl.variable"
+                                      get-options="ctrl.getVariables()"
+                                      on-change="ctrl.onSelectChange()"></metric-segment-model>
+            </div>
+        </div>
+
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">WHERE</label>
+            </div>
+
+            <div class="gf-form" ng-repeat="segment in ctrl.tagSegments">
+                <metric-segment segment="segment"
+                                get-options="ctrl.getTagsOrValues(segment, $index)"
+                                on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
+            </div>
+
+            <div class="gf-form gf-form--grow">
+                <div class="gf-form-label gf-form-label--grow"></div>
+            </div>
+        </div>
+
+
+        <br>
+        <br>
+        <div>--- old filter ---</div>
+        <br>
+        <br>
+
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">FROM</label>
+                <metric-segment-model property="ctrl.target.category" get-options="ctrl.getCategories()"
+                                      on-change="ctrl.onChangeInternalCategory()"
+                                      css-class="width-10"></metric-segment-model>
+            </div>
+
+            <div class="gf-form" ng-if="ctrl.isCategorySelected()">
+                <label class="gf-form-label query-keyword width-7">SELECT</label>
+                <metric-segment-model property="ctrl.target.variable" get-options="ctrl.getVariables()" id="variable-field"
+                                      on-change="ctrl.onChangeInternalVariable()"
+                                      css-class="width-14"></metric-segment-model>
+            </div>
+        </div>
+
+        <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected();">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">WHERE</label>
+                <metric-segment-model property="ctrl.target.device" ng-disabled="true" get-options="ctrl.getDevices()"
+                                      on-change="ctrl.onChangeInternalDevice()"
+                                      css-class="width-16"></metric-segment-model>
+                <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'Device name or dashboard template variable as \'$device\''" data-placement="bottom"></i>
             </span>
-            <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()"
-                                  on-change="ctrl.onChangeInternalComponent()"
-                                  css-class="width-16"></metric-segment-model>
-            <i class="fa fa-question-circle"
-               bs-tooltip="'component name, dashboard template variable as \'$interface\' or regex surrounded with \'/ /\''" data-placement="bottom"></i>
+                <metric-segment-model property="ctrl.target.component" get-options="ctrl.getComponents()"
+                                      on-change="ctrl.onChangeInternalComponent()"
+                                      css-class="width-16"></metric-segment-model>
+                <i class="fa fa-question-circle"
+                   bs-tooltip="'component name, dashboard template variable as \'$interface\' or regex surrounded with \'/ /\''" data-placement="bottom"></i>
+            </div>
         </div>
-    </div>
 
-    <!-- Tag matching rules -->
-    <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
-        <div class="gf-form">
-            <label class="gf-form-label query-keyword width-7" ng-if="$index == 0">TAGS</label>
-            <label class="gf-form-label query-keyword width-7" ng-if="$index > 0">&nbsp;</label>
-            <metric-segment-model property="ctrl.target.tagData[$index].tagFacet" get-options="ctrl.getTagsFacet($index)"
-                                  on-change="ctrl.onChangeInternalTagFacet($index)"
-                                  css-class="width-13"></metric-segment-model>
+        <!-- Tag matching rules -->
+        <div class="gf-form-inline" ng-repeat="data in ctrl.target.tagData" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7" ng-if="$index == 0">TAGS</label>
+                <label class="gf-form-label query-keyword width-7" ng-if="$index > 0">&nbsp;</label>
+                <metric-segment-model property="ctrl.target.tagData[$index].tagFacet" get-options="ctrl.getTagsFacet($index)"
+                                      on-change="ctrl.onChangeInternalTagFacet($index)"
+                                      css-class="width-13"></metric-segment-model>
 
-            <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'== or <>'"
-               data-placement="bottom">
-                <span>{{ctrl.target.tagData[$index].tagOperation}}</span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a ng-click="ctrl.tagOperation($index, '==')">==</a></li>
-                <li><a ng-click="ctrl.tagOperation($index, '<>')"><></a></li>
-            </ul>
+                <a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'== or <>'"
+                   data-placement="bottom">
+                    <span>{{ctrl.target.tagData[$index].tagOperation}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="ctrl.tagOperation($index, '==')">==</a></li>
+                    <li><a ng-click="ctrl.tagOperation($index, '<>')"><></a></li>
+                </ul>
 
-            <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord($index)"
-                                  on-change="ctrl.onChangeInternalTagWord($index)" id="tag-word-{{$index}}"
-                                  css-class="tag-word width-12"></metric-segment-model>
-            <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>
-            <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> - </a>
+                <metric-segment-model property="ctrl.target.tagData[$index].tagWord" get-options="ctrl.getTagsWord($index)"
+                                      on-change="ctrl.onChangeInternalTagWord($index)" id="tag-word-{{$index}}"
+                                      css-class="tag-word width-12"></metric-segment-model>
+                <a class="gf-form-label" ng-click="ctrl.tagDataAdd()"> + </a>
+                <a class="gf-form-label" ng-click="ctrl.tagDataRemove($index)"> - </a>
+            </div>
         </div>
-    </div>
-    <div class="gf-form-inline" ng-if="ctrl.target.tagData.length < 1 && ctrl.isVariableSelected()">
-        <div class="gf-form">
-            <a class="gf-form-label width-12" ng-click="ctrl.tagDataAdd()"> + Add tag match</a>
+        <div class="gf-form-inline" ng-if="ctrl.target.tagData.length < 1 && ctrl.isVariableSelected()">
+            <div class="gf-form">
+                <a class="gf-form-label width-12" ng-click="ctrl.tagDataAdd()"> + Add tag match</a>
+            </div>
         </div>
-    </div>
 
-    <!-- Aggregator, Selector -->
-    <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
-        <div class="gf-form">
-            <label class="gf-form-label width-7 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">SELECTOR</span>
-            </label>
-        </div>
-        <div class="gf-form">
-            <a class="gf-form-label pointer width-7" data-toggle="dropdown" data-placement="bottom">
-                <span>{{ctrl.target.selector}}</span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a ng-click="ctrl.setSelector(' -- ')">-- clear --</a></li>
-                <li><a ng-click="ctrl.setSelector('last')">last</a></li>
-                <li><a ng-click="ctrl.setSelector('min')">min</a></li>
-                <li><a ng-click="ctrl.setSelector('max')">max</a></li>
-            </ul>
-            <span class="gf-form-label">
+        <!-- Aggregator, Selector -->
+        <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
+            <div class="gf-form">
+                <label class="gf-form-label width-7 gf-form-query-letter-cell">
+                    <span class="gf-form-query-letter-cell-letter">SELECTOR</span>
+                </label>
+            </div>
+            <div class="gf-form">
+                <a class="gf-form-label pointer width-7" data-toggle="dropdown" data-placement="bottom">
+                    <span>{{ctrl.target.selector}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="ctrl.setSelector(' -- ')">-- clear --</a></li>
+                    <li><a ng-click="ctrl.setSelector('last')">last</a></li>
+                    <li><a ng-click="ctrl.setSelector('min')">min</a></li>
+                    <li><a ng-click="ctrl.setSelector('max')">max</a></li>
+                </ul>
+                <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'Operates on groups of observations created using &quot;Group by time interval&quot; parameter value'"
                    data-placement="bottom"></i>
             </span>
-        </div>
+            </div>
 
-        <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">AGGREGATOR</span>
-            </label>
-        </div>
-        <div class="gf-form">
-            <a class="gf-form-label pointer width-7" data-toggle="dropdown" data-placement="bottom">
-                <span>{{ctrl.target.aggregator}}</span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a ng-click="ctrl.setAggregator(' -- ')">-- clear --</a></li>
-                <li><a ng-click="ctrl.setAggregator('min')">min</a></li>
-                <li><a ng-click="ctrl.setAggregator('max')">max</a></li>
-                <li><a ng-click="ctrl.setAggregator('avg')">avg</a></li>
-                <li><a ng-click="ctrl.setAggregator('count')">count</a></li>
-                <li><a ng-click="ctrl.setAggregator('sum')">sum</a></li>
-            </ul>
-            <span class="gf-form-label">
+            <div class="gf-form">
+                <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                    <span class="gf-form-query-letter-cell-letter">AGGREGATOR</span>
+                </label>
+            </div>
+            <div class="gf-form">
+                <a class="gf-form-label pointer width-7" data-toggle="dropdown" data-placement="bottom">
+                    <span>{{ctrl.target.aggregator}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="ctrl.setAggregator(' -- ')">-- clear --</a></li>
+                    <li><a ng-click="ctrl.setAggregator('min')">min</a></li>
+                    <li><a ng-click="ctrl.setAggregator('max')">max</a></li>
+                    <li><a ng-click="ctrl.setAggregator('avg')">avg</a></li>
+                    <li><a ng-click="ctrl.setAggregator('count')">count</a></li>
+                    <li><a ng-click="ctrl.setAggregator('sum')">sum</a></li>
+                </ul>
+                <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'Operates on groups of variables that match selection criteria'"
                    data-placement="bottom"></i>
             </span>
+            </div>
         </div>
-    </div>
 
-    <!-- SortBy , Limit -->
-    <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
-        <div class="gf-form">
-            <label class="gf-form-label width-7 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">ORDER</span>
-            </label>
-        </div>
-        <div class="gf-form">
-            <a class="gf-form-label pointer width-7" data-toggle="dropdown" data-placement="bottom">
-                <span>{{ctrl.target.sortByEl}}</span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a ng-click="ctrl.setSortByEl('none')">none</a></li>
-                <li><a ng-click="ctrl.setSortByEl('ascending')">ascending</a></li>
-                <li><a ng-click="ctrl.setSortByEl('descending')">descending</a></li>
-            </ul>
-            <span class="gf-form-label">
+        <!-- SortBy , Limit -->
+        <div class="gf-form-inline" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
+            <div class="gf-form">
+                <label class="gf-form-label width-7 gf-form-query-letter-cell">
+                    <span class="gf-form-query-letter-cell-letter">ORDER</span>
+                </label>
+            </div>
+            <div class="gf-form">
+                <a class="gf-form-label pointer width-7" data-toggle="dropdown" data-placement="bottom">
+                    <span>{{ctrl.target.sortByEl}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="ctrl.setSortByEl('none')">none</a></li>
+                    <li><a ng-click="ctrl.setSortByEl('ascending')">ascending</a></li>
+                    <li><a ng-click="ctrl.setSortByEl('descending')">descending</a></li>
+                </ul>
+                <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'Sort variables by the value of the last observation group after applying selector function to each group'"
                    data-placement="bottom"></i>
             </span>
-        </div>
+            </div>
 
-        <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">LIMIT</span>
-            </label>
-        </div>
-        <div class="gf-form">
-            <input ng-model="ctrl.target.limit" ng-blur="ctrl.refresh();" type="text" data-provide="typeahead"
-                   class="gf-form-input input-medium width-7" spellcheck="false">
-            <span class="gf-form-label">
+            <div class="gf-form">
+                <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                    <span class="gf-form-query-letter-cell-letter">LIMIT</span>
+                </label>
+            </div>
+            <div class="gf-form">
+                <input ng-model="ctrl.target.limit" ng-blur="ctrl.refresh();" type="text" data-provide="typeahead"
+                       class="gf-form-input input-medium width-7" spellcheck="false">
+                <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'Restrict number of time series returned by this query. ' +
                                'Limit is applied after sorting. If this field is empty, result is unrestricted, ' +
                                'however the server may apply its own restriction to avoid sending ' +
                                'thousands of time series to Grafana'" data-placement="bottom"></i>
             </span>
+            </div>
+
         </div>
 
-    </div>
+        <div class="gf-form-inline" style="margin-bottom: 20px" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
 
-    <div class="gf-form-inline" style="margin-bottom: 20px" ng-if="ctrl.isCategorySelected() && ctrl.isVariableSelected()">
+            <div class="gf-form max-width-30">
+                <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
+                <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck="false"
+                       placeholder="Naming pattern" ng-blur="ctrl.refresh()">
 
-        <div class="gf-form max-width-30">
-            <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
-            <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck="false"
-                   placeholder="Naming pattern" ng-blur="ctrl.refresh()">
-
-            <span class="gf-form-label">
+                <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
                    data-placement="bottom"></i>
             </span>
-        </div>
+            </div>
 
-        <div class="gf-form">
-            <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                <span class="gf-form-query-letter-cell-letter">Format as</span>
-            </label>
-        </div>
-        <div class="gf-form">
-            <a class="gf-form-label pointer width-8" data-toggle="dropdown" data-placement="bottom">
-                <span>{{ctrl.target.formatDisplay}}</span>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a ng-click="ctrl.setFormat('time_series', 'Time Series')">Time Series</a></li>
-                <li><a ng-click="ctrl.setFormat('table', 'Table')">Table</a></li>
-            </ul>
-        </div>
-
-        <div class="gf-form-inline" ng-if="ctrl.target.format === 'table'">
             <div class="gf-form">
                 <label class="gf-form-label width-8 gf-form-query-letter-cell">
-                    <span class="gf-form-query-letter-cell-letter">Columns</span>
+                    <span class="gf-form-query-letter-cell-letter">Format as</span>
                 </label>
             </div>
-
             <div class="gf-form">
-                <input ng-model="ctrl.target.columns" ng-click="" ng-blur="ctrl.setColumns()"
-                       type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false"
-                       style="width: 400px;" placeholder="Comma separated list of column names">
+                <a class="gf-form-label pointer width-8" data-toggle="dropdown" data-placement="bottom">
+                    <span>{{ctrl.target.formatDisplay}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a ng-click="ctrl.setFormat('time_series', 'Time Series')">Time Series</a></li>
+                    <li><a ng-click="ctrl.setFormat('table', 'Table')">Table</a></li>
+                </ul>
             </div>
 
-            <span class="gf-form-label">
+            <div class="gf-form-inline" ng-if="ctrl.target.format === 'table'">
+                <div class="gf-form">
+                    <label class="gf-form-label width-8 gf-form-query-letter-cell">
+                        <span class="gf-form-query-letter-cell-letter">Columns</span>
+                    </label>
+                </div>
+
+                <div class="gf-form">
+                    <input ng-model="ctrl.target.columns" ng-click="" ng-blur="ctrl.setColumns()"
+                           type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false"
+                           style="width: 400px;" placeholder="Comma separated list of column names">
+                </div>
+
+                <span class="gf-form-label">
                 <i class="fa fa-question-circle"
                    bs-tooltip="'Comma separated list of column names. See below for more details.'"
                    data-placement="bottom"></i>
             </span>
+            </div>
         </div>
+
     </div>
+
+
+
+
+
 
 
 </query-editor-row>

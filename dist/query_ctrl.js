@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
+System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder', 'lodash'], function (_export, _context) {
     "use strict";
 
-    var QueryCtrl, _createClass, NetSpyGlassDatasourceQueryCtrl;
+    var QueryCtrl, SQLBuilderFactory, _, _createClass, NetSpyGlassDatasourceQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -38,7 +38,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
     return {
         setters: [function (_appPluginsSdk) {
             QueryCtrl = _appPluginsSdk.QueryCtrl;
-        }, function (_cssQueryEditorCss) {}],
+        }, function (_cssQueryEditorCss) {}, function (_hgSqlBuilder) {
+            SQLBuilderFactory = _hgSqlBuilder.default;
+        }, function (_lodash) {
+            _ = _lodash.default;
+        }],
         execute: function () {
             _createClass = function () {
                 function defineProperties(target, props) {
@@ -61,7 +65,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
             _export('NetSpyGlassDatasourceQueryCtrl', NetSpyGlassDatasourceQueryCtrl = function (_QueryCtrl) {
                 _inherits(NetSpyGlassDatasourceQueryCtrl, _QueryCtrl);
 
-                function NetSpyGlassDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
+                function NetSpyGlassDatasourceQueryCtrl($scope, $injector, templateSrv, $q, uiSegmentSrv) {
                     _classCallCheck(this, NetSpyGlassDatasourceQueryCtrl);
 
                     var _this = _possibleConstructorReturn(this, (NetSpyGlassDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(NetSpyGlassDatasourceQueryCtrl)).call(this, $scope, $injector));
@@ -75,7 +79,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
                     _this.scope = $scope;
                     _this.injector = $injector;
+
+                    _this.templateSrv = templateSrv;
+                    _this.$q = $q;
                     _this.uiSegmentSrv = uiSegmentSrv;
+
                     _this.clearSelection = '-- clear selection --';
                     _this.blankDropDownElement = '---';
                     _this.target.category = _this.target.category || _this.prompts['category'];
@@ -97,6 +105,26 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
                     _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
                     _this.target.alias = _this.target.alias || '';
+
+                    // _NEW_
+                    _this.SQLBuilder = new SQLBuilderFactory();
+                    _this.target.queryConfig = _this.SQLBuilder.factory();
+
+                    console.log(_this.SQLBuilder);
+                    console.log(SQLBuilderFactory.factory);
+
+                    //TODO: need to find better way
+                    _this.target.needToBuildQuery = true;
+                    _this.target.customNsgqlQuery = "SELECT time,metric FROM cpuUtil WHERE time BETWEEN 'now-6h' AND 'now'";
+
+                    _this.rowMode = false;
+
+                    _this.category = _this.target.category || _this.prompts['category'];
+                    _this.variable = _this.target.variable || _this.prompts['variable'];
+
+                    _this.tagSegments = [];
+                    _this.tagSegments.push(_this.uiSegmentSrv.newPlusButton());
+                    _this.removeTagFilterSegment = uiSegmentSrv.newSegment({ fake: true, value: '-- remove tag filter --' });
                     return _this;
                 }
 
@@ -118,36 +146,72 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                             tagWord: this.blankDropDownElement,
                             tagOperation: '=='
                         };
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'tagDataRemove',
                     value: function tagDataRemove(index) {
                         this.target.tagData.splice(index, 1);
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        return this.datasource.findCategoriesQuery(this.target).then(this.transformToSegments(this.target.category, this.prompts['category']));
+                        var _this2 = this;
+
+                        var query = this.SQLBuilder.factory({
+                            select: ['category'],
+                            distinct: true,
+                            from: 'variables',
+                            where: ['AND', {
+                                category: ['<>', '']
+                            }],
+                            orderBy: ['category']
+                        }).compile();
+
+                        return this.datasource.executeQuery(this.SQLBuilder.factory({
+                            select: ['category,name'],
+                            distinct: true,
+                            from: 'variables',
+                            where: ['AND', {
+                                category: ['<>', '']
+                            }],
+                            orderBy: ['category']
+                        }).compile(), 'json').then(function (data) {
+                            console.log('category,name', data);
+                            // this.transformToSegments(this.target.category, this.prompts['category'])
+
+                            return [_this2.uiSegmentSrv.newSegment({ value: 'test1', expandable: true }), _this2.uiSegmentSrv.newSegment({ value: 'test2', expandable: false }), _this2.uiSegmentSrv.newSegment({ value: 'test3', expandable: false })];
+                        });
+
+                        // return this.datasource.executeQuery(query, 'list')
+                        //     .then(this.transformToSegments(this.target.category, this.prompts['category']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'transformToSegments',
                     value: function transformToSegments(currentValue, prompt) {
-                        var _this2 = this;
+                        var _this3 = this;
 
                         console.log('transformToSegments called:  currentValue=' + currentValue + ' prompt=' + prompt);
                         return function (results) {
                             var segments = _.map(results, function (segment) {
-                                return _this2.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
+                                //TODO: really we need to ckeck segment.text if all request types will be 'list'
+                                if (segment.text) {
+                                    return _this3.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
+                                } else {
+                                    return _this3.uiSegmentSrv.newSegment({ value: segment });
+                                }
                             });
                             // segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
 
                             // there is no need to add "clear selection" item if current value is already equal to prompt
                             if (currentValue !== prompt) {
-                                segments.unshift(_this2.uiSegmentSrv.newSegment({ fake: true, value: _this2.clearSelection, html: prompt }));
+                                segments.unshift(_this3.uiSegmentSrv.newSegment({ fake: true, value: _this3.clearSelection, html: prompt }));
                             }
+
                             return segments;
                         };
                     }
@@ -156,12 +220,23 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     value: function testRemove() {
                         this.target.variable = this.prompts['variable'];
                         this.getVariables();
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'getVariables',
                     value: function getVariables() {
-                        return this.datasource.findVariablesQuery(this.target).then(this.transformToSegments(this.target.variable, this.prompts['variable']));
+                        var query = this.SQLBuilder.factory({
+                            select: ['name'],
+                            distinct: true,
+                            from: 'variables',
+                            where: ['AND', {
+                                category: ['=', this.target.category]
+                            }],
+                            orderBy: ['name']
+                        }).compile();
+
+                        return this.datasource.executeQuery(query, 'list').then(this.transformToSegments(this.target.variable, this.prompts['variable']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
@@ -210,12 +285,15 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         // angular.element('#variable-field').children().children('a').html(this.target.variable);
                         // call refresh to force graph reload (which should turn blank since we dont have enough data
                         // to build valid query)
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalVariable',
                     value: function onChangeInternalVariable() {
                         console.log('Variable has changed to ' + this.target.variable);
+                        console.log(this);
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -224,6 +302,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         if (this.target.device == this.clearSelection) {
                             this.target.device = this.prompts['device'];
                         }
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -232,6 +311,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         if (this.target.component == this.clearSelection) {
                             this.target.component = this.prompts['component'];
                         }
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -245,40 +325,47 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         // tag word fields in another tag matches in the same target or other targets should not change.
                         // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
                         // angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalTagWord',
                     value: function onChangeInternalTagWord(index) {
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'tagOperation',
                     value: function tagOperation(index, operation) {
                         this.target.tagData[index].tagOperation = operation;
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'setSortByEl',
                     value: function setSortByEl(sortOrder) {
                         this.target.sortByEl = sortOrder;
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'setSelector',
                     value: function setSelector(element) {
                         this.target.selector = element;
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'setAggregator',
                     value: function setAggregator(element) {
                         this.target.aggregator = element;
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'setAlias',
                     value: function setAlias() {
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -286,13 +373,271 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     value: function setFormat(element, elementDisplayStr) {
                         this.target.format = element;
                         this.target.formatDisplay = elementDisplayStr;
+                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'setColumns',
                     value: function setColumns() {
                         // console.log(this.target.columns);
+                        this.target.needToBuildQuery = true;
                         this.refresh();
+                    }
+                }, {
+                    key: 'onChangeNsgQl',
+                    value: function onChangeNsgQl() {
+                        console.log('onChangeNsgQl');
+
+                        console.log(this.target);
+
+                        // let nsgql = this.SQLBuilderFactory.factory({
+                        //     select: ['id', 'name', 'owner', 'shared'],
+                        //     from: 'maps',
+                        //     where: [
+                        //         'AND',
+                        //         {
+                        //             id: ['=', id]
+                        //         }
+                        //     ]
+                        // }).compile();
+
+                        this.target.nsgqlQuery = [{
+                            "nsgql": this.target.customNsgqlQuery,
+                            "format": "time_series"
+                        }];
+                        this.target.needToBuildQuery = false;
+                        this.refresh();
+                    }
+                }, {
+                    key: 'toggleEditorMode',
+                    value: function toggleEditorMode() {
+                        console.log(11);
+
+                        this.rowMode = !this.rowMode;
+                    }
+                }, {
+                    key: 'getCollapsedText',
+                    value: function getCollapsedText() {
+                        return this.target.customNsgqlQuery;
+                    }
+                }, {
+                    key: 'onFromChange',
+                    value: function onFromChange() {
+                        console.log('%conFromChanges', 'color: blue; font-weight: bold;', this.category);
+
+                        if (this.target.category !== this.category && this.variable != this.prompts['variable']) {
+                            console.log(111);
+                            this.target.category = this.category;
+                            this.variable = this.prompts['variable'];
+                            this.onSelectChange();
+                            return;
+                        }
+
+                        this.target.category = this.category;
+
+                        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
+                        // console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
+                        console.log(this.category);
+                        this.target.queryConfig.from(this.category);
+                    }
+                }, {
+                    key: 'onSelectChange',
+                    value: function onSelectChange() {
+                        console.log('%conSelectChange', 'color: blue; font-weight: bold;', this.variable);
+
+                        this.target.variable = this.variable;
+                        this.target.queryConfig.select([this.variable]);
+                        this.target.queryConfig.setDistinct(true);
+                        // this.panelCtrl.refresh();
+                        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
+                        console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
+                        this.refresh();
+                    }
+                }, {
+                    key: 'getTagsOrValues',
+                    value: function getTagsOrValues(segment, index) {
+                        var _this4 = this;
+
+                        console.log(segment, index);
+                        var format = 'list';
+
+                        if (segment.type === 'condition') {
+                            return this.$q.when([this.uiSegmentSrv.newSegment('AND'), this.uiSegmentSrv.newSegment('OR')]);
+                        }
+                        if (segment.type === 'operator') {
+                            var nextValue = this.tagSegments[index + 1].value;
+                            return this.$q.when(this.uiSegmentSrv.newOperators(['=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP']));
+                        }
+
+                        var nsgql = void 0,
+                            addTemplateVars = void 0;
+                        if (segment.type === 'key' || segment.type === 'plus-button') {
+                            nsgql = this.SQLBuilder.factory({
+                                select: ['tagFacet'],
+                                from: 'devices',
+                                orderBy: ['tagFacet']
+                            }).compile();
+
+                            addTemplateVars = false;
+                        } else if (segment.type === 'value') {
+                            var queryObj = void 0;
+
+                            queryObj = {
+                                select: [this.tagSegments[index - 2].value],
+                                from: 'devices',
+                                where: {},
+                                orderBy: [this.tagSegments[index - 2].value]
+                            };
+                            queryObj.where[this.tagSegments[index - 2].value] = ['NOTNULL'];
+
+                            nsgql = this.SQLBuilder.factory(queryObj).compile();
+
+                            addTemplateVars = true;
+                        }
+
+                        return this.datasource.executeQuery(nsgql, format).then(this.transformToWhereSegments(addTemplateVars)).then(function (results) {
+                            if (segment.type === 'key') {
+                                results.splice(0, 0, angular.copy(_this4.removeTagFilterSegment));
+                            }
+                            return results;
+                        });
+                    }
+                }, {
+                    key: 'transformToWhereSegments',
+                    value: function transformToWhereSegments(addTemplateVars) {
+                        var _this5 = this;
+
+                        return function (results) {
+                            console.log(results);
+                            var segments = _.map(results, function (segment) {
+                                return _this5.uiSegmentSrv.newSegment({ value: '' + segment });
+                            });
+
+                            if (addTemplateVars) {
+                                var _iteratorNormalCompletion = true;
+                                var _didIteratorError = false;
+                                var _iteratorError = undefined;
+
+                                try {
+                                    for (var _iterator = _this5.templateSrv.variables[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                        var variable = _step.value;
+
+                                        segments.unshift(_this5.uiSegmentSrv.newSegment({ type: 'template', value: '/^$' + variable.name + '$/', expandable: true }));
+                                    }
+                                } catch (err) {
+                                    _didIteratorError = true;
+                                    _iteratorError = err;
+                                } finally {
+                                    try {
+                                        if (!_iteratorNormalCompletion && _iterator.return) {
+                                            _iterator.return();
+                                        }
+                                    } finally {
+                                        if (_didIteratorError) {
+                                            throw _iteratorError;
+                                        }
+                                    }
+                                }
+                            }
+
+                            return segments;
+                        };
+                    }
+                }, {
+                    key: 'tagSegmentUpdated',
+                    value: function tagSegmentUpdated(segment, index) {
+                        this.tagSegments[index] = segment;
+
+                        // handle remove tag condition
+                        console.log(this.removeTagFilterSegment.value);
+                        console.log(segment);
+                        if (segment.value === this.removeTagFilterSegment.value) {
+                            this.tagSegments.splice(index, 3);
+                            if (this.tagSegments.length === 0) {
+                                this.tagSegments.push(this.uiSegmentSrv.newPlusButton());
+                            } else if (this.tagSegments.length > 2) {
+                                this.tagSegments.splice(Math.max(index - 1, 0), 1);
+                                if (this.tagSegments[this.tagSegments.length - 1].type !== 'plus-button') {
+                                    this.tagSegments.push(this.uiSegmentSrv.newPlusButton());
+                                }
+                            }
+                        } else {
+                            if (segment.type === 'plus-button') {
+                                if (index > 2) {
+                                    this.tagSegments.splice(index, 0, this.uiSegmentSrv.newCondition('AND'));
+                                }
+                                this.tagSegments.push(this.uiSegmentSrv.newOperator('='));
+                                this.tagSegments.push(this.uiSegmentSrv.newFake('select tag value', 'value', 'query-segment-value'));
+                                segment.type = 'key';
+                                segment.cssClass = 'query-segment-key';
+                            }
+
+                            if (index + 1 === this.tagSegments.length) {
+                                this.tagSegments.push(this.uiSegmentSrv.newPlusButton());
+                            }
+                        }
+
+                        this.rebuildTargetTagConditions();
+                    }
+                }, {
+                    key: 'rebuildTargetTagConditions',
+                    value: function rebuildTargetTagConditions() {
+                        var _this6 = this;
+
+                        var tags = [];
+                        var tagIndex = 0;
+                        var tagOperator = "";
+
+                        console.log(this.tagSegments);
+
+                        _.each(this.tagSegments, function (segment2, index) {
+                            if (segment2.type === 'key') {
+                                if (tags.length === 0) {
+                                    tags.push({});
+                                }
+                                tags[tagIndex].key = segment2.value;
+                            } else if (segment2.type === 'value') {
+                                tagOperator = _this6.getTagValueOperator(segment2.value, tags[tagIndex].operator);
+                                if (tagOperator) {
+                                    _this6.tagSegments[index - 1] = _this6.uiSegmentSrv.newOperator(tagOperator);
+                                    tags[tagIndex].operator = tagOperator;
+                                }
+                                tags[tagIndex].value = segment2.value;
+                            } else if (segment2.type === 'condition') {
+                                tags.push({ condition: segment2.value });
+                                tagIndex += 1;
+                            } else if (segment2.type === 'operator') {
+                                tags[tagIndex].operator = segment2.value;
+                            }
+                        });
+
+                        this.target.tags = tags;
+                        console.log(this.target.tags);
+
+                        this.target.queryConfig.where(this._buildTagsWhere('tags', this.target.tags));
+
+                        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
+                        console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
+                        // this.refresh();
+                    }
+                }, {
+                    key: '_buildTagsWhere',
+                    value: function _buildTagsWhere(name, tagsList) {
+                        var result = ['AND'];
+
+                        if (tagsList.length) {
+                            tagsList.forEach(function (tag, i) {
+                                var obj = {};
+                                obj[tag.key] = [tag.operator, tag.value];
+
+                                if (tag.condition) {
+                                    result.push(tag.condition);
+                                }
+                                result.push(obj);
+                            });
+                        }
+
+                        return result;
                     }
                 }]);
 

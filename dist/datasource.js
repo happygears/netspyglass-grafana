@@ -134,21 +134,32 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                     key: 'query',
                     value: function query(options) {
                         var self = this;
-                        // build query object (this replaces dashboard template vars)
-                        var query = this.buildQueryFromQueryDialogData(options);
-                        var aliases = {};
-                        for (var idx = 0; idx < options.targets.length; idx++) {
-                            var targetDlg = options.targets[idx];
+                        var i = void 0,
+                            queryAsStr = void 0,
+                            aliases = {};
+
+                        for (var _i = 0; _i < options.targets.length; _i++) {
+                            var targetDlg = options.targets[_i];
                             aliases[targetDlg.refId] = targetDlg.alias;
                         }
-                        for (var i = 0; i < query.targets.length; i++) {
-                            var target = query.targets[i];
-                            // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
-                            target.sortByEl = target.sortByEl !== 'none' ? 'metric:' + target.sortByEl : target.sortByEl;
+
+                        if (!options.targets[0].needToBuildQuery && options.targets[0].nsgqlQuery) {
+                            queryAsStr = { targets: options.targets[0].nsgqlQuery };
+                        } else {
+                            // build query object (this replaces dashboard template vars)
+                            var query = this.buildQueryFromQueryDialogData(options);
+                            for (i = 0; i < query.targets.length; i++) {
+                                var target = query.targets[i];
+                                // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
+                                target.sortByEl = target.sortByEl !== 'none' ? 'metric:' + target.sortByEl : target.sortByEl;
+                            }
+
+                            queryAsStr = JSON.stringify(query);
+                            queryAsStr = this.templateSrv.replace(queryAsStr, options.scopedVars);
                         }
-                        var queryAsStr = JSON.stringify(query);
-                        queryAsStr = this.templateSrv.replace(queryAsStr, options.scopedVars);
+
                         var response = this._apiCall(this.endpoints.query, 'POST', queryAsStr);
+
                         // then: function(a,b,c)
                         return response.then(function (response) {
                             var data = response.data;
@@ -162,14 +173,29 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                             // target:     "ifInRate:synas1:eth0"
                             // variable:   "ifInRate"
 
-                            for (idx = 0; idx < data.length; idx++) {
-                                var series = data[idx];
+                            for (i = 0; i < data.length; i++) {
+                                var series = data[i];
                                 if (!series || !series.datapoints || !series.target) continue;
                                 var alias = aliases[series.id];
                                 if (alias) series.target = self.getSeriesName(series, alias);
                             }
 
                             return response;
+                        });
+                    }
+                }, {
+                    key: 'executeQuery',
+                    value: function executeQuery(nsgql, format) {
+                        return this._apiCall(this.endpoints.query, 'POST', { 'targets': [{
+                                'nsgql': nsgql,
+                                'format': format
+                            }] }).then(function (response) {
+                            var data = response.data;
+                            if (!data) return response;
+
+                            console.log(data);
+
+                            return data;
                         });
                     }
                 }, {

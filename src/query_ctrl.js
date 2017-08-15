@@ -64,14 +64,9 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // _NEW_
         this.SQLBuilder = new SQLBuilderFactory();
         this.target.queryConfig = this.SQLBuilder.factory();
+        this.target.customNsgqlQuery = '';
 
-        console.log(this.SQLBuilder);
-        console.log(SQLBuilderFactory.factory);
-
-        //TODO: need to find better way
-        this.target.needToBuildQuery = true;
-        this.target.customNsgqlQuery = "SELECT time,metric FROM cpuUtil WHERE time BETWEEN 'now-6h' AND 'now'";
-
+        this.queryConfigWhere = ['AND'];
         this.rowMode = false;
 
         this.category = this.target.category || this.prompts['category'];
@@ -82,10 +77,16 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.removeTagFilterSegment = uiSegmentSrv.newSegment({fake: true, value: '-- remove tag filter --'});
     }
 
+    /**
+     * @deprecated
+     */
     isCategorySelected() {
         return this.target.category !== this.prompts['category'] && this.target.category !== this.clearSelection;
     }
 
+    /**
+     * @deprecated
+     */
     isVariableSelected() {
         return this.target.variable !== this.prompts['variable'] && this.target.variable !== this.clearSelection;
     }
@@ -98,19 +99,22 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
      * enough and looks like some sort of a prompt, but it is a hack nonetheless.
      * FIXME: find a way to fix height of the visible element without adding any contents.
      */
+    /**
+     * @deprecated
+     */
     tagDataAdd() {
         this.target.tagData[this.target.tagData.length] = {
             tagFacet : this.blankDropDownElement,
             tagWord : this.blankDropDownElement,
             tagOperation : '=='
         };
-        this.target.needToBuildQuery = true;
         this.refresh();
     }
-
+    /**
+     * @deprecated
+     */
     tagDataRemove(index) {
         this.target.tagData.splice(index,1);
-        this.target.needToBuildQuery = true;
         this.refresh();
     }
 
@@ -124,7 +128,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             }],
             orderBy: ['category']
         }).compile();
-
+        //
         // return this.datasource.executeQuery(this.SQLBuilder.factory({
         //     select: ['category,name'],
         //     distinct: true,
@@ -173,10 +177,12 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         };
     }
 
+    /**
+     * @deprecated
+     */
     testRemove() {
         this.target.variable = this.prompts['variable'];
         this.getVariables();
-        this.target.needToBuildQuery = true;
         this.refresh();
     }
 
@@ -223,6 +229,9 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.target.rawQuery = !this.target.rawQuery;
     }
 
+    /**
+     * @deprecated
+     */
     onChangeInternalCategory() {
         if (this.target.category == this.clearSelection) {
             this.target.category = this.prompts['category'];
@@ -239,32 +248,38 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         // angular.element('#variable-field').children().children('a').html(this.target.variable);
         // call refresh to force graph reload (which should turn blank since we dont have enough data
         // to build valid query)
-        this.target.needToBuildQuery = true;
         this.refresh();
     }
 
+    /**
+     * @deprecated
+     */
     onChangeInternalVariable() {
-        console.log('Variable has changed to ' + this.target.variable);
-        console.log(this);
-        this.target.needToBuildQuery = true;
         this.refresh();
     }
 
+    /**
+     * @deprecated
+     */
     onChangeInternalDevice() {
         if(this.target.device == this.clearSelection) {
             this.target.device = this.prompts['device'];
         }
-        this.target.needToBuildQuery = true;
         this.refresh();
     }
+    /**
+     * @deprecated
+     */
     onChangeInternalComponent() {
         if(this.target.component == this.clearSelection) {
             this.target.component = this.prompts['component'];
         }
-        this.target.needToBuildQuery = true;
         this.refresh();
     }
 
+    /**
+     * @deprecated
+     */
     onChangeInternalTagFacet(index) {
         // clear tag word when user changes tag facet. The dialog enters state where tag facet is selected
         // but tag word is not. This state is invalid and should be transient, it does not make sense
@@ -278,12 +293,18 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.refresh();
     }
 
+    /**
+     * @deprecated
+     */
     //noinspection JSUnusedLocalSymbols
     onChangeInternalTagWord(index) {
         this.target.needToBuildQuery = true;
         this.refresh();
     }
 
+    /**
+     * @deprecated
+     */
     tagOperation(index, operation) {
         this.target.tagData[index].tagOperation = operation;
         this.target.needToBuildQuery = true;
@@ -346,26 +367,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
 
     onChangeNsgQl() {
-        console.log('onChangeNsgQl');
-
-        console.log(this.target);
-
-        // let nsgql = this.SQLBuilderFactory.factory({
-        //     select: ['id', 'name', 'owner', 'shared'],
-        //     from: 'maps',
-        //     where: [
-        //         'AND',
-        //         {
-        //             id: ['=', id]
-        //         }
-        //     ]
-        // }).compile();
-
-        this.target.nsgqlQuery = [{
-            "nsgql": this.target.customNsgqlQuery,
-            "format": "time_series"
-        }];
-        this.target.needToBuildQuery = false;
+        this.buildNsgQLString({type: 'string'});
         this.refresh();
     }
 
@@ -381,8 +383,6 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     onFromChange() {
-        console.log('%conFromChanges', 'color: blue; font-weight: bold;', this.category);
-
         if( this.target.category !== this.category  && this.variable != this.prompts['variable']) {
             console.log(111);
             this.target.category = this.category;
@@ -392,21 +392,13 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         }
 
         this.target.category = this.category;
-
-        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
-        // console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
-        console.log(this.category);
-        this.target.queryConfig.from(this.category);
     }
     onSelectChange() {
-        console.log('%conSelectChange', 'color: blue; font-weight: bold;', this.variable);
-
         this.target.variable = this.variable;
-        this.target.queryConfig.select([this.variable]);
-        this.target.queryConfig.setDistinct(true);
-        // this.panelCtrl.refresh();
-        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
-        console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
+        this.target.queryConfig.select(['time','metric']);
+        this.target.queryConfig.from(this.variable);
+
+        this.buildNsgQLString();
         this.refresh();
     }
 
@@ -525,7 +517,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
                 }
                 tags[tagIndex].key = segment2.value;
             } else if (segment2.type === 'value') {
-                tagOperator = this.getTagValueOperator(segment2.value, tags[tagIndex].operator);
+                tagOperator = tags[tagIndex].operator;
                 if (tagOperator) {
                     this.tagSegments[index-1] = this.uiSegmentSrv.newOperator(tagOperator);
                     tags[tagIndex].operator = tagOperator;
@@ -540,18 +532,15 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         });
 
         this.target.tags = tags;
-        console.log(this.target.tags);
 
-        this.target.queryConfig.where( this._buildTagsWhere('tags', this.target.tags) );
+        this.queryConfigWhere.push(this._buildTagsWhere('tags', this.target.tags));
 
-
-        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
-        console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
-        // this.refresh();
+        this.buildNsgQLString();
+        this.refresh();
     }
 
     _buildTagsWhere(name, tagsList) {
-        let result = ['AND'];
+        let result = [];
 
         if(tagsList.length) {
             tagsList.forEach( (tag, i) => {
@@ -565,8 +554,30 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             })
         }
 
+        if( result.length ) {
+            result.unshift('AND');
+        }
+
         return result;
     }
+
+    buildNsgQLString(params = {}) {
+        let str;
+
+        if( params.type == 'string' ) {
+            str = this.target.customNsgqlQuery;
+        }
+
+        if( params.type != 'string' ) {
+            this.queryConfigWhere.push('$_timeFilter'); //GROUP BY time($__interval)
+            this.target.queryConfig.where( this.queryConfigWhere );
+
+            str = this.target.queryConfig.compile();
+        }
+
+        console.log('%cNsgQLString', 'color: blueviolet; font-weight: bold;', str);
+        this.target.customNsgqlQuery = str;
+    };
 }
 
 NetSpyGlassDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';

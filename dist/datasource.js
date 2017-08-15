@@ -133,9 +133,7 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                 }, {
                     key: 'query',
                     value: function query(options) {
-                        var self = this;
                         var i = void 0,
-                            queryAsStr = void 0,
                             aliases = {};
 
                         for (var _i = 0; _i < options.targets.length; _i++) {
@@ -143,43 +141,11 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                             aliases[targetDlg.refId] = targetDlg.alias;
                         }
 
-                        if (!options.targets[0].needToBuildQuery && options.targets[0].nsgqlQuery) {
-                            queryAsStr = { targets: options.targets[0].nsgqlQuery };
-                        } else {
-                            // build query object (this replaces dashboard template vars)
-                            var query = this.buildQueryFromQueryDialogData(options);
-                            for (i = 0; i < query.targets.length; i++) {
-                                var target = query.targets[i];
-                                // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
-                                target.sortByEl = target.sortByEl !== 'none' ? 'metric:' + target.sortByEl : target.sortByEl;
-                            }
+                        var response = this._apiCall(this.endpoints.query, 'POST', {
+                            targets: this.buildQueryFronNsgQlStirng(options)
+                        });
 
-                            queryAsStr = JSON.stringify(query);
-                            queryAsStr = this.templateSrv.replace(queryAsStr, options.scopedVars);
-                        }
-
-                        var response = this._apiCall(this.endpoints.query, 'POST', queryAsStr);
-
-                        // then: function(a,b,c)
                         return response.then(function (response) {
-                            var data = response.data;
-                            if (!data) return response;
-
-                            // data is an Array of these:
-                            //
-                            // component:  "eth0"
-                            // datapoints: Array[121]
-                            // device:     "synas1"
-                            // target:     "ifInRate:synas1:eth0"
-                            // variable:   "ifInRate"
-
-                            for (i = 0; i < data.length; i++) {
-                                var series = data[i];
-                                if (!series || !series.datapoints || !series.target) continue;
-                                var alias = aliases[series.id];
-                                if (alias) series.target = self.getSeriesName(series, alias);
-                            }
-
                             return response;
                         });
                     }
@@ -459,6 +425,51 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                         }
                         // queryObject.scopedVars = '$variable';
                         return queryObject;
+                    }
+                }, {
+                    key: 'getTimeFilter',
+                    value: function getTimeFilter(options) {
+                        var from = this.getTime(options.rangeRaw.from, false);
+                        var until = this.getTime(options.rangeRaw.to, true);
+
+                        return 'time BETWEEN ' + from + ' AND ' + until;
+                    }
+                }, {
+                    key: 'getTime',
+                    value: function getTime(date, roundUp) {
+                        if (_.isString(date)) {
+                            if (date === 'now') return '\'now\'';
+
+                            var parts = /^now-(\d+)([d|h|m|s])$/.exec(date);
+                            if (parts) {
+                                var amount = parseInt(parts[1]);
+                                var unit = parts[2];
+
+                                return '\'now-' + amount + unit + '\'';
+                            }
+                            date = dateMath.parse(date, roundUp);
+                        }
+
+                        return date.valueOf() + 'ms';
+                    }
+                }, {
+                    key: 'buildQueryFronNsgQlStirng',
+                    value: function buildQueryFronNsgQlStirng(options) {
+                        var timeFilter = this.getTimeFilter(options);
+                        var queriesList = options.targets.map(function (target) {
+                            var query = target.customNsgqlQuery;
+
+                            if (query && query.indexOf('$_timeFilter') > 0) {
+                                query = _.replace(query, '$_timeFilter', timeFilter);
+                            }
+
+                            return {
+                                'nsgql': query,
+                                'format': 'time_series'
+                            };
+                        });
+
+                        return queriesList;
                     }
                 }], [{
                     key: 'getTimeForApiCall',

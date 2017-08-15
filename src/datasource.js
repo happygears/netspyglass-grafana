@@ -119,9 +119,7 @@ export class NetSpyGlassDatasource {
      * @returns {*}
      */
     query(options) {
-        let self = this;
         let i,
-            queryAsStr,
             aliases = {};
 
         for (let i = 0; i < options.targets.length; i++) {
@@ -129,43 +127,11 @@ export class NetSpyGlassDatasource {
             aliases[targetDlg.refId] = targetDlg.alias;
         }
 
-        if( !options.targets[0].needToBuildQuery && options.targets[0].nsgqlQuery ) {
-            queryAsStr = {targets: options.targets[0].nsgqlQuery};
-        } else {
-            // build query object (this replaces dashboard template vars)
-            let query = this.buildQueryFromQueryDialogData(options);
-            for (i = 0; i < query.targets.length; i++) {
-                let target = query.targets[i];
-                // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
-                target.sortByEl = (target.sortByEl !== 'none') ? 'metric:' + target.sortByEl : target.sortByEl;
-            }
+        var response = this._apiCall(this.endpoints.query, 'POST', {
+            targets: this.buildQueryFronNsgQlStirng(options),
+        });
 
-            queryAsStr = JSON.stringify(query);
-            queryAsStr = this.templateSrv.replace(queryAsStr, options.scopedVars);
-        }
-
-        var response = this._apiCall(this.endpoints.query, 'POST', queryAsStr);
-
-        // then: function(a,b,c)
         return response.then( response => {
-            var data = response.data;
-            if (!data) return response;
-
-            // data is an Array of these:
-            //
-            // component:  "eth0"
-            // datapoints: Array[121]
-            // device:     "synas1"
-            // target:     "ifInRate:synas1:eth0"
-            // variable:   "ifInRate"
-
-            for (i = 0; i < data.length; i++) {
-                var series = data[i];
-                if (!series || !series.datapoints || !series.target) continue;
-                var alias = aliases[series.id];
-                if (alias) series.target = self.getSeriesName(series, alias);
-            }
-
             return response;
         });
     }
@@ -491,4 +457,48 @@ export class NetSpyGlassDatasource {
         }
         return (date.valueOf() / 1000).toFixed(0) + 's';
     }
+
+
+    getTimeFilter(options) {
+        var from = this.getTime(options.rangeRaw.from, false);
+        var until = this.getTime(options.rangeRaw.to, true);
+
+        return `time BETWEEN ${from} AND ${until}`;
+    }
+
+    getTime(date, roundUp) {
+        if (_.isString(date)) {
+            if (date === 'now') return `'now'`;
+
+            let parts = /^now-(\d+)([d|h|m|s])$/.exec(date);
+            if (parts) {
+                let amount = parseInt(parts[1]);
+                let unit = parts[2];
+
+                return `'now-${amount}${unit}'`;
+            }
+            date = dateMath.parse(date, roundUp);
+        }
+
+        return date.valueOf() + 'ms';
+    }
+
+    buildQueryFronNsgQlStirng(options) {
+        let timeFilter = this.getTimeFilter(options);
+        let queriesList = options.targets.map( (target) => {
+            let query = target.customNsgqlQuery;
+
+            if( query && query.indexOf('$_timeFilter') > 0 ) {
+                query = _.replace(query, '$_timeFilter', timeFilter);
+            }
+
+            return {
+                'nsgql': query,
+                'format': 'time_series'
+            };
+        });
+
+        return queriesList;
+    }
+
 }

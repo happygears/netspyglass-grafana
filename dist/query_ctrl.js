@@ -109,14 +109,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     // _NEW_
                     _this.SQLBuilder = new SQLBuilderFactory();
                     _this.target.queryConfig = _this.SQLBuilder.factory();
+                    _this.target.customNsgqlQuery = '';
 
-                    console.log(_this.SQLBuilder);
-                    console.log(SQLBuilderFactory.factory);
-
-                    //TODO: need to find better way
-                    _this.target.needToBuildQuery = true;
-                    _this.target.customNsgqlQuery = "SELECT time,metric FROM cpuUtil WHERE time BETWEEN 'now-6h' AND 'now'";
-
+                    _this.queryConfigWhere = ['AND'];
                     _this.rowMode = false;
 
                     _this.category = _this.target.category || _this.prompts['category'];
@@ -127,6 +122,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     _this.removeTagFilterSegment = uiSegmentSrv.newSegment({ fake: true, value: '-- remove tag filter --' });
                     return _this;
                 }
+
+                /**
+                 * @deprecated
+                 */
+
 
                 _createClass(NetSpyGlassDatasourceQueryCtrl, [{
                     key: 'isCategorySelected',
@@ -146,21 +146,17 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             tagWord: this.blankDropDownElement,
                             tagOperation: '=='
                         };
-                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'tagDataRemove',
                     value: function tagDataRemove(index) {
                         this.target.tagData.splice(index, 1);
-                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        var _this2 = this;
-
                         var query = this.SQLBuilder.factory({
                             select: ['category'],
                             distinct: true,
@@ -170,46 +166,51 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             }],
                             orderBy: ['category']
                         }).compile();
+                        //
+                        // return this.datasource.executeQuery(this.SQLBuilder.factory({
+                        //     select: ['category,name'],
+                        //     distinct: true,
+                        //     from: 'variables',
+                        //     where: ['AND', {
+                        //         category: ['<>', '']
+                        //     }],
+                        //     orderBy: ['category']
+                        // }).compile(), 'json')
+                        //     .then( (data) => {
+                        //         console.log('category,name',data);
+                        //         // this.transformToSegments(this.target.category, this.prompts['category'])
+                        //
+                        //         return [
+                        //             this.uiSegmentSrv.newSegment({ value: 'test1', expandable: true }),
+                        //             this.uiSegmentSrv.newSegment({ value: 'test2', expandable: false }),
+                        //             this.uiSegmentSrv.newSegment({ value: 'test3', expandable: false }),
+                        //         ]
+                        //     });
 
-                        return this.datasource.executeQuery(this.SQLBuilder.factory({
-                            select: ['category,name'],
-                            distinct: true,
-                            from: 'variables',
-                            where: ['AND', {
-                                category: ['<>', '']
-                            }],
-                            orderBy: ['category']
-                        }).compile(), 'json').then(function (data) {
-                            console.log('category,name', data);
-                            // this.transformToSegments(this.target.category, this.prompts['category'])
 
-                            return [_this2.uiSegmentSrv.newSegment({ value: 'test1', expandable: true }), _this2.uiSegmentSrv.newSegment({ value: 'test2', expandable: false }), _this2.uiSegmentSrv.newSegment({ value: 'test3', expandable: false })];
-                        });
-
-                        // return this.datasource.executeQuery(query, 'list')
-                        //     .then(this.transformToSegments(this.target.category, this.prompts['category']));
+                        return this.datasource.executeQuery(query, 'list').then(this.transformToSegments(this.target.category, this.prompts['category']));
                         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'transformToSegments',
                     value: function transformToSegments(currentValue, prompt) {
-                        var _this3 = this;
+                        var _this2 = this;
 
                         console.log('transformToSegments called:  currentValue=' + currentValue + ' prompt=' + prompt);
                         return function (results) {
                             var segments = _.map(results, function (segment) {
                                 //TODO: really we need to ckeck segment.text if all request types will be 'list'
                                 if (segment.text) {
-                                    return _this3.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
+                                    return _this2.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
                                 } else {
-                                    return _this3.uiSegmentSrv.newSegment({ value: segment });
+                                    return _this2.uiSegmentSrv.newSegment({ value: segment });
                                 }
                             });
                             // segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
 
                             // there is no need to add "clear selection" item if current value is already equal to prompt
                             if (currentValue !== prompt) {
-                                segments.unshift(_this3.uiSegmentSrv.newSegment({ fake: true, value: _this3.clearSelection, html: prompt }));
+                                segments.unshift(_this2.uiSegmentSrv.newSegment({ fake: true, value: _this2.clearSelection, html: prompt }));
                             }
 
                             return segments;
@@ -220,7 +221,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     value: function testRemove() {
                         this.target.variable = this.prompts['variable'];
                         this.getVariables();
-                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -285,15 +285,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         // angular.element('#variable-field').children().children('a').html(this.target.variable);
                         // call refresh to force graph reload (which should turn blank since we dont have enough data
                         // to build valid query)
-                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
                     key: 'onChangeInternalVariable',
                     value: function onChangeInternalVariable() {
-                        console.log('Variable has changed to ' + this.target.variable);
-                        console.log(this);
-                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -302,7 +298,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         if (this.target.device == this.clearSelection) {
                             this.target.device = this.prompts['device'];
                         }
-                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -311,7 +306,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         if (this.target.component == this.clearSelection) {
                             this.target.component = this.prompts['component'];
                         }
-                        this.target.needToBuildQuery = true;
                         this.refresh();
                     }
                 }, {
@@ -386,26 +380,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'onChangeNsgQl',
                     value: function onChangeNsgQl() {
-                        console.log('onChangeNsgQl');
-
-                        console.log(this.target);
-
-                        // let nsgql = this.SQLBuilderFactory.factory({
-                        //     select: ['id', 'name', 'owner', 'shared'],
-                        //     from: 'maps',
-                        //     where: [
-                        //         'AND',
-                        //         {
-                        //             id: ['=', id]
-                        //         }
-                        //     ]
-                        // }).compile();
-
-                        this.target.nsgqlQuery = [{
-                            "nsgql": this.target.customNsgqlQuery,
-                            "format": "time_series"
-                        }];
-                        this.target.needToBuildQuery = false;
+                        this.buildNsgQLString({ type: 'string' });
                         this.refresh();
                     }
                 }, {
@@ -423,8 +398,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'onFromChange',
                     value: function onFromChange() {
-                        console.log('%conFromChanges', 'color: blue; font-weight: bold;', this.category);
-
                         if (this.target.category !== this.category && this.variable != this.prompts['variable']) {
                             console.log(111);
                             this.target.category = this.category;
@@ -434,29 +407,21 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         }
 
                         this.target.category = this.category;
-
-                        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
-                        // console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
-                        console.log(this.category);
-                        this.target.queryConfig.from(this.category);
                     }
                 }, {
                     key: 'onSelectChange',
                     value: function onSelectChange() {
-                        console.log('%conSelectChange', 'color: blue; font-weight: bold;', this.variable);
-
                         this.target.variable = this.variable;
-                        this.target.queryConfig.select([this.variable]);
-                        this.target.queryConfig.setDistinct(true);
-                        // this.panelCtrl.refresh();
-                        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
-                        console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
+                        this.target.queryConfig.select(['time', 'metric']);
+                        this.target.queryConfig.from(this.variable);
+
+                        this.buildNsgQLString();
                         this.refresh();
                     }
                 }, {
                     key: 'getTagsOrValues',
                     value: function getTagsOrValues(segment, index) {
-                        var _this4 = this;
+                        var _this3 = this;
 
                         console.log(segment, index);
                         var format = 'list';
@@ -497,7 +462,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                         return this.datasource.executeQuery(nsgql, format).then(this.transformToWhereSegments(addTemplateVars)).then(function (results) {
                             if (segment.type === 'key') {
-                                results.splice(0, 0, angular.copy(_this4.removeTagFilterSegment));
+                                results.splice(0, 0, angular.copy(_this3.removeTagFilterSegment));
                             }
                             return results;
                         });
@@ -505,12 +470,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'transformToWhereSegments',
                     value: function transformToWhereSegments(addTemplateVars) {
-                        var _this5 = this;
+                        var _this4 = this;
 
                         return function (results) {
                             console.log(results);
                             var segments = _.map(results, function (segment) {
-                                return _this5.uiSegmentSrv.newSegment({ value: '' + segment });
+                                return _this4.uiSegmentSrv.newSegment({ value: '' + segment });
                             });
 
                             if (addTemplateVars) {
@@ -519,10 +484,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                                 var _iteratorError = undefined;
 
                                 try {
-                                    for (var _iterator = _this5.templateSrv.variables[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    for (var _iterator = _this4.templateSrv.variables[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                                         var variable = _step.value;
 
-                                        segments.unshift(_this5.uiSegmentSrv.newSegment({ type: 'template', value: '/^$' + variable.name + '$/', expandable: true }));
+                                        segments.unshift(_this4.uiSegmentSrv.newSegment({ type: 'template', value: '/^$' + variable.name + '$/', expandable: true }));
                                     }
                                 } catch (err) {
                                     _didIteratorError = true;
@@ -582,7 +547,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'rebuildTargetTagConditions',
                     value: function rebuildTargetTagConditions() {
-                        var _this6 = this;
+                        var _this5 = this;
 
                         var tags = [];
                         var tagIndex = 0;
@@ -597,9 +562,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                                 }
                                 tags[tagIndex].key = segment2.value;
                             } else if (segment2.type === 'value') {
-                                tagOperator = _this6.getTagValueOperator(segment2.value, tags[tagIndex].operator);
+                                tagOperator = tags[tagIndex].operator;
                                 if (tagOperator) {
-                                    _this6.tagSegments[index - 1] = _this6.uiSegmentSrv.newOperator(tagOperator);
+                                    _this5.tagSegments[index - 1] = _this5.uiSegmentSrv.newOperator(tagOperator);
                                     tags[tagIndex].operator = tagOperator;
                                 }
                                 tags[tagIndex].value = segment2.value;
@@ -612,18 +577,16 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         });
 
                         this.target.tags = tags;
-                        console.log(this.target.tags);
 
-                        this.target.queryConfig.where(this._buildTagsWhere('tags', this.target.tags));
+                        this.queryConfigWhere.push(this._buildTagsWhere('tags', this.target.tags));
 
-                        console.log('%cqueryConfig', 'color: red; font-weight: bold;', this.target.queryConfig);
-                        console.log('%cquery', 'color: red; font-weight: bold;', this.target.queryConfig.compile());
-                        // this.refresh();
+                        this.buildNsgQLString();
+                        this.refresh();
                     }
                 }, {
                     key: '_buildTagsWhere',
                     value: function _buildTagsWhere(name, tagsList) {
-                        var result = ['AND'];
+                        var result = [];
 
                         if (tagsList.length) {
                             tagsList.forEach(function (tag, i) {
@@ -637,7 +600,32 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             });
                         }
 
+                        if (result.length) {
+                            result.unshift('AND');
+                        }
+
                         return result;
+                    }
+                }, {
+                    key: 'buildNsgQLString',
+                    value: function buildNsgQLString() {
+                        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+                        var str = void 0;
+
+                        if (params.type == 'string') {
+                            str = this.target.customNsgqlQuery;
+                        }
+
+                        if (params.type != 'string') {
+                            this.queryConfigWhere.push('$_timeFilter'); //GROUP BY time($__interval)
+                            this.target.queryConfig.where(this.queryConfigWhere);
+
+                            str = this.target.queryConfig.compile();
+                        }
+
+                        console.log('%cNsgQLString', 'color: blueviolet; font-weight: bold;', str);
+                        this.target.customNsgqlQuery = str;
                     }
                 }]);
 

@@ -49,12 +49,22 @@ class SQLBuilder {
   }
 
   groupBy(group) {
-    this.options.groupBy.push(group);
+    this.options.groupBy = [group];
     return this;
   }
 
   limit(limit, offset = 0) {
     this.options.limit = [limit, offset];
+    return this;
+  }
+
+  clearLimit() {
+    this.options.limit = 0;
+    return this;
+  }
+
+  clearGroupBy() {
+    this.options.groupBy = [];
     return this;
   }
 

@@ -24,7 +24,21 @@ class GenericQueryOptionsCtrl {}
 GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
 
 class GenericAnnotationsQueryCtrl {}
-GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
+GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
+
+
+import angular from 'angular';
+
+angular.module('grafana.directives')
+    .directive("test", function() {
+        return {
+            template: 'Test val {{prop}}',
+            restrict: 'E',
+            scope: {
+                prop: "="
+            }
+        };
+    });
 
 export {
     NetSpyGlassDatasource as Datasource,

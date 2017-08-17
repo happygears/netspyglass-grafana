@@ -28,7 +28,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             'category': 'select category',
             'variable': 'select variable',
             'device': 'select device',
-            'component': 'select component'
+            'component': 'select component',
+            'groupByVal': 'select group',
         };
 
         this.scope = $scope;
@@ -71,10 +72,23 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
         this.category = this.target.category || this.prompts['category'];
         this.variable = this.target.variable || this.prompts['variable'];
+        this.groupByFormats = ['select type','time', 'column'];
+        this.groupBy = {
+            type: 'select type',
+            val: this.prompts['groupByVal']
+        };
 
         this.tagSegments = [];
         this.tagSegments.push(this.uiSegmentSrv.newPlusButton());
         this.removeTagFilterSegment = uiSegmentSrv.newSegment({fake: true, value: '-- remove tag filter --'});
+
+        this.categories = [];
+        this.getCategories();
+
+
+        this.selectData = 'metric';
+        console.log(this);
+        console.log($scope);
     }
 
     /**
@@ -119,40 +133,46 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     getCategories() {
-        let query = this.SQLBuilder.factory({
-            select: ['category'],
-            distinct: true,
-            from: 'variables',
-            where: ['AND', {
-                category: ['<>', '']
-            }],
-            orderBy: ['category']
-        }).compile();
-        //
-        // return this.datasource.executeQuery(this.SQLBuilder.factory({
-        //     select: ['category,name'],
+        // let query = this.SQLBuilder.factory({
+        //     select: ['category'],
         //     distinct: true,
         //     from: 'variables',
         //     where: ['AND', {
         //         category: ['<>', '']
         //     }],
         //     orderBy: ['category']
-        // }).compile(), 'json')
-        //     .then( (data) => {
-        //         console.log('category,name',data);
-        //         // this.transformToSegments(this.target.category, this.prompts['category'])
+        // }).compile();
         //
-        //         return [
-        //             this.uiSegmentSrv.newSegment({ value: 'test1', expandable: true }),
-        //             this.uiSegmentSrv.newSegment({ value: 'test2', expandable: false }),
-        //             this.uiSegmentSrv.newSegment({ value: 'test3', expandable: false }),
-        //         ]
-        //     });
+        this.datasource.executeQuery(this.SQLBuilder.factory({
+            select: ['category,name'],
+            distinct: true,
+            from: 'variables',
+            where: ['AND', {
+                category: ['<>', '']
+            }],
+            orderBy: ['category']
+        }).compile(), 'json')
+            .then( (data) => {
+                let formattedList = _.groupBy(data[0].rows, 'category');
+
+                this.categories = formattedList;
+            });
 
 
-        return this.datasource.executeQuery(query, 'list')
-            .then(this.transformToSegments(this.target.category, this.prompts['category']));
+        // return this.datasource.executeQuery(query, 'list')
+        //     .then(this.transformToSegments(this.target.category, this.prompts['category']));
         // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+    }
+    selectCat(category, variable) {
+        console.log(category, variable);
+        this.target.category = category;
+        this.variable = variable;
+        this.target.variable = variable;
+        this.target.queryConfig.select(['time','metric']);
+        this.target.queryConfig.from(variable);
+
+        this.buildNsgQLString();
+        this.refresh();
     }
 
     transformToSegments(currentValue, prompt) {
@@ -172,6 +192,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             if (currentValue !== prompt) {
                 segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
             }
+
+            console.log(segments);
 
             return segments;
         };
@@ -371,10 +393,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.refresh();
     }
 
-
     toggleEditorMode() {
-        console.log(11);
-
         this.rowMode = !this.rowMode;
     }
 
@@ -402,6 +421,64 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.refresh();
     }
 
+    onLimitChange() {
+        if( this.limit ) {
+            this.target.queryConfig.limit(this.limit);
+        } else {
+            this.target.queryConfig.clearLimit();
+        }
+
+        this.buildNsgQLString();
+        this.refresh();
+    }
+
+    onGroupByTypeChange() {
+        //TODO: fix this behavior
+        this.groupBy.val = this.prompts['groupByVal'];
+
+        if( this.groupBy.type === 'select type' ) {
+            this.target.queryConfig.clearGroupBy();
+            this.buildNsgQLString();
+            this.refresh();
+        }
+    }
+
+    onGroupByChange() {
+        if( this.groupBy.type === 'time' ) {
+            this.target.queryConfig.groupBy(`time(${this.groupBy.val})`);
+        }
+        if( this.groupBy.type === 'column' ) {
+            this.target.queryConfig.groupBy(this.groupBy.val);
+        }
+
+        this.buildNsgQLString();
+        this.refresh();
+    }
+
+    getGroupByVariables() {
+        if( this.groupBy.type === 'time' ) {
+            let groupByTimeOptions = [
+                this.uiSegmentSrv.newSegment('1s'),
+                this.uiSegmentSrv.newSegment('1m'),
+                this.uiSegmentSrv.newSegment('30m'),
+                this.uiSegmentSrv.newSegment('1h'),
+                this.uiSegmentSrv.newSegment('1d')
+            ];
+            return this.$q.when(groupByTimeOptions);
+        }
+
+        if( this.groupBy.type === 'column' ) {
+            let query = this.SQLBuilder.factory({
+                select: ['tagFacet'],
+                distinct: true,
+                from: this.variable,
+                orderBy: ['tagFacet']
+            }).compile();
+
+            return this.datasource.executeQuery(query, 'list')
+                .then(this.transformToSegments(this.groupBy.val, 'select group'));
+        }
+    }
 
 
     getTagsOrValues(segment, index) {
@@ -420,7 +497,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         if (segment.type === 'key' || segment.type === 'plus-button') {
             nsgql = this.SQLBuilder.factory({
                 select: ['tagFacet'],
-                from: 'devices',
+                distinct: true,
+                from: this.variable,
                 orderBy: ['tagFacet']
             }).compile();
 
@@ -430,6 +508,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
             queryObj = {
                 select: [this.tagSegments[index-2].value],
+                distinct: true,
                 from: 'devices',
                 where: {},
                 orderBy: [this.tagSegments[index-2].value]

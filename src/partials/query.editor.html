@@ -11,18 +11,25 @@
 
     <div class="editor-part editor-part--filter" data-ng-if="!ctrl.rowMode">
 
-
         <div class="gf-form-inline">
             <div class="gf-form">
                 <label class="gf-form-label query-keyword width-7">FROM</label>
+            </div>
 
-                <!--<metric-segment segment="ctrl.category"-->
-                                <!--get-options="ctrl.getCategories()"-->
-                                <!--on-change="ctrl.onFromChanges(val, $index)"></metric-segment>-->
-
-                <metric-segment-model property="ctrl.category"
-                                      get-options="ctrl.getCategories()"
-                                      on-change="ctrl.onFromChange()"></metric-segment-model>
+            <div class="gf-form">
+                <a class="gf-form-label pointer" data-toggle="dropdown">
+                    <span>{{ctrl.variable}}</span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li data-ng-repeat="(key, value) in ctrl.categories" class="dropdown-submenu">
+                        <a>{{key}}</a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li data-ng-repeat="el in value | orderBy:'name' ">
+                                <a data-ng-click="ctrl.selectCat(el.category,el.name)">{{el.name}}</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
 
             <div class="gf-form">
@@ -30,27 +37,92 @@
             </div>
 
             <div class="gf-form">
-                <metric-segment-model property="ctrl.variable"
-                                      get-options="ctrl.getVariables()"
-                                      on-change="ctrl.onSelectChange()"></metric-segment-model>
-            </div>
-        </div>
+                <!--this content depend on panel type (Graph or Table)-->
 
-        <div class="gf-form-inline">
-            <div class="gf-form">
-                <label class="gf-form-label query-keyword width-7">WHERE</label>
-            </div>
-
-            <div class="gf-form" ng-repeat="segment in ctrl.tagSegments">
-                <metric-segment segment="segment"
-                                get-options="ctrl.getTagsOrValues(segment, $index)"
-                                on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
+                <!--GRAPH-->
+                <input type="text" class="gf-form-input input-medium width-7" spellcheck="false"
+                       ng-model="ctrl.selectData" ng-disabled="true">
             </div>
 
             <div class="gf-form gf-form--grow">
                 <div class="gf-form-label gf-form-label--grow"></div>
             </div>
         </div>
+
+        <div ng-show="ctrl.variable != ctrl.prompts['variable']">
+
+            <div class="gf-form-inline">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">WHERE</label>
+                </div>
+
+                <div class="gf-form" ng-repeat="segment in ctrl.tagSegments">
+                    <metric-segment segment="segment"
+                                    get-options="ctrl.getTagsOrValues(segment, $index)"
+                                    on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
+                </div>
+
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-label gf-form-label--grow"></div>
+                </div>
+            </div>
+
+            <div class="gf-form-inline">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">ORDER BY</label>
+                </div>
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-label gf-form-label--grow"></div>
+                </div>
+            </div>
+
+            <div class="gf-form-inline">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">LIMIT</label>
+
+                    <input type="text" class="gf-form-input input-medium width-7" spellcheck="false"
+                           ng-model="ctrl.limit"
+                           ng-change="ctrl.onLimitChange()">
+
+                </div>
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-label gf-form-label--grow">
+
+                        <i class="fa fa-question-circle"
+                           bs-tooltip="'Restrict number of time series returned by this query. ' +
+                               'Limit is applied after sorting. If this field is empty, result is unrestricted, ' +
+                               'however the server may apply its own restriction to avoid sending ' +
+                               'thousands of time series to Grafana'" data-placement="bottom"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gf-form-inline">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">GROUP BY</label>
+
+                    <div class="gf-form-select-wrapper">
+                        <select class="gf-form-input gf-size-auto"
+                                ng-model="ctrl.groupBy.type"
+                                ng-options="option as option for option in ctrl.groupByFormats" ng-change="ctrl.onGroupByTypeChange()"></select>
+                    </div>
+
+                </div>
+                <div class="gf-form">
+                    <metric-segment-model property="ctrl.groupBy.val"
+                                          get-options="ctrl.getGroupByVariables()"
+                                          on-change="ctrl.onGroupByChange()"></metric-segment-model>
+                </div>
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-label gf-form-label--grow"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <test prop="ctrl.variable"></test>
 
 
         <br>

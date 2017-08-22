@@ -132,6 +132,20 @@ export class NetSpyGlassDatasource {
         });
 
         return response.then( response => {
+
+            console.log(response.data);
+            console.log(options);
+
+            if( options.format === 'table' && response.data ) {
+                let data = response.data;
+
+                console.log(data);
+
+                data.forEach( (item) => {
+                    console.log(item.columns.sort);
+                })
+            }
+
             return response;
         });
     }
@@ -484,6 +498,7 @@ export class NetSpyGlassDatasource {
     }
 
     buildQueryFronNsgQlStirng(options) {
+        console.log(options);
         let timeFilter = this.getTimeFilter(options);
         let queriesList = options.targets.map( (target) => {
             let query = target.customNsgqlQuery;
@@ -494,7 +509,7 @@ export class NetSpyGlassDatasource {
 
             return {
                 'nsgql': query,
-                'format': 'time_series'
+                'format': target.format
             };
         });
 

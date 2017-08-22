@@ -30,15 +30,72 @@ GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
 import angular from 'angular';
 
 angular.module('grafana.directives')
-    .directive("test", function() {
+    .directive("selectDropdown",['$compile', function($compile) {
         return {
-            template: 'Test val {{prop}}',
-            restrict: 'E',
+            template: '',
+            restrict: 'A',
             scope: {
-                prop: "="
+                items: '=',
+                value: '=',
+                eventOnSelect: '&'
+            },
+            link: function($scope, $element, $attrs) {
+                "use strict";
+
+                $scope.$watch('items', (val) => {
+                    console.log(val);
+                    buildDropdownHtml(val);
+                });
+
+                $scope.selectItem = function(value) {
+                    $scope.value = value;
+                    $scope.eventOnSelect({value: value});
+                };
+
+                function buildDropdownHtml(list) {
+                    let html = '';
+
+                    list.forEach((l1) => {
+                        if( l1.type == 'separator') {
+                            html += `<li class="separator"><span>-</span></li>`;
+                            return;
+                        }
+                        if( l1.type == 'simple') {
+                            html += `<li><a data-ng-click="selectItem('${l1.name}')">${l1.name}</a></li>`;
+                            return;
+                        }
+
+                        Object.keys(l1).forEach((key, index) => {
+                            let value = l1[key];
+
+                            if( value.length ) {
+                                html += `<li class="dropdown-submenu" role="menu">`;
+                                html += `<a>${key}</a>`;
+                                html += `<ul class="dropdown-menu" role="menu">`;
+                                value.forEach((item) => {
+                                    html += `<li><a data-ng-click="selectItem('${item.name}')">${item.name}</a></li>`;
+                                });
+                                html += `</ul>`;
+                                html += `</li>`;
+                            } else {
+                                html += `<li>`;
+                                html += `<a>${key}</a>`;
+                                html += `</li>`;
+                            }
+                        });
+
+                    });
+
+                    let compiledHtml = $compile(html)($scope);
+
+                    $element.html('');
+                    console.log(compiledHtml);
+                    $element.append(compiledHtml);
+                }
+
             }
         };
-    });
+    }]);
 
 export {
     NetSpyGlassDatasource as Datasource,

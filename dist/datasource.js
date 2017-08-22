@@ -146,6 +146,20 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                         });
 
                         return response.then(function (response) {
+
+                            console.log(response.data);
+                            console.log(options);
+
+                            if (options.format === 'table' && response.data) {
+                                var data = response.data;
+
+                                console.log(data);
+
+                                data.forEach(function (item) {
+                                    console.log(item.columns.sort);
+                                });
+                            }
+
                             return response;
                         });
                     }
@@ -455,6 +469,7 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                 }, {
                     key: 'buildQueryFronNsgQlStirng',
                     value: function buildQueryFronNsgQlStirng(options) {
+                        console.log(options);
                         var timeFilter = this.getTimeFilter(options);
                         var queriesList = options.targets.map(function (target) {
                             var query = target.customNsgqlQuery;
@@ -465,7 +480,7 @@ System.register(['lodash', './datemath'], function (_export, _context) {
 
                             return {
                                 'nsgql': query,
-                                'format': 'time_series'
+                                'format': target.format
                             };
                         });
 

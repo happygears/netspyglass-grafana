@@ -3,7 +3,7 @@
 System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder', 'lodash'], function (_export, _context) {
     "use strict";
 
-    var QueryCtrl, SQLBuilderFactory, _, _createClass, NetSpyGlassDatasourceQueryCtrl;
+    var QueryCtrl, SQLBuilderFactory, _, _typeof, _createClass, NetSpyGlassDatasourceQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -44,6 +44,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
             _ = _lodash.default;
         }],
         execute: function () {
+            _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+                return typeof obj;
+            } : function (obj) {
+                return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+            };
+
             _createClass = function () {
                 function defineProperties(target, props) {
                     for (var i = 0; i < props.length; i++) {
@@ -65,7 +71,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
             _export('NetSpyGlassDatasourceQueryCtrl', NetSpyGlassDatasourceQueryCtrl = function (_QueryCtrl) {
                 _inherits(NetSpyGlassDatasourceQueryCtrl, _QueryCtrl);
 
-                function NetSpyGlassDatasourceQueryCtrl($scope, $injector, templateSrv, $q, uiSegmentSrv) {
+                function NetSpyGlassDatasourceQueryCtrl($scope, $injector, templateSrv, $q, uiSegmentSrv, $timeout) {
                     _classCallCheck(this, NetSpyGlassDatasourceQueryCtrl);
 
                     var _this = _possibleConstructorReturn(this, (NetSpyGlassDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(NetSpyGlassDatasourceQueryCtrl)).call(this, $scope, $injector));
@@ -75,7 +81,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         'variable': 'select variable',
                         'device': 'select device',
                         'component': 'select component',
-                        'groupByVal': 'select group'
+                        'groupByType': 'select type',
+                        'groupBy': 'select value',
+                        'orderBy': 'select value',
+                        'selectItem': 'select item'
                     };
 
                     _this.scope = $scope;
@@ -84,6 +93,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     _this.templateSrv = templateSrv;
                     _this.$q = $q;
                     _this.uiSegmentSrv = uiSegmentSrv;
+                    _this.$timeout = $timeout;
 
                     _this.clearSelection = '-- clear selection --';
                     _this.blankDropDownElement = '---';
@@ -101,7 +111,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     _this.target.tagWord = _this.target.tagWord || _this.blankDropDownElement;
                     _this.target.tagData = _this.target.tagData || [];
 
-                    _this.target.format = _this.target.format || 'time_series';
+                    _this.target.format = _this.panel.type === 'table' ? 'table' : 'time_series';
                     _this.target.formatDisplay = _this.target.formatDisplay || 'Time Series';
 
                     _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
@@ -117,11 +127,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                     _this.category = _this.target.category || _this.prompts['category'];
                     _this.variable = _this.target.variable || _this.prompts['variable'];
-                    _this.groupByFormats = ['select type', 'time', 'column'];
+                    _this.groupByFormats = [_this.prompts['groupByType'], 'time', 'column'];
                     _this.groupBy = {
-                        type: 'select type',
-                        val: _this.prompts['groupByVal']
+                        type: _this.prompts['groupByType'],
+                        val: _this.prompts['groupBy']
                     };
+                    _this.orderBy = _this.target.orderBy || _this.prompts.orderBy;
 
                     _this.tagSegments = [];
                     _this.tagSegments.push(_this.uiSegmentSrv.newPlusButton());
@@ -130,18 +141,31 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     _this.categories = [];
                     _this.getCategories();
 
-                    _this.selectData = 'metric';
-                    console.log(_this);
-                    console.log($scope);
+                    if (_this.panel.type === 'graph') {
+                        _this.selectData = ['time', 'metric'];
+                    }
+                    if (_this.panel.type === 'table') {
+                        _this.selectData = [];
+                        _this.addItemToSelect();
+                    }
+                    _this.selectList = [];
                     return _this;
                 }
 
-                /**
-                 * @deprecated
-                 */
-
-
                 _createClass(NetSpyGlassDatasourceQueryCtrl, [{
+                    key: 'addItemToSelect',
+                    value: function addItemToSelect(data) {
+                        if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
+                            this.selectData.push(data);
+                        } else {
+                            this.selectData.push({
+                                value: '',
+                                func: [],
+                                alias: []
+                            });
+                        }
+                    }
+                }, {
                     key: 'isCategorySelected',
                     value: function isCategorySelected() {
                         return this.target.category !== this.prompts['category'] && this.target.category !== this.clearSelection;
@@ -172,16 +196,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     value: function getCategories() {
                         var _this2 = this;
 
-                        // let query = this.SQLBuilder.factory({
-                        //     select: ['category'],
-                        //     distinct: true,
-                        //     from: 'variables',
-                        //     where: ['AND', {
-                        //         category: ['<>', '']
-                        //     }],
-                        //     orderBy: ['category']
-                        // }).compile();
-                        //
                         this.datasource.executeQuery(this.SQLBuilder.factory({
                             select: ['category,name'],
                             distinct: true,
@@ -193,46 +207,115 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         }).compile(), 'json').then(function (data) {
                             var formattedList = _.groupBy(data[0].rows, 'category');
 
+                            console.log(formattedList);
+
                             _this2.categories = formattedList;
                         });
-
-                        // return this.datasource.executeQuery(query, 'list')
-                        //     .then(this.transformToSegments(this.target.category, this.prompts['category']));
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
                     }
                 }, {
                     key: 'selectCat',
                     value: function selectCat(category, variable) {
-                        console.log(category, variable);
                         this.target.category = category;
                         this.variable = variable;
                         this.target.variable = variable;
-                        this.target.queryConfig.select(['time', 'metric']);
                         this.target.queryConfig.from(variable);
+
+                        if (this.panel.type === 'graph') {
+                            this.target.queryConfig.select(this.selectData);
+                        }
 
                         this.buildNsgQLString();
                         this.refresh();
                     }
                 }, {
+                    key: 'getSelectValue',
+                    value: function getSelectValue() {
+                        var _this3 = this;
+
+                        this.$q.all([this.datasource.executeQuery(this.SQLBuilder.factory({
+                            select: ['tagFacet'],
+                            distinct: true,
+                            from: this.variable,
+                            orderBy: ['tagFacet']
+                        }).compile(), 'list'), this.datasource.executeQuery(this.SQLBuilder.factory({
+                            select: ['category,name'],
+                            distinct: true,
+                            from: 'variables',
+                            where: ['AND', {
+                                category: ['<>', '']
+                            }],
+                            orderBy: ['category']
+                        }).compile(), 'json')]).then(function (values) {
+                            var facetsList = values[0],
+                                variables = _.groupBy(values[1][0].rows, 'category'),
+                                resultList = [];
+
+                            resultList.push({
+                                tags: facetsList.map(function (facet) {
+                                    return { name: facet };
+                                })
+                            });
+
+                            resultList.push({
+                                type: 'separator'
+                            });
+
+                            resultList.push({
+                                type: 'simple',
+                                name: 'time'
+                            });
+                            resultList.push({
+                                type: 'simple',
+                                name: 'metric'
+                            });
+
+                            resultList.push({
+                                type: 'separator'
+                            });
+
+                            resultList.push(variables);
+
+                            _this3.selectList = resultList;
+                        });
+                    }
+                }, {
+                    key: 'onSelectUpdated',
+                    value: function onSelectUpdated(value) {
+                        var _this4 = this;
+
+                        this.$timeout(function () {
+                            var selectedValues = _this4.selectData.map(function (el) {
+                                if (el.value) {
+                                    return el.value;
+                                }
+                            }).filter(Boolean);
+
+                            _this4.target.queryConfig.select(selectedValues);
+
+                            _this4.buildNsgQLString();
+                            _this4.refresh();
+                        }, 0);
+                    }
+                }, {
                     key: 'transformToSegments',
                     value: function transformToSegments(currentValue, prompt) {
-                        var _this3 = this;
+                        var _this5 = this;
 
                         console.log('transformToSegments called:  currentValue=' + currentValue + ' prompt=' + prompt);
                         return function (results) {
                             var segments = _.map(results, function (segment) {
                                 //TODO: really we need to ckeck segment.text if all request types will be 'list'
                                 if (segment.text) {
-                                    return _this3.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
+                                    return _this5.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
                                 } else {
-                                    return _this3.uiSegmentSrv.newSegment({ value: segment });
+                                    return _this5.uiSegmentSrv.newSegment({ value: segment });
                                 }
                             });
                             // segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
 
                             // there is no need to add "clear selection" item if current value is already equal to prompt
                             if (currentValue !== prompt) {
-                                segments.unshift(_this3.uiSegmentSrv.newSegment({ fake: true, value: _this3.clearSelection, html: prompt }));
+                                segments.unshift(_this5.uiSegmentSrv.newSegment({ fake: true, value: _this5.clearSelection, html: prompt }));
                             }
 
                             console.log(segments);
@@ -441,6 +524,59 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         this.refresh();
                     }
                 }, {
+                    key: 'onOrderByChange',
+                    value: function onOrderByChange() {
+                        this.target.queryConfig.clearOrderBy();
+
+                        if (this.orderBy != this.clearSelection) {
+                            this.target.queryConfig.orderBy(this.orderBy);
+                        }
+
+                        this.buildNsgQLString();
+                        this.refresh();
+                    }
+                }, {
+                    key: 'onOrderByClear',
+                    value: function onOrderByClear() {
+                        this.orderBy = null;
+                        this.target.queryConfig.clearOrderBy();
+
+                        this.buildNsgQLString();
+                        this.refresh();
+                    }
+                }, {
+                    key: 'getOrderByValues',
+                    value: function getOrderByValues() {
+                        var _this6 = this;
+
+                        var list = [];
+
+                        // return this.datasource.executeQuery(query, 'list')
+                        //     .then(this.transformToSegments(this.groupBy.val, 'select group'));
+
+                        // if( this.panel.type === 'graph' ) {
+                        //     list = ['metric'];
+                        // }
+                        // if( this.panel.type === 'table' ) {
+                        //     list = this.selectData.map( (el) => {
+                        //         return el.value;
+                        //     });
+                        // }
+
+                        if (this.panel.type === 'graph') {
+                            list = [this.uiSegmentSrv.newSegment('metric')];
+                        }
+                        if (this.panel.type === 'table') {
+                            list = this.selectData.map(function (el) {
+                                return _this6.uiSegmentSrv.newSegment(el.value);
+                            });
+                        }
+
+                        list.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: this.prompts.orderBy }));
+
+                        return this.$q.when(list);
+                    }
+                }, {
                     key: 'onLimitChange',
                     value: function onLimitChange() {
                         if (this.limit) {
@@ -456,7 +592,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     key: 'onGroupByTypeChange',
                     value: function onGroupByTypeChange() {
                         //TODO: fix this behavior
-                        this.groupBy.val = this.prompts['groupByVal'];
+                        this.groupBy.val = this.prompts['groupBy'];
 
                         if (this.groupBy.type === 'select type') {
                             this.target.queryConfig.clearGroupBy();
@@ -493,13 +629,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                                 orderBy: ['tagFacet']
                             }).compile();
 
-                            return this.datasource.executeQuery(query, 'list').then(this.transformToSegments(this.groupBy.val, 'select group'));
+                            return this.datasource.executeQuery(query, 'list').then(this.transformToSegments(this.groupBy.val, '-- select group --'));
                         }
                     }
                 }, {
                     key: 'getTagsOrValues',
                     value: function getTagsOrValues(segment, index) {
-                        var _this4 = this;
+                        var _this7 = this;
 
                         console.log(segment, index);
                         var format = 'list';
@@ -542,20 +678,21 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                         return this.datasource.executeQuery(nsgql, format).then(this.transformToWhereSegments(addTemplateVars)).then(function (results) {
                             if (segment.type === 'key') {
-                                results.splice(0, 0, angular.copy(_this4.removeTagFilterSegment));
+                                results.splice(0, 0, angular.copy(_this7.removeTagFilterSegment));
                             }
+                            console.log(results);
                             return results;
                         });
                     }
                 }, {
                     key: 'transformToWhereSegments',
                     value: function transformToWhereSegments(addTemplateVars) {
-                        var _this5 = this;
+                        var _this8 = this;
 
                         return function (results) {
                             console.log(results);
                             var segments = _.map(results, function (segment) {
-                                return _this5.uiSegmentSrv.newSegment({ value: '' + segment });
+                                return _this8.uiSegmentSrv.newSegment({ value: '' + segment });
                             });
 
                             if (addTemplateVars) {
@@ -564,10 +701,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                                 var _iteratorError = undefined;
 
                                 try {
-                                    for (var _iterator = _this5.templateSrv.variables[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    for (var _iterator = _this8.templateSrv.variables[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                                         var variable = _step.value;
 
-                                        segments.unshift(_this5.uiSegmentSrv.newSegment({ type: 'template', value: '/^$' + variable.name + '$/', expandable: true }));
+                                        segments.unshift(_this8.uiSegmentSrv.newSegment({ type: 'template', value: '/^$' + variable.name + '$/', expandable: true }));
                                     }
                                 } catch (err) {
                                     _didIteratorError = true;
@@ -627,7 +764,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'rebuildTargetTagConditions',
                     value: function rebuildTargetTagConditions() {
-                        var _this6 = this;
+                        var _this9 = this;
 
                         var tags = [];
                         var tagIndex = 0;
@@ -644,7 +781,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             } else if (segment2.type === 'value') {
                                 tagOperator = tags[tagIndex].operator;
                                 if (tagOperator) {
-                                    _this6.tagSegments[index - 1] = _this6.uiSegmentSrv.newOperator(tagOperator);
+                                    _this9.tagSegments[index - 1] = _this9.uiSegmentSrv.newOperator(tagOperator);
                                     tags[tagIndex].operator = tagOperator;
                                 }
                                 tags[tagIndex].value = segment2.value;

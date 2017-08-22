@@ -32,44 +32,95 @@
                 </ul>
             </div>
 
-            <div class="gf-form">
-                <label class="gf-form-label query-keyword width-7">SELECT</label>
-            </div>
-
-            <div class="gf-form">
-                <!--this content depend on panel type (Graph or Table)-->
-
-                <!--GRAPH-->
-                <input type="text" class="gf-form-input input-medium width-7" spellcheck="false"
-                       ng-model="ctrl.selectData" ng-disabled="true">
-            </div>
-
             <div class="gf-form gf-form--grow">
                 <div class="gf-form-label gf-form-label--grow"></div>
             </div>
         </div>
 
+        <div class="gf-form-inline gf-form-inline--columns">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">SELECT</label>
+            </div>
+
+            <div class="gf-form gf-form--grow" ng-show="ctrl.variable != ctrl.prompts['variable']">
+                <!--this content depend on panel type (Graph or Table)-->
+
+                <!--GRAPH-->
+                <div class="gf-form-inline gf-form--grow" data-ng-if="ctrl.panel.type === 'graph'">
+                    <span class="gf-form-label">metric</span>
+                    <div class="gf-form gf-form--grow">
+                        <div class="gf-form-label gf-form-label--grow"></div>
+                    </div>
+                </div>
+
+                <!--TABLE-->
+                <div class="gf-form-inline gf-form--grow" data-ng-if="ctrl.panel.type === 'table'">
+                    <div class="gf-form gf-form__select-item" data-ng-repeat="item in ctrl.selectData">
+                        <a class="gf-form-label query-segment-key"
+                           ng-bind-html="item.value || ctrl.prompts.selectItem"
+                           data-toggle="dropdown"
+                           data-ng-click="ctrl.getSelectValue()"></a>
+
+                        <ul class="dropdown-menu" role="menu"
+                            select-dropdown
+                            items="ctrl.selectList"
+                            value="item.value"
+                            event-on-select="ctrl.onSelectUpdated(value)"></ul>
+
+                        <a class="gf-form-label gf-form-label--menu"><i class="fa fa-bars"></i></a>
+                    </div>
+                    <div class="gf-form">
+                        <a class="gf-form-label" data-ng-click="ctrl.addItemToSelect()"><i class="fa fa-plus"></i></a>
+                    </div>
+                    <div class="gf-form gf-form--grow">
+                        <div class="gf-form-label gf-form-label--grow"></div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
         <div ng-show="ctrl.variable != ctrl.prompts['variable']">
 
-            <div class="gf-form-inline">
+            <div class="gf-form-inline gf-form-inline--columns">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">WHERE</label>
                 </div>
 
-                <div class="gf-form" ng-repeat="segment in ctrl.tagSegments">
-                    <metric-segment segment="segment"
-                                    get-options="ctrl.getTagsOrValues(segment, $index)"
-                                    on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-inline gf-form--grow">
+                        <div class="gf-form" ng-repeat="segment in ctrl.tagSegments">
+                            <metric-segment segment="segment"
+                                            get-options="ctrl.getTagsOrValues(segment, $index)"
+                                            on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
+                        </div>
+
+                        <div class="gf-form gf-form--grow">
+                            <div class="gf-form-label gf-form-label--grow"></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="gf-form gf-form--grow">
-                    <div class="gf-form-label gf-form-label--grow"></div>
-                </div>
+
             </div>
 
             <div class="gf-form-inline">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">ORDER BY</label>
+                </div>
+                <div class="gf-form">
+                    <!--<div class="gf-form-select-wrapper">-->
+                        <metric-segment-model property="ctrl.orderBy"
+                                              get-options="ctrl.getOrderByValues()"
+                                              on-change="ctrl.onOrderByChange()"></metric-segment-model>
+                    <!--</div>-->
+                </div>
+                <div class="gf-form" data-ng-if="ctrl.orderBy">
+                    <a class="gf-form-label" data-ng-click="ctrl.onOrderByClear()"><i class="fa fa-close"></i></a>
                 </div>
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-label gf-form-label--grow"></div>
@@ -104,11 +155,12 @@
                     <div class="gf-form-select-wrapper">
                         <select class="gf-form-input gf-size-auto"
                                 ng-model="ctrl.groupBy.type"
-                                ng-options="option as option for option in ctrl.groupByFormats" ng-change="ctrl.onGroupByTypeChange()"></select>
+                                ng-options="option as option for option in ctrl.groupByFormats"
+                                ng-change="ctrl.onGroupByTypeChange()"></select>
                     </div>
 
                 </div>
-                <div class="gf-form">
+                <div class="gf-form" data-ng-if="ctrl.groupBy.type != ctrl.prompts['groupByType']">
                     <metric-segment-model property="ctrl.groupBy.val"
                                           get-options="ctrl.getGroupByVariables()"
                                           on-change="ctrl.onGroupByChange()"></metric-segment-model>

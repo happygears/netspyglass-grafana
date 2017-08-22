@@ -68,6 +68,11 @@ class SQLBuilder {
     return this;
   }
 
+  clearOrderBy() {
+    this.options.orderBy = [];
+    return this;
+  }
+
   compile() {
     let sql = [];
 

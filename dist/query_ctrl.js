@@ -84,7 +84,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         'groupByType': 'select type',
                         'groupBy': 'select value',
                         'orderBy': 'select value',
-                        'selectItem': 'select item'
+                        'selectItem': 'select item',
+                        'whereValue': 'select value'
                     };
 
                     _this.scope = $scope;
@@ -551,18 +552,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                         var list = [];
 
-                        // return this.datasource.executeQuery(query, 'list')
-                        //     .then(this.transformToSegments(this.groupBy.val, 'select group'));
-
-                        // if( this.panel.type === 'graph' ) {
-                        //     list = ['metric'];
-                        // }
-                        // if( this.panel.type === 'table' ) {
-                        //     list = this.selectData.map( (el) => {
-                        //         return el.value;
-                        //     });
-                        // }
-
                         if (this.panel.type === 'graph') {
                             list = [this.uiSegmentSrv.newSegment('metric')];
                         }
@@ -660,67 +649,63 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                             addTemplateVars = false;
                         } else if (segment.type === 'value') {
-                            var queryObj = void 0;
+                            var segmentKeyValue = this.tagSegments[index - 2].value,
+                                queryObj = void 0;
 
-                            queryObj = {
-                                select: [this.tagSegments[index - 2].value],
-                                distinct: true,
-                                from: 'devices',
-                                where: {},
-                                orderBy: [this.tagSegments[index - 2].value]
-                            };
-                            queryObj.where[this.tagSegments[index - 2].value] = ['NOTNULL'];
+                            if (segmentKeyValue === 'device') {
+                                queryObj = {
+                                    select: ['device'],
+                                    distinct: true,
+                                    from: this.variable,
+                                    orderBy: ['device'],
+                                    where: _.cloneDeep(this.queryConfigWhere)
+                                };
+                            }
+                            if (segmentKeyValue === 'component') {
+                                queryObj = {
+                                    select: ['component'],
+                                    distinct: true,
+                                    from: this.variable,
+                                    orderBy: ['component'],
+                                    where: _.cloneDeep(this.queryConfigWhere)
+                                };
+                            }
+                            if (segmentKeyValue !== 'device' && segmentKeyValue !== 'component') {
+                                queryObj = {
+                                    select: [this.tagSegments[index - 2].value],
+                                    distinct: true,
+                                    from: 'devices',
+                                    where: {},
+                                    orderBy: [this.tagSegments[index - 2].value]
+                                };
+                                queryObj.where[this.tagSegments[index - 2].value] = ['NOTNULL'];
+                            }
 
                             nsgql = this.SQLBuilder.factory(queryObj).compile();
-
-                            addTemplateVars = true;
                         }
 
-                        return this.datasource.executeQuery(nsgql, format).then(this.transformToWhereSegments(addTemplateVars)).then(function (results) {
+                        return this.datasource.executeQuery(nsgql, format).then(function (results) {
+                            if (segment.type === 'key' || segment.type === 'plus-button') {
+                                results.unshift('component');
+                                results.unshift('device');
+                            }
+                            return results;
+                        }).then(this.transformToWhereSegments(addTemplateVars)).then(function (results) {
                             if (segment.type === 'key') {
                                 results.splice(0, 0, angular.copy(_this7.removeTagFilterSegment));
                             }
-                            console.log(results);
                             return results;
                         });
                     }
                 }, {
                     key: 'transformToWhereSegments',
-                    value: function transformToWhereSegments(addTemplateVars) {
+                    value: function transformToWhereSegments() {
                         var _this8 = this;
 
                         return function (results) {
-                            console.log(results);
                             var segments = _.map(results, function (segment) {
                                 return _this8.uiSegmentSrv.newSegment({ value: '' + segment });
                             });
-
-                            if (addTemplateVars) {
-                                var _iteratorNormalCompletion = true;
-                                var _didIteratorError = false;
-                                var _iteratorError = undefined;
-
-                                try {
-                                    for (var _iterator = _this8.templateSrv.variables[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                        var variable = _step.value;
-
-                                        segments.unshift(_this8.uiSegmentSrv.newSegment({ type: 'template', value: '/^$' + variable.name + '$/', expandable: true }));
-                                    }
-                                } catch (err) {
-                                    _didIteratorError = true;
-                                    _iteratorError = err;
-                                } finally {
-                                    try {
-                                        if (!_iteratorNormalCompletion && _iterator.return) {
-                                            _iterator.return();
-                                        }
-                                    } finally {
-                                        if (_didIteratorError) {
-                                            throw _iteratorError;
-                                        }
-                                    }
-                                }
-                            }
 
                             return segments;
                         };
@@ -731,8 +716,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         this.tagSegments[index] = segment;
 
                         // handle remove tag condition
-                        console.log(this.removeTagFilterSegment.value);
-                        console.log(segment);
                         if (segment.value === this.removeTagFilterSegment.value) {
                             this.tagSegments.splice(index, 3);
                             if (this.tagSegments.length === 0) {
@@ -749,7 +732,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                                     this.tagSegments.splice(index, 0, this.uiSegmentSrv.newCondition('AND'));
                                 }
                                 this.tagSegments.push(this.uiSegmentSrv.newOperator('='));
-                                this.tagSegments.push(this.uiSegmentSrv.newFake('select tag value', 'value', 'query-segment-value'));
+                                this.tagSegments.push(this.uiSegmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
                                 segment.type = 'key';
                                 segment.cssClass = 'query-segment-key';
                             }
@@ -795,6 +778,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                         this.target.tags = tags;
 
+                        this.queryConfigWhere = ['AND'];
                         this.queryConfigWhere.push(this._buildTagsWhere('tags', this.target.tags));
 
                         this.buildNsgQLString();
@@ -803,10 +787,14 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: '_buildTagsWhere',
                     value: function _buildTagsWhere(name, tagsList) {
+                        var _this10 = this;
+
                         var result = [];
 
                         if (tagsList.length) {
                             tagsList.forEach(function (tag, i) {
+                                if (tag.value == _this10.prompts.whereValue) return;
+
                                 var obj = {};
                                 obj[tag.key] = [tag.operator, tag.value];
 
@@ -819,6 +807,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                         if (result.length) {
                             result.unshift('AND');
+                        } else {
+                            result = null;
                         }
 
                         return result;
@@ -835,8 +825,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         }
 
                         if (params.type != 'string') {
-                            this.queryConfigWhere.push('$_timeFilter'); //GROUP BY time($__interval)
-                            this.target.queryConfig.where(this.queryConfigWhere);
+                            var wherePart = void 0;
+                            wherePart = _.cloneDeep(this.queryConfigWhere);
+                            wherePart.push('$_timeFilter'); //GROUP BY time($__interval)
+                            this.target.queryConfig.where(wherePart);
 
                             str = this.target.queryConfig.compile();
                         }

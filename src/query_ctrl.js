@@ -32,7 +32,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             'groupByType': 'select type',
             'groupBy': 'select value',
             'orderBy': 'select value',
-            'selectItem': 'select item'
+            'selectItem': 'select item',
+            'whereValue': 'select value',
         };
 
         this.scope = $scope;
@@ -516,18 +517,6 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     getOrderByValues() {
         let list = [];
 
-        // return this.datasource.executeQuery(query, 'list')
-        //     .then(this.transformToSegments(this.groupBy.val, 'select group'));
-
-        // if( this.panel.type === 'graph' ) {
-        //     list = ['metric'];
-        // }
-        // if( this.panel.type === 'table' ) {
-        //     list = this.selectData.map( (el) => {
-        //         return el.value;
-        //     });
-        // }
-
         if( this.panel.type === 'graph' ) {
             list = [
                 this.uiSegmentSrv.newSegment('metric')
@@ -627,45 +616,63 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
             addTemplateVars = false;
         } else if (segment.type === 'value')  {
-            let queryObj;
+            let segmentKeyValue = this.tagSegments[index - 2].value,
+                queryObj;
 
-            queryObj = {
-                select: [this.tagSegments[index-2].value],
-                distinct: true,
-                from: 'devices',
-                where: {},
-                orderBy: [this.tagSegments[index-2].value]
-            };
-            queryObj.where[this.tagSegments[index-2].value] = ['NOTNULL'];
+            if (segmentKeyValue === 'device') {
+                queryObj = {
+                    select: ['device'],
+                    distinct: true,
+                    from: this.variable,
+                    orderBy: ['device'],
+                    where: _.cloneDeep(this.queryConfigWhere)
+                };
+            }
+            if (segmentKeyValue === 'component') {
+                queryObj = {
+                    select: ['component'],
+                    distinct: true,
+                    from: this.variable,
+                    orderBy: ['component'],
+                    where: _.cloneDeep(this.queryConfigWhere)
+                };
+            }
+            if (segmentKeyValue !== 'device' && segmentKeyValue !== 'component') {
+                queryObj = {
+                    select: [this.tagSegments[index-2].value],
+                    distinct: true,
+                    from: 'devices',
+                    where: {},
+                    orderBy: [this.tagSegments[index-2].value]
+                };
+                queryObj.where[this.tagSegments[index-2].value] = ['NOTNULL'];
+            }
 
             nsgql = this.SQLBuilder.factory(queryObj).compile();
-
-            addTemplateVars = true;
         }
 
         return this.datasource.executeQuery(nsgql, format)
+            .then((results) => {
+                if (segment.type === 'key' || segment.type === 'plus-button') {
+                    results.unshift('component');
+                    results.unshift('device');
+                }
+                return results
+            })
             .then(this.transformToWhereSegments(addTemplateVars))
             .then(results => {
                 if (segment.type === 'key') {
                     results.splice(0, 0, angular.copy(this.removeTagFilterSegment));
                 }
-                console.log(results);
                 return results;
             });
     }
 
-    transformToWhereSegments(addTemplateVars) {
+    transformToWhereSegments() {
         return (results) => {
-            console.log(results);
             var segments = _.map(results, segment => {
                 return this.uiSegmentSrv.newSegment({ value: `${segment}` });
             });
-
-            if (addTemplateVars) {
-                for (let variable of this.templateSrv.variables) {
-                    segments.unshift(this.uiSegmentSrv.newSegment({ type: 'template', value: '/^$' + variable.name + '$/', expandable: true }));
-                }
-            }
 
             return segments;
         };
@@ -675,8 +682,6 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         this.tagSegments[index] = segment;
 
         // handle remove tag condition
-        console.log(this.removeTagFilterSegment.value);
-        console.log(segment);
         if (segment.value === this.removeTagFilterSegment.value) {
             this.tagSegments.splice(index, 3);
             if (this.tagSegments.length === 0) {
@@ -693,7 +698,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
                     this.tagSegments.splice(index, 0, this.uiSegmentSrv.newCondition('AND'));
                 }
                 this.tagSegments.push(this.uiSegmentSrv.newOperator('='));
-                this.tagSegments.push(this.uiSegmentSrv.newFake('select tag value', 'value', 'query-segment-value'));
+                this.tagSegments.push(this.uiSegmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
                 segment.type = 'key';
                 segment.cssClass = 'query-segment-key';
             }
@@ -736,6 +741,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
         this.target.tags = tags;
 
+        this.queryConfigWhere = ['AND'];
         this.queryConfigWhere.push(this._buildTagsWhere('tags', this.target.tags));
 
         this.buildNsgQLString();
@@ -747,6 +753,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
         if(tagsList.length) {
             tagsList.forEach( (tag, i) => {
+                if( tag.value == this.prompts.whereValue) return;
+
                 let obj = {};
                 obj[tag.key] = [tag.operator, tag.value];
 
@@ -759,6 +767,8 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
         if( result.length ) {
             result.unshift('AND');
+        } else {
+            result = null;
         }
 
         return result;
@@ -772,8 +782,10 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
         }
 
         if( params.type != 'string' ) {
-            this.queryConfigWhere.push('$_timeFilter'); //GROUP BY time($__interval)
-            this.target.queryConfig.where( this.queryConfigWhere );
+            let wherePart;
+            wherePart = _.cloneDeep(this.queryConfigWhere);
+            wherePart.push('$_timeFilter'); //GROUP BY time($__interval)
+            this.target.queryConfig.where( wherePart );
 
             str = this.target.queryConfig.compile();
         }

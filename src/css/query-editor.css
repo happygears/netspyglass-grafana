@@ -42,10 +42,11 @@
 .gf-form__select-item .gf-form-label {
     margin-right: 0;
     min-height: 2.6rem;
+    padding-right: 5px;
 }
 .gf-form__select-item .gf-form-label--menu {
-    border-left: 1px solid #3a3a3a;
     color: #33B5E5;
+    padding-left: 5px;
 }
 
 .editor-part .dropdown-submenu > .dropdown-menu {

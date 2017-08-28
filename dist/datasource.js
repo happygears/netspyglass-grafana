@@ -146,10 +146,6 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                         });
 
                         return response.then(function (response) {
-
-                            console.log(response.data);
-                            console.log(options);
-
                             if (options.format === 'table' && response.data) {
                                 var data = response.data;
 
@@ -172,8 +168,6 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                             }] }).then(function (response) {
                             var data = response.data;
                             if (!data) return response;
-
-                            console.log(data);
 
                             return data;
                         });
@@ -469,7 +463,6 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                 }, {
                     key: 'buildQueryFronNsgQlStirng',
                     value: function buildQueryFronNsgQlStirng(options) {
-                        console.log(options);
                         var timeFilter = this.getTimeFilter(options);
                         var queriesList = options.targets.map(function (target) {
                             var query = target.customNsgqlQuery;

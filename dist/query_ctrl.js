@@ -98,58 +98,107 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                     _this.clearSelection = '-- clear selection --';
                     _this.blankDropDownElement = '---';
-                    _this.target.category = _this.target.category || _this.prompts['category'];
-                    _this.target.variable = _this.target.variable || _this.prompts['variable'];
-                    _this.target.device = _this.target.device || _this.prompts['device'];
-                    _this.target.component = _this.target.component || _this.prompts['component'];
-                    _this.target.sortByEl = _this.target.sortByEl || 'none';
-                    _this.target.selector = _this.target.selector || ' -- ';
-                    _this.target.aggregator = _this.target.aggregator || ' -- ';
-                    _this.target.limit = _this.target.limit || '100';
-                    _this.target.group = _this.target.group || 'select group';
-                    _this.target.tagFacet = _this.target.tagFacet || _this.blankDropDownElement;
-                    _this.target.tagOperation = _this.target.tagOperation || '==';
-                    _this.target.tagWord = _this.target.tagWord || _this.blankDropDownElement;
-                    _this.target.tagData = _this.target.tagData || [];
 
-                    _this.target.format = _this.panel.type === 'table' ? 'table' : 'time_series';
-                    _this.target.formatDisplay = _this.target.formatDisplay || 'Time Series';
+                    // this.target.category = this.target.category || this.prompts['category'];
+                    // this.target.variable = this.target.variable || this.prompts['variable'];
+                    // this.target.device = this.target.device || this.prompts['device'];
+                    // this.target.component = this.target.component || this.prompts['component'];
+                    // this.target.sortByEl = this.target.sortByEl || 'none';
+                    // this.target.selector = this.target.selector || ' -- ';
+                    // this.target.aggregator = this.target.aggregator || ' -- ';
+                    // this.target.limit = this.target.limit || '100';
+                    // this.target.group = this.target.group || 'select group';
+                    // this.target.tagFacet = this.target.tagFacet || this.blankDropDownElement;
+                    // this.target.tagOperation = this.target.tagOperation || '==';
+                    // this.target.tagWord = this.target.tagWord || this.blankDropDownElement;
+                    // this.target.tagData = this.target.tagData || [];
+                    //
+                    // this.target.format = this.panel.type === 'table' ? 'table' : 'time_series';
+                    // this.target.formatDisplay = this.target.formatDisplay || 'Time Series';
+                    //
+                    // this.target.columns = this.target.columns || 'time,variable,device,component,metric';
+                    // this.target.alias = this.target.alias || '';
 
-                    _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
-                    _this.target.alias = _this.target.alias || '';
-
+                    _this.target = _this.target;
                     // _NEW_
                     _this.SQLBuilder = new SQLBuilderFactory();
-                    _this.target.queryConfig = _this.SQLBuilder.factory();
-                    _this.target.customNsgqlQuery = '';
+                    _this.queryConfig = _this.SQLBuilder.factory();
 
                     _this.queryConfigWhere = ['AND'];
                     _this.rowMode = false;
 
-                    _this.category = _this.target.category || _this.prompts['category'];
-                    _this.variable = _this.target.variable || _this.prompts['variable'];
-                    _this.groupByFormats = [_this.prompts['groupByType'], 'time', 'column'];
-                    _this.groupBy = {
+                    _this.target.format = _this.panel.type === 'table' ? 'table' : 'time_series';
+                    _this.target.customNsgqlQuery = '';
+
+                    _this.target.category = _this.target.category || _this.prompts['category'];
+                    _this.target.variable = _this.target.variable || _this.prompts['variable'];
+                    _this.target.groupBy = {
                         type: _this.prompts['groupByType'],
                         val: _this.prompts['groupBy']
                     };
-                    _this.orderBy = _this.target.orderBy || _this.prompts.orderBy;
+                    _this.target.orderBy = _this.target.orderBy || _this.prompts.orderBy;
+                    _this.target.tags = _this.target.tags || [];
 
                     _this.tagSegments = [];
+                    var _iteratorNormalCompletion = true;
+                    var _didIteratorError = false;
+                    var _iteratorError = undefined;
+
+                    try {
+                        for (var _iterator = _this.target.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                            var tag = _step.value;
+
+                            if (!tag.operator) {
+                                if (/^\/.*\/$/.test(tag.value)) {
+                                    tag.operator = "=~";
+                                } else {
+                                    tag.operator = '=';
+                                }
+                            }
+
+                            if (tag.condition) {
+                                _this.tagSegments.push(uiSegmentSrv.newCondition(tag.condition));
+                            }
+
+                            _this.tagSegments.push(uiSegmentSrv.newKey(tag.key));
+                            _this.tagSegments.push(uiSegmentSrv.newOperator(tag.operator));
+                            _this.tagSegments.push(uiSegmentSrv.newKeyValue(tag.value));
+                        }
+                    } catch (err) {
+                        _didIteratorError = true;
+                        _iteratorError = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion && _iterator.return) {
+                                _iterator.return();
+                            }
+                        } finally {
+                            if (_didIteratorError) {
+                                throw _iteratorError;
+                            }
+                        }
+                    }
+
                     _this.tagSegments.push(_this.uiSegmentSrv.newPlusButton());
+
                     _this.removeTagFilterSegment = uiSegmentSrv.newSegment({ fake: true, value: '-- remove tag filter --' });
 
+                    _this.groupByFormats = [_this.prompts['groupByType'], 'time', 'column'];
                     _this.categories = [];
-                    _this.getCategories();
+                    _this.selectList = [];
 
                     if (_this.panel.type === 'graph') {
-                        _this.selectData = ['time', 'metric'];
+                        _this.target.selectData = ['time', 'metric'];
                     }
                     if (_this.panel.type === 'table') {
-                        _this.selectData = [];
-                        _this.addItemToSelect();
+                        _this.target.selectData = _this.target.selectData || [];
+                        if (!_this.target.selectData.length) {
+                            _this.addItemToSelect();
+                        }
                     }
-                    _this.selectList = [];
+
+                    console.log(_this);
+                    console.log(_this.target);
                     return _this;
                 }
 
@@ -157,9 +206,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     key: 'addItemToSelect',
                     value: function addItemToSelect(data) {
                         if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object') {
-                            this.selectData.push(data);
+                            this.target.selectData.push(data);
                         } else {
-                            this.selectData.push({
+                            this.target.selectData.push({
                                 value: '',
                                 func: [],
                                 alias: []
@@ -217,12 +266,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     key: 'selectCat',
                     value: function selectCat(category, variable) {
                         this.target.category = category;
-                        this.variable = variable;
                         this.target.variable = variable;
-                        this.target.queryConfig.from(variable);
+                        this.target.variable = variable;
+                        this.queryConfig.from(variable);
 
                         if (this.panel.type === 'graph') {
-                            this.target.queryConfig.select(this.selectData);
+                            this.queryConfig.select(this.target.selectData);
                         }
 
                         this.buildNsgQLString();
@@ -236,7 +285,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         this.$q.all([this.datasource.executeQuery(this.SQLBuilder.factory({
                             select: ['tagFacet'],
                             distinct: true,
-                            from: this.variable,
+                            from: this.target.variable,
                             orderBy: ['tagFacet']
                         }).compile(), 'list'), this.datasource.executeQuery(this.SQLBuilder.factory({
                             select: ['category,name'],
@@ -285,13 +334,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                         var _this4 = this;
 
                         this.$timeout(function () {
-                            var selectedValues = _this4.selectData.map(function (el) {
+                            var selectedValues = _this4.target.selectData.map(function (el) {
                                 if (el.value) {
                                     return el.value;
                                 }
                             }).filter(Boolean);
 
-                            _this4.target.queryConfig.select(selectedValues);
+                            _this4.queryConfig.select(selectedValues);
 
                             _this4.buildNsgQLString();
                             _this4.refresh();
@@ -504,22 +553,22 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'onFromChange',
                     value: function onFromChange() {
-                        if (this.target.category !== this.category && this.variable != this.prompts['variable']) {
+                        if (this.target.category !== this.target.category && this.target.variable != this.prompts['variable']) {
                             console.log(111);
-                            this.target.category = this.category;
-                            this.variable = this.prompts['variable'];
+                            this.target.category = this.target.category;
+                            this.target.variable = this.prompts['variable'];
                             this.onSelectChange();
                             return;
                         }
 
-                        this.target.category = this.category;
+                        this.target.category = this.target.category;
                     }
                 }, {
                     key: 'onSelectChange',
                     value: function onSelectChange() {
-                        this.target.variable = this.variable;
-                        this.target.queryConfig.select(['time', 'metric']);
-                        this.target.queryConfig.from(this.variable);
+                        this.target.variable = this.target.variable;
+                        this.queryConfig.select(['time', 'metric']);
+                        this.queryConfig.from(this.target.variable);
 
                         this.buildNsgQLString();
                         this.refresh();
@@ -527,10 +576,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'onOrderByChange',
                     value: function onOrderByChange() {
-                        this.target.queryConfig.clearOrderBy();
+                        this.queryConfig.clearOrderBy();
 
-                        if (this.orderBy != this.clearSelection) {
-                            this.target.queryConfig.orderBy(this.orderBy);
+                        if (this.target.orderBy != this.clearSelection) {
+                            this.queryConfig.orderBy(this.target.orderBy);
                         }
 
                         this.buildNsgQLString();
@@ -539,8 +588,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'onOrderByClear',
                     value: function onOrderByClear() {
-                        this.orderBy = null;
-                        this.target.queryConfig.clearOrderBy();
+                        this.target.orderBy = null;
+                        this.queryConfig.clearOrderBy();
 
                         this.buildNsgQLString();
                         this.refresh();
@@ -556,7 +605,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             list = [this.uiSegmentSrv.newSegment('metric')];
                         }
                         if (this.panel.type === 'table') {
-                            list = this.selectData.map(function (el) {
+                            list = this.target.selectData.map(function (el) {
                                 return _this6.uiSegmentSrv.newSegment(el.value);
                             });
                         }
@@ -569,9 +618,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     key: 'onLimitChange',
                     value: function onLimitChange() {
                         if (this.limit) {
-                            this.target.queryConfig.limit(this.limit);
+                            this.queryConfig.limit(this.limit);
                         } else {
-                            this.target.queryConfig.clearLimit();
+                            this.queryConfig.clearLimit();
                         }
 
                         this.buildNsgQLString();
@@ -581,10 +630,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                     key: 'onGroupByTypeChange',
                     value: function onGroupByTypeChange() {
                         //TODO: fix this behavior
-                        this.groupBy.val = this.prompts['groupBy'];
+                        this.target.groupBy.val = this.prompts['groupBy'];
 
-                        if (this.groupBy.type === 'select type') {
-                            this.target.queryConfig.clearGroupBy();
+                        if (this.target.groupBy.type === 'select type') {
+                            this.queryConfig.clearGroupBy();
                             this.buildNsgQLString();
                             this.refresh();
                         }
@@ -592,11 +641,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'onGroupByChange',
                     value: function onGroupByChange() {
-                        if (this.groupBy.type === 'time') {
-                            this.target.queryConfig.groupBy('time(' + this.groupBy.val + ')');
+                        if (this.target.groupBy.type === 'time') {
+                            this.queryConfig.groupBy('time(' + this.target.groupBy.val + ')');
                         }
-                        if (this.groupBy.type === 'column') {
-                            this.target.queryConfig.groupBy(this.groupBy.val);
+                        if (this.target.groupBy.type === 'column') {
+                            this.queryConfig.groupBy(this.target.groupBy.val);
                         }
 
                         this.buildNsgQLString();
@@ -605,20 +654,20 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                 }, {
                     key: 'getGroupByVariables',
                     value: function getGroupByVariables() {
-                        if (this.groupBy.type === 'time') {
+                        if (this.target.groupBy.type === 'time') {
                             var groupByTimeOptions = [this.uiSegmentSrv.newSegment('1s'), this.uiSegmentSrv.newSegment('1m'), this.uiSegmentSrv.newSegment('30m'), this.uiSegmentSrv.newSegment('1h'), this.uiSegmentSrv.newSegment('1d')];
                             return this.$q.when(groupByTimeOptions);
                         }
 
-                        if (this.groupBy.type === 'column') {
+                        if (this.target.groupBy.type === 'column') {
                             var query = this.SQLBuilder.factory({
                                 select: ['tagFacet'],
                                 distinct: true,
-                                from: this.variable,
+                                from: this.target.variable,
                                 orderBy: ['tagFacet']
                             }).compile();
 
-                            return this.datasource.executeQuery(query, 'list').then(this.transformToSegments(this.groupBy.val, '-- select group --'));
+                            return this.datasource.executeQuery(query, 'list').then(this.transformToSegments(this.target.groupBy.val, '-- select group --'));
                         }
                     }
                 }, {
@@ -643,7 +692,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             nsgql = this.SQLBuilder.factory({
                                 select: ['tagFacet'],
                                 distinct: true,
-                                from: this.variable,
+                                from: this.target.variable,
                                 orderBy: ['tagFacet']
                             }).compile();
 
@@ -652,22 +701,24 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             var segmentKeyValue = this.tagSegments[index - 2].value,
                                 queryObj = void 0;
 
+                            console.log(this.queryConfigWhere);
+
                             if (segmentKeyValue === 'device') {
                                 queryObj = {
                                     select: ['device'],
                                     distinct: true,
-                                    from: this.variable,
+                                    from: this.target.variable,
                                     orderBy: ['device'],
-                                    where: _.cloneDeep(this.queryConfigWhere)
+                                    where: this.queryConfigWhere.length > 1 ? _.cloneDeep(this.queryConfigWhere) : null
                                 };
                             }
                             if (segmentKeyValue === 'component') {
                                 queryObj = {
                                     select: ['component'],
                                     distinct: true,
-                                    from: this.variable,
+                                    from: this.target.variable,
                                     orderBy: ['component'],
-                                    where: _.cloneDeep(this.queryConfigWhere)
+                                    where: this.queryConfigWhere.length > 1 ? _.cloneDeep(this.queryConfigWhere) : null
                                 };
                             }
                             if (segmentKeyValue !== 'device' && segmentKeyValue !== 'component') {
@@ -778,8 +829,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
 
                         this.target.tags = tags;
 
+                        var configWhere = this._buildTagsWhere('tags', this.target.tags);
                         this.queryConfigWhere = ['AND'];
-                        this.queryConfigWhere.push(this._buildTagsWhere('tags', this.target.tags));
+                        if (configWhere) {
+                            this.queryConfigWhere.push(configWhere);
+                        }
 
                         this.buildNsgQLString();
                         this.refresh();
@@ -828,9 +882,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!', './hg-sql-builder
                             var wherePart = void 0;
                             wherePart = _.cloneDeep(this.queryConfigWhere);
                             wherePart.push('$_timeFilter'); //GROUP BY time($__interval)
-                            this.target.queryConfig.where(wherePart);
+                            this.queryConfig.where(wherePart);
 
-                            str = this.target.queryConfig.compile();
+                            str = this.queryConfig.compile();
                         }
 
                         console.log('%cNsgQLString', 'color: blueviolet; font-weight: bold;', str);

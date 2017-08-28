@@ -132,10 +132,6 @@ export class NetSpyGlassDatasource {
         });
 
         return response.then( response => {
-
-            console.log(response.data);
-            console.log(options);
-
             if( options.format === 'table' && response.data ) {
                 let data = response.data;
 
@@ -159,8 +155,6 @@ export class NetSpyGlassDatasource {
         ).then( response => {
             var data = response.data;
             if (!data) return response;
-
-            console.log(data);
 
             return data;
         })
@@ -498,7 +492,6 @@ export class NetSpyGlassDatasource {
     }
 
     buildQueryFronNsgQlStirng(options) {
-        console.log(options);
         let timeFilter = this.getTimeFilter(options);
         let queriesList = options.targets.map( (target) => {
             let query = target.customNsgqlQuery;

@@ -46,66 +46,93 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
         this.clearSelection = '-- clear selection --';
         this.blankDropDownElement = '---';
-        this.target.category = this.target.category || this.prompts['category'];
-        this.target.variable = this.target.variable || this.prompts['variable'];
-        this.target.device = this.target.device || this.prompts['device'];
-        this.target.component = this.target.component || this.prompts['component'];
-        this.target.sortByEl = this.target.sortByEl || 'none';
-        this.target.selector = this.target.selector || ' -- ';
-        this.target.aggregator = this.target.aggregator || ' -- ';
-        this.target.limit = this.target.limit || '100';
-        this.target.group = this.target.group || 'select group';
-        this.target.tagFacet = this.target.tagFacet || this.blankDropDownElement;
-        this.target.tagOperation = this.target.tagOperation || '==';
-        this.target.tagWord = this.target.tagWord || this.blankDropDownElement;
-        this.target.tagData = this.target.tagData || [];
+        
+        // this.target.category = this.target.category || this.prompts['category'];
+        // this.target.variable = this.target.variable || this.prompts['variable'];
+        // this.target.device = this.target.device || this.prompts['device'];
+        // this.target.component = this.target.component || this.prompts['component'];
+        // this.target.sortByEl = this.target.sortByEl || 'none';
+        // this.target.selector = this.target.selector || ' -- ';
+        // this.target.aggregator = this.target.aggregator || ' -- ';
+        // this.target.limit = this.target.limit || '100';
+        // this.target.group = this.target.group || 'select group';
+        // this.target.tagFacet = this.target.tagFacet || this.blankDropDownElement;
+        // this.target.tagOperation = this.target.tagOperation || '==';
+        // this.target.tagWord = this.target.tagWord || this.blankDropDownElement;
+        // this.target.tagData = this.target.tagData || [];
+        //
+        // this.target.format = this.panel.type === 'table' ? 'table' : 'time_series';
+        // this.target.formatDisplay = this.target.formatDisplay || 'Time Series';
+        //
+        // this.target.columns = this.target.columns || 'time,variable,device,component,metric';
+        // this.target.alias = this.target.alias || '';
 
-        this.target.format = this.panel.type === 'table' ? 'table' : 'time_series';
-        this.target.formatDisplay = this.target.formatDisplay || 'Time Series';
-
-        this.target.columns = this.target.columns || 'time,variable,device,component,metric';
-        this.target.alias = this.target.alias || '';
-
-
+        this.target = this.target;
         // _NEW_
         this.SQLBuilder = new SQLBuilderFactory();
-        this.target.queryConfig = this.SQLBuilder.factory();
-        this.target.customNsgqlQuery = '';
+        this.queryConfig = this.SQLBuilder.factory();
 
         this.queryConfigWhere = ['AND'];
         this.rowMode = false;
 
-        this.category = this.target.category || this.prompts['category'];
-        this.variable = this.target.variable || this.prompts['variable'];
-        this.groupByFormats = [this.prompts['groupByType'],'time', 'column'];
-        this.groupBy = {
+        this.target.format = this.panel.type === 'table' ? 'table' : 'time_series';
+        this.target.customNsgqlQuery = '';
+
+        this.target.category = this.target.category || this.prompts['category'];
+        this.target.variable = this.target.variable || this.prompts['variable'];
+        this.target.groupBy = {
             type: this.prompts['groupByType'],
             val: this.prompts['groupBy']
         };
-        this.orderBy = this.target.orderBy || this.prompts.orderBy;
+        this.target.orderBy = this.target.orderBy || this.prompts.orderBy;
+        this.target.tags = this.target.tags || [];
 
         this.tagSegments = [];
+        for (let tag of this.target.tags) {
+            if (!tag.operator) {
+                if (/^\/.*\/$/.test(tag.value)) {
+                    tag.operator = "=~";
+                } else {
+                    tag.operator = '=';
+                }
+            }
+
+            if (tag.condition) {
+                this.tagSegments.push(uiSegmentSrv.newCondition(tag.condition));
+            }
+
+            this.tagSegments.push(uiSegmentSrv.newKey(tag.key));
+            this.tagSegments.push(uiSegmentSrv.newOperator(tag.operator));
+            this.tagSegments.push(uiSegmentSrv.newKeyValue(tag.value));
+        }
         this.tagSegments.push(this.uiSegmentSrv.newPlusButton());
+
         this.removeTagFilterSegment = uiSegmentSrv.newSegment({fake: true, value: '-- remove tag filter --'});
 
+        this.groupByFormats = [this.prompts['groupByType'],'time', 'column'];
         this.categories = [];
-        this.getCategories();
+        this.selectList = [];
 
         if( this.panel.type === 'graph' ) {
-            this.selectData = ['time','metric'];
+            this.target.selectData = ['time','metric'];
         }
         if( this.panel.type === 'table' ) {
-            this.selectData = [];
-            this.addItemToSelect();
+            this.target.selectData = this.target.selectData || [];
+            if( !this.target.selectData.length ) {
+                this.addItemToSelect();
+            }
         }
-        this.selectList = [];
+
+
+        console.log(this);
+        console.log(this.target);
     }
 
     addItemToSelect(data) {
         if( typeof data === 'object' ) {
-            this.selectData.push(data)
+            this.target.selectData.push(data)
         } else {
-            this.selectData.push({
+            this.target.selectData.push({
                 value: '',
                 func: [],
                 alias: []
@@ -174,12 +201,12 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
     selectCat(category, variable) {
         this.target.category = category;
-        this.variable = variable;
         this.target.variable = variable;
-        this.target.queryConfig.from(variable);
+        this.target.variable = variable;
+        this.queryConfig.from(variable);
 
         if( this.panel.type === 'graph' ) {
-            this.target.queryConfig.select(this.selectData);
+            this.queryConfig.select(this.target.selectData);
         }
 
         this.buildNsgQLString();
@@ -191,7 +218,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             this.datasource.executeQuery(this.SQLBuilder.factory({
                 select: ['tagFacet'],
                 distinct: true,
-                from: this.variable,
+                from: this.target.variable,
                 orderBy: ['tagFacet']
             }).compile(), 'list'),
             this.datasource.executeQuery(this.SQLBuilder.factory({
@@ -238,13 +265,13 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
     onSelectUpdated(value) {
         this.$timeout( () => {
-            let selectedValues = this.selectData.map( (el) => {
+            let selectedValues = this.target.selectData.map( (el) => {
                 if( el.value ) {
                     return el.value;
                 }
             }).filter(Boolean);
 
-            this.target.queryConfig.select(selectedValues);
+            this.queryConfig.select(selectedValues);
 
             this.buildNsgQLString();
             this.refresh();
@@ -478,38 +505,38 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     onFromChange() {
-        if( this.target.category !== this.category  && this.variable != this.prompts['variable']) {
+        if( this.target.category !== this.target.category  && this.target.variable != this.prompts['variable']) {
             console.log(111);
-            this.target.category = this.category;
-            this.variable = this.prompts['variable'];
+            this.target.category = this.target.category;
+            this.target.variable = this.prompts['variable'];
             this.onSelectChange();
             return;
         }
 
-        this.target.category = this.category;
+        this.target.category = this.target.category;
     }
     onSelectChange() {
-        this.target.variable = this.variable;
-        this.target.queryConfig.select(['time','metric']);
-        this.target.queryConfig.from(this.variable);
+        this.target.variable = this.target.variable;
+        this.queryConfig.select(['time','metric']);
+        this.queryConfig.from(this.target.variable);
 
         this.buildNsgQLString();
         this.refresh();
     }
 
     onOrderByChange() {
-        this.target.queryConfig.clearOrderBy();
+        this.queryConfig.clearOrderBy();
 
-        if( this.orderBy != this.clearSelection ) {
-            this.target.queryConfig.orderBy(this.orderBy);
+        if( this.target.orderBy != this.clearSelection ) {
+            this.queryConfig.orderBy(this.target.orderBy);
         }
 
         this.buildNsgQLString();
         this.refresh();
     }
     onOrderByClear() {
-        this.orderBy = null;
-        this.target.queryConfig.clearOrderBy();
+        this.target.orderBy = null;
+        this.queryConfig.clearOrderBy();
 
         this.buildNsgQLString();
         this.refresh();
@@ -523,7 +550,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             ];
         }
         if( this.panel.type === 'table' ) {
-            list = this.selectData.map( (el) => {
+            list = this.target.selectData.map( (el) => {
                 return this.uiSegmentSrv.newSegment(el.value);
             });
         }
@@ -535,9 +562,9 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
     onLimitChange() {
         if( this.limit ) {
-            this.target.queryConfig.limit(this.limit);
+            this.queryConfig.limit(this.limit);
         } else {
-            this.target.queryConfig.clearLimit();
+            this.queryConfig.clearLimit();
         }
 
         this.buildNsgQLString();
@@ -546,21 +573,21 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
     onGroupByTypeChange() {
         //TODO: fix this behavior
-        this.groupBy.val = this.prompts['groupBy'];
+        this.target.groupBy.val = this.prompts['groupBy'];
 
-        if( this.groupBy.type === 'select type' ) {
-            this.target.queryConfig.clearGroupBy();
+        if( this.target.groupBy.type === 'select type' ) {
+            this.queryConfig.clearGroupBy();
             this.buildNsgQLString();
             this.refresh();
         }
     }
 
     onGroupByChange() {
-        if( this.groupBy.type === 'time' ) {
-            this.target.queryConfig.groupBy(`time(${this.groupBy.val})`);
+        if( this.target.groupBy.type === 'time' ) {
+            this.queryConfig.groupBy(`time(${this.target.groupBy.val})`);
         }
-        if( this.groupBy.type === 'column' ) {
-            this.target.queryConfig.groupBy(this.groupBy.val);
+        if( this.target.groupBy.type === 'column' ) {
+            this.queryConfig.groupBy(this.target.groupBy.val);
         }
 
         this.buildNsgQLString();
@@ -568,7 +595,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
     }
 
     getGroupByVariables() {
-        if( this.groupBy.type === 'time' ) {
+        if( this.target.groupBy.type === 'time' ) {
             let groupByTimeOptions = [
                 this.uiSegmentSrv.newSegment('1s'),
                 this.uiSegmentSrv.newSegment('1m'),
@@ -579,16 +606,16 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             return this.$q.when(groupByTimeOptions);
         }
 
-        if( this.groupBy.type === 'column' ) {
+        if( this.target.groupBy.type === 'column' ) {
             let query = this.SQLBuilder.factory({
                 select: ['tagFacet'],
                 distinct: true,
-                from: this.variable,
+                from: this.target.variable,
                 orderBy: ['tagFacet']
             }).compile();
 
             return this.datasource.executeQuery(query, 'list')
-                .then(this.transformToSegments(this.groupBy.val, '-- select group --'));
+                .then(this.transformToSegments(this.target.groupBy.val, '-- select group --'));
         }
     }
 
@@ -610,7 +637,7 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             nsgql = this.SQLBuilder.factory({
                 select: ['tagFacet'],
                 distinct: true,
-                from: this.variable,
+                from: this.target.variable,
                 orderBy: ['tagFacet']
             }).compile();
 
@@ -619,22 +646,24 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             let segmentKeyValue = this.tagSegments[index - 2].value,
                 queryObj;
 
+            console.log(this.queryConfigWhere);
+
             if (segmentKeyValue === 'device') {
                 queryObj = {
                     select: ['device'],
                     distinct: true,
-                    from: this.variable,
+                    from: this.target.variable,
                     orderBy: ['device'],
-                    where: _.cloneDeep(this.queryConfigWhere)
+                    where: this.queryConfigWhere.length > 1 ? _.cloneDeep(this.queryConfigWhere) : null
                 };
             }
             if (segmentKeyValue === 'component') {
                 queryObj = {
                     select: ['component'],
                     distinct: true,
-                    from: this.variable,
+                    from: this.target.variable,
                     orderBy: ['component'],
-                    where: _.cloneDeep(this.queryConfigWhere)
+                    where: this.queryConfigWhere.length > 1 ? _.cloneDeep(this.queryConfigWhere) : null
                 };
             }
             if (segmentKeyValue !== 'device' && segmentKeyValue !== 'component') {
@@ -741,8 +770,12 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
         this.target.tags = tags;
 
+        let configWhere = this._buildTagsWhere('tags', this.target.tags);
         this.queryConfigWhere = ['AND'];
-        this.queryConfigWhere.push(this._buildTagsWhere('tags', this.target.tags));
+        if( configWhere ) {
+            this.queryConfigWhere.push(configWhere);
+        }
+
 
         this.buildNsgQLString();
         this.refresh();
@@ -785,9 +818,9 @@ export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
             let wherePart;
             wherePart = _.cloneDeep(this.queryConfigWhere);
             wherePart.push('$_timeFilter'); //GROUP BY time($__interval)
-            this.target.queryConfig.where( wherePart );
+            this.queryConfig.where( wherePart );
 
-            str = this.target.queryConfig.compile();
+            str = this.queryConfig.compile();
         }
 
         console.log('%cNsgQLString', 'color: blueviolet; font-weight: bold;', str);

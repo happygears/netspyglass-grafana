@@ -15,7 +15,7 @@
  */
 
 import {NetSpyGlassDatasource} from './datasource';
-import {NetSpyGlassDatasourceQueryCtrl} from './query_ctrl';
+import {NetSpyGlassQueryCtrl} from './query_ctrl';
 
 class GenericConfigCtrl {}
 GenericConfigCtrl.templateUrl = 'partials/config.html';
@@ -99,7 +99,7 @@ angular.module('grafana.directives')
 
 export {
     NetSpyGlassDatasource as Datasource,
-    NetSpyGlassDatasourceQueryCtrl as QueryCtrl,
+    NetSpyGlassQueryCtrl as QueryCtrl,
     GenericConfigCtrl as ConfigCtrl,
     GenericQueryOptionsCtrl as QueryOptionsCtrl,
     GenericAnnotationsQueryCtrl as AnnotationsQueryCtrl

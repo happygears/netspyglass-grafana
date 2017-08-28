@@ -3,7 +3,7 @@
 System.register(['./datasource', './query_ctrl', 'angular'], function (_export, _context) {
     "use strict";
 
-    var NetSpyGlassDatasource, NetSpyGlassDatasourceQueryCtrl, angular, GenericConfigCtrl, GenericQueryOptionsCtrl, GenericAnnotationsQueryCtrl;
+    var NetSpyGlassDatasource, NetSpyGlassQueryCtrl, angular, GenericConfigCtrl, GenericQueryOptionsCtrl, GenericAnnotationsQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -15,7 +15,7 @@ System.register(['./datasource', './query_ctrl', 'angular'], function (_export, 
         setters: [function (_datasource) {
             NetSpyGlassDatasource = _datasource.NetSpyGlassDatasource;
         }, function (_query_ctrl) {
-            NetSpyGlassDatasourceQueryCtrl = _query_ctrl.NetSpyGlassDatasourceQueryCtrl;
+            NetSpyGlassQueryCtrl = _query_ctrl.NetSpyGlassQueryCtrl;
         }, function (_angular) {
             angular = _angular.default;
         }],
@@ -105,7 +105,7 @@ System.register(['./datasource', './query_ctrl', 'angular'], function (_export, 
 
             _export('Datasource', NetSpyGlassDatasource);
 
-            _export('QueryCtrl', NetSpyGlassDatasourceQueryCtrl);
+            _export('QueryCtrl', NetSpyGlassQueryCtrl);
 
             _export('ConfigCtrl', GenericConfigCtrl);
 

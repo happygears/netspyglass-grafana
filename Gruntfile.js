@@ -33,7 +33,7 @@ module.exports = function(grunt) {
       rebuild_all: {
         files: ['src/**/*', 'plugin.json'],
         tasks: ['default'],
-        options: {spawn: false}
+        options: {spawn: false, atBegin: true}
       }
     },
 

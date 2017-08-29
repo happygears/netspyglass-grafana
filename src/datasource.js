@@ -17,28 +17,8 @@
 import _ from 'lodash';
 import * as dateMath from './datemath';
 import {NSGQLApi, SQLGenerator} from './services/api';
+import {QueryPrompts} from './dictionary';
 import utils from './services/utils';
-
-// const blankValues = {
-//     alias: '',
-//     variable: 'select variable',
-//     device: 'select device',
-//     component: 'select component',
-//     description: '',
-//     sortByEl: 'select sorting',
-//     selector: ' -- ',
-//     aggregator: ' -- ',
-//     group: 'select group',
-//     interval: 'select interval',
-//     tagData: [],
-//     tags: '',
-//     format: '',
-//     columns: '',
-//     unique: '',
-//     refId: '',
-//     blankDropDownElement: '---'
-// };
-
 
 /**
  * @typedef {{accessToken: string, networkId: number}} PluginOptions
@@ -137,14 +117,11 @@ export class NetSpyGlassDatasource {
         // const query = SQLGenerator.suggestion(data);
         // return this.api.queryData(query, NSGQLApi.FORMAT_LIST, `suggestions_cache_${type}`);
 
-
-
         function _buildTagsWhere(tags) {
-            const defaults = 'select value';
             const result = [];
 
             tags.forEach((tag) => {
-                if (tag.value !== defaults || 1) {
+                if (tag.value !== QueryPrompts.whereValue) {
                     if (tag.condition) {
                         result.push(tag.condition);
                     }

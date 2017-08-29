@@ -15,30 +15,17 @@
  */
 
 import {QueryCtrl} from 'app/plugins/sdk';
+import {QueryPrompts} from './dictionary';
 import './css/query-editor.css!'
-
 
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment
  */
 
-
-const prompts = {
-    category: 'select category',
-    variable: 'select variable',
-    device: 'select device',
-    component: 'select component',
-    groupByType: 'select type',
-    groupBy: 'select value',
-    orderBy: 'select value',
-    selectItem: 'select item',
-    whereValue: 'select value',
-};
-
 const targetDefaults = {
     columns: [],
-    category: prompts.category,
-    variable: prompts.variable,
+    category: QueryPrompts.category,
+    variable: QueryPrompts.variable,
     rawQuery: 0,
     limit: 100
 };
@@ -55,7 +42,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         super(...arguments);
         this.$scope = $scope;
         this.$injector = $injector;
-        this.prompts = prompts;
+        this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
 
         this.options = {

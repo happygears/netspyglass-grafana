@@ -23,7 +23,7 @@ import './css/query-editor.css!'
  */
 
 const targetDefaults = {
-    columns: [],
+    columns: ['time', 'metric'],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
     rawQuery: 0,
@@ -52,7 +52,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 uiSegmentSrv.newPlusButton()
             ],
 
-            removeSegment: uiSegmentSrv.newSegment({fake: true, value: '-- remove tag filter --'})
+            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
         };
     }
 

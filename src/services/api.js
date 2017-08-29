@@ -56,7 +56,6 @@ const SQLGenerator = {
                 break;
         }
 
-        console.log(query.compile());
         return query.compile();
     },
 
@@ -67,7 +66,7 @@ const SQLGenerator = {
             return false;
         }
 
-        query.select(target.columns.split(','));
+        query.select(target.columns);
         query.from(target.variable);
         query.where({
             time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
@@ -120,8 +119,6 @@ class NSGQLApi {
     queryData() {
         const targets = [];
         const [ , , cacheKey = false, reloadCache = false] = arguments;
-
-        console.log(Cache);
 
         if (Array.isArray(arguments[0])) {
             targets.push(...arguments[0]);

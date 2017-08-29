@@ -68,18 +68,14 @@ export class NetSpyGlassDatasource {
         };
 
         const sqlTargets = options.targets
-            .map((item) => SQLGenerator.generateSQLQuery(item, {timeRange}))
-            .filter((item) => item !== false)
-            .map((item) => this.api.generateTarget(item, item.format));
+            .map((item) => this.api.generateTarget(SQLGenerator.generateSQLQuery(item, {timeRange}), item.format))
+            .filter((item) => item.nsgql !== false);
 
         if (sqlTargets.length === 0) {
             return this.$q.resolve({data: []});
         }
 
-        return this.api.queryData(sqlTargets)
-            .then(function(list) {
-                return {data: list};
-            });
+        return this.api.queryData(sqlTargets).then((list) => ({data: list}));
     }
 
     /**

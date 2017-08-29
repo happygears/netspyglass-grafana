@@ -1,6 +1,4 @@
 
-
-
 const QueryPrompts = {
     category: 'select category',
     variable: 'select variable',
@@ -11,6 +9,7 @@ const QueryPrompts = {
     orderBy: 'select value',
     selectItem: 'select item',
     whereValue: 'select value',
+    removeTag: '-- remove tag filter --'
 };
 
 export {

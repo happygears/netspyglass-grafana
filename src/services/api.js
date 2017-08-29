@@ -1,4 +1,5 @@
 import SQLBuilderFactory from '../hg-sql-builder';
+import {QueryPrompts} from '../dictionary';
 const sqlBuilder = SQLBuilderFactory();
 
 /**
@@ -34,22 +35,22 @@ const SQLGenerator = {
     /**
      * @param {string} type
      * @param {string} from
+     * @param {array} tags
      */
-    suggestion: function (type, from) {
+    suggestion: function (type, from, tags = []) {
         const query = sqlBuilder
             .factory()
             .setDistinct(true)
-            .from(from);
+            .from(from)
+            .select([type])
+            .orderBy([type]);
 
         switch (type) {
             case 'device':
             case 'component':
-                query.select([type]);
-                query.orderBy([type]);
+                query.where(this.generateWhereFromTags(tags));
                 break;
             default:
-                query.select([type]);
-                query.orderBy([type]);
                 query.where({
                     [type]: [sqlBuilder.OP.NOT_NULL]
                 });
@@ -57,6 +58,33 @@ const SQLGenerator = {
         }
 
         return query.compile();
+    },
+
+    /**
+     * @param {array} tags
+     * @returns {array}
+     */
+    generateWhereFromTags: function(tags) {
+        const result = [];
+
+        tags.forEach((tag) => {
+            if (tag.value !== QueryPrompts.whereValue) {
+                if (tag.condition) {
+                    result.push(tag.condition);
+                }
+
+                result.push({
+                    [tag.key]:[tag.operator, tag.value]
+                });
+            }
+        });
+
+        if (result.length) {
+            result.unshift('AND');
+            return result;
+        }
+
+        return null;
     },
 
     generateSQLQuery: function (target, options) {
@@ -68,9 +96,12 @@ const SQLGenerator = {
 
         query.select(target.columns);
         query.from(target.variable);
-        query.where({
-            time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
-        });
+        query.where([sqlBuilder.OP.AND,
+            this.generateWhereFromTags(target.tags),
+            {
+                time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
+            }
+        ]);
 
         return query.compile();
     }

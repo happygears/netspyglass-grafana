@@ -162,7 +162,14 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             }
         }
 
-        return promise.then((list) => list.map((item) => uiSegmentSrv.newSegment({value: `${item}`})));
+        return promise
+            .then((list) => list.map((item) => uiSegmentSrv.newSegment({value: `${item}`})))
+            .then(results => {
+                if (segment.type === 'key') {
+                    results.splice(0, 0, angular.copy(this.removeTagFilterSegment));
+                }
+                return results;
+            });
     }
 
     /**

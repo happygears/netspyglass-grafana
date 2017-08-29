@@ -113,7 +113,7 @@ export class NetSpyGlassDatasource {
         switch (data.type) {
             case 'device':
             case 'component':
-                query = SQLGenerator.suggestion(data.type, data.variable);
+                query = SQLGenerator.suggestion(data.type, data.variable, data.tags);
                 break;
             default:
                 query = SQLGenerator.suggestion(data.type, QueryTableNames.DEVICES);
@@ -121,33 +121,5 @@ export class NetSpyGlassDatasource {
         }
         // return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
         return this.api.queryData(query, NSGQLApi.FORMAT_LIST, `suggestions_cache_${data.type}`);
-
-        // function _buildTagsWhere(tags) {
-        //     const result = [];
-        //
-        //     tags.forEach((tag) => {
-        //         if (tag.value !== QueryPrompts.whereValue) {
-        //             if (tag.condition) {
-        //                 result.push(tag.condition);
-        //             }
-        //
-        //             result.push({
-        //                 [tag.key]:[tag.operator, tag.value]
-        //             });
-        //         }
-        //     });
-        //
-        //     if (result.length) {
-        //         result.unshift('AND');
-        //         return result;
-        //     }
-        //
-        //     return false;
-        // }
-        //
-        //
-        // console.log(_buildTagsWhere(data.tags));
-        //
-        // return this.$q.resolve([]);
     }
 }

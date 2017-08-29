@@ -46,10 +46,18 @@ const SQLGenerator = {
             case 'component':
                 query.select([type]);
                 query.orderBy([type]);
-            break;
+                break;
+            default:
+                query.select([type]);
+                query.orderBy([type]);
+                query.where({
+                    [type]: [sqlBuilder.OP.NOT_NULL]
+                });
+                break;
         }
 
         console.log(query.compile());
+        return query.compile();
     },
 
     generateSQLQuery: function (target, options) {

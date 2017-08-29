@@ -20,6 +20,10 @@ import {NSGQLApi, SQLGenerator} from './services/api';
 import {QueryPrompts} from './dictionary';
 import utils from './services/utils';
 
+const QueryTableNames = {
+    DEVICES: 'devices'
+};
+
 /**
  * @typedef {{accessToken: string, networkId: number}} PluginOptions
  * @typedef {{url: string, jsonData: PluginOptions}} PluginSettings
@@ -108,35 +112,46 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     getSuggestions(data) {
-        // const query = SQLGenerator.suggestion(data);
-        // return this.api.queryData(query, NSGQLApi.FORMAT_LIST, `suggestions_cache_${type}`);
+        let query;
 
-        function _buildTagsWhere(tags) {
-            const result = [];
-
-            tags.forEach((tag) => {
-                if (tag.value !== QueryPrompts.whereValue) {
-                    if (tag.condition) {
-                        result.push(tag.condition);
-                    }
-
-                    result.push({
-                        [tag.key]:[tag.operator, tag.value]
-                    });
-                }
-            });
-
-            if (result.length) {
-                result.unshift('AND');
-                return result;
-            }
-
-            return false;
+        switch (data.type) {
+            case 'device':
+            case 'component':
+                query = SQLGenerator.suggestion(data.type, data.variable);
+                break;
+            default:
+                query = SQLGenerator.suggestion(data.type, QueryTableNames['DEVICES']);
+                break;
         }
+        // return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
+        return this.api.queryData(query, NSGQLApi.FORMAT_LIST, `suggestions_cache_${data.type}`);
 
-
-        console.log(_buildTagsWhere(data.tags));
-
-        return this.$q.resolve([]);
+        // function _buildTagsWhere(tags) {
+        //     const result = [];
+        //
+        //     tags.forEach((tag) => {
+        //         if (tag.value !== QueryPrompts.whereValue) {
+        //             if (tag.condition) {
+        //                 result.push(tag.condition);
+        //             }
+        //
+        //             result.push({
+        //                 [tag.key]:[tag.operator, tag.value]
+        //             });
+        //         }
+        //     });
+        //
+        //     if (result.length) {
+        //         result.unshift('AND');
+        //         return result;
+        //     }
+        //
+        //     return false;
+        // }
+        //
+        //
+        // console.log(_buildTagsWhere(data.tags));
+        //
+        // return this.$q.resolve([]);
     }
 }

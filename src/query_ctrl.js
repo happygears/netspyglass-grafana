@@ -45,6 +45,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
 
+        this.target.format = this.panel.type === 'table' ? 'table' : 'time_series';
+
         this.options = {
             categories: [],
 
@@ -109,35 +111,32 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     break;
 
                 case 'value':
+
                     promise = this.datasource.getSuggestions({
                         type: segments[index - 2].value,
                         variable: this.target.variable,
-                        tags: this.target.tags
+                        tags: this.target.tags,
                     });
                     break;
 
                 case 'condition':
-
-                    $.when()
-
-
-                    // return this.$q.resolve([
-                    //     this.uiSegmentSrv.newSegment('AND'),
-                    //     this.uiSegmentSrv.newSegment('OR')
-                    // ]);
+                    return $q.resolve([
+                        this.uiSegmentSrv.newCondition('AND'),
+                        this.uiSegmentSrv.newCondition('OR')
+                    ]);
                     break;
 
                 case 'operator':
-                    // return this.$q.when(this.uiSegmentSrv.newOperators([
-                    //     '=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP'
-                    // ]));
+                    return $q.resolve(this.uiSegmentSrv.newOperators([
+                        '=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP'
+                    ]));
                     break;
             }
         }
 
         this.rebuildTargetTagConditions();
 
-        return promise.then((list) => list.map((item) => uiSegmentSrv.newSegment({value: item})));
+        return promise.then((list) => list.map((item) => uiSegmentSrv.newSegment({value: `${item}`})));
     }
 
     /**
@@ -147,6 +146,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     tagSegmentUpdated(segment, index) {
         const segmentSrv = this.uiSegmentSrv;
         const segments = this.options.segments;
+
+        console.log(segments);
 
         segments[index] = segment;
 

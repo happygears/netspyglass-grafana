@@ -74,8 +74,6 @@ const Cache = {};
 
 
 class NSGQLApi {
-
-
     /**
      * @param $backend
      * @param $q
@@ -104,10 +102,18 @@ class NSGQLApi {
             });
     }
 
+    /**
+     * @param {Array|string} target - This param will be string that contain nsgql or array of targets with format {nsgql: 'select ..', format: 'list'}
+     * @param {string} format - Using only if first param is string. Specify format for nsgql query with single target
+     * @param {string} cacheKey - Use for caching requests by given key
+     * @param {boolean} reloadCache - Use for ignoring existing cache and get data from server. Then data will stored in cache.
+     * @return {Promise}
+     */
     queryData() {
         const targets = [];
-        const cacheKey = arguments[2] || false;
+        const [ , , cacheKey = false, reloadCache = false] = arguments;
 
+        console.log(Cache);
 
         if (Array.isArray(arguments[0])) {
             targets.push(...arguments[0]);
@@ -115,12 +121,11 @@ class NSGQLApi {
             targets.push(this.generateTarget(arguments[0], arguments[1]));
         }
 
-        if (cacheKey && Cache.hasOwnProperty(cacheKey)) {
-            console.log('Get data from: ' + cacheKey);
+        if (cacheKey && Cache.hasOwnProperty(cacheKey) && !reloadCache) {
             return this.$q.resolve(_.cloneDeep(Cache[cacheKey]));
         }
 
-        return this._request(this.options.endpoints.data, {targets}, 'POST', arguments[3])
+        return this._request(this.options.endpoints.data, {targets}, 'POST')
             .then(function (response) {
                 if (response.status === 200) {
                     const data = response.data || response;

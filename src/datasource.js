@@ -27,11 +27,6 @@ import utils from './services/utils';
  * @typedef {{rangeRaw: {from: string, to: string} targets: QueryTarget[]}} QueryOptions
  */
 
-
-const Cache = {
-    categories: false
-};
-
 export class NetSpyGlassDatasource {
     /**
      * @param instanceSettings {PluginSettings}
@@ -89,7 +84,6 @@ export class NetSpyGlassDatasource {
     testDatasource() {
         return this.api.ping();
     }
-
 
     /**
      * @returns {Promise}

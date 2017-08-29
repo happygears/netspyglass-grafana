@@ -27,7 +27,8 @@ const targetDefaults = {
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
     rawQuery: 0,
-    limit: 100
+    limit: 100,
+    tags: []
 };
 
 
@@ -48,9 +49,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.options = {
             categories: [],
 
-            segments: [
-                uiSegmentSrv.newPlusButton()
-            ],
+            segments: [],
 
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
         };
@@ -62,6 +61,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     init() {
         this.initTarget();
+
+        this.options.segments = this.restoreTags();
+
         this.datasource
             .getCategories()
             .then((categories) => {
@@ -75,6 +77,30 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             targetDefaults, 
             {format: this.panel.type === 'table' ? 'table' : 'time_series'}
         );
+    }
+
+    /**
+     * @returns {array}
+     */
+    restoreTags() {
+        const uiSegmentSrv = this.uiSegmentSrv;
+        let segments = [];
+
+        if (this.target.tags.length) {
+            for (let tag of this.target.tags) {
+                if (tag.condition) {
+                    segments.push(uiSegmentSrv.newCondition(tag.condition));
+                }
+
+                segments.push(uiSegmentSrv.newKey(tag.key));
+                segments.push(uiSegmentSrv.newOperator(tag.operator));
+                segments.push(uiSegmentSrv.newKeyValue(tag.value));
+            }
+        }
+
+        segments.push(uiSegmentSrv.newPlusButton());
+
+        return segments;
     }
 
     /**
@@ -136,8 +162,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             }
         }
 
-        this.rebuildTargetTagConditions();
-
         return promise.then((list) => list.map((item) => uiSegmentSrv.newSegment({value: `${item}`})));
     }
 
@@ -178,6 +202,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 segments.push(segmentSrv.newPlusButton());
             }
         }
+
+        this.rebuildTargetTagConditions();
     }
 
     rebuildTargetTagConditions() {
@@ -187,28 +213,35 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         let tagOperator = '';
 
         segments.forEach((segment, index) => {
-            if (segment.type === 'key') {
-                if (tags.length === 0) {
-                    tags.push({});
-                }
-                tags[tagIndex].key = segment.value;
-            } else if (segment.type === 'value') {
-                if (tagOperator = tags[tagIndex].operator) {
-                    segments[index - 1] = this.uiSegmentSrv.newOperator(tagOperator);
-                    tags[tagIndex].operator = tagOperator;
-                }
-                tags[tagIndex].value = segment.value;
-            } else if (segment.type === 'condition') {
-                tags.push({condition: segment.value});
-                tagIndex += 1;
-            } else if (segment.type === 'operator') {
-                tags[tagIndex].operator = segment.value;
+            switch (segment.type) {
+                case 'key':
+                    if (tags.length === 0) {
+                        tags.push({});
+                    }
+                    tags[tagIndex].key = segment.value;
+                    break;
+                case 'value':
+                    if (tagOperator = tags[tagIndex].operator) {
+                        segments[index - 1] = this.uiSegmentSrv.newOperator(tagOperator);
+                        tags[tagIndex].operator = tagOperator;
+                    }
+                    tags[tagIndex].value = segment.value;
+                    break;
+                case 'condition':
+                    tags.push({condition: segment.value});
+                    tagIndex += 1;
+                    break;
+                case 'operator':
+                    tags[tagIndex].operator = segment.value;
+                    break;
             }
         });
 
         this.target.tags = tags;
-        this.refresh();        
+        this.execute();
     }
+
+
 }
 
 NetSpyGlassQueryCtrl.templateUrl = 'partials/query.editor.html';

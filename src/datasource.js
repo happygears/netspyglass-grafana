@@ -33,7 +33,7 @@ const QueryTableNames = {
 
 export class NetSpyGlassDatasource {
     /**
-     * @param instanceSettings {PluginSettings}
+     * @param {PluginSettings} instanceSettings
      * @param $q
      * @param backendSrv
      * @param templateSrv
@@ -120,7 +120,7 @@ export class NetSpyGlassDatasource {
                 query = SQLGenerator.suggestion(data.type, data.variable);
                 break;
             default:
-                query = SQLGenerator.suggestion(data.type, QueryTableNames['DEVICES']);
+                query = SQLGenerator.suggestion(data.type, QueryTableNames.DEVICES);
                 break;
         }
         // return this.api.queryData(query, NSGQLApi.FORMAT_LIST);

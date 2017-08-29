@@ -45,8 +45,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
 
-        this.target.format = this.panel.type === 'table' ? 'table' : 'time_series';
-
         this.options = {
             categories: [],
 
@@ -72,7 +70,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     initTarget() {
-        _.defaultsDeep(this.target, targetDefaults);
+        _.defaultsDeep(
+            this.target, 
+            targetDefaults, 
+            {format: this.panel.type === 'table' ? 'table' : 'time_series'}
+        );
     }
 
     /**
@@ -146,9 +148,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     tagSegmentUpdated(segment, index) {
         const segmentSrv = this.uiSegmentSrv;
         const segments = this.options.segments;
-
-        console.log(segments);
-
         segments[index] = segment;
 
         // handle remove tag condition
@@ -187,7 +186,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         let tagIndex = 0;
         let tagOperator = '';
 
-
         segments.forEach((segment, index) => {
             if (segment.type === 'key') {
                 if (tags.length === 0) {
@@ -209,6 +207,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         });
 
         this.target.tags = tags;
+        this.refresh();        
     }
 }
 

@@ -65,7 +65,7 @@ const SQLGenerator = {
      * @returns {array}
      */
     generateWhereFromTags: function(tags) {
-        const result = [];
+        let result = [];
 
         tags.forEach((tag) => {
             if (tag.value !== QueryPrompts.whereValue) {

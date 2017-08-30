@@ -166,7 +166,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             .then((list) => list.map((item) => uiSegmentSrv.newSegment({value: `${item}`})))
             .then(results => {
                 if (segment.type === 'key') {
-                    results.splice(0, 0, angular.copy(this.removeTagFilterSegment));
+                    results.splice(0, 0, angular.copy(this.options.removeSegment));
                 }
                 return results;
             });

@@ -101,7 +101,7 @@ export class NetSpyGlassDatasource {
      */
     getFacets(variable) {
         const query = SQLGenerator.facets(variable);
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST, `facet_cache_${variable}`);
+        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
     }
 
     /**
@@ -120,6 +120,6 @@ export class NetSpyGlassDatasource {
                 break;
         }
         // return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST, `suggestions_cache_${data.type}`);
+        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
     }
 }

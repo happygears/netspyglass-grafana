@@ -115,6 +115,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     toggleEditorMode() {
         this.target.rawQuery ^= 1;
+
+        if( this.target.rawQuery ) {
+            this.target.nsgqlString = this.datasource.getSQLString(this.target);
+        }
     }
 
     /**

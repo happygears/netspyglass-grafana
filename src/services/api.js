@@ -87,8 +87,11 @@ const SQLGenerator = {
         return null;
     },
 
-    generateSQLQuery: function (target, options) {
+    generateSQLQuery: function (target, options, useTemplates = false) {
         const query = sqlBuilder.factory();
+        const timeVar = useTemplates ? '$_timeFilter' : {
+                time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
+            };
 
         if (!target.columns || target.columns.length === 0) {
             return false;
@@ -98,9 +101,7 @@ const SQLGenerator = {
         query.from(target.variable);
         query.where([sqlBuilder.OP.AND,
             this.generateWhereFromTags(target.tags),
-            {
-                time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
-            }
+            timeVar
         ]);
 
         return query.compile();

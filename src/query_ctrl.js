@@ -112,7 +112,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onClearOrderBy() {
-        this.target.orderBy = this.prompts.selectItem;
+        this.target.orderBy = this.prompts.orderBy;
         this.execute();
     }
 

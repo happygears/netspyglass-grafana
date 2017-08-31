@@ -90,6 +90,9 @@
                         data-on-change="ctrl.execute()">
                     </gf-form-dropdown>
 
+
+                    <span>{{ctrl.target.orderBy + ' ' +  ctrl.prompts.orderBy}}</span>
+
                     <a class="gf-form-label"
                         data-ng-if="ctrl.target.orderBy && ctrl.target.orderBy !== ctrl.prompts.orderBy" 
                         data-ng-click="ctrl.onClearOrderBy()"><i class="fa fa-close"></i></a>

@@ -38,7 +38,7 @@ export class NetSpyGlassDatasource {
      * @param backendSrv
      * @param templateSrv
      */
-    constructor(instanceSettings, $q, backendSrv, templateSrv) {
+    constructor(instanceSettings, $q, backendSrv, templateSrv, $timeout) {
         const {networkId, accessToken} = instanceSettings.jsonData;
         const {url} = instanceSettings;
 
@@ -54,6 +54,7 @@ export class NetSpyGlassDatasource {
 
         this.api = new NSGQLApi(backendSrv, $q, options);
         this.$q = $q;
+        this.$timeout = $timeout;
     }
 
     /**
@@ -66,10 +67,10 @@ export class NetSpyGlassDatasource {
             from: utils.getTime(options.rangeRaw.from, false),
             to: utils.getTime(options.rangeRaw.to, true),
         };
-
+        
         const sqlTargets = options.targets
-            .map((item) => this.api.generateTarget(SQLGenerator.generateSQLQuery(item, {timeRange}), item.format))
-            .filter((item) => item.nsgql !== false);
+            .map((target) => this.api.generateTarget(SQLGenerator.generateSQLQuery(target, {timeRange}), target.format))
+            .filter((target) => target.nsgql !== false);
 
         if (sqlTargets.length === 0) {
             return this.$q.resolve({data: []});

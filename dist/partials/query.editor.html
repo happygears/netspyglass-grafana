@@ -1,3 +1,6 @@
+<div ng-show="ctrl.panelCtrl.loading" style="clear:both;">Loading....!!!</div>
+    
+
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" can-collapse="true" has-text-edit-mode="true">
 
     <div class="editor-part editor-part--row" data-ng-if="ctrl.target.rawQuery">
@@ -25,7 +28,7 @@
                         <a>{{ ::key }}</a>
                         <ul class="dropdown-menu" role="menu">
                             <li data-ng-repeat="item in category | orderBy:'name' ">
-                                <a data-ng-click="ctrl.selectCategory(item.category, item.name)">{{ ::item.name }}</a>
+                                <a data-ng-click="ctrl.onSelectCategory(item.category, item.name)">{{ ::item.name }}</a>
                             </li>
                         </ul>
                     </li>
@@ -83,13 +86,11 @@
             <div class="gf-form-inline">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">ORDER BY</label>
-                </div>
+                </div>  
                 <div class="gf-form">
-                    <!--<div class="gf-form-select-wrapper">-->
-                    <metric-segment-model data-property="ctrl.orderBy"
-                                          data-get-options="ctrl.getOrderByValues()"
-                                          data-on-change="ctrl.onOrderByChange()"></metric-segment-model>
-                    <!--</div>-->
+                    <metric-segment-model data-property="ctrl.target.orderBy"
+                    data-get-options="ctrl.getOrderByOptions()"
+                    data-on-change="ctrl.execute()"></metric-segment-model>
                 </div>
                 <div class="gf-form" data-ng-if="ctrl.orderBy">
                     <a class="gf-form-label" data-ng-click="ctrl.onOrderByClear()"><i class="fa fa-close"></i></a>
@@ -99,15 +100,21 @@
                 </div>
             </div>
 
+
             <div class="gf-form-inline">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">LIMIT</label>
+                </div> 
 
-                    <input type="text" class="gf-form-input input-medium width-7" spellcheck="false"
-                           data-ng-model="ctrl.target.limit"
-                           data-ng-change="ctrl.onLimitChange()">
-
+                <div class="gf-form">
+                    <gf-form-dropdown model="ctrl.target.limit"
+                    data-lookup-text="true"
+                    data-allow-custom="true"
+                    data-get-options="ctrl.getLimitOptions()"
+                    data-on-change="ctrl.execute()">
+                </gf-form-dropdown>
                 </div>
+
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-label gf-form-label--grow">
 
@@ -119,8 +126,8 @@
                     </div>
                 </div>
             </div>
-
-            <div class="gf-form-inline">
+            
+            <div class="gf-form-inline" ng-if="0">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">GROUP BY</label>
 
@@ -146,9 +153,10 @@
 
     </div>
 
-    <!--<div style="border: 1px solid red; margin: 20px 0">-->
-        <!--<pre>{{  ctrl.target | json}}</pre>-->
-    <!--</div>-->
+
+    <!-- <div style="border: 1px solid red; margin: 20px 0"> -->
+        <!-- <pre>{{ }}</pre> -->
+    <!-- </div> -->
 
     <!--<div style="border: 1px solid red; margin: 20px 0">-->
        <!--<pre> {{  ctrl.options | json}}</pre>-->

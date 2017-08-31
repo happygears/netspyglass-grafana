@@ -26,11 +26,11 @@ const targetDefaults = {
     columns: ['time', 'metric'],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
+    orderBy:  QueryPrompts.orderBy,
     rawQuery: 0,
-    limit: 100,
+    limit: 5,
     tags: []
 };
-
 
 export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
@@ -47,10 +47,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.uiSegmentSrv = uiSegmentSrv;
 
         this.options = {
+            isGraph: this.panel.type === 'graph',
+            isTable: this.panel.type === 'table',
             categories: [],
-
             segments: [],
-
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
         };
     }
@@ -61,9 +61,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     init() {
         this.initTarget();
-
         this.options.segments = this.restoreTags();
-
         this.datasource
             .getCategories()
             .then((categories) => {
@@ -75,7 +73,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         _.defaultsDeep(
             this.target, 
             targetDefaults, 
-            {format: this.panel.type === 'table' ? 'table' : 'time_series'}
+            {format: this.options.isGraph ? 'time_series' : 'table'}
         );
     }
 
@@ -107,9 +105,14 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @param {string} category
      * @param {string} variable
      */
-    selectCategory(category, variable) {
+    onSelectCategory(category, variable) {
         this.target.category = category;
         this.target.variable = variable;
+        this.execute();
+    }
+
+    onClearOrderBy() {
+        this.target.orderBy = this.prompts.selectItem;
         this.execute();
     }
 
@@ -248,7 +251,32 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.execute();
     }
 
+    getOrderByOptions() {
+        const list = [];
 
+        if (this.options.isGraph) {
+            list.push({text: 'metric ASC', value: 'metric ASC'});
+            list.push({text: 'metric DESC', value: 'metric DESC'});
+        } else if (this.options.isTable) {
+            // list = this.target.selectData.map((el) => {
+                // return this.uiSegmentSrv.newSegment(el.value);
+            // });
+        }
+
+        return this.$injector
+            .get('$q')
+            .resolve(list);
+    }
+
+    getLimitOptions() {
+        return this.$injector.get('$q').resolve([
+            {text: '1', 'value': 1},
+            {text: '5', 'value': 5},
+            {text: '10', 'value': 10},
+            {text: '50', 'value': 50},
+            {text: '100', 'value': 100}
+        ])
+    }
 }
 
 NetSpyGlassQueryCtrl.templateUrl = 'partials/query.editor.html';

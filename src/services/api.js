@@ -96,13 +96,20 @@ const SQLGenerator = {
 
         query.select(target.columns);
         query.from(target.variable);
-        query.where([sqlBuilder.OP.AND,
+        query.where([
+            sqlBuilder.OP.AND,
             this.generateWhereFromTags(target.tags),
-            {
-                time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
-            }
+            {time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]}
         ]);
 
+        if (target.limit) {
+            query.limit(target.limit);
+        }
+
+        if (target.orderBy && target.orderBy !== QueryPrompts.orderBy) {
+            query.orderBy([target.orderBy]);
+        }
+        
         return query.compile();
     }
 };

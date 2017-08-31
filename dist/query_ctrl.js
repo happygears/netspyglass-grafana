@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
+System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], function (_export, _context) {
     "use strict";
 
-    var QueryCtrl, _createClass, prompts, targetDefaults, NetSpyGlassQueryCtrl;
+    var QueryCtrl, QueryPrompts, _createClass, targetDefaults, NetSpyGlassQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -38,6 +38,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
     return {
         setters: [function (_appPluginsSdk) {
             QueryCtrl = _appPluginsSdk.QueryCtrl;
+        }, function (_dictionary) {
+            QueryPrompts = _dictionary.QueryPrompts;
         }, function (_cssQueryEditorCss) {}],
         execute: function () {
             _createClass = function () {
@@ -58,23 +60,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 };
             }();
 
-            prompts = {
-                category: 'select category',
-                variable: 'select variable',
-                device: 'select device',
-                component: 'select component',
-                groupByType: 'select type',
-                groupBy: 'select value',
-                orderBy: 'select value',
-                selectItem: 'select item',
-                whereValue: 'select value'
-            };
             targetDefaults = {
-                columns: [],
-                category: prompts.category,
-                variable: prompts.variable,
+                columns: ['time', 'metric'],
+                category: QueryPrompts.category,
+                variable: QueryPrompts.variable,
                 rawQuery: 0,
-                limit: 100
+                limit: 5,
+                tags: []
             };
 
             _export('NetSpyGlassQueryCtrl', NetSpyGlassQueryCtrl = function (_QueryCtrl) {
@@ -85,7 +77,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                  * @property refresh
                  * @property panelCtrl
                  */
-
                 function NetSpyGlassQueryCtrl($scope, $injector, uiSegmentSrv) {
                     _classCallCheck(this, NetSpyGlassQueryCtrl);
 
@@ -93,15 +84,15 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
                     _this.$scope = $scope;
                     _this.$injector = $injector;
-                    _this.prompts = prompts;
+                    _this.prompts = QueryPrompts;
                     _this.uiSegmentSrv = uiSegmentSrv;
 
                     _this.options = {
+                        isGraph: _this.panel.type === 'graph',
+                        isTable: _this.panel.type === 'table',
                         categories: [],
-
-                        segments: [uiSegmentSrv.newPlusButton()],
-
-                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: '-- remove tag filter --' })
+                        segments: [],
+                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag })
                     };
                     return _this;
                 }
@@ -117,6 +108,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         var _this2 = this;
 
                         this.initTarget();
+                        this.options.segments = this.restoreTags();
                         this.datasource.getCategories().then(function (categories) {
                             _this2.options.categories = categories;
                         });
@@ -124,11 +116,54 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
-                        _.defaultsDeep(this.target, targetDefaults);
+                        _.defaultsDeep(this.target, targetDefaults, { format: this.options.isGraph ? 'time_series' : 'table' });
                     }
                 }, {
-                    key: 'selectCategory',
-                    value: function selectCategory(category, variable) {
+                    key: 'restoreTags',
+                    value: function restoreTags() {
+                        var uiSegmentSrv = this.uiSegmentSrv;
+                        var segments = [];
+
+                        if (this.target.tags.length) {
+                            var _iteratorNormalCompletion = true;
+                            var _didIteratorError = false;
+                            var _iteratorError = undefined;
+
+                            try {
+                                for (var _iterator = this.target.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    var tag = _step.value;
+
+                                    if (tag.condition) {
+                                        segments.push(uiSegmentSrv.newCondition(tag.condition));
+                                    }
+
+                                    segments.push(uiSegmentSrv.newKey(tag.key));
+                                    segments.push(uiSegmentSrv.newOperator(tag.operator));
+                                    segments.push(uiSegmentSrv.newKeyValue(tag.value));
+                                }
+                            } catch (err) {
+                                _didIteratorError = true;
+                                _iteratorError = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                        _iterator.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError) {
+                                        throw _iteratorError;
+                                    }
+                                }
+                            }
+                        }
+
+                        segments.push(uiSegmentSrv.newPlusButton());
+
+                        return segments;
+                    }
+                }, {
+                    key: 'onSelectCategory',
+                    value: function onSelectCategory(category, variable) {
                         this.target.category = category;
                         this.target.variable = variable;
                         this.execute();
@@ -141,6 +176,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 }, {
                     key: 'getTagsOrValues',
                     value: function getTagsOrValues(segment, index) {
+                        var _this3 = this;
+
                         var $q = this.$injector.get('$q');
                         var uiSegmentSrv = this.uiSegmentSrv;
                         var segments = this.options.segments;
@@ -157,6 +194,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                                     break;
 
                                 case 'value':
+
                                     promise = this.datasource.getSuggestions({
                                         type: segments[index - 2].value,
                                         variable: this.target.variable,
@@ -165,21 +203,24 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                                     break;
 
                                 case 'condition':
-                                    return this.$q.when([this.uiSegmentSrv.newSegment('AND'), this.uiSegmentSrv.newSegment('OR')]);
+                                    return $q.resolve([this.uiSegmentSrv.newCondition('AND'), this.uiSegmentSrv.newCondition('OR')]);
                                     break;
 
                                 case 'operator':
-                                    return this.$q.when(this.uiSegmentSrv.newOperators(['=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP']));
+                                    return $q.resolve(this.uiSegmentSrv.newOperators(['=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP']));
                                     break;
                             }
                         }
 
-                        this.rebuildTargetTagConditions();
-
                         return promise.then(function (list) {
                             return list.map(function (item) {
-                                return uiSegmentSrv.newSegment({ value: item });
+                                return uiSegmentSrv.newSegment({ value: '' + item });
                             });
+                        }).then(function (results) {
+                            if (segment.type === 'key') {
+                                results.splice(0, 0, angular.copy(_this3.removeTagFilterSegment));
+                            }
+                            return results;
                         });
                     }
                 }, {
@@ -187,7 +228,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                     value: function tagSegmentUpdated(segment, index) {
                         var segmentSrv = this.uiSegmentSrv;
                         var segments = this.options.segments;
-
                         segments[index] = segment;
 
                         // handle remove tag condition
@@ -218,11 +258,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                                 segments.push(segmentSrv.newPlusButton());
                             }
                         }
+
+                        this.rebuildTargetTagConditions();
                     }
                 }, {
                     key: 'rebuildTargetTagConditions',
                     value: function rebuildTargetTagConditions() {
-                        var _this3 = this;
+                        var _this4 = this;
 
                         var segments = this.options.segments;
                         var tags = [];
@@ -230,26 +272,56 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                         var tagOperator = '';
 
                         segments.forEach(function (segment, index) {
-                            if (segment.type === 'key') {
-                                if (tags.length === 0) {
-                                    tags.push({});
-                                }
-                                tags[tagIndex].key = segment.value;
-                            } else if (segment.type === 'value') {
-                                if (tagOperator = tags[tagIndex].operator) {
-                                    segments[index - 1] = _this3.uiSegmentSrv.newOperator(tagOperator);
-                                    tags[tagIndex].operator = tagOperator;
-                                }
-                                tags[tagIndex].value = segment.value;
-                            } else if (segment.type === 'condition') {
-                                tags.push({ condition: segment.value });
-                                tagIndex += 1;
-                            } else if (segment.type === 'operator') {
-                                tags[tagIndex].operator = segment.value;
+                            switch (segment.type) {
+                                case 'key':
+                                    if (tags.length === 0) {
+                                        tags.push({});
+                                    }
+                                    tags[tagIndex].key = segment.value;
+                                    break;
+                                case 'value':
+                                    if (tagOperator = tags[tagIndex].operator) {
+                                        segments[index - 1] = _this4.uiSegmentSrv.newOperator(tagOperator);
+                                        tags[tagIndex].operator = tagOperator;
+                                    }
+                                    tags[tagIndex].value = segment.value;
+                                    break;
+                                case 'condition':
+                                    tags.push({ condition: segment.value });
+                                    tagIndex += 1;
+                                    break;
+                                case 'operator':
+                                    tags[tagIndex].operator = segment.value;
+                                    break;
                             }
                         });
 
                         this.target.tags = tags;
+                        this.execute();
+                    }
+                }, {
+                    key: 'getOrderByOptions',
+                    value: function getOrderByOptions() {
+                        var list = [this.uiSegmentSrv.newSegment({
+                            fake: true,
+                            value: this.prompts.clearSelection,
+                            html: this.prompts.orderBy
+                        })];
+
+                        if (this.options.isGraph) {
+                            list.push(this.uiSegmentSrv.newSegment('metric'));
+                        } else if (this.options.isTable) {
+                            // list = this.target.selectData.map((el) => {
+                            // return this.uiSegmentSrv.newSegment(el.value);
+                            // });
+                        }
+
+                        return this.$injector.get('$q').resolve(list);
+                    }
+                }, {
+                    key: 'getLimitOptions',
+                    value: function getLimitOptions() {
+                        return this.$injector.get('$q').resolve([{ text: '1', 'value': 1 }, { text: '5', 'value': 5 }, { text: '10', 'value': 10 }, { text: '50', 'value': 50 }, { text: '100', 'value': 100 }]);
                     }
                 }]);
 

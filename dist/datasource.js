@@ -1,24 +1,9 @@
 'use strict';
 
-System.register(['lodash', './datemath', './services/api', './services/utils'], function (_export, _context) {
+System.register(['lodash', './datemath', './services/api', './dictionary', './services/utils'], function (_export, _context) {
     "use strict";
 
-    var _, dateMath, NSGQLApi, SQLGenerator, utils, _createClass, Cache, NetSpyGlassDatasource;
-
-    function _defineProperty(obj, key, value) {
-        if (key in obj) {
-            Object.defineProperty(obj, key, {
-                value: value,
-                enumerable: true,
-                configurable: true,
-                writable: true
-            });
-        } else {
-            obj[key] = value;
-        }
-
-        return obj;
-    }
+    var _, dateMath, NSGQLApi, SQLGenerator, QueryPrompts, utils, _createClass, QueryTableNames, NetSpyGlassDatasource;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -34,6 +19,8 @@ System.register(['lodash', './datemath', './services/api', './services/utils'], 
         }, function (_servicesApi) {
             NSGQLApi = _servicesApi.NSGQLApi;
             SQLGenerator = _servicesApi.SQLGenerator;
+        }, function (_dictionary) {
+            QueryPrompts = _dictionary.QueryPrompts;
         }, function (_servicesUtils) {
             utils = _servicesUtils.default;
         }],
@@ -56,18 +43,18 @@ System.register(['lodash', './datemath', './services/api', './services/utils'], 
                 };
             }();
 
-            Cache = {
-                categories: false
+            QueryTableNames = {
+                DEVICES: 'devices'
             };
 
             _export('NetSpyGlassDatasource', NetSpyGlassDatasource = function () {
                 /**
-                 * @param instanceSettings {PluginSettings}
+                 * @param {PluginSettings} instanceSettings
                  * @param $q
                  * @param backendSrv
                  * @param templateSrv
                  */
-                function NetSpyGlassDatasource(instanceSettings, $q, backendSrv, templateSrv) {
+                function NetSpyGlassDatasource(instanceSettings, $q, backendSrv, templateSrv, $timeout) {
                     _classCallCheck(this, NetSpyGlassDatasource);
 
                     var _instanceSettings$jso = instanceSettings.jsonData,
@@ -88,6 +75,7 @@ System.register(['lodash', './datemath', './services/api', './services/utils'], 
 
                     this.api = new NSGQLApi(backendSrv, $q, options);
                     this.$q = $q;
+                    this.$timeout = $timeout;
                 }
 
                 /**
@@ -108,11 +96,9 @@ System.register(['lodash', './datemath', './services/api', './services/utils'], 
                         };
 
                         var sqlTargets = options.targets.map(function (item) {
-                            return SQLGenerator.generateSQLQuery(item, { timeRange: timeRange });
+                            return _this.api.generateTarget(SQLGenerator.generateSQLQuery(item, { timeRange: timeRange }), item.format);
                         }).filter(function (item) {
-                            return item !== false;
-                        }).map(function (item) {
-                            return _this.api.generateTarget(item, item.format);
+                            return item.nsgql !== false;
                         });
 
                         if (sqlTargets.length === 0) {
@@ -145,35 +131,19 @@ System.register(['lodash', './datemath', './services/api', './services/utils'], 
                 }, {
                     key: 'getSuggestions',
                     value: function getSuggestions(data) {
-                        // const query = SQLGenerator.suggestion(data);
-                        // return this.api.queryData(query, NSGQLApi.FORMAT_LIST, `suggestions_cache_${type}`);
+                        var query = void 0;
 
-
-                        function _buildTagsWhere(tags) {
-                            var defaults = 'select value';
-                            var result = [];
-
-                            tags.forEach(function (tag) {
-                                if (tag.value !== defaults || 1) {
-                                    if (tag.condition) {
-                                        result.push(tag.condition);
-                                    }
-
-                                    result.push(_defineProperty({}, tag.key, [tag.operator, tag.value]));
-                                }
-                            });
-
-                            if (result.length) {
-                                result.unshift('AND');
-                                return result;
-                            }
-
-                            return false;
+                        switch (data.type) {
+                            case 'device':
+                            case 'component':
+                                query = SQLGenerator.suggestion(data.type, data.variable, data.tags);
+                                break;
+                            default:
+                                query = SQLGenerator.suggestion(data.type, QueryTableNames.DEVICES);
+                                break;
                         }
-
-                        console.log(_buildTagsWhere(data.tags));
-
-                        return this.$q.resolve([]);
+                        // return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
+                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST, 'suggestions_cache_' + data.type);
                     }
                 }]);
 

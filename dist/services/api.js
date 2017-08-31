@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['../hg-sql-builder'], function (_export, _context) {
+System.register(['../hg-sql-builder', '../dictionary'], function (_export, _context) {
     "use strict";
 
-    var SQLBuilderFactory, _createClass, sqlBuilder, SQLGenerator, Cache, NSGQLApi;
+    var SQLBuilderFactory, QueryPrompts, _createClass, sqlBuilder, SQLGenerator, Cache, NSGQLApi;
 
     function _toConsumableArray(arr) {
         if (Array.isArray(arr)) {
@@ -23,9 +23,26 @@ System.register(['../hg-sql-builder'], function (_export, _context) {
         }
     }
 
+    function _defineProperty(obj, key, value) {
+        if (key in obj) {
+            Object.defineProperty(obj, key, {
+                value: value,
+                enumerable: true,
+                configurable: true,
+                writable: true
+            });
+        } else {
+            obj[key] = value;
+        }
+
+        return obj;
+    }
+
     return {
         setters: [function (_hgSqlBuilder) {
             SQLBuilderFactory = _hgSqlBuilder.default;
+        }, function (_dictionary) {
+            QueryPrompts = _dictionary.QueryPrompts;
         }],
         execute: function () {
             _createClass = function () {
@@ -77,19 +94,49 @@ System.register(['../hg-sql-builder'], function (_export, _context) {
                 /**
                  * @param {string} type
                  * @param {string} from
+                 * @param {array} tags
                  */
                 suggestion: function suggestion(type, from) {
-                    var query = sqlBuilder.factory().setDistinct(true).from(from);
+                    var tags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+                    var query = sqlBuilder.factory().setDistinct(true).from(from).select([type]).orderBy([type]);
 
                     switch (type) {
                         case 'device':
                         case 'component':
-                            query.select([type]);
-                            query.orderBy([type]);
+                            query.where(this.generateWhereFromTags(tags));
+                            break;
+                        default:
+                            query.where(_defineProperty({}, type, [sqlBuilder.OP.NOT_NULL]));
                             break;
                     }
 
-                    console.log(query.compile());
+                    return query.compile();
+                },
+
+                /**
+                 * @param {array} tags
+                 * @returns {array}
+                 */
+                generateWhereFromTags: function generateWhereFromTags(tags) {
+                    var result = [];
+
+                    tags.forEach(function (tag) {
+                        if (tag.value !== QueryPrompts.whereValue) {
+                            if (tag.condition) {
+                                result.push(tag.condition);
+                            }
+
+                            result.push(_defineProperty({}, tag.key, [tag.operator, tag.value]));
+                        }
+                    });
+
+                    if (result.length) {
+                        result.unshift('AND');
+                        return result;
+                    }
+
+                    return null;
                 },
 
                 generateSQLQuery: function generateSQLQuery(target, options) {
@@ -99,11 +146,13 @@ System.register(['../hg-sql-builder'], function (_export, _context) {
                         return false;
                     }
 
-                    query.select(target.columns.split(','));
+                    query.select(target.columns);
                     query.from(target.variable);
-                    query.where({
-                        time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
-                    });
+                    query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags), { time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to] }]);
+
+                    if (target.limit) {
+                        query.limit(target.limit);
+                    }
 
                     return query.compile();
                 }
@@ -112,7 +161,6 @@ System.register(['../hg-sql-builder'], function (_export, _context) {
             Cache = {};
 
             _export('NSGQLApi', NSGQLApi = function () {
-
                 /**
                  * @param $backend
                  * @param $q
@@ -148,7 +196,12 @@ System.register(['../hg-sql-builder'], function (_export, _context) {
                     key: 'queryData',
                     value: function queryData() {
                         var targets = [];
-                        var cacheKey = arguments[2] || false;
+
+                        var _arguments = Array.prototype.slice.call(arguments),
+                            _arguments$ = _arguments[2],
+                            cacheKey = _arguments$ === undefined ? false : _arguments$,
+                            _arguments$2 = _arguments[3],
+                            reloadCache = _arguments$2 === undefined ? false : _arguments$2;
 
                         if (Array.isArray(arguments[0])) {
                             targets.push.apply(targets, _toConsumableArray(arguments[0]));
@@ -156,12 +209,11 @@ System.register(['../hg-sql-builder'], function (_export, _context) {
                             targets.push(this.generateTarget(arguments[0], arguments[1]));
                         }
 
-                        if (cacheKey && Cache.hasOwnProperty(cacheKey)) {
-                            console.log('Get data from: ' + cacheKey);
+                        if (cacheKey && Cache.hasOwnProperty(cacheKey) && !reloadCache) {
                             return this.$q.resolve(_.cloneDeep(Cache[cacheKey]));
                         }
 
-                        return this._request(this.options.endpoints.data, { targets: targets }, 'POST', arguments[3]).then(function (response) {
+                        return this._request(this.options.endpoints.data, { targets: targets }, 'POST').then(function (response) {
                             if (response.status === 200) {
                                 var data = response.data || response;
 

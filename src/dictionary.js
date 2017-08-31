@@ -9,7 +9,9 @@ const QueryPrompts = {
     orderBy: 'select value',
     selectItem: 'select item',
     whereValue: 'select value',
-    removeTag: '-- remove tag filter --'
+    removeTag: '-- remove tag filter --',
+    clearSelection: '-- clear selection --',
+    blankDropDownElement: '---'
 };
 
 export {

@@ -87,8 +87,11 @@ const SQLGenerator = {
         return null;
     },
 
-    generateSQLQuery: function (target, options) {
+    generateSQLQuery: function (target, options, useTemplates = false) {
         const query = sqlBuilder.factory();
+        const timeVar = useTemplates ? '$_timeFilter' : {
+                time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
+            };
 
         if (!target.columns || target.columns.length === 0) {
             return false;
@@ -99,7 +102,7 @@ const SQLGenerator = {
         query.where([
             sqlBuilder.OP.AND,
             this.generateWhereFromTags(target.tags),
-            {time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]}
+            timeVar
         ]);
 
         if (target.limit) {
@@ -223,19 +226,3 @@ export {
     SQLGenerator,
     NSGQLApi
 }
-
-
-/*
- this.templateSrv = templateSrv;
- this.networkId = instanceSettings.jsonData.networkId || 1;
- this.accessToken = (instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '') ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
- this.endpointsBase = '/v2/query/net/' + this.networkId;
- this.endpoints = {};
- this.endpoints.category = this.endpointsBase + '/categories/' + this.accessToken;
- this.endpoints.variable = this.endpointsBase + '/variables/';
- this.endpoints.query = this.endpointsBase + '/data/' + this.accessToken;
- this.endpoints.test = '/v2/ping/net/' + this.networkId + "/test/" + this.accessToken;
- this.clearString = '-- clear selection --';
- */
-    
-    

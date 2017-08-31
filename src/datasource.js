@@ -123,4 +123,11 @@ export class NetSpyGlassDatasource {
         // return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
         return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
     }
+
+    /**
+     * @returns {String}
+     */
+    getSQLString(target) {
+        return SQLGenerator.generateSQLQuery(target, {}, true);
+    }
 }

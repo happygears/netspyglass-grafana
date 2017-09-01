@@ -51,7 +51,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             isTable: this.panel.type === 'table',
             categories: [],
             segments: [],
-            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
+            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
+            selectListGraph: []
         };
     }
 
@@ -279,7 +280,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             {text: '10', 'value': 10},
             {text: '50', 'value': 50},
             {text: '100', 'value': 100}
-        ])
+        ]);
     }
 }
 

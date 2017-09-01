@@ -49,10 +49,15 @@
                 <!--GRAPH-->
                 <div class="gf-form-inline gf-form--grow" data-ng-if="ctrl.panel.type === 'graph'">
                     <span class="gf-form-label">metric</span>
+                    <a data-gf-dropdown data-items="ctrl.options.selectListGraph" class="gf-form-label">
+                        <i class="fa fa-bars" aria-hidden="true"></i></a>
                     <div class="gf-form gf-form--grow">
                         <div class="gf-form-label gf-form-label--grow"></div>
                     </div>
                 </div>
+                <!--GRAPH-->
+
+    
             </div>
         </div>
 
@@ -151,9 +156,9 @@
     </div>
 
 
-    <!-- <div style="border: 1px solid red; margin: 20px 0"> -->
-        <!-- <pre>{{ ctrl.target }}</pre> -->
-    <!-- </div> -->
+    <div style="border: 1px solid red; margin: 20px 0">
+        <pre>{{ ctrl.target }}</pre>
+    </div>
 
     <!--<div style="border: 1px solid red; margin: 20px 0">-->
        <!--<pre> {{  ctrl.options | json}}</pre>-->

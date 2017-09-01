@@ -140,7 +140,12 @@ System.register(['../hg-sql-builder', '../dictionary'], function (_export, _cont
                 },
 
                 generateSQLQuery: function generateSQLQuery(target, options) {
+                    var useTemplates = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
                     var query = sqlBuilder.factory();
+                    var timeVar = useTemplates ? '$_timeFilter' : {
+                        time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
+                    };
 
                     if (!target.columns || target.columns.length === 0) {
                         return false;
@@ -148,11 +153,7 @@ System.register(['../hg-sql-builder', '../dictionary'], function (_export, _cont
 
                     query.select(target.columns);
                     query.from(target.variable);
-                    query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags), { time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to] }]);
-
-                    if (target.limit) {
-                        query.limit(target.limit);
-                    }
+                    query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags), timeVar]);
 
                     return query.compile();
                 }

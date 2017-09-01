@@ -29,7 +29,11 @@ const targetDefaults = {
     orderBy:  QueryPrompts.orderBy,
     rawQuery: 0,
     limit: 5,
-    tags: []
+    tags: [],
+    groupBy: {
+        type: QueryPrompts.groupByType,
+        val: QueryPrompts.groupBy
+    }
 };
 
 export class NetSpyGlassQueryCtrl extends QueryCtrl {
@@ -51,7 +55,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             isTable: this.panel.type === 'table',
             categories: [],
             segments: [],
-            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
+            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
+            groupByFormats: [],
+            groupByType: [QueryPrompts.groupByType, 'time', 'column']
         };
     }
 
@@ -62,6 +68,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     init() {
         this.initTarget();
         this.options.segments = this.restoreTags();
+
+        this.target.groupBy.type = this.options.groupByType[0];
+
         this.datasource
             .getCategories()
             .then((categories) => {

@@ -121,6 +121,23 @@ const SQLGenerator = {
         return query.compile();
     },
 
+    generateSQLQueryFromString: function(target,options) {
+        const timeFilter = `time BETWEEN '${options.timeRange.from}' AND '${options.timeRange.to}'`;
+        const interval = `${options.interval}`;
+
+        let query = target.nsgqlString;
+
+        if( query && query.indexOf(GrafanaVariables.timeFilter) > 0 ) {
+            query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);
+        }
+
+        if( query && query.indexOf(GrafanaVariables.interval) > 0 ) {
+            query = _.replace(query, GrafanaVariables.interval, interval);
+        }
+
+        return query;
+    },
+
     generateGroupByValue: function(target, options, useTemplates = false) {
         switch (target.groupBy.type) {
             case 'time':

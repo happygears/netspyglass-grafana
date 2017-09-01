@@ -16,6 +16,7 @@
 
 import {QueryCtrl} from 'app/plugins/sdk';
 import {QueryPrompts} from './dictionary';
+import {GrafanaVariables} from './dictionary';
 import './css/query-editor.css!'
 
 /**
@@ -32,7 +33,7 @@ const targetDefaults = {
     tags: [],
     groupBy: {
         type: QueryPrompts.groupByType,
-        val: QueryPrompts.groupBy
+        value: QueryPrompts.groupBy
     }
 };
 
@@ -56,8 +57,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             categories: [],
             segments: [],
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
-            groupByFormats: [],
-            groupByType: [QueryPrompts.groupByType, 'time', 'column']
         };
     }
 
@@ -68,9 +67,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     init() {
         this.initTarget();
         this.options.segments = this.restoreTags();
-
-        this.target.groupBy.type = this.options.groupByType[0];
-
         this.datasource
             .getCategories()
             .then((categories) => {
@@ -122,6 +118,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     onClearOrderBy() {
         this.target.orderBy = this.prompts.orderBy;
+        this.execute();
+    }
+
+    onClearGroupBy() {
+        this.target.groupBy.type = QueryPrompts.groupByType;
+        this.target.groupBy.value = QueryPrompts.groupBy;
         this.execute();
     }
 
@@ -289,6 +291,34 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             {text: '50', 'value': 50},
             {text: '100', 'value': 100}
         ])
+    }
+
+    getGroupByTypes() {
+        return this.$injector.get('$q').resolve([
+            {text: 'time', value: 'time'},
+            {text: 'column', value: 'column'}
+        ])
+    }
+
+    getGroupByVariables() {
+        switch (this.target.groupBy.type) {
+            case 'time':
+                return this.$injector.get('$q').resolve([
+                    {text: GrafanaVariables.interval, value: GrafanaVariables.interval},
+                    {text: '1s', value: '1s'},
+                    {text: '1m', value: '1m'},
+                    {text: '1h', value: '1h'},
+                    {text: '1d', value: '1d'},
+                ]);
+                break;
+            case 'column':
+                return this.datasource.getFacets(this.target.variable).then( (data) => {
+                    return data.map((el) => {
+                        return {text: el, value: el}
+                    })
+                });
+                break;
+        }
     }
 }
 

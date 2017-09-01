@@ -65,8 +65,12 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                 category: QueryPrompts.category,
                 variable: QueryPrompts.variable,
                 rawQuery: 0,
-                limit: 5,
-                tags: []
+                limit: 100,
+                tags: [],
+                groupBy: {
+                    type: QueryPrompts.groupByType,
+                    val: QueryPrompts.groupBy
+                }
             };
 
             _export('NetSpyGlassQueryCtrl', NetSpyGlassQueryCtrl = function (_QueryCtrl) {
@@ -88,11 +92,15 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                     _this.uiSegmentSrv = uiSegmentSrv;
 
                     _this.options = {
-                        isGraph: _this.panel.type === 'graph',
-                        isTable: _this.panel.type === 'table',
                         categories: [],
+
                         segments: [],
-                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag })
+
+                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag }),
+
+                        groupByFormats: [],
+
+                        groupByType: [QueryPrompts.groupByType, 'time', 'column']
                     };
                     return _this;
                 }
@@ -108,7 +116,11 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                         var _this2 = this;
 
                         this.initTarget();
+
                         this.options.segments = this.restoreTags();
+
+                        this.target.groupBy.type = this.options.groupByType[0];
+
                         this.datasource.getCategories().then(function (categories) {
                             _this2.options.categories = categories;
                         });
@@ -116,7 +128,7 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
-                        _.defaultsDeep(this.target, targetDefaults, { format: this.options.isGraph ? 'time_series' : 'table' });
+                        _.defaultsDeep(this.target, targetDefaults, { format: this.panel.type === 'table' ? 'table' : 'time_series' });
                     }
                 }, {
                     key: 'restoreTags',
@@ -162,8 +174,8 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                         return segments;
                     }
                 }, {
-                    key: 'onSelectCategory',
-                    value: function onSelectCategory(category, variable) {
+                    key: 'selectCategory',
+                    value: function selectCategory(category, variable) {
                         this.target.category = category;
                         this.target.variable = variable;
                         this.execute();
@@ -172,6 +184,10 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                     key: 'toggleEditorMode',
                     value: function toggleEditorMode() {
                         this.target.rawQuery ^= 1;
+
+                        if (this.target.rawQuery) {
+                            this.target.nsgqlString = this.datasource.getSQLString(this.target);
+                        }
                     }
                 }, {
                     key: 'getTagsOrValues',
@@ -218,7 +234,7 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                             });
                         }).then(function (results) {
                             if (segment.type === 'key') {
-                                results.splice(0, 0, angular.copy(_this3.removeTagFilterSegment));
+                                results.splice(0, 0, angular.copy(_this3.options.removeSegment));
                             }
                             return results;
                         });
@@ -298,30 +314,6 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
 
                         this.target.tags = tags;
                         this.execute();
-                    }
-                }, {
-                    key: 'getOrderByOptions',
-                    value: function getOrderByOptions() {
-                        var list = [this.uiSegmentSrv.newSegment({
-                            fake: true,
-                            value: this.prompts.clearSelection,
-                            html: this.prompts.orderBy
-                        })];
-
-                        if (this.options.isGraph) {
-                            list.push(this.uiSegmentSrv.newSegment('metric'));
-                        } else if (this.options.isTable) {
-                            // list = this.target.selectData.map((el) => {
-                            // return this.uiSegmentSrv.newSegment(el.value);
-                            // });
-                        }
-
-                        return this.$injector.get('$q').resolve(list);
-                    }
-                }, {
-                    key: 'getLimitOptions',
-                    value: function getLimitOptions() {
-                        return this.$injector.get('$q').resolve([{ text: '1', 'value': 1 }, { text: '5', 'value': 5 }, { text: '10', 'value': 10 }, { text: '50', 'value': 50 }, { text: '100', 'value': 100 }]);
                     }
                 }]);
 

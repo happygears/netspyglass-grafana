@@ -1,5 +1,6 @@
 import SQLBuilderFactory from '../hg-sql-builder';
 import {QueryPrompts} from '../dictionary';
+import {GrafanaVariables} from '../dictionary';
 const sqlBuilder = SQLBuilderFactory();
 
 /**
@@ -89,7 +90,7 @@ const SQLGenerator = {
 
     generateSQLQuery: function (target, options, useTemplates = false) {
         const query = sqlBuilder.factory();
-        const timeVar = useTemplates ? '$_timeFilter' : {
+        const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
                 time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
             };
 
@@ -112,8 +113,24 @@ const SQLGenerator = {
         if (target.orderBy && target.orderBy !== QueryPrompts.orderBy) {
             query.orderBy([target.orderBy]);
         }
+
+        if (target.groupBy.value && target.groupBy.value !== QueryPrompts.groupBy) {
+            query.groupBy([this.generateGroupByValue(target, options, useTemplates)]);
+        }
         
         return query.compile();
+    },
+
+    generateGroupByValue: function(target, options, useTemplates = false) {
+        switch (target.groupBy.type) {
+            case 'time':
+                const groupByValue = target.groupBy.value === GrafanaVariables.interval && !useTemplates ? options.interval : target.groupBy.value;
+                return `time(${groupByValue})`;
+                break;
+            case 'column':
+                return target.groupBy.value;
+                break;
+        }
     }
 };
 

@@ -96,7 +96,7 @@
                     </gf-form-dropdown>
 
                     <a class="gf-form-label"
-                        data-ng-if="ctrl.target.orderBy && ctrl.target.orderBy !== ctrl.prompts.orderBy" 
+                        data-ng-if="ctrl.target.orderBy && ctrl.target.orderBy !== ctrl.prompts.orderBy"
                         data-ng-click="ctrl.onClearOrderBy()"><i class="fa fa-close"></i></a>
                 </div>
 
@@ -104,23 +104,28 @@
                     <div class="gf-form-label gf-form-label--grow"></div>
                 </div>
             </div>
-            
+
             <div class="gf-form-inline">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">GROUP BY</label>
-
-                    <div class="gf-form-select-wrapper">
-                        <select class="gf-form-input gf-size-auto"
-                                data-ng-model="ctrl.groupBy.type"
-                                data-ng-options="option as option for option in ctrl.groupByFormats"
-                                data-ng-change="ctrl.onGroupByTypeChange()"></select>
-                    </div>
-
+                    <gf-form-dropdown model="ctrl.target.groupBy.type"
+                                      data-label-mode="true"
+                                      data-get-options="ctrl.getGroupByTypes()">
+                    </gf-form-dropdown>
                 </div>
-                <div class="gf-form" data-ng-if="ctrl.groupBy.type != ctrl.prompts['groupByType']">
-                    <metric-segment-model data-property="ctrl.groupBy.val"
-                                          data-get-options="ctrl.getGroupByVariables()"
-                                          data-on-change="ctrl.onGroupByChange()"></metric-segment-model>
+                <div class="gf-form"
+                     data-ng-if="ctrl.target.groupBy.type && ctrl.target.groupBy.type != ctrl.prompts.groupByType">
+                    <gf-form-dropdown model="ctrl.target.groupBy.value"
+                                      data-lookup-text="true"
+                                      data-allow-custom="true"
+                                      data-label-mode="true"
+                                      data-get-options="ctrl.getGroupByVariables()"
+                                      data-on-change="ctrl.execute()">
+                    </gf-form-dropdown>
+
+                    <a class="gf-form-label"
+                       data-ng-if="ctrl.target.groupBy.value && ctrl.target.groupBy.value !== ctrl.prompts.groupBy"
+                       data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
                 </div>
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-label gf-form-label--grow"></div>
@@ -130,7 +135,7 @@
             <div class="gf-form-inline">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">LIMIT</label>
-                </div> 
+                </div>
 
                 <div class="gf-form">
                     <gf-form-dropdown model="ctrl.target.limit"

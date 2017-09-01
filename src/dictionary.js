@@ -14,6 +14,12 @@ const QueryPrompts = {
     blankDropDownElement: '---'
 };
 
+const GrafanaVariables = {
+    timeFilter: '$_timeFilter',
+    interval: '$_interval'
+};
+
 export {
-    QueryPrompts
+    QueryPrompts,
+    GrafanaVariables
 };

@@ -1,10 +1,17 @@
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" can-collapse="true" has-text-edit-mode="true"
     data-ng-class="{'loading': ctrl.panelCtrl.loading}">
 
+    <!--TODO: do this-->
+    <div class="gf-form" ng-show="ctrl.queryError">
+        <pre class="gf-form-pre alert alert-error">{{ctrl.queryError}}</pre>
+    </div>
+
     <div class="editor-part editor-part--row" data-ng-if="ctrl.target.rawQuery">
         <div class="gf-form">
         <input type="text" class="gf-form-input input-medium max-width" data-provide="typeahead"
-               data-ng-model="ctrl.target.nsgqlString" spellcheck='false'
+               data-ng-model="ctrl.target.nsgqlString"
+               ng-blur="ctrl.execute()"
+               spellcheck='false'
                placeholder="SELECT tag FROM tagFacet WHERE id=1"/>
         </div>
     </div>    

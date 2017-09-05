@@ -70,11 +70,14 @@ export class NetSpyGlassDatasource {
             from: utils.getTime(options.rangeRaw.from, false),
             to: utils.getTime(options.rangeRaw.to, true),
         };
-        
+
         const sqlTargets = options.targets
             .map((target) => {
-                let tmp = this.api.generateTarget(SQLGenerator.generateSQLQuery(target, {timeRange, interval: options.interval}), target.format);
-                return tmp;
+                if( !target.rawQuery ) {
+                    return this.api.generateTarget(SQLGenerator.generateSQLQuery(target, {timeRange, interval: options.interval}), target.format);
+                } else {
+                    return this.api.generateTarget(SQLGenerator.generateSQLQueryFromString(target, {timeRange, interval: options.interval}), target.format)
+                }
             })
             .filter((target) => target.nsgql !== false);
 

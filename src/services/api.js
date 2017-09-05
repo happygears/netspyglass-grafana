@@ -1,6 +1,8 @@
 import SQLBuilderFactory from '../hg-sql-builder';
 import {QueryPrompts} from '../dictionary';
 import {GrafanaVariables} from '../dictionary';
+import angular from 'angular';
+
 const sqlBuilder = SQLBuilderFactory();
 
 /**
@@ -8,6 +10,29 @@ const sqlBuilder = SQLBuilderFactory();
  */
 
 const SQLGenerator = {
+
+    processColumn: function (column) {
+        if (angular.isString(column)) {
+            return column;
+        }
+
+        if (angular.isObject(column)) {
+            let columnName = column.name;
+
+            if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
+                columnName = `${column.appliedFunctions.join('(')}(${columnName}${')'.repeat(column.appliedFunctions.length)}`;
+            }
+
+            if (column.alias) {
+                columnName += ` as ${column.alias}`;
+            }
+
+            return columnName;
+        }
+
+        throw new Error('Unknow column type!');
+    },
+
     categories: function () {
         return sqlBuilder.factory({
             select: ['category', 'name'],
@@ -98,7 +123,7 @@ const SQLGenerator = {
             return false;
         }
 
-        query.select(target.columns);
+        query.select(target.columns.map(this.processColumn));
         query.from(target.variable);
         query.where([
             sqlBuilder.OP.AND,

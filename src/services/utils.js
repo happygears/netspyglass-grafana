@@ -22,4 +22,8 @@ export default {
 
         return date.valueOf() + 'ms';
     },
+
+    transformColumnsToSegments: function () {
+
+    }
 };

@@ -42,6 +42,8 @@ export class NetSpyGlassDatasource {
         const {networkId, accessToken} = instanceSettings.jsonData;
         const {url} = instanceSettings;
 
+        
+
         /** @type INSGQLApiOptions */
         const options = {
             baseUrl: `${url}/v2`,
@@ -55,6 +57,7 @@ export class NetSpyGlassDatasource {
         this.api = new NSGQLApi(backendSrv, $q, options);
         this.$q = $q;
         this.$timeout = $timeout;
+        this.instanceSettings = instanceSettings;
     }
 
     /**

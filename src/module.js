@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+import angular from 'angular';
 import {NetSpyGlassDatasource} from './datasource';
 import {NetSpyGlassQueryCtrl} from './query_ctrl';
+import ColumnsMenuDirective from './directives/columns-menu';
+
+ColumnsMenuDirective.templateUrl = 'partials_foo/config.html'
 
 class GenericConfigCtrl {}
 GenericConfigCtrl.templateUrl = 'partials/config.html';
@@ -27,9 +31,8 @@ class GenericAnnotationsQueryCtrl {}
 GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
 
 
-import angular from 'angular';
-
 angular.module('grafana.directives')
+    .directive('hgColumnsMenu', ColumnsMenuDirective)
     .directive("selectDropdown",['$compile', function($compile) {
         return {
             template: '',

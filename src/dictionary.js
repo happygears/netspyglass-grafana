@@ -2,6 +2,7 @@
 const QueryPrompts = {
     category: 'select category',
     variable: 'select variable',
+    column: 'select column',
     device: 'select device',
     component: 'select component',
     groupByType: 'select type',

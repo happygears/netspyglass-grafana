@@ -1,0 +1,38 @@
+
+
+hg-columns-menu {
+    position: relative;
+    margin-right: 2px;
+}
+
+hg-columns-menu > .dropdown-menu  {
+    right: 0 !important;
+    left: auto !important;
+    background: red;
+}
+
+.gf-form--column-editor {
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch
+}
+
+.gf-form--column-editor .gf-form-label {
+    margin-right: 0;
+    border-radius: 0;
+    box-sizing: border-box;
+}
+
+.gf-form--column-editor .gf-form-dropdown-typeahead {
+    padding-right: 0;
+    margin-right: 0;
+}
+
+.gf-form--column-editor .gf-form-dropdown-typeahead:after {
+    display: none;
+}
+
+.gf-form--column-editor .gf-form-input {
+    border-radius: 0;
+    margin-right: 0;
+}

@@ -7,10 +7,9 @@
                data-ng-model="ctrl.target.nsgqlString" spellcheck='false'
                placeholder="SELECT tag FROM tagFacet WHERE id=1"/>
         </div>
-    </div>
+    </div>    
 
     <div class="editor-part editor-part--filter" data-ng-if="!ctrl.target.rawQuery">
-
         <div class="gf-form-inline">
             <div class="gf-form">
                 <label class="gf-form-label query-keyword width-7">FROM</label>
@@ -48,9 +47,13 @@
 
                 <!--GRAPH-->
                 <div class="gf-form-inline gf-form--grow" data-ng-if="ctrl.panel.type === 'graph'">
-                    <span class="gf-form-label">metric</span>
-                    <a data-gf-dropdown data-items="ctrl.options.selectListGraph" class="gf-form-label">
-                        <i class="fa fa-bars" aria-hidden="true"></i></a>
+                    
+                    <hg-columns-menu data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}" 
+                                     data-column="column" class="gf-form gf-form--column-editor" />
+                    </hg-columns-menu> 
+
+                    <a class="gf-form-label" ng-click="ctrl.addSelectColumn()"><i class="fa fa-plus "></i></a>
+
                     <div class="gf-form gf-form--grow">
                         <div class="gf-form-label gf-form-label--grow"></div>
                     </div>

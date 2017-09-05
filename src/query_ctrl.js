@@ -15,8 +15,7 @@
  */
 
 import {QueryCtrl} from 'app/plugins/sdk';
-import {QueryPrompts} from './dictionary';
-import {GrafanaVariables} from './dictionary';
+import {QueryPrompts, GrafanaVariables} from './dictionary';
 import './css/query-editor.css!'
 
 /**
@@ -24,7 +23,7 @@ import './css/query-editor.css!'
  */
 
 const targetDefaults = {
-    columns: ['time', 'metric'],
+    columns: [{name: 'time', visible: false}, {name: 'metric', visible: true}],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
     orderBy:  QueryPrompts.orderBy,
@@ -44,20 +43,19 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @property refresh
      * @property panelCtrl
      */
+
     constructor($scope, $injector, uiSegmentSrv) {
         super(...arguments);
         this.$scope = $scope;
         this.$injector = $injector;
         this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
-
         this.options = {
             isGraph: this.panel.type === 'graph',
             isTable: this.panel.type === 'table',
             categories: [],
             segments: [],
-            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
-            selectListGraph: []
+            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
         };
     }
 
@@ -73,6 +71,17 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             .then((categories) => {
                 this.options.categories = categories;
             });
+
+        if (this.options.isGraph) {
+            this.options.columns = [
+                {name: 'none', selected: true},
+                {name: 'time'}
+            ];
+        }
+
+        if (this.options.isTable) {
+            this.options.columns = [];
+        }
     }
 
     initTarget() {
@@ -128,6 +137,27 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.execute();
     }
 
+    addSelectColumn() {
+
+        this.target.columns.push({
+            visible: true,
+            name: this.prompts.column
+        });
+
+        // const column = _.find(this.options.columns, {name: this.options.selectSegment.value});
+        // if (column) {
+        //     column.selected = true;
+        //     this.options.selectSegment.value = undefined;
+        // }
+    }
+
+    getColumnsOptions() {
+        const columns = this.options.columns
+                            .map((column) => this.uiSegmentSrv.newSegment({value: `${column.name}`}));;
+
+        return this.$injector.get('$q').resolve(columns);
+    }
+
     toggleEditorMode() {
         this.target.rawQuery ^= 1;
 
@@ -145,7 +175,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         const $q = this.$injector.get('$q');
         const uiSegmentSrv = this.uiSegmentSrv;
         const segments = this.options.segments;
-
         let promise = $q.resolve([]);
 
         if (this.target.variable) {

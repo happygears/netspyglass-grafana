@@ -2,7 +2,10 @@
     <span class="select-col__func" ng-repeat="$function in $ctrl.column.appliedFunctions track by $function">{{ ::$function }} ( </span>
 </div>
 
-<div class="gf-form-dropdown-typeahead max-width-15" data-ng-model="$ctrl.column.name" data-dropdown-typeahead-on-select="$ctrl.onColumnSelect($item, $subItem)"
+<div class="gf-form-dropdown-typeahead max-width-15" 
+    data-link-text="{{$ctrl.column.name}}"
+    data-ng-model="$ctrl.column.name" 
+    data-dropdown-typeahead-on-select="$ctrl.onColumnSelect($item, $subItem)"
     data-dropdown-typeahead="$ctrl.columnsList"></div>
 
 <div class="gf-form-label" ng-if="$ctrl.column.appliedFunctions.length">

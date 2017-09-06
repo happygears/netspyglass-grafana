@@ -28,7 +28,7 @@ const targetDefaults = {
     variable: QueryPrompts.variable,
     orderBy:  QueryPrompts.orderBy,
     rawQuery: 0,
-    limit: 5,
+    limit: 1,
     tags: [],
     groupBy: {
         type: QueryPrompts.groupByType,
@@ -71,17 +71,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             .then((categories) => {
                 this.options.categories = categories;
             });
-
-        if (this.options.isGraph) {
-            this.options.columns = [
-                {name: 'none', selected: true},
-                {name: 'time'}
-            ];
-        }
-
-        if (this.options.isTable) {
-            this.options.columns = [];
-        }
     }
 
     initTarget() {
@@ -123,6 +112,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onSelectCategory(category, variable) {
         this.target.category = category;
         this.target.variable = variable;
+        
+        this.datasource.getColumns(variable)
+            .then((columns) => {
+                this.options.columns = columns;
+            });
+        
         this.execute();
     }
 
@@ -137,18 +132,16 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.execute();
     }
 
-    addSelectColumn() {
+    onColumnRemove($column) {
+        const index = this.target.columns.indexOf($column)
+        this.target.columns.splice(index, 1);
+    }
 
+    onColumnAdd() {
         this.target.columns.push({
             visible: true,
-            name: this.prompts.column
+            name: 'metric'
         });
-
-        // const column = _.find(this.options.columns, {name: this.options.selectSegment.value});
-        // if (column) {
-        //     column.selected = true;
-        //     this.options.selectSegment.value = undefined;
-        // }
     }
 
     getColumnsOptions() {

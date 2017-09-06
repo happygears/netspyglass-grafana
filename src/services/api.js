@@ -179,6 +179,24 @@ const SQLGenerator = {
 
 const Cache = {};
 
+Object.defineProperty(Cache, 'sync', {
+    value: function (save = false) {
+        if (save) {
+            localStorage.setItem('cache', JSON.stringify(this));
+        } else {
+            const cache = localStorage.getItem('cache');
+            if (cache) {
+                const cacheObj = JSON.parse(cache);
+                angular.extend(this, cacheObj);
+            }
+        }
+    },
+    writable: false,
+    enumerable: false,
+    configurable: false
+  });
+
+  Cache.sync();
 
 class NSGQLApi {
     /**
@@ -237,6 +255,7 @@ class NSGQLApi {
 
                     if (data && cacheKey) {
                         Cache[cacheKey] = _.cloneDeep(data);
+                        Cache.sync(true);
                     }
 
                     return data;
@@ -272,6 +291,7 @@ class NSGQLApi {
             url: this.options.baseUrl + resource + query,
             data: data,
             method: method,
+            timeout: 30000,
             headers: {'Content-Type': 'application/json'}
         });
     }

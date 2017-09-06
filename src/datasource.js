@@ -42,8 +42,6 @@ export class NetSpyGlassDatasource {
         const {networkId, accessToken} = instanceSettings.jsonData;
         const {url} = instanceSettings;
 
-        
-
         /** @type INSGQLApiOptions */
         const options = {
             baseUrl: `${url}/v2`,
@@ -85,7 +83,7 @@ export class NetSpyGlassDatasource {
             return this.$q.resolve({data: []});
         }
 
-        return this.api.queryData(sqlTargets).then((list) => ({data: list}));
+        return this.api.queryData(sqlTargets/* , null, 'query_cache' */).then((list) => ({data: list}));
     }
 
     /**
@@ -101,7 +99,7 @@ export class NetSpyGlassDatasource {
     getCategories() {
         const query = SQLGenerator.categories();
         return this.api
-            .queryData(query, NSGQLApi.FORMAT_JSON, 'categories_cache')
+            .queryData(query, NSGQLApi.FORMAT_JSON/* , 'categories_cache' */)
             .then((data) => _.groupBy(data[0].rows, 'category'));
     }
 
@@ -111,7 +109,47 @@ export class NetSpyGlassDatasource {
      */
     getFacets(variable) {
         const query = SQLGenerator.facets(variable);
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
+        return this.api.queryData(query, NSGQLApi.FORMAT_LIST/* , 'facets_cache' */);
+    }
+
+    /**
+     * @param {string} variable
+     * @returns {Promise}
+     */
+    getColumns(variable) {
+        return this.$q.all([
+            this.getCategories(),
+            this.getFacets(variable)
+        ]).then(function (data) {
+            const [categories, tags] = data;
+            const columns = [];
+
+            columns.push({
+                text: 'tags',
+                submenu: tags.map((tag) => ({text: tag, value: tag}))
+            });
+
+            columns.push({text: '---------'});
+
+            columns.push({
+                text: 'predefined', 
+                submenu: [
+                    {text: 'metric', value: 'metric'},
+                    {text: 'time', value: 'time'}
+                ]
+            });
+            
+            columns.push({text: '---------'});
+            
+            for (let category in categories) {
+                columns.push({
+                    text: category,
+                    submenu: categories[category].map((category) => ({text: category.name, value:  category.name}))
+                });
+            }
+
+            return columns;
+        });
     }
 
     /**

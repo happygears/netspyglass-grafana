@@ -55,11 +55,14 @@
                 <!--GRAPH-->
                 <div class="gf-form-inline gf-form--grow" data-ng-if="ctrl.panel.type === 'graph'">
                     
-                    <hg-columns-menu data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}" 
-                                     data-column="column" class="gf-form gf-form--column-editor" />
+                    <hg-columns-menu data-ng-if="ctrl.options.columns.length"
+                        data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}" 
+                        data-on-column-remove="ctrl.onColumnRemove($column)"
+                        data-columns-list="ctrl.options.columns"
+                        data-column="column" class="gf-form gf-form--column-editor" />
                     </hg-columns-menu> 
 
-                    <a class="gf-form-label" ng-click="ctrl.addSelectColumn()"><i class="fa fa-plus "></i></a>
+                    <a class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
 
                     <div class="gf-form gf-form--grow">
                         <div class="gf-form-label gf-form-label--grow"></div>

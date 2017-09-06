@@ -8,7 +8,6 @@ hg-columns-menu {
 hg-columns-menu > .dropdown-menu  {
     right: 0 !important;
     left: auto !important;
-    background: red;
 }
 
 .gf-form--column-editor {

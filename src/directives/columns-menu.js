@@ -1,11 +1,12 @@
 import './columns-menu.css!';
 
 class ColumnsMenuController {
-    constructor($injector) {
+    constructor($injector, $scope) {
         this.$injector = $injector;
+        this.$scope = $scope;
         this.menuItems = [
             {text: 'Clear Functions', click: '$ctrl.onClear()'},
-            {text: 'Remove Column', click: '$ctrl.onColumnRemove($ctrl.column)'},
+            {text: 'Remove Column', click: '$ctrl.onColumnRemove({$column: this.column})'},
             {text: 'Add Alias', click: '$ctrl.onColumnAddAlias()'},
             {
                 text: 'Transformation',
@@ -35,38 +36,12 @@ class ColumnsMenuController {
                 ]
             }
         ];
-
-        this.initColumns();
-
-        console.log(this.column);
     }
 
     $onInit() {
         if (!this.column.appliedFunctions) {
             this.column.appliedFunctions = [];
         }
-    }
-
-    initColumns() {
-        this.columnsList = [
-            {
-                text: 'tags', 
-                submenu: []
-            },
-            {text: '----------', cssClasses: 'foooooo'},
-            {
-                text: 'predefined', 
-                submenu: [
-                    {text: 'metric', value: 'metric'},
-                    {text: 'time', value: 'time'}
-                ]
-            },
-            {text: '----------'},
-            {
-                text: 'none',
-                submenu: []
-            }
-        ];
     }
 
     onColumnSelect($item, $subItem) {
@@ -105,7 +80,7 @@ export default function ColumnsMenuDirective($timeout) {
         bindToController: true,
         scope: {
             column: '=',
-            columns: '<',
+            columnsList: '<',
             onColumnRemove: '&'
         },
         link: function ($scope, $element, $attrs, ctrl) {

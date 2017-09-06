@@ -268,11 +268,13 @@ class NSGQLApi {
     /**
      * @param {string} nsgql
      * @param {string} format
+     * @param {string} id
      */
-    generateTarget(nsgql, format = 'json') {
+    generateTarget(nsgql, format = 'json', id = 'A') {
         return {
             nsgql,
-            format
+            format,
+            id
         };
     }
 

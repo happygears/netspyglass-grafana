@@ -60,17 +60,18 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     execute() {
+        this.errors = {};
         this.panelCtrl.refresh();
     }
 
     init() {
         this.initTarget();
         this.options.segments = this.restoreTags();
-        this.datasource
-            .getCategories()
-            .then((categories) => {
-                this.options.categories = categories;
-            });
+        this.getCategories();
+
+        this.panelCtrl.events.emitter.on('data-error', (errors) => {
+            this.errors = _.cloneDeep(errors);
+        });
     }
 
     initTarget() {
@@ -104,6 +105,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
         return segments;
     }
+
+    getCategories() {
+        this.datasource
+            .getCategories()
+            .then((categories) => {
+                this.options.categories = categories;
+            });
+    }
+
 
     /**
      * @param {string} category

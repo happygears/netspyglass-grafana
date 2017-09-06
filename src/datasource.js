@@ -72,9 +72,9 @@ export class NetSpyGlassDatasource {
         const sqlTargets = options.targets
             .map((target) => {
                 if( !target.rawQuery ) {
-                    return this.api.generateTarget(SQLGenerator.generateSQLQuery(target, {timeRange, interval: options.interval}), target.format);
+                    return this.api.generateTarget(SQLGenerator.generateSQLQuery(target, {timeRange, interval: options.interval}), target.format, target.refId);
                 } else {
-                    return this.api.generateTarget(SQLGenerator.generateSQLQueryFromString(target, {timeRange, interval: options.interval}), target.format)
+                    return this.api.generateTarget(SQLGenerator.generateSQLQueryFromString(target, {timeRange, interval: options.interval}), target.format, target.refId)
                 }
             })
             .filter((target) => target.nsgql !== false);
@@ -83,7 +83,21 @@ export class NetSpyGlassDatasource {
             return this.$q.resolve({data: []});
         }
 
-        return this.api.queryData(sqlTargets/* , null, 'query_cache' */).then((list) => ({data: list}));
+        return this.api.queryData(sqlTargets/* , null, 'query_cache' */).then((list) => {
+            let errorsList = _.filter(list,'error'),
+                errors = {};
+            let data = {data: list};
+
+            if( errorsList.length ) {
+                errorsList.forEach((error) => {
+                    errors[error.id] = error.error;
+                });
+
+                throw errors;
+            }
+
+            return data;
+        });
     }
 
     /**
@@ -132,15 +146,15 @@ export class NetSpyGlassDatasource {
             columns.push({text: '---------'});
 
             columns.push({
-                text: 'predefined', 
+                text: 'predefined',
                 submenu: [
                     {text: 'metric', value: 'metric'},
                     {text: 'time', value: 'time'}
                 ]
             });
-            
+
             columns.push({text: '---------'});
-            
+
             for (let category in categories) {
                 columns.push({
                     text: category,

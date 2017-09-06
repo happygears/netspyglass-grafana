@@ -1,9 +1,8 @@
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" can-collapse="true" has-text-edit-mode="true"
     data-ng-class="{'loading': ctrl.panelCtrl.loading}">
 
-    <!--TODO: do this-->
-    <div class="gf-form" ng-show="ctrl.queryError">
-        <pre class="gf-form-pre alert alert-error">{{ctrl.queryError}}</pre>
+    <div class="gf-form" ng-show="ctrl.errors[ctrl.target.refId]">
+        <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.target.refId]}}</pre>
     </div>
 
     <div class="editor-part editor-part--row" data-ng-if="ctrl.target.rawQuery">

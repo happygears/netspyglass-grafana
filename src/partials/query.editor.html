@@ -48,11 +48,8 @@
                 <label class="gf-form-label query-keyword width-7">SELECT</label>
             </div>
 
-            <div class="gf-form gf-form--grow" ng-show="ctrl.target.variable != ctrl.prompts.variable">
-                <!--this content depend on panel type (Graph or Table)-->
-
-                <!--GRAPH-->
-                <div class="gf-form-inline gf-form--grow" data-ng-if="ctrl.panel.type === 'graph'">
+            <div class="gf-form gf-form--grow">
+                <div class="gf-form-inline gf-form--grow">
                     
                     <hg-columns-menu data-ng-if="ctrl.options.columns.length"
                         data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}" 
@@ -67,10 +64,8 @@
                     <div class="gf-form gf-form--grow">
                         <div class="gf-form-label gf-form-label--grow"></div>
                     </div>
-                </div>
-                <!--GRAPH-->
 
-    
+                </div>
             </div>
         </div>
 

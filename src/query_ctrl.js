@@ -152,8 +152,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onColumnChanged($column) {
-        // @todo: rebuild order by and group by
-        // search in this.target.columns where column has alias
         console.log('onColumnsChanged');
     }
 
@@ -310,15 +308,18 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     getOrderByOptions() {
-        const list = [];
+        let list = [];
 
         if (this.options.isGraph) {
             list.push({text: 'metric ASC', value: 'metric ASC'});
             list.push({text: 'metric DESC', value: 'metric DESC'});
         } else if (this.options.isTable) {
-            // list = this.target.selectData.map((el) => {
-                // return this.uiSegmentSrv.newSegment(el.value);
-            // });
+            this.target.columns.forEach((el) => {
+                if(el.appliedFunctions.length && !el.alias) return;
+
+                let val = el.alias || el.name;
+                list.push({text: val, value: val});
+            });
         }
 
         return this.$injector

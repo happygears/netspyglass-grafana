@@ -118,12 +118,14 @@ const SQLGenerator = {
         const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
                 time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
             };
+        const columns = (target.columns || [])
+            .filter((column) => column.name !== QueryPrompts.column)
 
-        if (!target.columns || target.columns.length === 0) {
+        if (columns.length === 0) {
             return false;
         }
 
-        query.select(target.columns.map(this.processColumn));
+        query.select(columns.map(this.processColumn));
         query.from(target.variable);
         query.where([
             sqlBuilder.OP.AND,

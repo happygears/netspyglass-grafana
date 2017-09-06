@@ -6,7 +6,7 @@ class ColumnsMenuController {
         this.$scope = $scope;
         this.menuItems = [
             {text: 'Clear Functions', click: '$ctrl.onClear()'},
-            {text: 'Remove Column', click: '$ctrl.onColumnRemove({$column: this.column})'},
+            {text: 'Remove Column', click: '$ctrl.onColumnRemove({$column: $ctrl.column})'},
             {text: 'Add Alias', click: '$ctrl.onColumnAddAlias()'},
             {
                 text: 'Transformation',
@@ -55,19 +55,23 @@ class ColumnsMenuController {
 
         if (value) {
             this.column.name = value;
+            this.onColumnChanged({$column: this.column});
         }
     }
 
     onColumnAddAlias() {
         this.column.alias = 'col_alias';
+        this.onColumnChanged({$column: this.column});
     }
 
     onClear() {
         this.column.appliedFunctions.splice(0, this.column.appliedFunctions.length);
+        this.onColumnChanged({$column: this.column});
     }
 
     onSelectFunction(name) {
         this.column.appliedFunctions.unshift(name);
+        this.onColumnChanged({$column: this.column});
     }
 }
 
@@ -81,7 +85,8 @@ export default function ColumnsMenuDirective($timeout) {
         scope: {
             column: '=',
             columnsList: '<',
-            onColumnRemove: '&'
+            onColumnRemove: '&',
+            onColumnChanged: '&'
         },
         link: function ($scope, $element, $attrs, ctrl) {
             function initDropdown() {

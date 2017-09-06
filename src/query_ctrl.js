@@ -23,7 +23,7 @@ import './css/query-editor.css!'
  */
 
 const targetDefaults = {
-    columns: [{name: 'time', visible: false}, {name: 'metric', visible: true}],
+    columns: [{name: 'metric', visible: true}],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
     orderBy:  QueryPrompts.orderBy,
@@ -114,9 +114,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.target.variable = variable;
         
         this.datasource.getColumns(variable)
-            .then((columns) => {
-                this.options.columns = columns;
-            });
+            .then((columns) => (this.options.columns = columns));
         
         this.execute();
     }
@@ -133,20 +131,32 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onColumnRemove($column) {
-        const index = this.target.columns.indexOf($column)
-        this.target.columns.splice(index, 1);
+        const index = this.target.columns.indexOf($column);
+
+        if (index !== -1) {
+            this.target.columns.splice(index, 1);
+            return {index};
+        }
+
+        return false;
+    }
+
+    onColumnChanged($column) {
+        // @todo: rebuild order by and group by
+        // search in this.target.columns where column has alias
+        console.log('onColumnsChanged');
     }
 
     onColumnAdd() {
         this.target.columns.push({
             visible: true,
-            name: 'metric'
+            name: this.prompts.column
         });
     }
 
     getColumnsOptions() {
         const columns = this.options.columns
-                            .map((column) => this.uiSegmentSrv.newSegment({value: `${column.name}`}));;
+            .map((column) => this.uiSegmentSrv.newSegment({value: column.name}));;
 
         return this.$injector.get('$q').resolve(columns);
     }
@@ -154,7 +164,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     toggleEditorMode() {
         this.target.rawQuery ^= 1;
 
-        if( this.target.rawQuery ) {
+        if (this.target.rawQuery) {
             this.target.nsgqlString = this.datasource.getSQLString(this.target);
         }
     }

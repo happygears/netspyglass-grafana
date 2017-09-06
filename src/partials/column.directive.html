@@ -13,5 +13,5 @@
 </div>
 
 <span data-ng-if="$ctrl.column.alias" class="gf-form-label">&nbsp;AS&nbsp;</span>
-<input data-ng-if="$ctrl.column.alias" type="text" data-ng-model="$ctrl.column.alias" class="gf-form-input max-width-6" spellcheck="false">
+<input data-ng-if="$ctrl.column.alias" ng-change="$ctrl.onColumnChanged({$column: $ctrl.column})" type="text" data-ng-model="$ctrl.column.alias" class="gf-form-input max-width-6" spellcheck="false">
 <a class="gf-form-label" data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>

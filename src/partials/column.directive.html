@@ -1,17 +1,24 @@
-<div class="gf-form-label" ng-if="$ctrl.column.appliedFunctions.length">
+<div class="gf-form-label gf-form-label--thin-right" ng-if="$ctrl.column.appliedFunctions.length">
     <span class="select-col__func" ng-repeat="$function in $ctrl.column.appliedFunctions track by $function">{{ ::$function }} ( </span>
 </div>
 
-<div class="gf-form-dropdown-typeahead max-width-15" 
+<div class="gf-form-dropdown-typeahead max-width-15"
+    data-ng-if="$ctrl.isTable === 'true'"
     data-link-text="{{$ctrl.column.name}}"
     data-ng-model="$ctrl.column.name" 
     data-dropdown-typeahead-on-select="$ctrl.onColumnSelect($item, $subItem)"
     data-dropdown-typeahead="$ctrl.columnsList"></div>
 
-<div class="gf-form-label" ng-if="$ctrl.column.appliedFunctions.length">
+<div class="gf-form-label gf-form-label--thin" data-ng-if="$ctrl.isTable == 'false'">{{ $ctrl.column.name }}</div>
+
+<div class="gf-form-label gf-form-label--thin-left" data-ng-if="$ctrl.column.appliedFunctions.length">
     <span class="select-col__func select-col__func--close">{{ ' ) '.repeat($ctrl.column.appliedFunctions.length) }}</span>
 </div>
 
-<span data-ng-if="$ctrl.column.alias" class="gf-form-label">&nbsp;AS&nbsp;</span>
-<input data-ng-if="$ctrl.column.alias" ng-change="$ctrl.onColumnChanged({$column: $ctrl.column})" type="text" data-ng-model="$ctrl.column.alias" class="gf-form-input max-width-6" spellcheck="false">
+<span data-ng-if="$ctrl.column.alias" class="gf-form-label gf-form-label--thin-left">&nbsp;AS&nbsp;</span>
+<input data-ng-if="$ctrl.column.alias" 
+    data-ng-model-options="{debounce: 400}"
+    data-ng-model="$ctrl.column.alias"
+    ng-change="$ctrl.onColumnChanged({$column: $ctrl.column})" 
+    type="text" class="gf-form-input max-width-6" spellcheck="false">
 <a class="gf-form-label" data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>

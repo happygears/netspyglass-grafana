@@ -36,6 +36,10 @@ class ColumnsMenuController {
                 ]
             }
         ];
+
+        if (this.isTable === 'false') {
+            this.menuItems.splice(1, 1);
+        }
     }
 
     $onInit() {
@@ -60,8 +64,9 @@ class ColumnsMenuController {
     }
 
     onColumnAddAlias() {
-        this.column.alias = 'col_alias';
+        this.column.alias = `col_${this.colCounter}`;
         this.onColumnChanged({$column: this.column});
+        
     }
 
     onClear() {
@@ -76,6 +81,7 @@ class ColumnsMenuController {
 }
 
 export default function ColumnsMenuDirective($timeout) {
+    let colCounter = 0;
     return {
         restrict: 'E',
         templateUrl: 'public/plugins/happygears-netspyglass-datasource-dev/partials/column.directive.html',
@@ -83,12 +89,14 @@ export default function ColumnsMenuDirective($timeout) {
         controllerAs: '$ctrl',
         bindToController: true,
         scope: {
+            isTable: '@',
             column: '=',
             columnsList: '<',
             onColumnRemove: '&',
             onColumnChanged: '&'
         },
         link: function ($scope, $element, $attrs, ctrl) {
+            ctrl.colCounter = (++colCounter);
             function initDropdown() {
                 $element
                     .find(' > ul.dropdown-menu')

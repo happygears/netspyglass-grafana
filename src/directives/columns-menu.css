@@ -16,6 +16,19 @@ hg-columns-menu > .dropdown-menu  {
     align-items: stretch
 }
 
+.gf-form-label--thin {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.gf-form-label--thin-left {
+    padding-left: 0.25rem;
+}
+
+.gf-form-label--thin-right {
+    padding-right: 0.25rem;
+}
+
 .gf-form--column-editor .gf-form-label {
     margin-right: 0;
     border-radius: 0;

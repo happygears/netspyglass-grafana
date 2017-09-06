@@ -122,10 +122,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onSelectCategory(category, variable) {
         this.target.category = category;
         this.target.variable = variable;
-        
-        this.datasource.getColumns(variable)
+        this.datasource
+            .getColumns(variable)
             .then((columns) => (this.options.columns = columns));
-        
+
         this.execute();
     }
 
@@ -155,6 +155,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         // @todo: rebuild order by and group by
         // search in this.target.columns where column has alias
         console.log('onColumnsChanged');
+        this.execute();
     }
 
     onColumnAdd() {

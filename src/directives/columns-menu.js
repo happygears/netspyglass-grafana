@@ -17,7 +17,7 @@ class ColumnsMenuController {
                 ]
             },
             {
-                text: 'Aggregation By Time',
+                text: 'Aggregation',
                 submenu: [
                     {text: 'avg', href: '#avg'},
                     {text: 'median', href: '#median'},

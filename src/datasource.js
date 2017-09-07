@@ -71,7 +71,7 @@ export class NetSpyGlassDatasource {
 
         const sqlTargets = options.targets
             .map((target) => {
-                if( !target.rawQuery ) {
+                if (!target.rawQuery) {
                     return this.api.generateTarget(SQLGenerator.generateSQLQuery(target, {timeRange, interval: options.interval}), target.format, target.refId);
                 } else {
                     return this.api.generateTarget(SQLGenerator.generateSQLQueryFromString(target, {timeRange, interval: options.interval}), target.format, target.refId)
@@ -82,13 +82,13 @@ export class NetSpyGlassDatasource {
         if (sqlTargets.length === 0) {
             return this.$q.resolve({data: []});
         }
-
-        return this.api.queryData(sqlTargets/* , null, 'query_cache' */).then((list) => {
-            let errorsList = _.filter(list,'error'),
+        const cacheKey = `query_cache_${sqlTargets.map((t) => t.format).join('_')}`;
+        return this.api.queryData(sqlTargets, null, cacheKey).then((list) => {
+            let errorsList = _.filter(list, 'error'),
                 errors = {};
             let data = {data: list};
 
-            if( errorsList.length ) {
+            if (errorsList.length) {
                 errorsList.forEach((error) => {
                     errors[error.id] = error.error;
                 });
@@ -113,7 +113,7 @@ export class NetSpyGlassDatasource {
     getCategories() {
         const query = SQLGenerator.categories();
         return this.api
-            .queryData(query, NSGQLApi.FORMAT_JSON/* , 'categories_cache' */)
+            .queryData(query, NSGQLApi.FORMAT_JSON, 'categories_cache')
             .then((data) => _.groupBy(data[0].rows, 'category'));
     }
 
@@ -123,7 +123,7 @@ export class NetSpyGlassDatasource {
      */
     getFacets(variable) {
         const query = SQLGenerator.facets(variable);
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST/* , 'facets_cache' */);
+        return this.api.queryData(query, NSGQLApi.FORMAT_LIST, 'facets_cache');
     }
 
     /**
@@ -158,7 +158,7 @@ export class NetSpyGlassDatasource {
             for (let category in categories) {
                 columns.push({
                     text: category,
-                    submenu: categories[category].map((category) => ({text: category.name, value:  category.name}))
+                    submenu: categories[category].map((category) => ({text: category.name, value: category.name}))
                 });
             }
 

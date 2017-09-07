@@ -28,7 +28,7 @@ const targetDefaults = {
     variable: QueryPrompts.variable,
     orderBy:  QueryPrompts.orderBy,
     rawQuery: 0,
-    limit: 1,
+    limit: 100,
     tags: [],
     groupBy: {
         type: QueryPrompts.groupByType,
@@ -57,6 +57,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             segments: [],
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
         };
+
+
+        console.log(this.target);
     }
 
     execute() {
@@ -68,7 +71,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.initTarget();
         this.options.segments = this.restoreTags();
         this.getCategories();
-
+        this.loadColumns();
+        
         this.panelCtrl.events.emitter.on('data-error', (errors) => {
             this.errors = _.cloneDeep(errors);
         });
@@ -114,7 +118,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             });
     }
 
-
     /**
      * @param {string} category
      * @param {string} variable
@@ -122,10 +125,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onSelectCategory(category, variable) {
         this.target.category = category;
         this.target.variable = variable;
-        this.datasource
-            .getColumns(variable)
-            .then((columns) => (this.options.columns = columns));
-
+        this.loadColumns();
         this.execute();
     }
 
@@ -163,11 +163,24 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         });
     }
 
-    getColumnsOptions() {
+/*     getColumnsOptions() {
         const columns = this.options.columns
             .map((column) => this.uiSegmentSrv.newSegment({value: column.name}));;
 
         return this.$injector.get('$q').resolve(columns);
+    } */
+
+    /**
+     * @returns {Promise|boolean}
+     */
+    loadColumns() {
+        if (this.target.variable) {
+            return this.datasource
+                .getColumns(this.target.variable)
+                .then((columns) => (this.options.columns = columns));
+        }
+
+        return false;
     }
 
     toggleEditorMode() {

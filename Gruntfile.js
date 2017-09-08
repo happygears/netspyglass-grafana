@@ -91,8 +91,8 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'dist/styles/query-editor.css': 'src/styles/query-editor.scss',
-          'dist/styles/columns-menu.css': 'src/styles/columns-menu.scss'
+          'dist/styles/theme.dark.css': 'src/styles/theme.dark.scss',
+          'dist/styles/theme.light.css': 'src/styles/theme.light.scss'
         }
       }
     }

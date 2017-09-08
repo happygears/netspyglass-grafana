@@ -18,6 +18,7 @@ import angular from 'angular';
 import {NetSpyGlassDatasource} from './datasource';
 import {NetSpyGlassQueryCtrl} from './query_ctrl';
 import ColumnsMenuDirective from './directives/columns-menu';
+import {loadPluginCss} from 'app/plugins/sdk';
 
 ColumnsMenuDirective.templateUrl = 'partials_foo/config.html'
 
@@ -99,6 +100,11 @@ angular.module('grafana.directives')
             }
         };
     }]);
+
+loadPluginCss({
+    dark: 'plugins/happygears-netspyglass-datasource-dev/styles/theme.dark.css',
+    light: 'plugins/happygears-netspyglass-datasource-dev/styles/theme.light.css'
+});
 
 export {
     NetSpyGlassDatasource as Datasource,

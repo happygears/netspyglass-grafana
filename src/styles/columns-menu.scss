@@ -2,7 +2,7 @@
 hg-columns-menu {
     position: relative;
     margin-right: 2px;
-    background: #f4f5f8;
+    background: $columns-bg;
 
     > .dropdown-menu  {
         right: 0 !important;
@@ -12,7 +12,7 @@ hg-columns-menu {
     .hg-container {
         display: flex;
         padding: 0 0 0 5px;
-        border-right: 1px solid #f9f9f9; 
+        border-right: 1px solid $columns-menu-border; 
 
         &__item {
             padding-left: 0;
@@ -47,9 +47,11 @@ hg-columns-menu {
         .gf-form-dropdown-typeahead {
             background: transparent;
             margin-right: 0;
-            .gf-form-label {
+            a.gf-form-label {
                 padding-right: 0;
-                padding-left: 0;    
+                padding-left: 0;  
+                outline: none;
+                box-shadow: none;  
             }
 
             &:after {
@@ -63,6 +65,7 @@ hg-columns-menu {
             margin-right: 0;
             text-align: center;
             outline: none;
+            box-shadow: none;
 
             &.ng-invalid {
                 color: red;

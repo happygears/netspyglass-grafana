@@ -1,24 +1,31 @@
-<div class="gf-form-label gf-form-label--thin-right" ng-if="$ctrl.column.appliedFunctions.length">
-    <span class="select-col__func" ng-repeat="$function in $ctrl.column.appliedFunctions track by $function">{{ ::$function }} ( </span>
-</div>
+<div class="hg-container">
+    <div class="gf-form-label hg-container__item" ng-if="$ctrl.column.appliedFunctions.length">
+        <span class="select-col__func" ng-repeat="$function in $ctrl.column.appliedFunctions track by $function">{{ ::$function }} ( </span>
+    </div>
 
-<div class="gf-form-dropdown-typeahead max-width-15"
-    data-ng-if="$ctrl.isTable === 'true'"
-    data-link-text="{{$ctrl.column.name}}"
-    data-ng-model="$ctrl.column.name" 
-    data-dropdown-typeahead-on-select="$ctrl.onColumnSelect($item, $subItem)"
-    data-dropdown-typeahead="$ctrl.columnsList"></div>
+    <div class="gf-form-dropdown-typeahead max-width-14 hg-container__item"
+        data-ng-if="$ctrl.isTable === 'true'"
+        data-link-text="{{$ctrl.column.name}}"
+        data-ng-model="$ctrl.column.name" 
+        data-dropdown-typeahead-on-select="$ctrl.onColumnSelect($item, $subItem)"
+        data-dropdown-typeahead="$ctrl.columnsList"></div>
 
-<div class="gf-form-label gf-form-label--thin" data-ng-if="$ctrl.isTable == 'false'">{{ $ctrl.column.name }}</div>
+    <div class="gf-form-label hg-container__item" data-ng-if="$ctrl.isTable == 'false'">{{ $ctrl.column.name }}</div>
 
-<div class="gf-form-label gf-form-label--thin-left" data-ng-if="$ctrl.column.appliedFunctions.length">
-    <span class="select-col__func select-col__func--close">{{ ' ) '.repeat($ctrl.column.appliedFunctions.length) }}</span>
-</div>
+    <div class="gf-form-label hg-container__item" data-ng-if="$ctrl.column.appliedFunctions.length">
+        <span class="select-col__func select-col__func--close">{{ ' ) '.repeat($ctrl.column.appliedFunctions.length) }}</span>
+    </div>
 
-<span data-ng-if="$ctrl.column.alias" class="gf-form-label gf-form-label--thin-left">&nbsp;AS&nbsp;</span>
-<input data-ng-if="$ctrl.column.alias" 
-    data-ng-model-options="{debounce: 400}"
-    data-ng-model="$ctrl.column.alias"
-    ng-change="$ctrl.onColumnChanged({$column: $ctrl.column})" 
-    type="text" class="gf-form-input max-width-6" spellcheck="false">
-<a class="gf-form-label" data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>
+    <span data-ng-if="$ctrl.column.alias" class="gf-form-label hg-container__item">as</span>
+
+    <form novalidate name="column_form">
+        <input name="alias" data-ng-if="$ctrl.column.alias" 
+            data-ng-model-options="{allowInvalid: true, debounce: 300}"
+            data-ng-model="$ctrl.column.alias"
+            data-ng-pattern="/^[a-z]{1,}[a-zA-Z0-9_]*$/"
+            data-ng-change="$ctrl.notifyChange()" 
+            type="text" class="gf-form-input max-width-6" spellcheck="false">
+    </form>
+</div>   
+
+<a class="gf-form-label"  data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>

@@ -48,6 +48,14 @@ class ColumnsMenuController {
         }
     }
 
+    notifyChange() {
+        this.$injector.get('$timeout')(() => {
+            if (!this.$scope.column_form.alias || this.$scope.column_form.alias.$valid) {
+                this.onColumnChanged({$column: this.column});
+            }
+        });
+    }
+
     onColumnSelect($item, $subItem) {
         let value;
         
@@ -59,24 +67,23 @@ class ColumnsMenuController {
 
         if (value) {
             this.column.name = value;
-            this.onColumnChanged({$column: this.column});
+            this.notifyChange();
         }
     }
 
     onColumnAddAlias() {
         this.column.alias = `col_${this.colCounter}`;
-        this.onColumnChanged({$column: this.column});
-        
+        this.notifyChange();
     }
 
     onClear() {
         this.column.appliedFunctions.splice(0, this.column.appliedFunctions.length);
-        this.onColumnChanged({$column: this.column});
+        this.notifyChange();
     }
 
     onSelectFunction(name) {
         this.column.appliedFunctions.unshift(name);
-        this.onColumnChanged({$column: this.column});
+        this.notifyChange();
     }
 }
 

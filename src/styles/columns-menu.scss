@@ -2,44 +2,71 @@
 hg-columns-menu {
     position: relative;
     margin-right: 2px;
+    background: #f4f5f8;
 
     > .dropdown-menu  {
         right: 0 !important;
         left: auto !important;
     }
+
+    .hg-container {
+        display: flex;
+        padding: 0 0 0 5px;
+        border-right: 1px solid #f9f9f9; 
+
+        &__item {
+            padding-left: 0;
+            padding-right: 0;
+            margin-right: 5px !important;
+        }
+    }
+
+    .gf-form-label.dropdown-toggle {
+        margin-right: 0;
+        
+        &:hover {
+            color: #222;
+        }
+    }
 }
 
-.gf-form{
+.gf-form {
     &--column-editor {
         -webkit-box-align: stretch;
         -ms-flex-align: stretch;
         align-items: stretch;
 
+        .tight-form-func {
+            background: transparent;
+        }
+
         .gf-form-label {
-            margin-right: 0;
-            border-radius: 0;
             box-sizing: border-box;
         }
 
         .gf-form-dropdown-typeahead {
-            padding-right: 0;
+            background: transparent;
             margin-right: 0;
+            .gf-form-label {
+                padding-right: 0;
+                padding-left: 0;    
+            }
 
             &:after {
                 display: none;
             }
         }
 
-        .gf-form-dropdown-typeahead {
-            .gf-form-label {
-                padding-right: 0;
-                padding-left: 0;    
-            }
-        }
-
         .gf-form-input {
-            border-radius: 0;
+            background: transparent;
+            margin-left: 0; 
             margin-right: 0;
+            text-align: center;
+            outline: none;
+
+            &.ng-invalid {
+                color: red;
+            }
         }
     }
 }

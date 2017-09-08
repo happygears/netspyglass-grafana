@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+  var IS_DEV = process.env.NODE_ENV !== 'production';
+
   require('load-grunt-tasks')(grunt);
 
   grunt.loadNpmTasks('grunt-execute');
@@ -81,9 +83,21 @@ module.exports = function(grunt) {
         },
         src: ['dist/test/spec/test-main.js', 'dist/test/spec/*_spec.js']
       }
+    },
+
+    sass: {
+      options: {
+        sourceMap: IS_DEV
+      },
+      dist: {
+        files: {
+          'dist/styles/query-editor.css': 'src/styles/query-editor.scss',
+          'dist/styles/columns-menu.css': 'src/styles/columns-menu.scss'
+        }
+      }
     }
   });
 
   //TODO: fix tests
-  grunt.registerTask('default', ['clean', 'copy:src_to_dist','copy:img_to_dist', 'copy:pluginDef', 'babel']);//, 'mochaTest'
+  grunt.registerTask('default', ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel']);//, 'mochaTest'
 };

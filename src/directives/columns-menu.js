@@ -1,4 +1,4 @@
-import './columns-menu.css!';
+import '../styles/columns-menu.css!'
 
 class ColumnsMenuController {
     constructor($injector, $scope) {

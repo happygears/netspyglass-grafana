@@ -82,8 +82,8 @@ export class NetSpyGlassDatasource {
         if (sqlTargets.length === 0) {
             return this.$q.resolve({data: []});
         }
-        const cacheKey = `query_cache_${sqlTargets.map((t) => t.format).join('_')}`;
-        return this.api.queryData(sqlTargets, null, cacheKey).then((list) => {
+
+        return this.api.queryData(sqlTargets).then((list) => {
             let errorsList = _.filter(list, 'error'),
                 errors = {};
             let data = {data: list};
@@ -113,7 +113,7 @@ export class NetSpyGlassDatasource {
     getCategories() {
         const query = SQLGenerator.categories();
         return this.api
-            .queryData(query, NSGQLApi.FORMAT_JSON, 'categories_cache')
+            .queryData(query, NSGQLApi.FORMAT_JSON)
             .then((data) => _.groupBy(data[0].rows, 'category'));
     }
 
@@ -123,7 +123,7 @@ export class NetSpyGlassDatasource {
      */
     getFacets(variable) {
         const query = SQLGenerator.facets(variable);
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST, 'facets_cache');
+        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
     }
 
     /**

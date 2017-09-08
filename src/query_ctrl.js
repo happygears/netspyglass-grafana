@@ -16,7 +16,7 @@
 
 import {QueryCtrl} from 'app/plugins/sdk';
 import {QueryPrompts, GrafanaVariables} from './dictionary';
-import './css/query-editor.css!'
+import './styles/query-editor.css!'
 
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment

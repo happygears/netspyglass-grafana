@@ -6,7 +6,7 @@ class DropdownController {
     }
 
     $onInit() {
-
+        this.isOpened = false;
     }
 
     onSelectValue(value) {
@@ -49,11 +49,12 @@ export default function DropdownDirective() {
             getOptions: '&'
         },
         link: function ($scope, $element, $attrs, ctrl) {
-            ctrl.isOpened = false;
 
             $element
                 .find('.pointer')
-                .on('click', function () {
+                .on('click', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
 
                     if (!ctrl.isOpened) {
                         ctrl.getSelectOptions().then((data) => {
@@ -62,7 +63,13 @@ export default function DropdownDirective() {
                     }
 
                     ctrl.isOpened = !ctrl.isOpened;
-                })
+                    $element.toggleClass('open', ctrl.isOpened);
+                });
+
+            angular.element('html, body').on('click', function () {
+                ctrl.isOpened = false;
+                $element.toggleClass('open', ctrl.isOpened);
+            })
         }
     };
 }

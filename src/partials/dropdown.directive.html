@@ -3,7 +3,7 @@
 </a>
 
 <ul class="dropdown-menu" data-ng-show="$ctrl.isOpened">
-    <li data-ng-repeat="item in $ctrl.list | orderBy: 'text' "
+    <li data-ng-repeat="item in $ctrl.list"
         data-ng-class="{'dropdown-submenu': item.submenu.length}">
         <a>{{ ::item.text }}</a>
         <ul class="dropdown-menu" role="menu">

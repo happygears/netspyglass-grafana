@@ -59,17 +59,9 @@ class ColumnsMenuController {
         });
     }
 
-    onColumnSelect($item, $subItem) {
-        let value;
-        
-        if ($subItem && $subItem.value) {
-            value = $subItem.value;
-        } else if ($item && $item.value) {
-            value = $item.value;
-        }
-
-        if (value) {
-            this.column.name = value;
+    onColumnSelect($value) {
+        if ($value) {
+            this.column.name = $value;
             this.notifyChange();
         }
     }

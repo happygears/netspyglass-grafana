@@ -61,6 +61,8 @@ export default function DropdownDirective() {
                         ctrl.getSelectOptions().then((data) => {
                             ctrl.list = data;
                         });
+                    } else {
+                        $body.off('click', onBodyClick);
                     }
 
                     $scope.$apply(function () {

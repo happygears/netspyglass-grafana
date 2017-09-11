@@ -4,6 +4,10 @@ module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
 
+  const fs = require('fs');
+  const path = require('path');
+  const pluginData = require(path.join(__dirname, 'plugin.json'));
+
   grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
@@ -46,7 +50,11 @@ module.exports = function(grunt) {
       },
       dist: {
         options: {
-          plugins: ['transform-es2015-modules-systemjs', 'transform-es2015-for-of']
+          plugins: [
+            ['transform-define', {'NSG_PLUGIN_ID': pluginData.id}],
+            'transform-es2015-modules-systemjs',
+            'transform-es2015-for-of',
+          ]
         },
         files: [{
           cwd: 'src',

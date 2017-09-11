@@ -39,7 +39,7 @@ class DropdownController {
 export default function DropdownDirective() {
     return {
         restrict: 'E',
-        templateUrl: 'public/plugins/happygears-netspyglass-datasource-dev/partials/dropdown.directive.html',
+        templateUrl: `public/plugins/${NSG_PLUGIN_ID}/partials/dropdown.directive.html`,
         controller: DropdownController,
         controllerAs: '$ctrl',
         bindToController: true,

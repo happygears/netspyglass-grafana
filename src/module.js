@@ -32,14 +32,13 @@ GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
 class GenericAnnotationsQueryCtrl {}
 GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
 
-
 angular.module('grafana.directives')
     .directive('hgColumnsMenu', ColumnsMenuDirective)
     .directive('hgDropdown', DropdownDirective);
 
 loadPluginCss({
-    dark: 'plugins/happygears-netspyglass-datasource-dev/styles/theme.dark.css',
-    light: 'plugins/happygears-netspyglass-datasource-dev/styles/theme.light.css'
+    dark: `plugins/${NSG_PLUGIN_ID}/styles/theme.dark.css`,
+    light: `plugins/${NSG_PLUGIN_ID}/styles/theme.light.css`
 });
 
 export {

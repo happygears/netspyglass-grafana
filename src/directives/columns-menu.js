@@ -90,7 +90,7 @@ export default function ColumnsMenuDirective($timeout) {
     let colCounter = 0;
     return {
         restrict: 'E',
-        templateUrl: 'public/plugins/happygears-netspyglass-datasource-dev/partials/column.directive.html',
+        templateUrl: `public/plugins/${NSG_PLUGIN_ID}/partials/column.directive.html`,
         controller: ColumnsMenuController,
         controllerAs: '$ctrl',
         bindToController: true,

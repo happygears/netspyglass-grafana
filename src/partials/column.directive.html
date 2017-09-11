@@ -9,13 +9,6 @@
             data-on-value-changed="ctrl.onSelectCategory($value)"
             data-get-options="$ctrl.getColumnsList()"></hg-dropdown>
 
-    <div class="gf-form-dropdown-typeahead max-width-14 hg-container__item"
-        data-ng-if="$ctrl.isTable === 'true'"
-        data-link-text="{{$ctrl.column.name}}"
-        data-ng-model="$ctrl.column.name" 
-        data-dropdown-typeahead-on-select="$ctrl.onColumnSelect($item, $subItem)"
-        data-dropdown-typeahead="$ctrl.columnsList"></div>
-
     <div class="gf-form-label hg-container__item" data-ng-if="$ctrl.isTable == 'false'">{{ $ctrl.column.name }}</div>
 
     <div class="gf-form-label hg-container__item" data-ng-if="$ctrl.column.appliedFunctions.length">

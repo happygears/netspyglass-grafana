@@ -49,7 +49,7 @@ export default function DropdownDirective() {
             getOptions: '&'
         },
         link: function ($scope, $element, $attrs, ctrl) {
-
+            const $body = angular.element('body');
             $element
                 .find('.pointer')
                 .on('click', function (e) {
@@ -57,19 +57,31 @@ export default function DropdownDirective() {
                     e.preventDefault();
 
                     if (!ctrl.isOpened) {
+                        $body.on('click', onBodyClick);
                         ctrl.getSelectOptions().then((data) => {
                             ctrl.list = data;
                         });
                     }
 
-                    ctrl.isOpened = !ctrl.isOpened;
+                    $scope.$apply(function () {
+                        ctrl.isOpened = !ctrl.isOpened;
+                    });
+
                     $element.toggleClass('open', ctrl.isOpened);
                 });
 
-            angular.element('html, body').on('click', function () {
-                ctrl.isOpened = false;
-                $element.toggleClass('open', ctrl.isOpened);
-            })
+
+            $element.on('$destroy', function () {
+                $body.off('click', onBodyClick);
+            });
+
+            function onBodyClick() {
+                $body.off('click', onBodyClick);
+                $scope.$apply(function () {
+                    ctrl.isOpened = false;
+                    $element.toggleClass('open', ctrl.isOpened);
+                });
+            }
         }
     };
 }

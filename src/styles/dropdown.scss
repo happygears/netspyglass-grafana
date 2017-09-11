@@ -1,0 +1,12 @@
+.dropdown-menu--custom {
+  li.dropdown--separator {
+    margin: 5px 0;
+    border-top: 1px solid #3a3a3a;
+    overflow: hidden;
+    a {
+      display: none !important;
+    }
+  }
+}
+
+

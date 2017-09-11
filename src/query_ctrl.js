@@ -83,6 +83,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             targetDefaults, 
             {format: this.options.isGraph ? 'time_series' : 'table'}
         );
+
+        if (this.options.isGraph) {
+            if (!_.find(this.target.columns, {name: 'time'})) {
+                this.target.columns.push({name: 'time', visible: false});
+            }
+        }
     }
 
     /**

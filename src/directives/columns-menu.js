@@ -47,6 +47,10 @@ class ColumnsMenuController {
         }
     }
 
+    getColumnsList() {
+        return this.$injector.get('$q').resolve(this.columnsList);
+    }
+
     notifyChange() {
         this.$injector.get('$timeout')(() => {
             if (!this.$scope.column_form.alias || this.$scope.column_form.alias.$valid) {

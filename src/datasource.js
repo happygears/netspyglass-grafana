@@ -155,17 +155,17 @@ export class NetSpyGlassDatasource {
                 submenu: tags.map((tag) => ({text: tag, value: tag}))
             });
 
-            columns.push({text: '---------'});
+            columns.push({text: '---------', separator: true});
 
             columns.push({
-                text: 'predefined',
+                text: 'Pre Defined columns',
                 submenu: [
                     {text: 'metric', value: 'metric'},
                     {text: 'time', value: 'time'}
                 ]
             });
 
-            columns.push({text: '---------'});
+            columns.push({text: '---------', separator: true});
 
             columns = _.concat(columns,categories);
 

@@ -3,6 +3,12 @@
         <span class="select-col__func" ng-repeat="$function in $ctrl.column.appliedFunctions track by $function">{{ ::$function }} ( </span>
     </div>
 
+    <hg-dropdown
+            data-ng-if="$ctrl.isTable === 'true'"
+            data-value="$ctrl.column.name"
+            data-on-value-changed="ctrl.onSelectCategory($value)"
+            data-get-options="$ctrl.getColumnsList()"></hg-dropdown>
+
     <div class="gf-form-dropdown-typeahead max-width-14 hg-container__item"
         data-ng-if="$ctrl.isTable === 'true'"
         data-link-text="{{$ctrl.column.name}}"

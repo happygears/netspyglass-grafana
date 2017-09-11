@@ -114,7 +114,19 @@ export class NetSpyGlassDatasource {
         const query = SQLGenerator.categories();
         return this.api
             .queryData(query, NSGQLApi.FORMAT_JSON)
-            .then((data) => _.groupBy(data[0].rows, 'category'));
+            .then((data) => {
+                let categories = _.groupBy(data[0].rows, 'category'),
+                    result = [];
+
+                for (let category in categories) {
+                    result.push({
+                        text: category,
+                        submenu: categories[category].map((category) => ({text: category.name, value: category.name}))
+                    });
+                }
+
+                return result;
+            });
     }
 
     /**
@@ -136,7 +148,7 @@ export class NetSpyGlassDatasource {
             this.getFacets(variable)
         ]).then(function (data) {
             const [categories, tags] = data;
-            const columns = [];
+            let columns = [];
 
             columns.push({
                 text: 'tags',
@@ -155,12 +167,7 @@ export class NetSpyGlassDatasource {
 
             columns.push({text: '---------'});
 
-            for (let category in categories) {
-                columns.push({
-                    text: category,
-                    submenu: categories[category].map((category) => ({text: category.name, value: category.name}))
-                });
-            }
+            columns = _.concat(columns,categories);
 
             return columns;
         });

@@ -116,20 +116,14 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     getCategories() {
-        this.datasource
-            .getCategories()
-            .then((categories) => {
-                this.options.categories = categories;
-            });
+        return this.datasource.getCategories();
     }
 
     /**
-     * @param {string} category
      * @param {string} variable
      */
-    onSelectCategory(category, variable) {
-        this.target.category = category;
-        this.target.variable = variable;
+    onSelectCategory($variable) {
+        this.target.variable = $variable;
         this.loadColumns();
         this.execute();
     }

@@ -20,22 +20,11 @@
             <div class="gf-form">
                 <label class="gf-form-label query-keyword width-7">FROM</label>
             </div>
-
             <div class="gf-form">
-                <a class="gf-form-label pointer" data-toggle="dropdown">
-                    <span>{{ ctrl.target.variable }}</span>
-                </a>
-
-                <ul class="dropdown-menu" role="menu">
-                    <li data-ng-repeat="(key, category) in ctrl.options.categories" class="dropdown-submenu">
-                        <a>{{ ::key }}</a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li data-ng-repeat="item in category | orderBy:'name' ">
-                                <a data-ng-click="ctrl.onSelectCategory(item.category, item.name)">{{ ::item.name }}</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                <hg-dropdown
+                        data-value="ctrl.target.variable"
+                        data-on-value-changed="ctrl.onSelectCategory($value)"
+                        data-get-options="ctrl.getCategories()"></hg-dropdown>
             </div>
 
             <div class="gf-form gf-form--grow">

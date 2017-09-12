@@ -54,13 +54,21 @@ class ColumnsMenuController {
         }
     }
 
+    $onDestroy() {
+        this.onColumnChanged({$column: this.column});
+    }
+
     getColumnsList() {
         return this.$injector.get('$q').resolve(this.columnsList);
     }
 
     notifyChange() {
         this.$injector.get('$timeout')(() => {
-            if (!this.$scope.column_form.alias || this.$scope.column_form.alias.$valid) {
+            const aliasChanged = this.$scope.column_form 
+                && !this.$scope.column_form.alias || 
+                this.$scope.column_form.alias.$valid;
+            
+            if (aliasChanged) {
                 this.onColumnChanged({$column: this.column});
             }
         });

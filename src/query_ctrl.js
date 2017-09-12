@@ -90,6 +90,20 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     }
 
+    initTarget() {
+        _.defaultsDeep(
+            this.target, 
+            targetDefaults, 
+            {format: this.options.isGraph ? 'time_series' : 'table'}
+        );
+
+        if (this.options.isGraph) {
+            if (!_.find(this.target.columns, {name: 'time'})) {
+                this.target.columns.push({name: 'time', visible: false});
+            }
+        }
+    }
+
     setPanelSortFromOrderBy() {
         const index = _.findIndex(this.target.columns, {name: this.target.orderBy.column});
 
@@ -103,20 +117,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
         } else {
             this.onClearOrderBy();
-        }
-    }
-
-    initTarget() {
-        _.defaultsDeep(
-            this.target, 
-            targetDefaults, 
-            {format: this.options.isGraph ? 'time_series' : 'table'}
-        );
-
-        if (this.options.isGraph) {
-            if (!_.find(this.target.columns, {name: 'time'})) {
-                this.target.columns.push({name: 'time', visible: false});
-            }
         }
     }
 
@@ -168,6 +168,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onChangeOrderBy() {
         this._updateOrderBy();
     }
+
     onClearOrderBy() {
         this.target.orderBy.column = this.prompts.orderBy;
         this._updateOrderBy();
@@ -183,6 +184,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         const index = this.target.columns.indexOf($column);
 
         if (index !== -1) {
+            this.target.columns[index].willRemove = true;
             this.target.columns.splice(index, 1);
             return {index};
         }

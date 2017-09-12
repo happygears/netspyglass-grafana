@@ -137,12 +137,16 @@ const SQLGenerator = {
             query.limit(target.limit);
         }
 
-        if (target.orderBy && target.orderBy !== QueryPrompts.orderBy) {
-            query.orderBy([target.orderBy]);
+        if (target.orderBy.column && target.orderBy.column !== QueryPrompts.orderBy) {
+            query.orderBy([`${target.orderBy.column} ${target.orderBy.sort}`]);
+        } else {
+            query.clearOrderBy();
         }
 
         if (target.groupBy.value && target.groupBy.value !== QueryPrompts.groupBy) {
             query.groupBy([this.generateGroupByValue(target, options, useTemplates)]);
+        } else {
+            query.clearGroupBy();
         }
         
         return query.compile();

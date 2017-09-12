@@ -20,12 +20,17 @@ import {QueryPrompts, GrafanaVariables} from './dictionary';
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment
  */
+const orderBySortTypes = ['ASC','DESC'];
 
 const targetDefaults = {
     columns: [{name: 'metric', visible: true}],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
-    orderBy:  QueryPrompts.orderBy,
+    // orderBy:  QueryPrompts.orderBy,
+    orderBy:  {
+        column: QueryPrompts.orderBy,
+        sort: orderBySortTypes[0]
+    },
     rawQuery: 0,
     limit: 100,
     tags: [],
@@ -56,9 +61,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             segments: [],
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
         };
-
-
-        console.log(this.target);
     }
 
     execute() {
@@ -75,6 +77,33 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.panelCtrl.events.emitter.on('data-error', (errors) => {
             this.errors = _.cloneDeep(errors);
         });
+
+        if( !this.options.isGraph ) {
+            this.setPanelSortFromOrderBy();
+            this.$scope.$watch('ctrl.panel.sort', (newVal, oldVal) => {
+                if( newVal.col !== oldVal.col || newVal.desc !== oldVal.desc ) {
+                    this.setOrderByFromPanelSort(newVal);
+                    this.execute();
+                }
+            },true);
+        }
+
+    }
+
+    setPanelSortFromOrderBy() {
+        const index = _.findIndex(this.target.columns, {name: this.target.orderBy.column});
+
+        this.panel.sort.col = index > -1 ? index : null;
+        this.panel.sort.desc = this.target.orderBy.sort == orderBySortTypes[1];
+    }
+
+    setOrderByFromPanelSort(value) {
+        if( value.col !== null ) {
+            this.target.orderBy.column = this.target.columns[value.col].name;
+            this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
+        } else {
+            this.onClearOrderBy();
+        }
     }
 
     initTarget() {
@@ -128,9 +157,20 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.execute();
     }
 
+    _updateOrderBy() {
+        if (this.options.isGraph) {
+            this.execute();
+        } else {
+            this.setPanelSortFromOrderBy();
+        }
+    }
+
+    onChangeOrderBy() {
+        this._updateOrderBy();
+    }
     onClearOrderBy() {
-        this.target.orderBy = this.prompts.orderBy;
-        this.execute();
+        this.target.orderBy.column = this.prompts.orderBy;
+        this._updateOrderBy();
     }
 
     onClearGroupBy() {
@@ -324,8 +364,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         let list = [];
 
         if (this.options.isGraph) {
-            list.push({text: 'metric ASC', value: 'metric ASC'});
-            list.push({text: 'metric DESC', value: 'metric DESC'});
+            list.push({text: 'metric', value: 'metric'});
         } else if (this.options.isTable) {
             this.target.columns.forEach((el) => {
                 if(el.appliedFunctions.length && !el.alias) return;
@@ -338,6 +377,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         return this.$injector
             .get('$q')
             .resolve(list);
+    }
+
+    getOrderBySortOptions() {
+        return this.$injector
+            .get('$q')
+            .resolve([
+                {text: orderBySortTypes[0], value: orderBySortTypes[0]},
+                {text: orderBySortTypes[1], value: orderBySortTypes[1]}
+            ]);
     }
 
     getLimitOptions() {

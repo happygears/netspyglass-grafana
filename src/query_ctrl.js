@@ -26,7 +26,6 @@ const targetDefaults = {
     columns: [{name: 'metric', visible: true}],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
-    // orderBy:  QueryPrompts.orderBy,
     orderBy:  {
         column: QueryPrompts.orderBy,
         sort: orderBySortTypes[0]
@@ -105,7 +104,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     setPanelSortFromOrderBy() {
-        const index = _.findIndex(this.target.columns, {name: this.target.orderBy.column});
+        const index = _.findIndex(this.target.columns, (column) => {
+            return column.name === this.target.orderBy.column || column.alias === this.target.orderBy.column;
+        });
 
         this.panel.sort.col = index > -1 ? index : null;
         this.panel.sort.desc = this.target.orderBy.sort == orderBySortTypes[1];

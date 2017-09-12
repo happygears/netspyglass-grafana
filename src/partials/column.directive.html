@@ -1,21 +1,26 @@
-<div class="hg-container">
-    <div class="gf-form-label hg-container__item" ng-if="$ctrl.column.appliedFunctions.length">
-        <span class="select-col__func" ng-repeat="$function in $ctrl.column.appliedFunctions track by $function">{{ ::$function }} ( </span>
+<div class="col-container">
+
+    <div class="gf-form-label col-container__item" ng-if="$ctrl.column.appliedFunctions.length">
+        <span 
+            tabindex="-1"
+            data-ng-repeat="item in $ctrl.column.appliedFunctions"
+            class="select-col__func select-col__func--open">{{ item.name }} ( </span>
     </div>
 
     <hg-dropdown
-            data-ng-if="$ctrl.isTable === 'true'"
-            data-value="$ctrl.column.name"
-            data-on-value-changed="$ctrl.onColumnSelect($value)"
-            data-get-options="$ctrl.getColumnsList()"></hg-dropdown>
+        class="col-container__item"
+        data-ng-if="$ctrl.isTable === 'true'"
+        data-value="$ctrl.column.name"
+        data-on-value-changed="$ctrl.onColumnSelect($value)"
+        data-get-options="$ctrl.getColumnsList()"></hg-dropdown>
 
-    <div class="gf-form-label hg-container__item" data-ng-if="$ctrl.isTable == 'false'">{{ $ctrl.column.name }}</div>
+    <div class="gf-form-label col-container__item" data-ng-if="$ctrl.isTable == 'false'">{{ $ctrl.column.name }}</div>
 
-    <div class="gf-form-label hg-container__item" data-ng-if="$ctrl.column.appliedFunctions.length">
+    <div class="gf-form-label col-container__item" data-ng-if="$ctrl.column.appliedFunctions.length">
         <span class="select-col__func select-col__func--close">{{ ' ) '.repeat($ctrl.column.appliedFunctions.length) }}</span>
     </div>
 
-    <span data-ng-if="$ctrl.column.alias" class="gf-form-label hg-container__item">as</span>
+    <span data-ng-if="$ctrl.column.alias" class="gf-form-label col-container__item query-keyword">AS</span>
 
     <form novalidate name="column_form">
         <input name="alias" data-ng-if="$ctrl.column.alias" 
@@ -27,4 +32,4 @@
     </form>
 </div>   
 
-<a class="gf-form-label"  data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>
+<a class="gf-form-label dropdown-menu-trigger" data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>

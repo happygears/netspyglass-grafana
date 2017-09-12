@@ -3,21 +3,51 @@ hg-columns-menu {
     position: relative;
     margin-right: 2px;
     background: $columns-bg;
+    $margin: 7px;
+
+    .select-col__func--open:focus,
+    .select-col__func--open:active {
+        outline: none;
+        user-select: none;
+        color: $column-focused-function-color;
+    }
 
     > .dropdown-menu  {
         right: 0 !important;
         left: auto !important;
+        
+        a[href^="#for-function"] {
+            display: none;
+        }
+        
+        a[href^="#for-dropdown-menu"] {
+            display: block;
+        }
+
+        &--for-function {
+            a[href^="#for-function"] {
+                display: block;
+            }
+            
+            a[href^="#for-dropdown-menu"] {
+                display: none;
+            }
+        }
     }
 
-    .hg-container {
+    .col-container {
         display: flex;
-        padding: 0 0 0 5px;
+        padding: 0 0 0 $margin;
         border-right: 1px solid $columns-menu-border; 
 
         &__item {
             padding-left: 0;
             padding-right: 0;
-            margin-right: 5px !important;
+            margin-right: $margin !important;
+
+            &.query-keyword {
+                width: auto;
+            }
         }
     }
 
@@ -40,19 +70,11 @@ hg-columns-menu {
             box-sizing: border-box;
         }
 
-        .gf-form-dropdown-typeahead {
-            background: transparent;
-            margin-right: 0;
-            a.gf-form-label {
-                padding-right: 0;
-                padding-left: 0;  
-                outline: none;
-                box-shadow: none;  
-            }
-
-            &:after {
-                display: none;
-            }
+        .gf-form-label.pointer {
+            padding-right: 0;
+            padding-left: 0;  
+            outline: none;
+            box-shadow: none; 
         }
 
         .gf-form-input {

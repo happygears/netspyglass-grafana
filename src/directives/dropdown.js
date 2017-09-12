@@ -53,16 +53,17 @@ export default function DropdownDirective() {
             $element
                 .find('.pointer')
                 .on('click', function (e) {
-                    e.stopPropagation();
+                    // e.stopPropagation();
                     e.preventDefault();
 
                     if (!ctrl.isOpened) {
-                        $body.on('click', onBodyClick);
+                        setTimeout(function() {
+                            $body.on('click', onBodyClick);
+                        }, 0);
+
                         ctrl.getSelectOptions().then((data) => {
                             ctrl.list = data;
                         });
-                    } else {
-                        $body.off('click', onBodyClick);
                     }
 
                     $scope.$apply(function () {

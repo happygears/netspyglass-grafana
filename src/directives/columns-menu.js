@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-const prevent = ' $event.preventDefault();  $event.stopPropagation();';
+const prevent = ' $event.preventDefault();';
 
 const menuItems = [
     {text: 'Clear Functions', click: `$ctrl.onClear(); ${prevent}`,  href: '#for-dropdown-menu'},
@@ -160,7 +160,9 @@ export default function ColumnsMenuDirective($timeout) {
 
                 $menu.on('click', function (evt) {
                     const $target = $(evt.target);
-                    if (evt.target.tagName.toLowerCase() === 'a' && $target.attr('href') && $target.attr('href')[0] === '#') {
+
+                    if (evt.target.tagName.toLowerCase() === 'a' && $target.attr('href')
+                     && $target.attr('href')[0] === '#' && !$target.attr('ng-click')) {
                         evt.preventDefault();
                         $scope.$apply(function () {
                             ctrl.onSelectFunction($target.attr('href').substr(1), $menu.data('f-index'));

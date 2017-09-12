@@ -20,7 +20,7 @@ const SQLGenerator = {
             let columnName = column.name;
 
             if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
-                columnName = `${column.appliedFunctions.join('(')}(${columnName}${')'.repeat(column.appliedFunctions.length)}`;
+                columnName = `${column.appliedFunctions.map(((func) => func.name)).join('(')}(${columnName}${')'.repeat(column.appliedFunctions.length)}`;
             }
 
             if (column.alias) {

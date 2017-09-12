@@ -89,6 +89,7 @@ class ColumnsMenuController {
         if (name === 'for-function-remove') {
             if (fIndex >= 0) {
                 this.column.appliedFunctions.splice(fIndex, 1);
+                this.notifyChange();
             }
         } else {
             if (fIndex >= 0) {
@@ -96,9 +97,8 @@ class ColumnsMenuController {
             } else {
                 this.column.appliedFunctions.unshift({name});
             }
+            this.notifyChange();
         }
-
-        this.notifyChange();
     }
 }
 

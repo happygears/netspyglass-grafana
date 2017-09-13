@@ -138,7 +138,11 @@ class SQLQuery {
         ]);
 
         if (target.limit) {
-            query.limit(target.limit);
+            if (typeof target.limit === 'string') {
+                query.limit(this.templateSrv.replace(target.limit));
+            } else {
+                query.limit(target.limit);
+            }
         }
 
         if (target.orderBy.column && target.orderBy.column !== QueryPrompts.orderBy) {

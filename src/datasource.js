@@ -56,6 +56,7 @@ export class NetSpyGlassDatasource {
         this.$q = $q;
         this.$timeout = $timeout;
         this.instanceSettings = instanceSettings;
+        this.templateSrv = templateSrv;
     }
 
     /**
@@ -197,5 +198,19 @@ export class NetSpyGlassDatasource {
      */
     getSQLString(target) {
         return SQLGenerator.generateSQLQuery(target, {}, true);
+    }
+
+
+
+    /**
+     * Templates
+     */
+    metricFindQuery(query) {
+        console.log('metricFindQuery',query);
+
+        return this.api.queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
+            return data.map(el => ({text: el}));
+        });
+
     }
 }

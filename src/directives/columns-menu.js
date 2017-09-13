@@ -54,10 +54,6 @@ class ColumnsMenuController {
         }
     }
 
-    $onDestroy() {
-        this.onColumnChanged({$column: this.column});
-    }
-
     getColumnsList() {
         return this.$injector.get('$q').resolve(this.columnsList);
     }

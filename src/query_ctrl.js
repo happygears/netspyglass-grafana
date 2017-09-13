@@ -77,16 +77,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.errors = _.cloneDeep(errors);
         });
 
-        if( !this.options.isGraph ) {
+        if (!this.options.isGraph) {
             this.setPanelSortFromOrderBy();
             this.$scope.$watch('ctrl.panel.sort', (newVal, oldVal) => {
-                if( newVal.col !== oldVal.col || newVal.desc !== oldVal.desc ) {
+                if (newVal.col !== oldVal.col || newVal.desc !== oldVal.desc) {
                     this.setOrderByFromPanelSort(newVal);
                     this.execute();
                 }
-            },true);
+            }, true);
         }
-
     }
 
     initTarget() {
@@ -113,7 +112,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     setOrderByFromPanelSort(value) {
-        if( value.col !== null ) {
+        if (value.col !== null) {
             this.target.orderBy.column = this.target.columns[value.col].name;
             this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
         } else {
@@ -150,7 +149,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     /**
-     * @param {string} variable
+     * @param {string} $variable
      */
     onSelectCategory($variable) {
         this.target.variable = $variable;
@@ -187,6 +186,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         if (index !== -1) {
             this.target.columns[index].willRemove = true;
             this.target.columns.splice(index, 1);
+            this.execute();
             return {index};
         }
 
@@ -194,7 +194,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onColumnChanged($column) {
-        console.log('onColumnsChanged');
         this.execute();
     }
 
@@ -204,13 +203,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             name: this.prompts.column
         });
     }
-
-/*     getColumnsOptions() {
-        const columns = this.options.columns
-            .map((column) => this.uiSegmentSrv.newSegment({value: column.name}));;
-
-        return this.$injector.get('$q').resolve(columns);
-    } */
 
     /**
      * @returns {Promise|boolean}

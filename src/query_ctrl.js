@@ -114,7 +114,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     setOrderByFromPanelSort(value) {
         if (value.col !== null) {
-            this.target.orderBy.column = this.target.columns[value.col].name;
+            this.target.orderBy.column = this.target.columns[value.col].alias || this.target.columns[value.col].name;
             this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
         } else {
             this.onClearOrderBy();

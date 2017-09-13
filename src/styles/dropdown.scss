@@ -1,11 +1,14 @@
 hg-dropdown {
   position: relative;
 
-  li.dropdown-submenu > ul {
-    top: auto;
-    bottom: 0;
-    overflow-y: auto;
-    max-height: 300px;
+  & > .dropdown-menu {
+
+    & > li.dropdown-submenu > ul {
+      top: auto;
+      bottom: 0;
+      overflow-y: auto;
+      max-height: 300px;
+    }
   }
 }
 

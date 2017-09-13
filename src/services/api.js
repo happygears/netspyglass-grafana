@@ -9,9 +9,13 @@ const sqlBuilder = SQLBuilderFactory();
  * @typedef {{ token: string, baseUrl: string, endpoints: {test: string, data: string} }} INSGQLApiOptions
  */
 
-const SQLGenerator = {
+class SQLQuery {
 
-    processColumn: function (column) {
+    constructor(templateSrv) {
+        this.templateSrv = templateSrv;
+    }
+
+    processColumn(column) {
         if (angular.isString(column)) {
             return column;
         }
@@ -31,9 +35,9 @@ const SQLGenerator = {
         }
 
         throw new Error('Unknow column type!');
-    },
+    }
 
-    categories: function () {
+    categories() {
         return sqlBuilder.factory({
             select: ['category', 'name'],
             distinct: true,
@@ -43,27 +47,27 @@ const SQLGenerator = {
             }],
             orderBy: ['category']
         }).compile();
-    },
+    }
 
     /**
      * @param from {string}
      * @returns {*}
      */
-    facets: function (from) {
+    facets(from) {
         return sqlBuilder.factory({
             select: ['tagFacet'],
             distinct: true,
             from: from,
             orderBy: ['tagFacet']
         }).compile();
-    },
+    }
 
     /**
      * @param {string} type
      * @param {string} from
      * @param {array} tags
      */
-    suggestion: function (type, from, tags = []) {
+    suggestion(type, from, tags = []) {
         const query = sqlBuilder
             .factory()
             .setDistinct(true)
@@ -84,13 +88,13 @@ const SQLGenerator = {
         }
 
         return query.compile();
-    },
+    }
 
     /**
      * @param {array} tags
      * @returns {array}
      */
-    generateWhereFromTags: function(tags) {
+    generateWhereFromTags(tags) {
         let result = [];
 
         tags.forEach((tag) => {
@@ -100,7 +104,7 @@ const SQLGenerator = {
                 }
 
                 result.push({
-                    [tag.key]:[tag.operator, tag.value]
+                    [tag.key]: [tag.operator, this.templateSrv.replace(tag.value)]
                 });
             }
         });
@@ -111,15 +115,15 @@ const SQLGenerator = {
         }
 
         return null;
-    },
+    }
 
-    generateSQLQuery: function (target, options, useTemplates = false) {
+    generateSQLQuery(target, options, useTemplates = false) {
         const query = sqlBuilder.factory();
         const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
-                time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
-            };
+            time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
+        };
         const columns = (target.columns || [])
-            .filter((column) => column.name !== QueryPrompts.column)
+            .filter((column) => column.name !== QueryPrompts.column);
 
         if (columns.length === 0) {
             return false;
@@ -148,28 +152,28 @@ const SQLGenerator = {
         } else {
             query.clearGroupBy();
         }
-        
-        return query.compile();
-    },
 
-    generateSQLQueryFromString: function(target,options) {
+        return query.compile();
+    }
+
+    generateSQLQueryFromString(target, options) {
         const timeFilter = `time BETWEEN '${options.timeRange.from}' AND '${options.timeRange.to}'`;
         const interval = `${options.interval}`;
 
         let query = target.nsgqlString;
 
-        if( query && query.indexOf(GrafanaVariables.timeFilter) > 0 ) {
+        if (query && query.indexOf(GrafanaVariables.timeFilter) > 0) {
             query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);
         }
 
-        if( query && query.indexOf(GrafanaVariables.interval) > 0 ) {
+        if (query && query.indexOf(GrafanaVariables.interval) > 0) {
             query = _.replace(query, GrafanaVariables.interval, interval);
         }
 
         return query;
-    },
+    }
 
-    generateGroupByValue: function(target, options, useTemplates = false) {
+    generateGroupByValue(target, options, useTemplates = false) {
         switch (target.groupBy.type) {
             case 'time':
                 const groupByValue = target.groupBy.value === GrafanaVariables.interval && !useTemplates ? options.interval : target.groupBy.value;
@@ -180,7 +184,7 @@ const SQLGenerator = {
                 break;
         }
     }
-};
+}
 
 
 const Cache = {};
@@ -200,9 +204,9 @@ Object.defineProperty(Cache, 'sync', {
     writable: false,
     enumerable: false,
     configurable: false
-  });
+});
 
-  Cache.sync();
+Cache.sync();
 
 class NSGQLApi {
     /**
@@ -310,6 +314,6 @@ NSGQLApi.FORMAT_JSON = 'json';
 NSGQLApi.FORMAT_LIST = 'list';
 
 export {
-    SQLGenerator,
+    SQLQuery,
     NSGQLApi
 }

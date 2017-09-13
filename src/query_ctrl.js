@@ -65,6 +65,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     execute() {
         this.errors = {};
         this.panelCtrl.refresh();
+        // console.log(this);
     }
 
     init() {

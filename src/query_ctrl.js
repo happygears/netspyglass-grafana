@@ -20,13 +20,13 @@ import {QueryPrompts, GrafanaVariables} from './dictionary';
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment
  */
-const orderBySortTypes = ['ASC','DESC'];
+const orderBySortTypes = ['ASC', 'DESC'];
 
 const targetDefaults = {
     columns: [{name: 'metric', visible: true}],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
-    orderBy:  {
+    orderBy: {
         column: QueryPrompts.orderBy,
         sort: orderBySortTypes[0]
     },
@@ -65,7 +65,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     execute() {
         this.errors = {};
         this.panelCtrl.refresh();
-        // console.log(this);
     }
 
     init() {
@@ -73,7 +72,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.options.segments = this.restoreTags();
         this.getCategories();
         this.loadColumns();
-        
+
         this.panelCtrl.events.emitter.on('data-error', (errors) => {
             this.errors = _.cloneDeep(errors);
         });
@@ -91,8 +90,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     initTarget() {
         _.defaultsDeep(
-            this.target, 
-            targetDefaults, 
+            this.target,
+            targetDefaults,
             {format: this.options.isGraph ? 'time_series' : 'table'}
         );
 
@@ -363,7 +362,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             list.push({text: 'metric', value: 'metric'});
         } else if (this.options.isTable) {
             this.target.columns.forEach((el) => {
-                if(el.appliedFunctions.length && !el.alias) return;
+                if (el.appliedFunctions.length && !el.alias) return;
 
                 let val = el.alias || el.name;
                 list.push({text: val, value: val});
@@ -386,6 +385,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     getLimitOptions() {
         return this.$injector.get('$q').resolve([
+            {text: 'None', 'value': ''},
             {text: '1', 'value': 1},
             {text: '5', 'value': 5},
             {text: '10', 'value': 10},
@@ -413,7 +413,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 ]);
                 break;
             case 'column':
-                return this.datasource.getFacets(this.target.variable).then( (data) => {
+                return this.datasource.getFacets(this.target.variable).then((data) => {
                     return data.map((el) => {
                         return {text: el, value: el}
                     })

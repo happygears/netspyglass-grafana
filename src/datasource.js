@@ -67,8 +67,11 @@ export class NetSpyGlassDatasource {
             from: utils.getTime(rangeRaw.from, false),
             to: utils.getTime(rangeRaw.to, true),
         };
+        let aliases = {};
 
         const processTarget = (target) => {
+            aliases[target.refId] = target.alias;
+
             const sql = target.rawQuery
                 ? this.sqlQuery.generateSQLQueryFromString(target, {timeRange, interval: options.interval})
                 : this.sqlQuery.generateSQLQuery(target, {timeRange, interval: options.interval});
@@ -84,21 +87,81 @@ export class NetSpyGlassDatasource {
             return this.$q.resolve({data: []});
         }
 
-        return this.api.queryData(sqlTargets).then((list) => {
-            let errorsList = _.filter(list, 'error'),
-                errors = {};
-            let data = {data: list};
+        return this.api.queryData(sqlTargets)
+            .then(data => this.proccessingDataErrors(data))
+            .then(data => this.processingGraphAliases(data, aliases))
+            .then((list) => {
+                return {data: list};
+            });
+    }
 
-            if (errorsList.length) {
-                errorsList.forEach((error) => {
-                    errors[error.id] = error.error;
-                });
+    /**
+     * this is where ALIAS BY substitution happens
+     */
+    getSeriesName(item, alias) {
+        const regex = /\$(\w+)|\[\[([\s\S]+?)]]/g;
 
-                throw errors;
+        alias = this.templateSrv.replace(alias);
+
+        return alias.replace(regex, function(match, g1, g2) {
+            const group = g1 || g2;
+
+            switch (group) {
+                case 'm':
+                case 'measurement':
+                case 'variable':
+                    return item.variable;
+                case 'device':
+                    return item.device;
+                case 'component':
+                    return item.component;
+                case 'description':
+                    return item.description;
             }
 
-            return data;
+            if (!item.tags || item.tags[group] === 'undefined') {
+                return match;
+            } else {
+                return item.tags[group];
+            }
         });
+
+    };
+
+    /**
+     *
+     * @param data
+     * @returns {*}
+     */
+    proccessingDataErrors(data) {
+        let errorsList = _.filter(data, 'error'),
+            errors = {};
+
+        if (errorsList.length) {
+            errorsList.forEach((error) => {
+                errors[(error.id).toUpperCase()] = error.error;
+            });
+
+            throw errors;
+        }
+
+        return data;
+    }
+
+    /**
+     *
+     * @param data
+     * @returns {*}
+     */
+    processingGraphAliases(data, aliases) {
+        data.forEach(item => {
+            const alias = aliases[item.id.toUpperCase()];
+            if (!item || !item.datapoints || !item.target || !alias) return;
+
+            item.target = this.getSeriesName(item, alias);
+        });
+
+        return data;
     }
 
     /**
@@ -207,4 +270,9 @@ export class NetSpyGlassDatasource {
             return data.map(el => ({text: el}));
         });
     }
+
+
+
+
+    testDatasource() {}
 }

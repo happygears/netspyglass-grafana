@@ -161,6 +161,25 @@
                     </div>
                 </div>
             </div>
+
+            <div class="gf-form-inline" data-ng-if="!ctrl.options.isTable">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
+                </div>
+                <div class="gf-form gf-form--grow">
+                    <input type="text"
+                           class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty"
+                           ng-model="ctrl.target.alias" spellcheck="false" placeholder="Naming pattern"
+                           ng-blur="ctrl.execute()">
+                </div>
+                <div class="gf-form ">
+                    <div class="gf-form-label">
+                        <i class="fa fa-question-circle"
+                           data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
+                           data-placement="bottom" data-original-title="" title=""></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

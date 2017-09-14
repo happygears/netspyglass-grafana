@@ -45,7 +45,7 @@ module.exports = function(grunt) {
 
     babel: {
       options: {
-        sourceMap: true,
+        sourceMap: IS_DEV,
         presets:  ['es2015']
       },
       dist: {

@@ -1,0 +1,198 @@
+<query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" can-collapse="true" has-text-edit-mode="true"
+    data-ng-class="{'loading': ctrl.panelCtrl.loading}">
+
+    <div class="gf-form" ng-show="ctrl.errors[ctrl.target.refId]">
+        <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.target.refId]}}</pre>
+    </div>
+
+    <div class="editor-part editor-part--row" data-ng-if="ctrl.target.rawQuery">
+        <div class="gf-form">
+        <input type="text" class="gf-form-input input-medium max-width" data-provide="typeahead"
+               data-ng-model="ctrl.target.nsgqlString"
+               ng-blur="ctrl.execute()"
+               spellcheck='false'
+               placeholder="SELECT tag FROM tagFacet WHERE id=1"/>
+        </div>
+    </div>    
+
+    <div class="editor-part editor-part--filter" data-ng-if="!ctrl.target.rawQuery">
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">FROM</label>
+            </div>
+            <div class="gf-form">
+                <hg-dropdown
+                        data-value="ctrl.target.variable"
+                        data-on-value-changed="ctrl.onSelectCategory($value)"
+                        data-get-options="ctrl.getCategories()"></hg-dropdown>
+            </div>
+
+            <div class="gf-form gf-form--grow">
+                <div class="gf-form-label gf-form-label--grow"></div>
+            </div>
+        </div>
+
+        <div class="gf-form-inline gf-form-inline--columns">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">SELECT</label>
+            </div>
+
+            <div class="gf-form gf-form--grow">
+                <div class="gf-form-inline gf-form--grow">
+                    
+                    <hg-columns-menu data-ng-if="ctrl.options.columns.length"
+                        data-is-table="{{ ctrl.options.isTable }}"
+                        data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}" 
+                        data-on-column-remove="ctrl.onColumnRemove($column)"
+                        data-on-column-changed="ctrl.onColumnChanged($column)"
+                        data-columns-list="ctrl.options.columns"
+                        data-column="column" class="gf-form gf-form--column-editor">
+                    </hg-columns-menu> 
+
+                    <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
+
+                    <div class="gf-form gf-form--grow">
+                        <div class="gf-form-label gf-form-label--grow"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-show="ctrl.target.variable != ctrl.prompts.variable">
+
+            <div class="gf-form-inline gf-form-inline--columns">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">WHERE</label>
+                </div>
+
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-inline gf-form--grow">
+                        <div class="gf-form" data-ng-repeat="segment in ctrl.options.segments">
+                            <metric-segment data-segment="segment"
+                                            data-get-options="ctrl.getTagsOrValues(segment, $index)"
+                                            data-on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
+                        </div>
+
+                        <div class="gf-form gf-form--grow">
+                            <div class="gf-form-label gf-form-label--grow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gf-form-inline">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">ORDER BY</label>
+                </div>
+
+                <div class="gf-form">
+                    <gf-form-dropdown model="ctrl.target.orderBy.column"
+                                      data-label-mode="true"
+                                      data-get-options="ctrl.getOrderByOptions()"
+                                      data-on-change="ctrl.onChangeOrderBy()">
+                    </gf-form-dropdown>
+                </div>
+
+                <div class="gf-form" data-ng-if="ctrl.target.orderBy.column && ctrl.target.orderBy.column !== ctrl.prompts.orderBy">
+                    <gf-form-dropdown model="ctrl.target.orderBy.sort"
+                                      data-label-mode="true"
+                                      data-get-options="ctrl.getOrderBySortOptions()"
+                                      data-on-change="ctrl.onChangeOrderBy()">
+                    </gf-form-dropdown>
+
+                    <a class="gf-form-label" data-ng-click="ctrl.onClearOrderBy()"><i class="fa fa-close"></i></a>
+                </div>
+
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-label gf-form-label--grow"></div>
+                </div>
+            </div>
+
+            <div class="gf-form-inline">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">GROUP BY</label>
+                    <gf-form-dropdown model="ctrl.target.groupBy.type"
+                                      data-label-mode="true"
+                                      data-get-options="ctrl.getGroupByTypes()">
+                    </gf-form-dropdown>
+                </div>
+                <div class="gf-form"
+                     data-ng-if="ctrl.target.groupBy.type && ctrl.target.groupBy.type != ctrl.prompts.groupByType">
+                    <gf-form-dropdown model="ctrl.target.groupBy.value"
+                                      data-lookup-text="true"
+                                      data-allow-custom="true"
+                                      data-label-mode="true"
+                                      data-get-options="ctrl.getGroupByVariables()"
+                                      data-on-change="ctrl.execute()">
+                    </gf-form-dropdown>
+
+                    <a class="gf-form-label"
+                       data-ng-if="ctrl.target.groupBy.value && ctrl.target.groupBy.value !== ctrl.prompts.groupBy"
+                       data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
+                </div>
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-label gf-form-label--grow"></div>
+                </div>
+            </div>
+
+            <div class="gf-form-inline">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">LIMIT</label>
+                </div>
+
+                <div class="gf-form">
+                    <gf-form-dropdown model="ctrl.target.limit"
+                        data-lookup-text="true"
+                        data-allow-custom="true"
+                        data-label-mode="true"
+                        data-get-options="ctrl.getLimitOptions()"
+                        data-on-change="ctrl.execute()">
+                    </gf-form-dropdown>
+                </div>
+
+                <div class="gf-form gf-form--grow">
+                    <div class="gf-form-label gf-form-label--grow">
+                        <i class="fa fa-question-circle"
+                           data-bs-tooltip="'Restrict number of time series returned by this query. ' +
+                           'Limit is applied after sorting. If this field is empty, result is unrestricted, ' +
+                           'however the server may apply its own restriction to avoid sending ' +
+                           'thousands of time series to Grafana'" data-placement="bottom"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gf-form-inline" data-ng-if="!ctrl.options.isTable">
+                <div class="gf-form">
+                    <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
+                </div>
+                <div class="gf-form gf-form--grow">
+                    <input type="text"
+                           class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty"
+                           ng-model="ctrl.target.alias" spellcheck="false" placeholder="Naming pattern"
+                           ng-blur="ctrl.execute()">
+                </div>
+                <div class="gf-form ">
+                    <div class="gf-form-label">
+                        <i class="fa fa-question-circle"
+                           data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
+                           data-placement="bottom" data-original-title="" title=""></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--<div style="border: 1px solid red; margin: 20px 0">-->
+        <!--<pre>{{ ctrl.target }}</pre>-->
+    <!--</div>-->
+
+    <!--<div style="border: 1px solid red; margin: 20px 0">-->
+       <!--<pre> {{  ctrl.options | json}}</pre>-->
+    <!--</div>-->
+
+    <!--<test data-prop="ctrl.target.variable"></test>-->
+
+
+</query-editor-row>

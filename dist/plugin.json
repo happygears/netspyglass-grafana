@@ -1,6 +1,6 @@
 {
-  "name": "NetSpyGlass--dev",
-  "id": "happygears-netspyglass-datasource--dev",
+  "name": "NetSpyGlass",
+  "id": "happygears-netspyglass-datasource",
   "type": "datasource",
 
   "staticRoot": ".",
@@ -11,6 +11,7 @@
 
   "metrics": true,
   "annotations": false,
+  "alerting": false,
 
   "info": {
     "description": "NetSpyGlass Datasource",

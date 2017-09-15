@@ -11,6 +11,7 @@
 
   "metrics": true,
   "annotations": false,
+  "alerting": false,
 
   "info": {
     "description": "NetSpyGlass Datasource",

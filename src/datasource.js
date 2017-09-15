@@ -53,7 +53,7 @@ export class NetSpyGlassDatasource {
         this.api = new NSGQLApi(backendSrv, $q, options);
         this.$q = $q;
         this.templateSrv = templateSrv;
-        this.sqlQuery = new SQLQuery(templateSrv)
+        this.sqlQuery = new SQLQuery(templateSrv);
     }
 
     /**
@@ -88,11 +88,9 @@ export class NetSpyGlassDatasource {
         }
 
         return this.api.queryData(sqlTargets)
-            .then(data => this.proccessingDataErrors(data))
-            .then(data => this.processingGraphAliases(data, aliases))
-            .then((list) => {
-                return {data: list};
-            });
+            .then(data => this._proccessingDataErrors(data))
+            .then(data => this._processingGraphAliases(data, aliases))
+            .then(list => ({data: list}));
     }
 
     /**
@@ -129,11 +127,10 @@ export class NetSpyGlassDatasource {
     };
 
     /**
-     *
      * @param data
      * @returns {*}
      */
-    proccessingDataErrors(data) {
+    _proccessingDataErrors(data) {
         let errorsList = _.filter(data, 'error'),
             errors = {};
 
@@ -149,11 +146,10 @@ export class NetSpyGlassDatasource {
     }
 
     /**
-     *
      * @param data
      * @returns {*}
      */
-    processingGraphAliases(data, aliases) {
+    _processingGraphAliases(data, aliases) {
         data.forEach(item => {
             const alias = aliases[item.id.toUpperCase()];
             if (!item || !item.datapoints || !item.target || !alias) return;
@@ -270,9 +266,4 @@ export class NetSpyGlassDatasource {
             return data.map(el => ({text: el}));
         });
     }
-
-
-
-
-    testDatasource() {}
 }

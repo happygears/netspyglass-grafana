@@ -1,0 +1,15 @@
+<a class="gf-form-label pointer">
+    <span>{{ $ctrl.value }}</span>
+</a>
+
+<ul class="dropdown-menu dropdown-menu--custom" data-ng-if="$ctrl.isOpened">
+    <li data-ng-repeat="item in $ctrl.list"
+        data-ng-class="{'dropdown-submenu': item.submenu.length, 'dropdown--separator': item.separator}">
+        <a>{{ ::item.text }}</a>
+        <ul class="dropdown-menu" role="menu" data-ng-if="item.submenu">
+            <li data-ng-repeat="subItem in item.submenu | orderBy: 'text' ">
+                <a data-ng-click="$ctrl.onSelectValue(subItem.value)">{{ ::subItem.text }}</a>
+            </li>
+        </ul>
+    </li>
+</ul>

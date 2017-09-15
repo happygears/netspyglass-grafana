@@ -32,9 +32,10 @@ System.register(['lodash', '../datemath'], function (_export, _context) {
                     }
 
                     return date.valueOf() + 'ms';
-                }
+                },
+
+                transformColumnsToSegments: function transformColumnsToSegments() {}
             });
         }
     };
 });
-//# sourceMappingURL=utils.js.map

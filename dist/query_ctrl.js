@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], function (_export, _context) {
+System.register(['app/plugins/sdk', './dictionary'], function (_export, _context) {
     "use strict";
 
-    var QueryCtrl, QueryPrompts, _createClass, targetDefaults, NetSpyGlassQueryCtrl;
+    var QueryCtrl, QueryPrompts, GrafanaVariables, _createClass, orderBySortTypes, targetDefaults, NetSpyGlassQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -40,7 +40,8 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
             QueryCtrl = _appPluginsSdk.QueryCtrl;
         }, function (_dictionary) {
             QueryPrompts = _dictionary.QueryPrompts;
-        }, function (_cssQueryEditorCss) {}],
+            GrafanaVariables = _dictionary.GrafanaVariables;
+        }],
         execute: function () {
             _createClass = function () {
                 function defineProperties(target, props) {
@@ -60,16 +61,21 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                 };
             }();
 
+            orderBySortTypes = ['ASC', 'DESC'];
             targetDefaults = {
-                columns: ['time', 'metric'],
+                columns: [{ name: 'metric', visible: true }],
                 category: QueryPrompts.category,
                 variable: QueryPrompts.variable,
+                orderBy: {
+                    column: QueryPrompts.orderBy,
+                    sort: orderBySortTypes[0]
+                },
                 rawQuery: 0,
                 limit: 100,
                 tags: [],
                 groupBy: {
                     type: QueryPrompts.groupByType,
-                    val: QueryPrompts.groupBy
+                    value: QueryPrompts.groupBy
                 }
             };
 
@@ -81,6 +87,7 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                  * @property refresh
                  * @property panelCtrl
                  */
+
                 function NetSpyGlassQueryCtrl($scope, $injector, uiSegmentSrv) {
                     _classCallCheck(this, NetSpyGlassQueryCtrl);
 
@@ -90,17 +97,12 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                     _this.$injector = $injector;
                     _this.prompts = QueryPrompts;
                     _this.uiSegmentSrv = uiSegmentSrv;
-
                     _this.options = {
+                        isGraph: _this.panel.type === 'graph',
+                        isTable: _this.panel.type === 'table',
                         categories: [],
-
                         segments: [],
-
-                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag }),
-
-                        groupByFormats: [],
-
-                        groupByType: [QueryPrompts.groupByType, 'time', 'column']
+                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag })
                     };
                     return _this;
                 }
@@ -108,6 +110,7 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                 _createClass(NetSpyGlassQueryCtrl, [{
                     key: 'execute',
                     value: function execute() {
+                        this.errors = {};
                         this.panelCtrl.refresh();
                     }
                 }, {
@@ -116,19 +119,56 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                         var _this2 = this;
 
                         this.initTarget();
-
                         this.options.segments = this.restoreTags();
+                        this.getCategories();
+                        this.loadColumns();
 
-                        this.target.groupBy.type = this.options.groupByType[0];
-
-                        this.datasource.getCategories().then(function (categories) {
-                            _this2.options.categories = categories;
+                        this.panelCtrl.events.emitter.on('data-error', function (errors) {
+                            _this2.errors = _.cloneDeep(errors);
                         });
+
+                        if (!this.options.isGraph) {
+                            this.setPanelSortFromOrderBy();
+                            this.$scope.$watch('ctrl.panel.sort', function (newVal, oldVal) {
+                                if (newVal.col !== oldVal.col || newVal.desc !== oldVal.desc) {
+                                    _this2.setOrderByFromPanelSort(newVal);
+                                    _this2.execute();
+                                }
+                            }, true);
+                        }
                     }
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
-                        _.defaultsDeep(this.target, targetDefaults, { format: this.panel.type === 'table' ? 'table' : 'time_series' });
+                        _.defaultsDeep(this.target, targetDefaults, { format: this.options.isGraph ? 'time_series' : 'table' });
+
+                        if (this.options.isGraph) {
+                            if (!_.find(this.target.columns, { name: 'time' })) {
+                                this.target.columns.push({ name: 'time', visible: false });
+                            }
+                        }
+                    }
+                }, {
+                    key: 'setPanelSortFromOrderBy',
+                    value: function setPanelSortFromOrderBy() {
+                        var _this3 = this;
+
+                        var index = _.findIndex(this.target.columns, function (column) {
+                            return column.name === _this3.target.orderBy.column || column.alias === _this3.target.orderBy.column;
+                        });
+
+                        this.panel.sort.col = index > -1 ? index : null;
+                        this.panel.sort.desc = this.target.orderBy.sort == orderBySortTypes[1];
+                    }
+                }, {
+                    key: 'setOrderByFromPanelSort',
+                    value: function setOrderByFromPanelSort(value) {
+                        if (value.col !== null) {
+                            this.target.orderBy.column = this.target.columns[value.col].alias || this.target.columns[value.col].name;
+                            this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
+                        } else {
+                            this.onClearOrderBy();
+                        }
                     }
                 }, {
                     key: 'restoreTags',
@@ -174,11 +214,83 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                         return segments;
                     }
                 }, {
-                    key: 'selectCategory',
-                    value: function selectCategory(category, variable) {
-                        this.target.category = category;
-                        this.target.variable = variable;
+                    key: 'getCategories',
+                    value: function getCategories() {
+                        return this.datasource.getCategories();
+                    }
+                }, {
+                    key: 'onSelectCategory',
+                    value: function onSelectCategory($variable) {
+                        this.target.variable = $variable;
+                        this.loadColumns();
                         this.execute();
+                    }
+                }, {
+                    key: '_updateOrderBy',
+                    value: function _updateOrderBy() {
+                        if (this.options.isGraph) {
+                            this.execute();
+                        } else {
+                            this.setPanelSortFromOrderBy();
+                        }
+                    }
+                }, {
+                    key: 'onChangeOrderBy',
+                    value: function onChangeOrderBy() {
+                        this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onClearOrderBy',
+                    value: function onClearOrderBy() {
+                        this.target.orderBy.column = this.prompts.orderBy;
+                        this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onClearGroupBy',
+                    value: function onClearGroupBy() {
+                        this.target.groupBy.type = QueryPrompts.groupByType;
+                        this.target.groupBy.value = QueryPrompts.groupBy;
+                        this.execute();
+                    }
+                }, {
+                    key: 'onColumnRemove',
+                    value: function onColumnRemove($column) {
+                        var index = this.target.columns.indexOf($column);
+
+                        if (index !== -1) {
+                            this.target.columns[index].willRemove = true;
+                            this.target.columns.splice(index, 1);
+                            this.execute();
+                            return { index: index };
+                        }
+
+                        return false;
+                    }
+                }, {
+                    key: 'onColumnChanged',
+                    value: function onColumnChanged($column) {
+                        this.execute();
+                    }
+                }, {
+                    key: 'onColumnAdd',
+                    value: function onColumnAdd() {
+                        this.target.columns.push({
+                            visible: true,
+                            name: this.prompts.column
+                        });
+                    }
+                }, {
+                    key: 'loadColumns',
+                    value: function loadColumns() {
+                        var _this4 = this;
+
+                        if (this.target.variable) {
+                            return this.datasource.getColumns(this.target.variable).then(function (columns) {
+                                return _this4.options.columns = columns;
+                            });
+                        }
+
+                        return false;
                     }
                 }, {
                     key: 'toggleEditorMode',
@@ -192,12 +304,11 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                 }, {
                     key: 'getTagsOrValues',
                     value: function getTagsOrValues(segment, index) {
-                        var _this3 = this;
+                        var _this5 = this;
 
                         var $q = this.$injector.get('$q');
                         var uiSegmentSrv = this.uiSegmentSrv;
                         var segments = this.options.segments;
-
                         var promise = $q.resolve([]);
 
                         if (this.target.variable) {
@@ -234,7 +345,7 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                             });
                         }).then(function (results) {
                             if (segment.type === 'key') {
-                                results.splice(0, 0, angular.copy(_this3.options.removeSegment));
+                                results.splice(0, 0, angular.copy(_this5.options.removeSegment));
                             }
                             return results;
                         });
@@ -280,7 +391,7 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                 }, {
                     key: 'rebuildTargetTagConditions',
                     value: function rebuildTargetTagConditions() {
-                        var _this4 = this;
+                        var _this6 = this;
 
                         var segments = this.options.segments;
                         var tags = [];
@@ -297,7 +408,7 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                                     break;
                                 case 'value':
                                     if (tagOperator = tags[tagIndex].operator) {
-                                        segments[index - 1] = _this4.uiSegmentSrv.newOperator(tagOperator);
+                                        segments[index - 1] = _this6.uiSegmentSrv.newOperator(tagOperator);
                                         tags[tagIndex].operator = tagOperator;
                                     }
                                     tags[tagIndex].value = segment.value;
@@ -315,6 +426,55 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
                         this.target.tags = tags;
                         this.execute();
                     }
+                }, {
+                    key: 'getOrderByOptions',
+                    value: function getOrderByOptions() {
+                        var list = [];
+
+                        if (this.options.isGraph) {
+                            list.push({ text: 'metric', value: 'metric' });
+                        } else if (this.options.isTable) {
+                            this.target.columns.forEach(function (el) {
+                                if (el.appliedFunctions.length && !el.alias) return;
+
+                                var val = el.alias || el.name;
+                                list.push({ text: val, value: val });
+                            });
+                        }
+
+                        return this.$injector.get('$q').resolve(list);
+                    }
+                }, {
+                    key: 'getOrderBySortOptions',
+                    value: function getOrderBySortOptions() {
+                        return this.$injector.get('$q').resolve([{ text: orderBySortTypes[0], value: orderBySortTypes[0] }, { text: orderBySortTypes[1], value: orderBySortTypes[1] }]);
+                    }
+                }, {
+                    key: 'getLimitOptions',
+                    value: function getLimitOptions() {
+                        return this.$injector.get('$q').resolve([{ text: 'None', 'value': '' }, { text: '1', 'value': 1 }, { text: '5', 'value': 5 }, { text: '10', 'value': 10 }, { text: '50', 'value': 50 }, { text: '100', 'value': 100 }]);
+                    }
+                }, {
+                    key: 'getGroupByTypes',
+                    value: function getGroupByTypes() {
+                        return this.$injector.get('$q').resolve([{ text: 'time', value: 'time' }, { text: 'column', value: 'column' }]);
+                    }
+                }, {
+                    key: 'getGroupByVariables',
+                    value: function getGroupByVariables() {
+                        switch (this.target.groupBy.type) {
+                            case 'time':
+                                return this.$injector.get('$q').resolve([{ text: GrafanaVariables.interval, value: GrafanaVariables.interval }, { text: '1s', value: '1s' }, { text: '1m', value: '1m' }, { text: '1h', value: '1h' }, { text: '1d', value: '1d' }]);
+                                break;
+                            case 'column':
+                                return this.datasource.getFacets(this.target.variable).then(function (data) {
+                                    return data.map(function (el) {
+                                        return { text: el, value: el };
+                                    });
+                                });
+                                break;
+                        }
+                    }
                 }]);
 
                 return NetSpyGlassQueryCtrl;
@@ -326,4 +486,3 @@ System.register(['app/plugins/sdk', './dictionary', './css/query-editor.css!'], 
         }
     };
 });
-//# sourceMappingURL=query_ctrl.js.map

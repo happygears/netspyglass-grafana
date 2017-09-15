@@ -139,7 +139,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, { timeRange: timeRange, interval: options.interval }) : _this.sqlQuery.generateSQLQuery(target, { timeRange: timeRange, interval: options.interval });
 
-                            return _this.api.generateTarget(sql, target.format, target.refId);
+                            return _this.api.generateTarget(_this.templateSrv.replace(sql), target.format, target.refId);
                         };
 
                         var sqlTargets = targets.map(processTarget).filter(function (target) {

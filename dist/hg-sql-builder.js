@@ -261,7 +261,9 @@ System.register([], function (_export, _context) {
                   } else if (WITH_BRACKETS.indexOf(operator) !== -1) {
                     value = '(\'' + value.join('\', \'') + '\')';
                   } else {
-                    value = '\'' + value + '\'';
+                    if (Array.isArray(value)) value = value[0];
+
+                    value = value.indexOf('$') === 0 ? '' + value : '\'' + value + '\'';
                   }
                 } else {
                   value = '\'' + value + '\'';

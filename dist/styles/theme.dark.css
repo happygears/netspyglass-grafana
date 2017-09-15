@@ -21,6 +21,11 @@
   top: 50%;
   border-top: 1px dashed #717171; }
 
+.gf-form-label {
+  border-radius: 0; }
+  .gf-form-label--grow::after {
+    content: '\00a0'; }
+
 .gf-form-inline {
   align-items: flex-start; }
 

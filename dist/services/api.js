@@ -67,10 +67,8 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
             sqlBuilder = SQLBuilderFactory();
 
             _export('SQLQuery', SQLQuery = function () {
-                function SQLQuery(templateSrv) {
+                function SQLQuery() {
                     _classCallCheck(this, SQLQuery);
-
-                    this.templateSrv = templateSrv;
                 }
 
                 _createClass(SQLQuery, [{
@@ -143,8 +141,6 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                 }, {
                     key: 'generateWhereFromTags',
                     value: function generateWhereFromTags(tags) {
-                        var _this = this;
-
                         var result = [];
 
                         tags.forEach(function (tag) {
@@ -153,7 +149,7 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                                     result.push(tag.condition);
                                 }
 
-                                result.push(_defineProperty({}, tag.key, [tag.operator, _this.templateSrv.replace(tag.value)]));
+                                result.push(_defineProperty({}, tag.key, [tag.operator, tag.value]));
                             }
                         });
 
@@ -187,7 +183,7 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
 
                         if (target.limit) {
                             if (typeof target.limit === 'string') {
-                                query.limit(this.templateSrv.replace(target.limit));
+                                query.limit(target.limit);
                             } else {
                                 query.limit(target.limit);
                             }
@@ -236,7 +232,7 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                                 return 'time(' + groupByValue + ')';
                                 break;
                             case 'column':
-                                return this.templateSrv.replace(target.groupBy.value);
+                                return target.groupBy.value;
                                 break;
                         }
                     }

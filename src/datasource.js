@@ -76,7 +76,7 @@ export class NetSpyGlassDatasource {
                 ? this.sqlQuery.generateSQLQueryFromString(target, {timeRange, interval: options.interval})
                 : this.sqlQuery.generateSQLQuery(target, {timeRange, interval: options.interval});
 
-            return this.api.generateTarget(sql, target.format, target.refId);
+            return this.api.generateTarget(this.templateSrv.replace(sql), target.format, target.refId);
         };
 
         const sqlTargets = targets

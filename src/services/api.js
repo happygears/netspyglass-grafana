@@ -104,7 +104,7 @@ class SQLQuery {
                 }
 
                 result.push({
-                    [tag.key]: [tag.operator, this.templateSrv.replace(tag.value)]
+                    [tag.key]: [tag.operator, tag.value]
                 });
             }
         });
@@ -139,7 +139,7 @@ class SQLQuery {
 
         if (target.limit) {
             if (typeof target.limit === 'string') {
-                query.limit(this.templateSrv.replace(target.limit));
+                query.limit(target.limit);
             } else {
                 query.limit(target.limit);
             }

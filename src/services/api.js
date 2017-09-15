@@ -11,9 +11,7 @@ const sqlBuilder = SQLBuilderFactory();
 
 class SQLQuery {
 
-    constructor(templateSrv) {
-        this.templateSrv = templateSrv;
-    }
+    constructor() {}
 
     processColumn(column) {
         if (angular.isString(column)) {
@@ -184,7 +182,7 @@ class SQLQuery {
                 return `time(${groupByValue})`;
                 break;
             case 'column':
-                return this.templateSrv.replace(target.groupBy.value);
+                return target.groupBy.value;
                 break;
         }
     }

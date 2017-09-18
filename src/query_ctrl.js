@@ -70,8 +70,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     init() {
         this.initTarget();
         this.options.segments = this.restoreTags();
-        this.getCategories();
-        this.loadColumns();
+        this.getCategories()
+            .then(() => this.loadColumns());
 
         this.panelCtrl.events.emitter.on('data-error', (errors) => {
             this.errors = _.cloneDeep(errors);
@@ -208,10 +208,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @returns {Promise|boolean}
      */
     loadColumns() {
-        if (this.target.variable) {
-            return this.datasource
-                .getColumns(this.target.variable)
-                .then((columns) => (this.options.columns = columns));
+        if (this.target.variable !== QueryPrompts.column) {
+            if (this.target.variable) {
+                return this.datasource
+                    .getColumns(this.target.variable)
+                    .then((columns) => (this.options.columns = columns));
+            }
         }
 
         return false;

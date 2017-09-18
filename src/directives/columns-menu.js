@@ -36,21 +36,20 @@ const menuItems = [
     }
 ];
 
-
 class ColumnsMenuController {
     constructor($injector, $scope) {
         this.$injector = $injector;
         this.$scope = $scope;
         this.menuItems = _.clone(menuItems);
-
-        if (this.isTable === 'false') {
-            this.menuItems.splice(1, 1);
-        }
     }
 
     $onInit() {
         if (!this.column.appliedFunctions) {
             this.column.appliedFunctions = [];
+        }
+
+        if (!this.availableRemove) {
+            this.menuItems.splice(1, 1);
         }
     }
 
@@ -115,7 +114,8 @@ export default function ColumnsMenuDirective($timeout) {
         controllerAs: '$ctrl',
         bindToController: true,
         scope: {
-            isTable: '@',
+            availableRemove: '=',
+            isTable: '=',
             column: '=',
             columnsList: '<',
             onColumnRemove: '&',

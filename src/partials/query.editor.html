@@ -41,7 +41,8 @@
                 <div class="gf-form-inline gf-form--grow">
                     
                     <hg-columns-menu data-ng-if="ctrl.options.columns.length"
-                        data-is-table="{{ ctrl.options.isTable }}"
+                        data-is-table="ctrl.options.isTable"
+                        data-available-remove="ctrl.options.isTable && $index > 0"
                         data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}" 
                         data-on-column-remove="ctrl.onColumnRemove($column)"
                         data-on-column-changed="ctrl.onColumnChanged($column)"
@@ -54,7 +55,6 @@
                     <div class="gf-form gf-form--grow">
                         <div class="gf-form-label gf-form-label--grow"></div>
                     </div>
-
                 </div>
             </div>
         </div>

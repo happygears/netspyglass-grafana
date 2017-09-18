@@ -120,8 +120,12 @@ class SQLQuery {
         const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
             time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
         };
-        const columns = (target.columns || [])
-            .filter((column) => column.name !== QueryPrompts.column);
+
+        let columns = [];
+
+        if (target && target.columns && target.columns.length) {
+            target.columns.filter((column) => column.name !== QueryPrompts.column);
+        }
 
         if (columns.length === 0) {
             return false;

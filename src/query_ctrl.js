@@ -23,6 +23,7 @@ import {QueryPrompts, GrafanaVariables} from './dictionary';
 const orderBySortTypes = ['ASC', 'DESC'];
 
 const targetDefaults = {
+    type: 'nsgql',
     columns: [{name: 'metric', visible: true}],
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
@@ -89,15 +90,20 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     initTarget() {
-        _.defaultsDeep(
-            this.target,
-            targetDefaults,
-            {format: this.options.isGraph ? 'time_series' : 'table'}
-        );
-
-        if (!this.target.columns) {
+        if (!Array.isArray(this.target.column)) {
             this.target.columns = [];
         }
+        
+        if (this.target.type !== 'nsgql') {
+            _.merge(this.target, _.cloneDeep(targetDefaults));
+        } else { 
+            _.defaultsDeep(
+                this.target,
+                targetDefaults
+            );
+        }
+
+        this.target.format = this.options.isGraph ? 'time_series' : 'table';
 
         if (this.options.isGraph) {
             if (!_.find(this.target.columns, {name: 'time'})) {
@@ -149,7 +155,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     getCategories() {
-        return this.datasource.getCategories();
+        return this.datasource
+            .getCategories()
+            .then((categories) => {
+                this.options.categories = categories;
+                return categories;
+            });
     }
 
     /**
@@ -212,11 +223,21 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @returns {Promise|boolean}
      */
     loadColumns() {
-        if (this.target.variable !== QueryPrompts.column) {
-            if (this.target.variable) {
+        if (this.target.variable && this.target.variable !== QueryPrompts.column && this.options.isTable) {
+            let found = -1;    
+            _.each(this.options.categories, (category) => {
+                found = _.findIndex(category.submenu, {value: this.target.variable });
+                if (~found) {
+                    return false;
+                }
+            });
+
+            if (~found) {
                 return this.datasource
                     .getColumns(this.target.variable)
-                    .then((columns) => (this.options.columns = columns));
+                    .then((columns) => {
+                        this.options.columns = columns;
+                    });
             }
         }
 

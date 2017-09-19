@@ -121,10 +121,10 @@ class SQLQuery {
             time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
         };
 
-        let columns = [];
+        let columns = Array.isArray(target.columns) ? target.columns : [];
 
-        if (target && target.columns && target.columns.length) {
-            target.columns.filter((column) => column.name !== QueryPrompts.column);
+        if (columns.length) {
+            columns = columns.filter((column) => column.name !== QueryPrompts.column);
         }
 
         if (columns.length === 0) {

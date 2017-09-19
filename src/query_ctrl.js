@@ -273,11 +273,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     break;
 
                 case 'value':
-
                     promise = this.datasource.getSuggestions({
                         type: segments[index - 2].value,
                         variable: this.target.variable,
-                        tags: this.target.tags,
+                        tags: this._filterPreviousWhereTags(index),
                     });
                     break;
 
@@ -304,6 +303,14 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 }
                 return results;
             });
+    }
+
+    /**
+     * @param {Number} currentIndex - index of current Segment
+     * @returns {Array} - returns array of tag objects that placed before current tag triplet
+     */
+    _filterPreviousWhereTags(currentIndex) {
+        return this.target.tags.filter((el, index) => index < currentIndex/3 - 1)
     }
 
     /**

@@ -124,7 +124,7 @@ class SQLQuery {
             }).compile(),
         ];
 
-        return queries.map((query) => ({nsgql: query, format: 'list'}));
+        return queries.map((query) => ({nsgql: query, format: NSGQLApi.FORMAT_LIST}));
     }
 
     /**

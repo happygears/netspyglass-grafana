@@ -248,6 +248,8 @@ export class NetSpyGlassDatasource {
                 break;
         }
 
+        query = this.templateSrv.replace(query);
+
         return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
     }
 
@@ -273,7 +275,7 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     getTagKeys() {
-        return this.api.queryData(this.sqlQuery.getTagKeysForAdHoc(),'list')
+        return this.api.queryData(this.sqlQuery.getTagKeysForAdHoc(), NSGQLApi.FORMAT_LIST)
             .then((list) => list.map((item) => ({text: item})))
     };
 

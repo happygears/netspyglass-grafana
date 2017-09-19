@@ -89,6 +89,45 @@ class SQLQuery {
     }
 
     /**
+     * @returns {String} String that contain nsgql
+     */
+    getTagKeysForAdHoc() {
+        return sqlBuilder.factory({
+            select: ['facet'],
+            from: 'tags'
+        }).compile();
+    }
+
+    /**
+     * @param {String} tagFacet
+     * @returns {Array} array of targets with format {nsgql: 'select ..', format: 'list'}
+     */
+    getTagValuesForAdHoc(tagFacet) {
+        const queries = [
+            sqlBuilder.factory({
+                select: [tagFacet],
+                distinct: true,
+                from: 'devices',
+                where: {
+                    [tagFacet]: [sqlBuilder.OP.NOT_NULL]
+                },
+                orderBy: [tagFacet]
+            }).compile(),
+            sqlBuilder.factory({
+                select: [tagFacet],
+                distinct: true,
+                from: 'interfaces',
+                where: {
+                    [tagFacet]: [sqlBuilder.OP.NOT_NULL]
+                },
+                orderBy: [tagFacet]
+            }).compile(),
+        ];
+
+        return queries.map((query) => ({nsgql: query, format: 'list'}));
+    }
+
+    /**
      * @param {array} tags
      * @returns {array}
      */
@@ -136,6 +175,7 @@ class SQLQuery {
         query.where([
             sqlBuilder.OP.AND,
             this.generateWhereFromTags(target.tags),
+            this.generateWhereFromTags(options.adHoc),
             timeVar
         ]);
 

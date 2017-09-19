@@ -67,14 +67,15 @@ export class NetSpyGlassDatasource {
             from: utils.getTime(rangeRaw.from, false),
             to: utils.getTime(rangeRaw.to, true),
         };
-        let aliases = {};
+        const aliases = {};
+        const adhocFilters = this.templateSrv.getAdhocFilters(this.name);
 
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;
 
             const sql = target.rawQuery
                 ? this.sqlQuery.generateSQLQueryFromString(target, {timeRange, interval: options.interval})
-                : this.sqlQuery.generateSQLQuery(target, {timeRange, interval: options.interval});
+                : this.sqlQuery.generateSQLQuery(target, {timeRange, interval: options.interval, adHoc: adhocFilters}, );
 
             return this.api.generateTarget(this.templateSrv.replace(sql), target.format, target.refId);
         };
@@ -266,4 +267,35 @@ export class NetSpyGlassDatasource {
             return data.map(el => ({text: el}));
         });
     }
+
+    /**
+     * Use to get tagFacets names for AdHoc Filter
+     * @returns {Promise}
+     */
+    getTagKeys() {
+        return this.api.queryData(this.sqlQuery.getTagKeysForAdHoc(),'list')
+            .then((list) => list.map((item) => ({text: item})))
+    };
+
+    /**
+     * Use to get tags names for AdHoc Filter
+     * @param {object} options
+     * @param {string} options.key - tagFacet name
+     * @returns {Promise}
+     */
+    getTagValues(options) {
+        return this.api.queryData(this.sqlQuery.getTagValuesForAdHoc(options.key))
+            .then((list) => {
+                return list
+                    .filter((item, pos, self) => self.indexOf(item) === pos)
+                    .map((item) => {
+                        if( item.error ){
+                            console.log(item.error);
+                            return;
+                        }
+                        return {text: item}
+                    })
+                    .filter(Boolean);
+            })
+    };
 }

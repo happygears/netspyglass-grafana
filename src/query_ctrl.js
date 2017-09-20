@@ -454,7 +454,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     getCollapsedText() {
-        return '';
+        return 'This target is collapsed. Click to the row for open it.';
     }
 }
 

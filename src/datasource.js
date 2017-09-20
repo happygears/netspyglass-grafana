@@ -81,6 +81,11 @@ export class NetSpyGlassDatasource {
         };
 
         const sqlTargets = targets
+            .map((target) => {
+                const nsgTarget = _.cloneDeep(target._nsgTarget) || {};
+                nsgTarget.refId = target.refId;
+                return nsgTarget;
+            })
             .map(processTarget)
             .filter((target) => target.nsgql !== false);
 

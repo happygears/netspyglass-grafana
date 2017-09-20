@@ -155,18 +155,17 @@ class SQLQuery {
     }
 
     generateSQLQuery(target, options, useTemplates = false) {
+        let columns = Array.isArray(target.columns) ? target.columns : [];
         const query = sqlBuilder.factory();
         const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
             time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
         };
 
-        let columns = Array.isArray(target.columns) ? target.columns : [];
-
         if (columns.length) {
             columns = columns.filter((column) => column.name !== QueryPrompts.column);
         }
 
-        if (columns.length === 0) {
+        if (columns.length === 0 || target.variable == QueryPrompts.variable) {
             return false;
         }
 

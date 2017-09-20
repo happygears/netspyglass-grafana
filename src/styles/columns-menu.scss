@@ -5,11 +5,19 @@ hg-columns-menu {
     background: $columns-bg;
     $margin: 7px;
 
-    .select-col__func--open:focus,
-    .select-col__func--open:active {
-        outline: none;
-        user-select: none;
-        color: $column-focused-function-color;
+    .select-col__func--open {
+        cursor: pointer;
+
+        &:hover {
+            color: $column-hover-link-color;
+        }
+
+        &:focus,
+        &:active {
+            outline: none;
+            user-select: none;
+            color: $column-focused-function-color;
+        }
     }
 
     > .dropdown-menu  {

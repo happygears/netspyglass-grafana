@@ -444,10 +444,13 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 ]);
                 break;
             case 'column':
+                const list = [{text: 'device', value: 'device'}];
                 return this.datasource.getFacets(this.target.variable).then((data) => {
-                    return data.map((el) => {
-                        return {text: el, value: el}
-                    })
+                    data.forEach((el) => {
+                        list.push({text: el, value: el})
+                    });
+
+                    return list;
                 });
                 break;
         }

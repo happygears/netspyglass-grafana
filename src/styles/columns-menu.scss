@@ -32,6 +32,20 @@ hg-columns-menu {
             display: block;
         }
 
+        a[href^="#for-dropdown-menu-alias-remove"] {
+            display: none;
+        }
+
+        &--has-alias {
+            a[href^="#for-dropdown-menu-alias-add"] {
+                display: none;
+            }
+
+            a[href^="#for-dropdown-menu-alias-remove"] {
+                display: block;
+            }
+        }
+
         &--for-function {
             a[href^="#for-function"] {
                 display: block;

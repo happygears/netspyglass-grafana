@@ -5,7 +5,8 @@ const prevent = ' $event.preventDefault();';
 const menuItems = [
     {text: 'Clear Functions', click: `$ctrl.onClear(); ${prevent}`,  href: '#for-dropdown-menu'},
     {text: 'Remove Column', click: `$ctrl.onColumnRemove({$column: $ctrl.column}); ${prevent}`, href: '#for-dropdown-menu'},
-    {text: 'Add Alias', click: `$ctrl.onColumnAddAlias(); ${prevent}`, href: '#for-dropdown-menu'},
+    {text: 'Add Alias', click: `$ctrl.onColumnAddAlias(); ${prevent}`, href: '#for-dropdown-menu-alias-add'},
+    {text: 'Remove Alias', click: `$ctrl.onColumnRemoveAlias(); ${prevent}`, href: '#for-dropdown-menu-alias-remove'},
     {text: 'Remove function', href: '#for-function-remove'},
     {
         text: 'Transformation',
@@ -78,6 +79,11 @@ class ColumnsMenuController {
 
     onColumnAddAlias() {
         this.column.alias = `col_${this.colCounter}`;
+        this.notifyChange();
+    }
+
+    onColumnRemoveAlias() {
+        this.column.alias = '';
         this.notifyChange();
     }
 
@@ -160,6 +166,13 @@ export default function ColumnsMenuDirective($timeout) {
                     $menu.removeAttr('style');
                     $menu.removeClass('dropdown-menu--for-function');
                     $menu.data('f-index', -1);
+
+                    if (ctrl.column.alias) {
+                        $menu.addClass('dropdown-menu--has-alias');
+                    } else {
+                        $menu.removeClass('dropdown-menu--has-alias');
+                    }
+
                 });
 
                 $menu.on('click', function (evt) {

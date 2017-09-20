@@ -32,4 +32,6 @@
     </form>
 </div>   
 
-<a class="gf-form-label dropdown-menu-trigger" data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>
+<a class="gf-form-label dropdown-menu-trigger" 
+    data-has-alias={{!!$ctrl.column.alias}}
+    data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>

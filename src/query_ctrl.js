@@ -90,18 +90,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     initTarget() {
-        if (!Array.isArray(this.target.column)) {
-            this.target.columns = [];
-        }
+        // namespaceing our target variables
+        this._originalTarget = this.target; 
+        this.target._nsgTarget = this._originalTarget._nsgTarget || {};
+        this.target = this.target._nsgTarget;
         
-        if (this.target.type !== 'nsgql') {
-            _.merge(this.target, _.cloneDeep(targetDefaults));
-        } else { 
-            _.defaultsDeep(
-                this.target,
-                targetDefaults
-            );
-        }
+        _.defaultsDeep(
+            this.target,
+            targetDefaults
+        );
 
         this.target.format = this.options.isGraph ? 'time_series' : 'table';
 
@@ -454,6 +451,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 });
                 break;
         }
+    }
+
+    getCollapsedText() {
+        return '';
     }
 }
 

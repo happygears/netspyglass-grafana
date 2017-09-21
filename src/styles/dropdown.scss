@@ -3,11 +3,12 @@
 
   & > li > a {
     color: $columns-dropdown-color;
+  }
 
-    &:hover {
-      background: $columns-dropdown-highlight-bg;
-      color: $columns-dropdown-highlight-color;
-    }
+  & > li:hover > a,
+  & > li > a:hover {
+    background: $columns-dropdown-highlight-bg;
+    color: $columns-dropdown-highlight-color;
   }
 }
 

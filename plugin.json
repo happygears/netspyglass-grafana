@@ -1,6 +1,6 @@
 {
-  "name": "NetSpyGlass",
-  "id": "happygears-netspyglass-datasource",
+  "name": "NetSpyGlass-dev",
+  "id": "happygears-netspyglass-datasource-dev",
   "type": "datasource",
 
   "staticRoot": ".",
@@ -27,12 +27,12 @@
       "small": "img/netspyglass_logo.svg",
       "large": "img/netspyglass_logo.svg"
     },
-    "version": "1.0.4",
-    "updated": "2016-12-21"
+    "version": "2.0.0",
+    "updated": "2017-09-21"
   },
 
   "dependencies": {
-    "grafanaVersion": "4.x.x",
+    "grafanaVersion": "4.1.x",
     "plugins": [ ]
   }
 }

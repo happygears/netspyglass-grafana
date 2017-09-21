@@ -6,6 +6,8 @@ then
     exit 1
 fi
 
+datasource_id=$(grep '"id": "' plugin.json | sed 's/[",]//g;s/^.*id: //')
+
 if test $(which tar)
 then
     # Check which flavor of tar does this system have: GNU tar or BSD tar.
@@ -14,7 +16,7 @@ then
     #
     if $(tar --version | grep -qi gnu)
     then
-        tar -cf netspyglass-datasource.tar --transform=s/^dist/netspyglass-datasource/g --exclude test  dist/*
+        tar -cf netspyglass-datasource.tar --transform=s/^dist/$datasource_id/g --exclude test  dist/*
         exit
     fi
 
@@ -25,7 +27,7 @@ then
         # I could not test with "classic" because I do not have access to a system with it.
         # Options "-c", "-f" and "--exclude" work the same way for BSD and GNU tar
         #
-        tar -cf netspyglass-datasource.tar -s '!^dist!netspyglass-datasource!' --exclude test  dist/*
+        tar -cf netspyglass-datasource.tar -s "!^dist!$datasource_id!" --exclude test  dist/*
         exit
     fi
 fi

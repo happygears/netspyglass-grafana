@@ -223,10 +223,12 @@ export class NetSpyGlassDatasource {
 
             columns.push({text: '---------', separator: true});
             columns.push({
-                text: 'Pre Defined columns',
+                text: 'predefined columns',
                 submenu: [
                     {text: 'metric', value: 'metric'},
-                    {text: 'time', value: 'time'}
+                    {text: 'time', value: 'time'},
+                    {text: 'device', value: 'device'},
+                    {text: 'component', value: 'component'},
                 ]
             });
 

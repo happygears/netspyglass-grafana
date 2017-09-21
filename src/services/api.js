@@ -131,7 +131,7 @@ class SQLQuery {
      * @param {array} tags
      * @returns {array}
      */
-    generateWhereFromTags(tags) {
+    generateWhereFromTags(tags = []) {
         let result = [];
 
         tags.forEach((tag) => {

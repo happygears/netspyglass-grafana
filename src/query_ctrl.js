@@ -48,9 +48,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @property panelCtrl
      */
 
-    constructor($scope, $injector, uiSegmentSrv) {
+    constructor($scope, $injector, $rootScope, uiSegmentSrv) {
         super(...arguments);
         this.$scope = $scope;
+        this.$rootScope = $rootScope;
         this.$injector = $injector;
         this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
@@ -59,8 +60,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             isTable: this.panel.type === 'table',
             categories: [],
             segments: [],
-            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag})
+            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
+            rawQueryString: '',
         };
+
+        console.log(this.$scope);
     }
 
     execute() {
@@ -242,10 +246,28 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     toggleEditorMode() {
-        this.target.rawQuery ^= 1;
+        if (!this.target.rawQuery) {
+            const query = this.datasource.getSQLString(this.target);
 
-        if (this.target.rawQuery) {
-            this.target.nsgqlString = this.datasource.getSQLString(this.target);
+            this.options.rawQueryString = query;
+            this.target.nsgqlString = query;
+
+            this.target.rawQuery = 1;
+            return;
+        }
+
+        if( this.options.rawQueryString != this.target.nsgqlString ) {
+            this.$rootScope.appEvent('confirm-modal', {
+                title: 'Confirm',
+                text: 'Are your sure? Your changes will be lost.',
+                yesText: "Yes",
+                icon: "fa-trash",
+                onConfirm: () => {
+                    this.target.rawQuery = 0;
+                }
+            });
+        } else {
+            this.target.rawQuery = 0;
         }
     }
 
@@ -319,6 +341,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         const segments = this.options.segments;
         segments[index] = segment;
 
+        console.log(segments);
+        console.log(segment);
+
         // handle remove tag condition
 
         if (segment.value === this.options.removeSegment.value) {
@@ -364,6 +389,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                         tags.push({});
                     }
                     tags[tagIndex].key = segment.value;
+
+                    console.log(segments[index + 1]);
+
                     break;
                 case 'value':
                     if (tagOperator = tags[tagIndex].operator) {

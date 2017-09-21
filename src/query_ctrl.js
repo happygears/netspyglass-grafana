@@ -63,8 +63,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
             rawQueryString: '',
         };
-
-        console.log(this.$scope);
     }
 
     execute() {
@@ -341,9 +339,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         const segments = this.options.segments;
         segments[index] = segment;
 
-        console.log(segments);
-        console.log(segment);
-
         // handle remove tag condition
 
         if (segment.value === this.options.removeSegment.value) {
@@ -389,9 +384,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                         tags.push({});
                     }
                     tags[tagIndex].key = segment.value;
-
-                    console.log(segments[index + 1]);
-
                     break;
                 case 'value':
                     if (tagOperator = tags[tagIndex].operator) {

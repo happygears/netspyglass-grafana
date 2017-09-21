@@ -1,3 +1,16 @@
+.dropdown-menu {
+  background-color: $columns-dropdown-bg;
+
+  & > li > a {
+    color: $columns-dropdown-color;
+
+    &:hover {
+      background: $columns-dropdown-highlight-bg;
+      color: $columns-dropdown-highlight-color;
+    }
+  }
+}
+
 hg-dropdown {
   position: relative;
 

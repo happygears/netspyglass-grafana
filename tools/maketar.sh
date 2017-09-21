@@ -6,7 +6,9 @@ then
     exit 1
 fi
 
-datasource_id=$(grep '"id": "' plugin.json | sed 's/[",]//g;s/^.*id: //')
+datasource_id=$(python -c 'import json; print json.load(open("plugin.json"))["id"]')
+
+echo "plugin id: $datasource_id"
 
 if test $(which tar)
 then

@@ -363,6 +363,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 segment.cssClass = 'query-segment-key';
             }
 
+            if (segment.type === 'key' && segments[index+2].type === 'value') {
+                segments.splice(index+2, 1, segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
+            }
+
             if ((index + 1) === segments.length) {
                 segments.push(segmentSrv.newPlusButton());
             }

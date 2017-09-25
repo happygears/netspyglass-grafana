@@ -55,9 +55,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.$injector = $injector;
         this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
+
         this.options = {
             isGraph: this.panel.type === 'graph',
             isTable: this.panel.type === 'table',
+            isSinglestat: this.panel.type === 'singlestat',
             categories: [],
             segments: [],
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
@@ -80,7 +82,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.errors = _.cloneDeep(errors);
         });
 
-        if (!this.options.isGraph) {
+        if (this.options.isTable) {
             this.setPanelSortFromOrderBy();
             this.$scope.$watch('ctrl.panel.sort', (newVal, oldVal) => {
                 if (newVal.col !== oldVal.col || newVal.desc !== oldVal.desc) {
@@ -102,12 +104,16 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             targetDefaults
         );
 
-        this.target.format = this.options.isGraph ? 'time_series' : 'table';
+        this.target.format = (this.options.isGraph || this.options.isSinglestat) ? 'time_series' : 'table';
 
-        if (this.options.isGraph) {
+        if (this.options.isGraph || this.options.isSinglestat) {
             if (!_.find(this.target.columns, {name: 'time'})) {
                 this.target.columns.push({name: 'time', visible: false});
             }
+        }
+
+        if (this.options.isSinglestat) {
+            this.target.limit = 1;
         }
     }
 

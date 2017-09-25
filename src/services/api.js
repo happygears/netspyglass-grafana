@@ -160,6 +160,7 @@ class SQLQuery {
         const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
             time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
         };
+        const adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
 
         if (columns.length) {
             columns = columns.filter((column) => column.name !== QueryPrompts.column);
@@ -174,7 +175,7 @@ class SQLQuery {
         query.where([
             sqlBuilder.OP.AND,
             this.generateWhereFromTags(target.tags),
-            this.generateWhereFromTags(options.adHoc),
+            adHoc,
             timeVar
         ]);
 
@@ -204,11 +205,16 @@ class SQLQuery {
     generateSQLQueryFromString(target, options) {
         const timeFilter = `time BETWEEN '${options.timeRange.from}' AND '${options.timeRange.to}'`;
         const interval = `${options.interval}`;
+        const adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc));
 
         let query = target.nsgqlString;
 
         if (query && query.indexOf(GrafanaVariables.timeFilter) > 0) {
             query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);
+        }
+
+        if (query && query.indexOf(GrafanaVariables.adHocFilter) > 0) {
+            query = _.replace(query, GrafanaVariables.adHocFilter, `( ${adhocWhere} )`);
         }
 
         if (query && query.indexOf(GrafanaVariables.interval) > 0) {

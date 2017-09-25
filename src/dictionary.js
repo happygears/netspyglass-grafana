@@ -17,7 +17,8 @@ const QueryPrompts = {
 
 const GrafanaVariables = {
     timeFilter: '$_timeFilter',
-    interval: '$_interval'
+    interval: '$_interval',
+    adHocFilter: '$_adhoc'
 };
 
 export {

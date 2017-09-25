@@ -74,7 +74,7 @@ export class NetSpyGlassDatasource {
             aliases[target.refId] = target.alias;
 
             const sql = target.rawQuery
-                ? this.sqlQuery.generateSQLQueryFromString(target, {timeRange, interval: options.interval})
+                ? this.sqlQuery.generateSQLQueryFromString(target, {timeRange, interval: options.interval, adHoc: adhocFilters})
                 : this.sqlQuery.generateSQLQuery(target, {timeRange, interval: options.interval, adHoc: adhocFilters}, );
 
             return this.api.generateTarget(this.templateSrv.replace(sql), target.format, target.refId);

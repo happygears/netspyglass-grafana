@@ -97,6 +97,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         // namespaceing our target variables
         this._originalTarget = this.target; 
         this.target._nsgTarget = this._originalTarget._nsgTarget || {};
+        this.target._nsgTarget.refId = this.target.refId; //save original refId
         this.target = this.target._nsgTarget;
         
         _.defaultsDeep(

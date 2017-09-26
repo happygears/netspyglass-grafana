@@ -68,7 +68,7 @@ export class NetSpyGlassDatasource {
             to: utils.getTime(rangeRaw.to, true),
         };
         const aliases = {};
-        const adhocFilters = this.templateSrv.getAdhocFilters(this.name);
+        const adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;

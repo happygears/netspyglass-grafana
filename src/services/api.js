@@ -235,6 +235,21 @@ class SQLQuery {
                 break;
         }
     }
+
+    correctAdhoc(adhocFilters) {
+        return adhocFilters.map((el) => {
+            switch (el.operator) {
+                case '=~':
+                    el.operator = sqlBuilder.OP.REGEXP;
+                    break;
+                case '!~':
+                    el.operator = sqlBuilder.OP.NOT_REGEXP;
+                    break;
+            }
+
+            return el;
+        })
+    }
 }
 
 

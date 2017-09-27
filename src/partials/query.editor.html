@@ -1,4 +1,8 @@
-<query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" can-collapse="true" has-text-edit-mode="true" data-ng-class="{'loading': ctrl.panelCtrl.loading}">
+<query-editor-row query-ctrl="ctrl"
+                  class="generic-datasource-query-row"
+                  can-collapse="true"
+                  has-text-edit-mode="true"
+                  data-ng-class="{'loading': ctrl.target.loading}">
 
     <div class="gf-form" data-ng-show="ctrl.errors[ctrl.target.refId]">
         <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.target.refId]}}</pre>

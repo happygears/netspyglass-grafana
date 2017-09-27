@@ -69,6 +69,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     execute() {
         this.errors = {};
+        this.target.loading = true;
         this.panelCtrl.refresh();
     }
 
@@ -80,6 +81,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
         this.panelCtrl.events.emitter.on('data-error', (errors) => {
             this.errors = _.cloneDeep(errors);
+        });
+        this.panelCtrl.events.emitter.on('render', () => {
+            this.target.loading = false;
         });
 
         if (this.options.isTable) {

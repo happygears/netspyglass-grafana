@@ -192,7 +192,8 @@ export class NetSpyGlassDatasource {
                 }
 
                 return result;
-            });
+            })
+            .catch(() => ([]));
     }
 
     /**
@@ -201,7 +202,9 @@ export class NetSpyGlassDatasource {
      */
     getFacets(variable) {
         const query = this.sqlQuery.facets(variable);
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
+        return this.api
+            .queryData(query, NSGQLApi.FORMAT_LIST)
+            .catch(() => ([]));
     }
 
     /**
@@ -243,21 +246,15 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     getSuggestions(data) {
-        let query;
+        let query, tags;
 
-        switch (data.type) {
-            case 'device':
-            case 'component':
-                query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
-                break;
-            default:
-                query = this.sqlQuery.suggestion(data.type, QueryTableNames.DEVICES);
-                break;
-        }
-
+        tags = data.type !== 'device' && data.type !== 'component' ? null : data.tags;
+        query = this.sqlQuery.suggestion(data.type, data.variable, tags);
         query = this.templateSrv.replace(query);
 
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
+        return this.api
+            .queryData(query, NSGQLApi.FORMAT_LIST)
+            .catch(() => []);
     }
 
     /**
@@ -272,9 +269,11 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     metricFindQuery(query) {
-        return this.api.queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
-            return data.map(el => ({text: el}));
-        });
+        return this.api
+            .queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
+                return data.map(el => ({text: el}));
+            })
+            .catch(() => ([]));
     }
 
     /**
@@ -284,6 +283,7 @@ export class NetSpyGlassDatasource {
     getTagKeys() {
         return this.api.queryData(this.sqlQuery.getTagKeysForAdHoc(), NSGQLApi.FORMAT_LIST)
             .then((list) => list.map((item) => ({text: item})))
+            .catch(() => ([]));
     };
 
     /**
@@ -306,5 +306,6 @@ export class NetSpyGlassDatasource {
                     })
                     .filter(Boolean);
             })
+            .catch(() => ([]));
     };
 }

@@ -37,7 +37,7 @@ class SQLQuery {
 
     categories() {
         return sqlBuilder.factory({
-            select: ['category', 'name'],
+            select: ['*'],
             distinct: true,
             from: 'variables',
             where: ['AND', {
@@ -315,6 +315,8 @@ class NSGQLApi {
 
                     return data;
                 }
+
+                return [];
             });
     }
 
@@ -348,7 +350,6 @@ class NSGQLApi {
             url: this.options.baseUrl + resource + query,
             data: data,
             method: method,
-            timeout: 30000,
             headers: {'Content-Type': 'application/json'}
         });
     }

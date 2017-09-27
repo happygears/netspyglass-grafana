@@ -20,10 +20,6 @@ export default {
             date = dateMath.parse(date, roundUp);
         }
 
-        return date.valueOf() + 'ms';
-    },
-
-    transformColumnsToSegments: function () {
-
+        return date.valueOf();
     }
 };

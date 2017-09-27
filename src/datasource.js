@@ -243,18 +243,10 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     getSuggestions(data) {
-        let query;
+        let query, tags;
 
-        switch (data.type) {
-            case 'device':
-            case 'component':
-                query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
-                break;
-            default:
-                query = this.sqlQuery.suggestion(data.type, QueryTableNames.DEVICES);
-                break;
-        }
-
+        tags = data.type !== 'device' && data.type !== 'component' ? null : data.tags;
+        query = this.sqlQuery.suggestion(data.type, data.variable, tags);
         query = this.templateSrv.replace(query);
 
         return this.api.queryData(query, NSGQLApi.FORMAT_LIST);

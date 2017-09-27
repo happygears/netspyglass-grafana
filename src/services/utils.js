@@ -21,9 +21,5 @@ export default {
         }
 
         return date.valueOf();
-    },
-
-    transformColumnsToSegments: function () {
-
     }
 };

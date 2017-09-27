@@ -123,7 +123,7 @@ export class NetSpyGlassDatasource {
                     return item.description;
             }
 
-            if (!item.tags || item.tags[group] === 'undefined') {
+            if (!item.tags || !item.tags[group]) {
                 return match;
             } else {
                 return item.tags[group];

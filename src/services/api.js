@@ -315,6 +315,8 @@ class NSGQLApi {
 
                     return data;
                 }
+
+                return [];
             });
     }
 

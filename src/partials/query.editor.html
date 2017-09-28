@@ -44,16 +44,16 @@
 
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-inline gf-form--grow">
-
                         <hg-columns-menu 
+                            data-columns-list="ctrl.options.columns" 
+                            data-column="column" 
                             data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}"
                             data-ng-if="ctrl.target.columns.length && (ctrl.options.isTable && ctrl.options.columns.length || !ctrl.options.isTable)"
                             data-is-table="ctrl.options.isTable" 
-                            data-available-remove="ctrl.options.isTable && $index > 0" 
+                            data-available-remove="ctrl.options.isTable" 
                             data-on-column-remove="ctrl.onColumnRemove($column)" 
                             data-on-column-changed="ctrl.onColumnChanged($column)"
-                            data-columns-list="ctrl.options.columns" 
-                            data-column="column" class="gf-form gf-form--column-editor">
+                            class="gf-form gf-form--column-editor">
                         </hg-columns-menu>
 
                         <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>

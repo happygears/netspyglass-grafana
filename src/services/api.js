@@ -79,9 +79,11 @@ class SQLQuery {
                 query.where(this.generateWhereFromTags(tags));
                 break;
             default:
-                query.where({
-                    [type]: [sqlBuilder.OP.NOT_NULL]
-                });
+                query.where([
+                    sqlBuilder.OP.AND,
+                    {[type]: [sqlBuilder.OP.NOT_NULL]},
+                    this.generateWhereFromTags(tags)
+                ]);
                 break;
         }
 

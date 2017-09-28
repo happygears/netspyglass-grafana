@@ -82,6 +82,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.panelCtrl.events.emitter.on('data-error', (errors) => {
             this.errors = _.cloneDeep(errors);
         });
+        
         this.panelCtrl.events.emitter.on('render', () => {
             this.target.loading = false;
         });
@@ -95,6 +96,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 }
             }, true);
         }
+
+        // We will track this values and upate it on original query beacause QueryRowCtrl tracking it on original target
+        this.$scope.$watch('ctrl.target.hide', (nextValue, prevValue) => {
+            this._originalTarget.hide = nextValue;
+        });
     }
 
     initTarget() {
@@ -102,6 +108,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this._originalTarget = this.target; 
         this.target._nsgTarget = this._originalTarget._nsgTarget || {};
         this.target._nsgTarget.refId = this.target.refId; //save original refId
+        this.target._nsgTarget.hide = this.target.hide;
         this.target = this.target._nsgTarget;
         
         _.defaultsDeep(

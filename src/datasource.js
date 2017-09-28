@@ -86,6 +86,7 @@ export class NetSpyGlassDatasource {
                 nsgTarget.refId = target.refId;
                 return nsgTarget;
             })
+            .filter((target) => target.hide !== true)
             .map(processTarget)
             .filter((target) => target.nsgql !== false);
 

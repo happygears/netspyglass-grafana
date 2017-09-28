@@ -1,6 +1,6 @@
 {
-  "name": "NetSpyGlass",
-  "id": "happygears-netspyglass-datasource",
+  "name": "NetSpyGlass (v2)",
+  "id": "happygears-netspyglass-datasource-v2",
   "type": "datasource",
 
   "staticRoot": ".",
@@ -17,22 +17,22 @@
     "description": "NetSpyGlass Datasource",
     "author": {
       "name": "Happy Gears Inc.",
-      "url": "http://www.happygears.net"
+      "url": "http://www.netspyglass.com"
     },
     "links":[
       {"name": "GitHub", "url": "https://github.com/happygears/netspyglass-grafana"},
-      {"name": "NetSpyGlass", "url": "http://www.happygears.net/"}
+      {"name": "NetSpyGlass", "url": "http://www.netspyglass.com"}
     ],
     "logos": {
-      "small": "img/netspyglass_logo.svg",
-      "large": "img/netspyglass_logo.svg"
+      "small": "img/nsg-logo-md.png",
+      "large": "img/nsg-logo-md.png"
     },
-    "version": "1.0.4",
-    "updated": "2016-12-21"
+    "version": "2.0.0",
+    "updated": "2017-09-21"
   },
 
   "dependencies": {
-    "grafanaVersion": "4.x.x",
+    "grafanaVersion": "4.1.x",
     "plugins": [ ]
   }
 }

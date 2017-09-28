@@ -133,16 +133,23 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             to: utils.getTime(rangeRaw.to, true)
                         };
                         var aliases = {};
+                        var adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
                         var processTarget = function processTarget(target) {
                             aliases[target.refId] = target.alias;
 
-                            var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, { timeRange: timeRange, interval: options.interval }) : _this.sqlQuery.generateSQLQuery(target, { timeRange: timeRange, interval: options.interval });
+                            var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters }) : _this.sqlQuery.generateSQLQuery(target, { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters });
 
                             return _this.api.generateTarget(_this.templateSrv.replace(sql), target.format, target.refId);
                         };
 
-                        var sqlTargets = targets.map(processTarget).filter(function (target) {
+                        var sqlTargets = targets.map(function (target) {
+                            var nsgTarget = _.cloneDeep(target._nsgTarget) || {};
+                            nsgTarget.refId = target.refId;
+                            return nsgTarget;
+                        }).filter(function (target) {
+                            return target.hide !== true;
+                        }).map(processTarget).filter(function (target) {
                             return target.nsgql !== false;
                         });
 
@@ -181,7 +188,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                                     return item.description;
                             }
 
-                            if (!item.tags || item.tags[group] === 'undefined') {
+                            if (!item.tags || !item.tags[group]) {
                                 return match;
                             } else {
                                 return item.tags[group];
@@ -241,13 +248,17 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             }
 
                             return result;
+                        }).catch(function () {
+                            return [];
                         });
                     }
                 }, {
                     key: 'getFacets',
                     value: function getFacets(variable) {
                         var query = this.sqlQuery.facets(variable);
-                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
+                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST).catch(function () {
+                            return [];
+                        });
                     }
                 }, {
                     key: 'getColumns',
@@ -268,8 +279,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             columns.push({ text: '---------', separator: true });
                             columns.push({
-                                text: 'Pre Defined columns',
-                                submenu: [{ text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }]
+                                text: 'predefined columns',
+                                submenu: [{ text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }, { text: 'device', value: 'device' }, { text: 'component', value: 'component' }]
                             });
 
                             columns.push({ text: '---------', separator: true });
@@ -283,17 +294,12 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     value: function getSuggestions(data) {
                         var query = void 0;
 
-                        switch (data.type) {
-                            case 'device':
-                            case 'component':
-                                query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
-                                break;
-                            default:
-                                query = this.sqlQuery.suggestion(data.type, QueryTableNames.DEVICES);
-                                break;
-                        }
+                        query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
+                        query = this.templateSrv.replace(query);
 
-                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST);
+                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST).catch(function () {
+                            return [];
+                        });
                     }
                 }, {
                     key: 'getSQLString',
@@ -307,6 +313,36 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             return data.map(function (el) {
                                 return { text: el };
                             });
+                        }).catch(function () {
+                            return [];
+                        });
+                    }
+                }, {
+                    key: 'getTagKeys',
+                    value: function getTagKeys() {
+                        return this.api.queryData(this.sqlQuery.getTagKeysForAdHoc(), NSGQLApi.FORMAT_LIST).then(function (list) {
+                            return list.map(function (item) {
+                                return { text: item };
+                            });
+                        }).catch(function () {
+                            return [];
+                        });
+                    }
+                }, {
+                    key: 'getTagValues',
+                    value: function getTagValues(options) {
+                        return this.api.queryData(this.sqlQuery.getTagValuesForAdHoc(options.key)).then(function (list) {
+                            return list.filter(function (item, pos, self) {
+                                return self.indexOf(item) === pos;
+                            }).map(function (item) {
+                                if (item.error) {
+                                    console.log(item.error);
+                                    return;
+                                }
+                                return { text: item };
+                            }).filter(Boolean);
+                        }).catch(function () {
+                            return [];
                         });
                     }
                 }]);

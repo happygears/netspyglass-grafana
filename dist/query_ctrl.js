@@ -63,6 +63,7 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
 
             orderBySortTypes = ['ASC', 'DESC'];
             targetDefaults = {
+                type: 'nsgql',
                 columns: [{ name: 'metric', visible: true }],
                 category: QueryPrompts.category,
                 variable: QueryPrompts.variable,
@@ -88,21 +89,25 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                  * @property panelCtrl
                  */
 
-                function NetSpyGlassQueryCtrl($scope, $injector, uiSegmentSrv) {
+                function NetSpyGlassQueryCtrl($scope, $injector, $rootScope, uiSegmentSrv) {
                     _classCallCheck(this, NetSpyGlassQueryCtrl);
 
                     var _this = _possibleConstructorReturn(this, (NetSpyGlassQueryCtrl.__proto__ || Object.getPrototypeOf(NetSpyGlassQueryCtrl)).apply(this, arguments));
 
                     _this.$scope = $scope;
+                    _this.$rootScope = $rootScope;
                     _this.$injector = $injector;
                     _this.prompts = QueryPrompts;
                     _this.uiSegmentSrv = uiSegmentSrv;
+
                     _this.options = {
                         isGraph: _this.panel.type === 'graph',
                         isTable: _this.panel.type === 'table',
+                        isSinglestat: _this.panel.type === 'singlestat',
                         categories: [],
                         segments: [],
-                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag })
+                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag }),
+                        rawQueryString: ''
                     };
                     return _this;
                 }
@@ -111,6 +116,7 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                     key: 'execute',
                     value: function execute() {
                         this.errors = {};
+                        this.target.loading = true;
                         this.panelCtrl.refresh();
                     }
                 }, {
@@ -120,14 +126,19 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
 
                         this.initTarget();
                         this.options.segments = this.restoreTags();
-                        this.getCategories();
-                        this.loadColumns();
+                        this.getCategories().then(function () {
+                            return _this2.loadColumns();
+                        });
 
                         this.panelCtrl.events.emitter.on('data-error', function (errors) {
                             _this2.errors = _.cloneDeep(errors);
                         });
 
-                        if (!this.options.isGraph) {
+                        this.panelCtrl.events.emitter.on('render', function () {
+                            _this2.target.loading = false;
+                        });
+
+                        if (this.options.isTable) {
                             this.setPanelSortFromOrderBy();
                             this.$scope.$watch('ctrl.panel.sort', function (newVal, oldVal) {
                                 if (newVal.col !== oldVal.col || newVal.desc !== oldVal.desc) {
@@ -136,16 +147,34 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                                 }
                             }, true);
                         }
+
+                        // We will track this values and upate it on original query beacause QueryRowCtrl tracking it on original target
+                        this.$scope.$watch('ctrl.target.hide', function (nextValue, prevValue) {
+                            _this2._originalTarget.hide = nextValue;
+                        });
                     }
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
-                        _.defaultsDeep(this.target, targetDefaults, { format: this.options.isGraph ? 'time_series' : 'table' });
+                        // namespaceing our target variables
+                        this._originalTarget = this.target;
+                        this.target._nsgTarget = this._originalTarget._nsgTarget || {};
+                        this.target._nsgTarget.refId = this.target.refId; //save original refId
+                        this.target._nsgTarget.hide = this.target.hide;
+                        this.target = this.target._nsgTarget;
 
-                        if (this.options.isGraph) {
+                        _.defaultsDeep(this.target, targetDefaults);
+
+                        this.target.format = this.options.isGraph || this.options.isSinglestat ? 'time_series' : 'table';
+
+                        if (this.options.isGraph || this.options.isSinglestat) {
                             if (!_.find(this.target.columns, { name: 'time' })) {
                                 this.target.columns.push({ name: 'time', visible: false });
                             }
+                        }
+
+                        if (this.options.isSinglestat) {
+                            this.target.limit = 1;
                         }
                     }
                 }, {
@@ -216,7 +245,12 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        return this.datasource.getCategories();
+                        var _this4 = this;
+
+                        return this.datasource.getCategories().then(function (categories) {
+                            _this4.options.categories = categories;
+                            return categories;
+                        });
                     }
                 }, {
                     key: 'onSelectCategory',
@@ -282,12 +316,22 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                 }, {
                     key: 'loadColumns',
                     value: function loadColumns() {
-                        var _this4 = this;
+                        var _this5 = this;
 
-                        if (this.target.variable) {
-                            return this.datasource.getColumns(this.target.variable).then(function (columns) {
-                                return _this4.options.columns = columns;
+                        if (this.target.variable && this.target.variable !== QueryPrompts.column && this.options.isTable) {
+                            var found = -1;
+                            _.each(this.options.categories, function (category) {
+                                found = _.findIndex(category.submenu, { value: _this5.target.variable });
+                                if (~found) {
+                                    return false;
+                                }
                             });
+
+                            if (~found) {
+                                return this.datasource.getColumns(this.target.variable).then(function (columns) {
+                                    _this5.options.columns = columns;
+                                });
+                            }
                         }
 
                         return false;
@@ -295,16 +339,36 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                 }, {
                     key: 'toggleEditorMode',
                     value: function toggleEditorMode() {
-                        this.target.rawQuery ^= 1;
+                        var _this6 = this;
 
-                        if (this.target.rawQuery) {
-                            this.target.nsgqlString = this.datasource.getSQLString(this.target);
+                        if (!this.target.rawQuery) {
+                            var query = this.datasource.getSQLString(this.target);
+
+                            this.options.rawQueryString = query;
+                            this.target.nsgqlString = query;
+
+                            this.target.rawQuery = 1;
+                            return;
+                        }
+
+                        if (this.options.rawQueryString != this.target.nsgqlString) {
+                            this.$rootScope.appEvent('confirm-modal', {
+                                title: 'Confirm',
+                                text: 'Are your sure? Your changes will be lost.',
+                                yesText: "Yes",
+                                icon: "fa-trash",
+                                onConfirm: function onConfirm() {
+                                    _this6.target.rawQuery = 0;
+                                }
+                            });
+                        } else {
+                            this.target.rawQuery = 0;
                         }
                     }
                 }, {
                     key: 'getTagsOrValues',
                     value: function getTagsOrValues(segment, index) {
-                        var _this5 = this;
+                        var _this7 = this;
 
                         var $q = this.$injector.get('$q');
                         var uiSegmentSrv = this.uiSegmentSrv;
@@ -321,11 +385,10 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                                     break;
 
                                 case 'value':
-
                                     promise = this.datasource.getSuggestions({
                                         type: segments[index - 2].value,
                                         variable: this.target.variable,
-                                        tags: this.target.tags
+                                        tags: this._filterPreviousWhereTags(index)
                                     });
                                     break;
 
@@ -345,9 +408,16 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                             });
                         }).then(function (results) {
                             if (segment.type === 'key') {
-                                results.splice(0, 0, angular.copy(_this5.options.removeSegment));
+                                results.splice(0, 0, angular.copy(_this7.options.removeSegment));
                             }
                             return results;
+                        });
+                    }
+                }, {
+                    key: '_filterPreviousWhereTags',
+                    value: function _filterPreviousWhereTags(currentIndex) {
+                        return this.target.tags.filter(function (el, index) {
+                            return index < currentIndex / 3 - 1;
                         });
                     }
                 }, {
@@ -381,6 +451,10 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                                 segment.cssClass = 'query-segment-key';
                             }
 
+                            if (segment.type === 'key' && segments[index + 2].type === 'value') {
+                                segments.splice(index + 2, 1, segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
+                            }
+
                             if (index + 1 === segments.length) {
                                 segments.push(segmentSrv.newPlusButton());
                             }
@@ -391,7 +465,7 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                 }, {
                     key: 'rebuildTargetTagConditions',
                     value: function rebuildTargetTagConditions() {
-                        var _this6 = this;
+                        var _this8 = this;
 
                         var segments = this.options.segments;
                         var tags = [];
@@ -408,7 +482,7 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                                     break;
                                 case 'value':
                                     if (tagOperator = tags[tagIndex].operator) {
-                                        segments[index - 1] = _this6.uiSegmentSrv.newOperator(tagOperator);
+                                        segments[index - 1] = _this8.uiSegmentSrv.newOperator(tagOperator);
                                         tags[tagIndex].operator = tagOperator;
                                     }
                                     tags[tagIndex].value = segment.value;
@@ -467,13 +541,21 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                                 return this.$injector.get('$q').resolve([{ text: GrafanaVariables.interval, value: GrafanaVariables.interval }, { text: '1s', value: '1s' }, { text: '1m', value: '1m' }, { text: '1h', value: '1h' }, { text: '1d', value: '1d' }]);
                                 break;
                             case 'column':
+                                var list = [{ text: 'device', value: 'device' }];
                                 return this.datasource.getFacets(this.target.variable).then(function (data) {
-                                    return data.map(function (el) {
-                                        return { text: el, value: el };
+                                    data.forEach(function (el) {
+                                        list.push({ text: el, value: el });
                                     });
+
+                                    return list;
                                 });
                                 break;
                         }
+                    }
+                }, {
+                    key: 'getCollapsedText',
+                    value: function getCollapsedText() {
+                        return 'This target is collapsed. Click to the row for open it.';
                     }
                 }]);
 

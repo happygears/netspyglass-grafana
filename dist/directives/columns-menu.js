@@ -15,12 +15,13 @@ System.register(['lodash'], function (_export, _context) {
         var colCounter = 0;
         return {
             restrict: 'E',
-            templateUrl: 'public/plugins/happygears-netspyglass-datasource' + '/partials/column.directive.html',
+            templateUrl: 'public/plugins/happygears-netspyglass-datasource-v2' + '/partials/column.directive.html',
             controller: ColumnsMenuController,
             controllerAs: '$ctrl',
             bindToController: true,
             scope: {
-                isTable: '@',
+                availableRemove: '=',
+                isTable: '=',
                 column: '=',
                 columnsList: '<',
                 onColumnRemove: '&',
@@ -63,6 +64,12 @@ System.register(['lodash'], function (_export, _context) {
                         $menu.removeAttr('style');
                         $menu.removeClass('dropdown-menu--for-function');
                         $menu.data('f-index', -1);
+
+                        if (ctrl.column.alias) {
+                            $menu.addClass('dropdown-menu--has-alias');
+                        } else {
+                            $menu.removeClass('dropdown-menu--has-alias');
+                        }
                     });
 
                     $menu.on('click', function (evt) {
@@ -109,7 +116,7 @@ System.register(['lodash'], function (_export, _context) {
             }();
 
             prevent = ' $event.preventDefault();';
-            menuItems = [{ text: 'Clear Functions', click: '$ctrl.onClear(); ' + prevent, href: '#for-dropdown-menu' }, { text: 'Remove Column', click: '$ctrl.onColumnRemove({$column: $ctrl.column}); ' + prevent, href: '#for-dropdown-menu' }, { text: 'Add Alias', click: '$ctrl.onColumnAddAlias(); ' + prevent, href: '#for-dropdown-menu' }, { text: 'Remove function', href: '#for-function-remove' }, {
+            menuItems = [{ text: 'Clear Functions', click: '$ctrl.onClear(); ' + prevent, href: '#for-dropdown-menu' }, { text: 'Remove Column', click: '$ctrl.onColumnRemove({$column: $ctrl.column}); ' + prevent, href: '#for-dropdown-menu' }, { text: 'Add Alias', click: '$ctrl.onColumnAddAlias(); ' + prevent, href: '#for-dropdown-menu-alias-add' }, { text: 'Remove Alias', click: '$ctrl.onColumnRemoveAlias(); ' + prevent, href: '#for-dropdown-menu-alias-remove' }, { text: 'Remove function', href: '#for-function-remove' }, {
                 text: 'Transformation',
                 submenu: [{ text: 'to_long', href: '#to_long' }, { text: 'ifnan', href: '#ifnan' }, { text: 'ifnull', href: '#ifnull' }]
             }, {
@@ -127,10 +134,6 @@ System.register(['lodash'], function (_export, _context) {
                     this.$injector = $injector;
                     this.$scope = $scope;
                     this.menuItems = _.clone(menuItems);
-
-                    if (this.isTable === 'false') {
-                        this.menuItems.splice(1, 1);
-                    }
                 }
 
                 _createClass(ColumnsMenuController, [{
@@ -138,6 +141,10 @@ System.register(['lodash'], function (_export, _context) {
                     value: function $onInit() {
                         if (!this.column.appliedFunctions) {
                             this.column.appliedFunctions = [];
+                        }
+
+                        if (!this.availableRemove) {
+                            this.menuItems.splice(1, 1);
                         }
                     }
                 }, {
@@ -170,6 +177,12 @@ System.register(['lodash'], function (_export, _context) {
                     key: 'onColumnAddAlias',
                     value: function onColumnAddAlias() {
                         this.column.alias = 'col_' + this.colCounter;
+                        this.notifyChange();
+                    }
+                }, {
+                    key: 'onColumnRemoveAlias',
+                    value: function onColumnRemoveAlias() {
+                        this.column.alias = '';
                         this.notifyChange();
                     }
                 }, {

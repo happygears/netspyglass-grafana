@@ -9,12 +9,12 @@
 
     <hg-dropdown
         class="col-container__item"
-        data-ng-if="$ctrl.isTable === 'true'"
+        data-ng-if="$ctrl.isTable"
         data-value="$ctrl.column.name"
         data-on-value-changed="$ctrl.onColumnSelect($value)"
         data-get-options="$ctrl.getColumnsList()"></hg-dropdown>
 
-    <div class="gf-form-label col-container__item" data-ng-if="$ctrl.isTable == 'false'">{{ $ctrl.column.name }}</div>
+    <div class="gf-form-label col-container__item" data-ng-if="!$ctrl.isTable">{{ $ctrl.column.name }}</div>
 
     <div class="gf-form-label col-container__item" data-ng-if="$ctrl.column.appliedFunctions.length">
         <span class="select-col__func select-col__func--close">{{ ' ) '.repeat($ctrl.column.appliedFunctions.length) }}</span>
@@ -32,4 +32,6 @@
     </form>
 </div>   
 
-<a class="gf-form-label dropdown-menu-trigger" data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>
+<a class="gf-form-label dropdown-menu-trigger" 
+    data-has-alias={{!!$ctrl.column.alias}}
+    data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-bars"></i></a>

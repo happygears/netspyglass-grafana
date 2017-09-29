@@ -100,7 +100,7 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                     key: 'categories',
                     value: function categories() {
                         return sqlBuilder.factory({
-                            select: ['category', 'name'],
+                            select: ['*'],
                             distinct: true,
                             from: 'variables',
                             where: ['AND', {
@@ -132,15 +132,46 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                                 query.where(this.generateWhereFromTags(tags));
                                 break;
                             default:
-                                query.where(_defineProperty({}, type, [sqlBuilder.OP.NOT_NULL]));
+                                query.where([sqlBuilder.OP.AND, _defineProperty({}, type, [sqlBuilder.OP.NOT_NULL]), this.generateWhereFromTags(tags)]);
                                 break;
                         }
 
                         return query.compile();
                     }
                 }, {
+                    key: 'getTagKeysForAdHoc',
+                    value: function getTagKeysForAdHoc() {
+                        return sqlBuilder.factory({
+                            select: ['facet'],
+                            from: 'tags'
+                        }).compile();
+                    }
+                }, {
+                    key: 'getTagValuesForAdHoc',
+                    value: function getTagValuesForAdHoc(tagFacet) {
+                        var queries = [sqlBuilder.factory({
+                            select: [tagFacet],
+                            distinct: true,
+                            from: 'devices',
+                            where: _defineProperty({}, tagFacet, [sqlBuilder.OP.NOT_NULL]),
+                            orderBy: [tagFacet]
+                        }).compile(), sqlBuilder.factory({
+                            select: [tagFacet],
+                            distinct: true,
+                            from: 'interfaces',
+                            where: _defineProperty({}, tagFacet, [sqlBuilder.OP.NOT_NULL]),
+                            orderBy: [tagFacet]
+                        }).compile()];
+
+                        return queries.map(function (query) {
+                            return { nsgql: query, format: NSGQLApi.FORMAT_LIST };
+                        });
+                    }
+                }, {
                     key: 'generateWhereFromTags',
-                    value: function generateWhereFromTags(tags) {
+                    value: function generateWhereFromTags() {
+                        var tags = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
                         var result = [];
 
                         tags.forEach(function (tag) {
@@ -165,21 +196,26 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                     value: function generateSQLQuery(target, options) {
                         var useTemplates = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
+                        var columns = Array.isArray(target.columns) ? target.columns : [];
                         var query = sqlBuilder.factory();
                         var timeVar = useTemplates ? GrafanaVariables.timeFilter : {
                             time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
                         };
-                        var columns = (target.columns || []).filter(function (column) {
-                            return column.name !== QueryPrompts.column;
-                        });
+                        var adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
 
-                        if (columns.length === 0) {
+                        if (columns.length) {
+                            columns = columns.filter(function (column) {
+                                return column.name !== QueryPrompts.column;
+                            });
+                        }
+
+                        if (columns.length === 0 || target.variable == QueryPrompts.variable) {
                             return false;
                         }
 
                         query.select(columns.map(this.processColumn));
                         query.from(target.variable);
-                        query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags), timeVar]);
+                        query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags), adHoc, timeVar]);
 
                         if (target.limit) {
                             if (typeof target.limit === 'string') {
@@ -208,11 +244,16 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                     value: function generateSQLQueryFromString(target, options) {
                         var timeFilter = 'time BETWEEN \'' + options.timeRange.from + '\' AND \'' + options.timeRange.to + '\'';
                         var interval = '' + options.interval;
+                        var adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc));
 
                         var query = target.nsgqlString;
 
                         if (query && query.indexOf(GrafanaVariables.timeFilter) > 0) {
                             query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);
+                        }
+
+                        if (query && query.indexOf(GrafanaVariables.adHocFilter) > 0) {
+                            query = _.replace(query, GrafanaVariables.adHocFilter, '( ' + adhocWhere + ' )');
                         }
 
                         if (query && query.indexOf(GrafanaVariables.interval) > 0) {
@@ -235,6 +276,22 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                                 return target.groupBy.value;
                                 break;
                         }
+                    }
+                }, {
+                    key: 'correctAdhoc',
+                    value: function correctAdhoc(adhocFilters) {
+                        return adhocFilters.map(function (el) {
+                            switch (el.operator) {
+                                case '=~':
+                                    el.operator = sqlBuilder.OP.REGEXP;
+                                    break;
+                                case '!~':
+                                    el.operator = sqlBuilder.OP.NOT_REGEXP;
+                                    break;
+                            }
+
+                            return el;
+                        });
                     }
                 }]);
 
@@ -306,6 +363,8 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
 
                                 return data;
                             }
+
+                            return [];
                         });
                     }
                 }, {
@@ -335,7 +394,6 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                             url: this.options.baseUrl + resource + query,
                             data: data,
                             method: method,
-                            timeout: 30000,
                             headers: { 'Content-Type': 'application/json' }
                         });
                     }

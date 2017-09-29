@@ -31,10 +31,8 @@ System.register(['lodash', '../datemath'], function (_export, _context) {
                         date = dateMath.parse(date, roundUp);
                     }
 
-                    return date.valueOf() + 'ms';
-                },
-
-                transformColumnsToSegments: function transformColumnsToSegments() {}
+                    return date.valueOf();
+                }
             });
         }
     };

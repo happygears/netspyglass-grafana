@@ -86,6 +86,7 @@ export class NetSpyGlassDatasource {
                 nsgTarget.refId = target.refId;
                 return nsgTarget;
             })
+            .filter((target) => target.hide !== true)
             .map(processTarget)
             .filter((target) => target.nsgql !== false);
 
@@ -107,7 +108,7 @@ export class NetSpyGlassDatasource {
 
         alias = this.templateSrv.replace(alias);
 
-        return alias.replace(regex, function(match, g1, g2) {
+        return alias.replace(regex, function (match, g1, g2) {
             const group = g1 || g2;
 
             switch (group) {
@@ -236,7 +237,7 @@ export class NetSpyGlassDatasource {
             });
 
             columns.push({text: '---------', separator: true});
-            columns = _.concat(columns,categories);
+            columns = _.concat(columns, categories);
 
             return columns;
         });
@@ -246,10 +247,9 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     getSuggestions(data) {
-        let query, tags;
+        let query;
 
-        tags = data.type !== 'device' && data.type !== 'component' ? null : data.tags;
-        query = this.sqlQuery.suggestion(data.type, data.variable, tags);
+        query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
         query = this.templateSrv.replace(query);
 
         return this.api
@@ -300,7 +300,7 @@ export class NetSpyGlassDatasource {
                 return list
                     .filter((item, pos, self) => self.indexOf(item) === pos)
                     .map((item) => {
-                        if( item.error ){
+                        if (item.error) {
                             console.log(item.error);
                             return;
                         }

@@ -25,7 +25,8 @@ System.register([], function (_export, _context) {
 
             _export('GrafanaVariables', GrafanaVariables = {
                 timeFilter: '$_timeFilter',
-                interval: '$_interval'
+                interval: '$_interval',
+                adHocFilter: '$_adhoc'
             });
 
             _export('QueryPrompts', QueryPrompts);

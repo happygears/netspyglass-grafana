@@ -65,8 +65,8 @@ System.register(['angular', './datasource', './query_ctrl', './directives/column
             angular.module('grafana.directives').directive('hgColumnsMenu', ColumnsMenuDirective).directive('hgDropdown', DropdownDirective);
 
             loadPluginCss({
-                dark: 'plugins/happygears-netspyglass-datasource' + '/styles/theme.dark.css',
-                light: 'plugins/happygears-netspyglass-datasource' + '/styles/theme.light.css'
+                dark: 'plugins/happygears-netspyglass-datasource-v2' + '/styles/theme.dark.css',
+                light: 'plugins/happygears-netspyglass-datasource-v2' + '/styles/theme.light.css'
             });
 
             _export('Datasource', NetSpyGlassDatasource);

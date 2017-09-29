@@ -14,7 +14,7 @@ System.register([], function (_export, _context) {
     function DropdownDirective() {
         return {
             restrict: 'E',
-            templateUrl: 'public/plugins/happygears-netspyglass-datasource' + '/partials/dropdown.directive.html',
+            templateUrl: 'public/plugins/happygears-netspyglass-datasource-v2' + '/partials/dropdown.directive.html',
             controller: DropdownController,
             controllerAs: '$ctrl',
             bindToController: true,

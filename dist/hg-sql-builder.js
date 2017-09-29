@@ -307,6 +307,7 @@ System.register([], function (_export, _context) {
         EQ: '=',
         NOT_EQ: '<>',
         REGEXP: 'REGEXP',
+        NOT_REGEXP: 'NOT REGEXP',
         IS_NULL: 'ISNULL',
         NOT_NULL: 'NOTNULL',
         MATCH_IP: '_ABSTRACT_OPERATOR_IP_MATCH',

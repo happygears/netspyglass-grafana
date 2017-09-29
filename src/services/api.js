@@ -162,7 +162,11 @@ class SQLQuery {
         const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
             time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
         };
-        const adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
+        let adHoc = null;
+
+        if (options.adHoc) {
+            adHoc = useTemplates  ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
+        }
 
         if (columns.length) {
             columns = columns.filter((column) => column.name !== QueryPrompts.column);

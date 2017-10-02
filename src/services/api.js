@@ -164,8 +164,8 @@ class SQLQuery {
         };
         let adHoc = null;
 
-        if (options.adHoc) {
-            adHoc = useTemplates  ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
+        if (options.adHoc && options.adHoc.length) { 
+            adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
         }
 
         if (columns.length) {

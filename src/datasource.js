@@ -70,12 +70,15 @@ export class NetSpyGlassDatasource {
         const aliases = {};
         const adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
+        //this variable is used for building "raw" query in the getSQLString method
+        this.queryOptions = {timeRange, interval: options.interval, adHoc: adhocFilters};
+
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;
 
             const sql = target.rawQuery
-                ? this.sqlQuery.generateSQLQueryFromString(target, {timeRange, interval: options.interval, adHoc: adhocFilters})
-                : this.sqlQuery.generateSQLQuery(target, {timeRange, interval: options.interval, adHoc: adhocFilters}, );
+                ? this.sqlQuery.generateSQLQueryFromString(target, this.queryOptions)
+                : this.sqlQuery.generateSQLQuery(target, this.queryOptions);
 
             return this.api.generateTarget(this.templateSrv.replace(sql), target.format, target.refId);
         };
@@ -261,7 +264,7 @@ export class NetSpyGlassDatasource {
      * @returns {String}
      */
     getSQLString(target) {
-        return this.sqlQuery.generateSQLQuery(target, {}, true);
+        return this.sqlQuery.generateSQLQuery(target, this.queryOptions, true);
     }
 
     /**

@@ -261,7 +261,7 @@ export class NetSpyGlassDatasource {
      * @returns {String}
      */
     getSQLString(target) {
-        return this.sqlQuery.generateSQLQuery(target, {}, true);
+        return this.sqlQuery.removeQuotesFromSQLQuery(this.sqlQuery.generateSQLQuery(target, {}, true));
     }
 
     /**
@@ -269,6 +269,8 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     metricFindQuery(query) {
+        query = this.sqlQuery.addQuotesToSQLQuery(query);
+        query = this.templateSrv.replace(query);
         return this.api
             .queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
                 return data.map(el => ({text: el}));

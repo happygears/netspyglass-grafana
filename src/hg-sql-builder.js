@@ -119,6 +119,8 @@ class SQLBuilder {
 }
 
 SQLBuilder.buildWhere = function (where) {
+    if (where === null || where === undefined) return;
+
     let sql = [];
     let operand = SQLBuilder.OPERATORS.AND;
     let multiOperand = Array.isArray(where) && where.reduce((result,el) => {

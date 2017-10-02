@@ -7,31 +7,32 @@ module.exports = function(grunt) {
   const fs = require('fs');
   const path = require('path');
   const pluginData = require(path.join(__dirname, 'plugin.json'));
+  const destPath = IS_DEV ? 'dist_dev' : 'dist';
 
   grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.initConfig({
 
-    clean: ["dist"],
+    clean: [destPath],
 
     copy: {
       src_to_dist: {
         cwd: 'src',
         expand: true,
         src: ['**/*', '!**/*.js', '!**/*.scss'],
-        dest: 'dist'
+        dest: destPath
       },
       img_to_dist: {
         cwd: 'src',
         expand: true,
         src: ['img/*'],
-        dest: 'dist/src/'
+        dest: destPath + '/src/'
       },
       pluginDef: {
         expand: true,
         src: [ 'plugin.json', 'README.md', 'img/*' ],
-        dest: 'dist'
+        dest: destPath
       }
     },
 
@@ -60,7 +61,7 @@ module.exports = function(grunt) {
           cwd: 'src',
           expand: true,
           src: ['**/*.js'],
-          dest: 'dist',
+          dest: destPath,
           ext:'.js'
         }]
       },
@@ -69,7 +70,7 @@ module.exports = function(grunt) {
           cwd: 'src',
           expand: true,
           src: ['**/*.js'],
-          dest: 'dist/test',
+          dest: destPath + '/test',
           ext:'.js'
         }]
       },
@@ -78,7 +79,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: 'spec',
           src: ['**/*.js'],
-          dest: 'dist/test/spec',
+          dest: destPath + '/test/spec',
           ext:'.js'
         }]
       }
@@ -89,7 +90,7 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec'
         },
-        src: ['dist/test/spec/test-main.js', 'dist/test/spec/*_spec.js']
+        src: [destPath + '/test/spec/test-main.js', destPath + '/test/spec/*_spec.js']
       }
     },
 
@@ -98,10 +99,14 @@ module.exports = function(grunt) {
         sourceMap: IS_DEV
       },
       dist: {
-        files: {
-          'dist/styles/theme.dark.css': 'src/styles/theme.dark.scss',
-          'dist/styles/theme.light.css': 'src/styles/theme.light.scss'
-        }
+        files: [{
+          expand: true,
+          cwd: 'src/styles/',
+          src: ['theme.*.scss'],
+          dest: destPath + '/styles/',
+          ext: '.css',
+          extDot: 'last'
+        }]
       }
     }
   });

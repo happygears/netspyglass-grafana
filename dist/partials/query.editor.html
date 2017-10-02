@@ -117,7 +117,7 @@
                         data-get-options="ctrl.getGroupByVariables()" data-on-change="ctrl.execute()">
                     </gf-form-dropdown>
 
-                    <a class="gf-form-label" data-ng-if="ctrl.target.groupBy.value && ctrl.target.groupBy.value !== ctrl.prompts.groupBy" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
+                    <a class="gf-form-label" data-ng-if="ctrl.target.groupBy.type && ctrl.target.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
                 </div>
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-label gf-form-label--grow"></div>

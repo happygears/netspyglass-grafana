@@ -304,11 +304,13 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getSQLString',
                     value: function getSQLString(target) {
-                        return this.sqlQuery.generateSQLQuery(target, {}, true);
+                        return this.sqlQuery.removeQuotesFromSQLQuery(this.sqlQuery.generateSQLQuery(target, {}, true));
                     }
                 }, {
                     key: 'metricFindQuery',
                     value: function metricFindQuery(query) {
+                        query = this.sqlQuery.addQuotesToSQLQuery(query);
+                        query = this.templateSrv.replace(query);
                         return this.api.queryData(query, NSGQLApi.FORMAT_LIST).then(function (data) {
                             return data.map(function (el) {
                                 return { text: el };

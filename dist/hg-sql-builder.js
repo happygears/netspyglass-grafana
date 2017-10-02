@@ -200,6 +200,8 @@ System.register([], function (_export, _context) {
       SQLBuilder.buildWhere = function (where) {
         var _this = this;
 
+        if (where === null || where === undefined) return;
+
         var sql = [];
         var operand = SQLBuilder.OPERATORS.AND;
         var multiOperand = Array.isArray(where) && where.reduce(function (result, el) {

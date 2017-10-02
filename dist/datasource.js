@@ -140,6 +140,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters }) : _this.sqlQuery.generateSQLQuery(target, { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters });
 
+                            console.log(sql);
+
                             return _this.api.generateTarget(_this.templateSrv.replace(sql), target.format, target.refId);
                         };
 
@@ -304,12 +306,11 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getSQLString',
                     value: function getSQLString(target) {
-                        return this.sqlQuery.removeQuotesFromSQLQuery(this.sqlQuery.generateSQLQuery(target, {}, true));
+                        return this.sqlQuery.generateSQLQuery(target, {}, true);
                     }
                 }, {
                     key: 'metricFindQuery',
                     value: function metricFindQuery(query) {
-                        query = this.sqlQuery.addQuotesToSQLQuery(query);
                         query = this.templateSrv.replace(query);
                         return this.api.queryData(query, NSGQLApi.FORMAT_LIST).then(function (data) {
                             return data.map(function (el) {

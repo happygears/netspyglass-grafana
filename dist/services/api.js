@@ -264,7 +264,7 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                             query = _.replace(query, GrafanaVariables.interval, interval);
                         }
 
-                        return this.addQuotesToSQLQuery(query);
+                        return query;
                     }
                 }, {
                     key: 'generateGroupByValue',
@@ -296,32 +296,6 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
 
                             return el;
                         });
-                    }
-                }, {
-                    key: 'addQuotesToSQLQuery',
-                    value: function addQuotesToSQLQuery(query) {
-                        var regex = /(\$\w+)/g;
-                        var grafanaConst = _.map(GrafanaVariables, function (value) {
-                            return value;
-                        });
-
-                        query = query.replace(regex, function (match) {
-                            if (grafanaConst.indexOf(match) > -1) return match;
-                            return '\'' + match + '\'';
-                        });
-
-                        return query;
-                    }
-                }, {
-                    key: 'removeQuotesFromSQLQuery',
-                    value: function removeQuotesFromSQLQuery(query) {
-                        var regex = /'(\$\w+)'/g;
-
-                        while (query.search(regex) > 0) {
-                            query = query.replace(regex, '$1');
-                        }
-
-                        return query;
                     }
                 }]);
 

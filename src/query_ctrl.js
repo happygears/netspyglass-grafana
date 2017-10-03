@@ -249,6 +249,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             const srcColumn = this.target.columns[srcIndex];
             this.target.columns[srcIndex] = this.target.columns[dstIndex];
             this.target.columns[dstIndex] = srcColumn;
+            this.setPanelSortFromOrderBy();
             this.execute();
         }
     }

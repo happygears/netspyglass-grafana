@@ -326,6 +326,7 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                             var srcColumn = this.target.columns[srcIndex];
                             this.target.columns[srcIndex] = this.target.columns[dstIndex];
                             this.target.columns[dstIndex] = srcColumn;
+                            this.setPanelSortFromOrderBy();
                             this.execute();
                         }
                     }

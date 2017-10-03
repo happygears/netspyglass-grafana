@@ -40,6 +40,8 @@ const targetDefaults = {
     }
 };
 
+//http://angular-dragdrop.github.io/angular-dragdrop/
+
 export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     /**
@@ -234,6 +236,21 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             visible: true,
             name: this.prompts.column
         });
+    }
+
+    onDrop($event, $data, column) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        
+        const srcIndex = this.target.columns.indexOf(column);
+        const dstIndex = $data;
+        
+        if (srcIndex >= 0  && dstIndex >= 0 && srcIndex !== dstIndex) {
+            const srcColumn = this.target.columns[srcIndex];
+            this.target.columns[srcIndex] = this.target.columns[dstIndex];
+            this.target.columns[dstIndex] = srcColumn;
+            this.execute();
+        }
     }
 
     /**

@@ -5,6 +5,10 @@ hg-columns-menu {
     background: $columns-bg;
     $margin: 7px;
 
+    &.on-drag-enter {
+        box-shadow: 0 0 2px $column-hover-link-color;
+    }
+
     .select-col__func--open {
         cursor: pointer;
 

@@ -10,11 +10,11 @@
 
     <div class="editor-part editor-part--row" data-ng-if="ctrl.target.rawQuery">
         <div class="gf-form">
-            <input type="text" class="gf-form-input input-medium max-width" 
-                data-provide="typeahead"
-                data-ng-model="ctrl.target.nsgqlString"
-                data-ng-blur="ctrl.execute()"
-                spellcheck='false' placeholder="SELECT tag FROM tagFacet WHERE id=1" />
+            <textarea class="gf-form-input gf-form-input--textarea input-medium max-width"
+                      data-provide="typeahead"
+                      data-ng-model="ctrl.target.nsgqlString"
+                      data-ng-blur="ctrl.execute()"
+                      spellcheck='false' placeholder="SELECT tag FROM tagFacet WHERE id=1"></textarea>
         </div>
     </div>
 

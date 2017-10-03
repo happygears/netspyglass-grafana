@@ -1,6 +1,7 @@
 import SQLBuilderFactory from '../hg-sql-builder';
 import {QueryPrompts} from '../dictionary';
 import {GrafanaVariables} from '../dictionary';
+import utils from './utils';
 import angular from 'angular';
 
 const sqlBuilder = SQLBuilderFactory();
@@ -13,20 +14,21 @@ class SQLQuery {
 
     constructor() {}
 
-    processColumn(column) {
+    processColumn(column, needToCreateAliases = false) {
         if (angular.isString(column)) {
             return column;
         }
 
         if (angular.isObject(column)) {
-            let columnName = column.name;
-
-            if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
-                columnName = `${column.appliedFunctions.map(((func) => func.name)).join('(')}(${columnName}${')'.repeat(column.appliedFunctions.length)}`;
-            }
+            let columnName = utils.compileColumnName(column);
 
             if (column.alias) {
                 columnName += ` as ${column.alias}`;
+            } else if (needToCreateAliases) {
+                let alias = utils.compileColumnAlias(column);
+                if (alias !== columnName) {
+                    columnName += ` as ${alias}`;
+                }
             }
 
             return columnName;
@@ -176,7 +178,7 @@ class SQLQuery {
             return false;
         }
 
-        query.select(columns.map(this.processColumn));
+        query.select(columns.map(column => this.processColumn(column,target.isTablePanel)));
         query.from(target.variable);
         query.where([
             sqlBuilder.OP.AND,

@@ -16,6 +16,7 @@
 
 import {QueryCtrl} from 'app/plugins/sdk';
 import {QueryPrompts, GrafanaVariables} from './dictionary';
+import utils from './services/utils';
 
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment
@@ -119,6 +120,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         );
 
         this.target.format = (this.options.isGraph || this.options.isSinglestat) ? 'time_series' : 'table';
+        this.target.isTablePanel = this.options.isTable;
 
         if (this.options.isGraph || this.options.isSinglestat) {
             if (!_.find(this.target.columns, {name: 'time'})) {
@@ -133,7 +135,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     setPanelSortFromOrderBy() {
         const index = _.findIndex(this.target.columns, (column) => {
-            return column.name === this.target.orderBy.column || column.alias === this.target.orderBy.column;
+            return utils.compileColumnAlias(column) === this.target.orderBy.column || column.alias === this.target.orderBy.column;
         });
 
         this.panel.sort.col = index > -1 ? index : null;
@@ -142,7 +144,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     setOrderByFromPanelSort(value) {
         if (value.col !== null) {
-            this.target.orderBy.column = this.target.columns[value.col].alias || this.target.columns[value.col].name;
+            this.target.orderBy.column = utils.compileColumnAlias(this.target.columns[value.col]) || this.target.columns[value.col].alias;
             this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
         } else {
             this.onClearOrderBy();
@@ -452,11 +454,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         if (this.options.isGraph) {
             list.push({text: 'metric', value: 'metric'});
         } else if (this.options.isTable) {
-            this.target.columns.forEach((el) => {
-                if (el.appliedFunctions.length && !el.alias) return;
-
-                let val = el.alias || el.name;
-                list.push({text: val, value: val});
+            this.target.columns.forEach((column) => {
+                list.push({
+                    text: column.alias || utils.compileColumnName(column),
+                    value: utils.compileColumnAlias(column)
+                })
             });
         }
 

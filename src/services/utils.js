@@ -21,5 +21,33 @@ export default {
         }
 
         return date.valueOf();
+    },
+    /**
+     * compileColumnAlias - return the column name wrapped by a function when column has appliedFunctions, else return only column name
+     * @param column {string}
+     * @return {string}
+     */
+    compileColumnName: function (column) {
+        let columnName = column.name;
+
+        if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
+            columnName = `${column.appliedFunctions.map(((func) => func.name)).join('(')}(${columnName}${')'.repeat(column.appliedFunctions.length)}`;
+        }
+
+        return columnName;
+    },
+    /**
+     * compileColumnAlias - return alias when column has appliedFunctions, else return column name
+     * @param column {string}
+     * @return {string}
+     */
+    compileColumnAlias: function (column) {
+        let columnName = column.name;
+
+        if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
+            columnName = `${column.appliedFunctions.map(((func) => func.name)).join('_')}_${columnName}`;
+        }
+
+        return columnName;
     }
 };

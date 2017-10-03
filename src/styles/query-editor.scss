@@ -81,3 +81,13 @@
     background-size: 70px;
     z-index: 99;
 }
+
+.gf-form-input {
+
+    &--textarea {
+        white-space: inherit;
+        overflow-wrap: normal;
+        overflow-x: scroll;
+    }
+}
+

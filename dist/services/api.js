@@ -203,7 +203,8 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                         };
                         var adHoc = null;
 
-                        if (options.adHoc) {
+                        if (options.adHoc && options.adHoc.length) {
+
                             adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
                         }
 

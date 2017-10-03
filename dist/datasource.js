@@ -135,12 +135,13 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         var aliases = {};
                         var adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
+                        //this variable is used for building "raw" query in the getSQLString method
+                        this.queryOptions = { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters };
+
                         var processTarget = function processTarget(target) {
                             aliases[target.refId] = target.alias;
 
-                            var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters }) : _this.sqlQuery.generateSQLQuery(target, { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters });
-
-                            console.log(sql);
+                            var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, _this.queryOptions) : _this.sqlQuery.generateSQLQuery(target, _this.queryOptions);
 
                             return _this.api.generateTarget(_this.templateSrv.replace(sql), target.format, target.refId);
                         };
@@ -306,7 +307,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getSQLString',
                     value: function getSQLString(target) {
-                        return this.sqlQuery.generateSQLQuery(target, {}, true);
+                        return this.sqlQuery.generateSQLQuery(target, this.queryOptions, true);
                     }
                 }, {
                     key: 'metricFindQuery',

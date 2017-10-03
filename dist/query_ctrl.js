@@ -314,6 +314,22 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                         });
                     }
                 }, {
+                    key: 'onDrop',
+                    value: function onDrop($event, $data, column) {
+                        $event.preventDefault();
+                        $event.stopPropagation();
+
+                        var srcIndex = this.target.columns.indexOf(column);
+                        var dstIndex = $data;
+
+                        if (srcIndex >= 0 && dstIndex >= 0 && srcIndex !== dstIndex) {
+                            var srcColumn = this.target.columns[srcIndex];
+                            this.target.columns[srcIndex] = this.target.columns[dstIndex];
+                            this.target.columns[dstIndex] = srcColumn;
+                            this.execute();
+                        }
+                    }
+                }, {
                     key: 'loadColumns',
                     value: function loadColumns() {
                         var _this5 = this;

@@ -45,6 +45,11 @@
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-inline gf-form--grow">
                         <hg-columns-menu 
+                            ui-on-drop="ctrl.onDrop($event, $data, column)"
+                            ui-draggable="true"
+                            drag="$index"
+                            data-drop-channel="columns"
+                            data-drag-channel="columns"
                             data-columns-list="ctrl.options.columns" 
                             data-column="column" 
                             data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}"

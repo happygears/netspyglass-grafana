@@ -55,6 +55,24 @@ the directory `/var/lib/grafana/plugins/`, then restart the server with command
  configuration file `nw2.conf` using parameter key `api.accessTokens.grafana`
 5. Click "Add" and then "Save and Test" to test communication with
  the server
+
+
+ ## Developing
+
+Dependencies: grafana grunt grunt-cli nodejs >= 6
+
+1. clone this git repository
+2. open root folder of the cloned repo
+3. run command `npm install`
+4. run command `grunt` - now you have new folder dist_dev in the project root
+5. create symbolic link from dist_dev to grafana plugins folder
+   for example `ln -s /home/users/developer/netspyglass-grafana/dist_dev/ /var/lib/grafana/plugins/`
+6. restart your grafana instance
+
+For development plugin run command `grunt watch` and now you can edit files in src folder.
+If you want create production build and update dist folder please execute next command 
+
+NODE_ENV=production grunt
  
 
 ## Screenshots
@@ -73,15 +91,23 @@ Building "top N" report in Grafana table panel (selects top 5):
 
 ![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png)
 
-## Tested with Grafana 4.0.1
+## Tested with Grafana 4.1.1
 
-(C) 2016 Happy Gears, Inc  www.happygears.net
+(C) 2017 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
 # Change Log
 
-### v 1.0.4
+
+### v2.0.0
+## Tested with Grafana 4.1.1 - this is minimum required version
+
+1. In this version, we completely changed the approach to getting data from the server, so this version is not compatible with the previous ones. The server API was changed to a SQL-like syntax. The query builder is implemented from scratch in a more modern form.
+
+
+## Tested with Grafana 4.0.1
+### v1.0.4
 
 1. fixed regression caused by the switch to lodash 4.x. This bug broke time intervals "today", 
    "yesterday" and others like that.

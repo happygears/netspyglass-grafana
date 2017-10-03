@@ -72,6 +72,8 @@ hg-columns-menu {
   position: relative;
   margin-right: 2px;
   background: #f4f5f8; }
+  hg-columns-menu.on-drag-enter {
+    box-shadow: 0 0 2px #222; }
   hg-columns-menu .select-col__func--open {
     cursor: pointer; }
     hg-columns-menu .select-col__func--open:hover {

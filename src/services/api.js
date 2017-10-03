@@ -164,8 +164,8 @@ class SQLQuery {
         };
         let adHoc = null;
 
-        if (options.adHoc) {
-            adHoc = useTemplates  ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
+        if (options.adHoc && options.adHoc.length) { 
+            adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
         }
 
         if (columns.length) {
@@ -227,7 +227,7 @@ class SQLQuery {
             query = _.replace(query, GrafanaVariables.interval, interval);
         }
 
-        return this.addQuotesToSQLQuery(query);
+        return query;
     }
 
     generateGroupByValue(target, options, useTemplates = false) {
@@ -255,38 +255,6 @@ class SQLQuery {
 
             return el;
         })
-    }
-
-    /**
-     * add quotes to SQLQuery around $templateVariables - Ex: device = $deviceName => device = '$deviceName'
-     * @param query {string}
-     * @returns {string}
-     */
-    addQuotesToSQLQuery(query) {
-        const regex = /(\$\w+)/g;
-        const grafanaConst = _.map(GrafanaVariables, value => value);
-
-        query = query.replace(regex, function(match) {
-            if(grafanaConst.indexOf(match) > -1) return match;
-            return `'${match}'`;
-        });
-
-        return query;
-    }
-
-    /**
-     * remove quotes from SQLQuery around $templateVariables - Ex: device = '$deviceName' => device = $deviceName
-     * @param query {string}
-     * @returns {string}
-     */
-    removeQuotesFromSQLQuery(query) {
-        const regex = /'(\$\w+)'/g;
-
-        while( query.search(regex) > 0 ) {
-            query = query.replace(regex, '$1');
-        }
-
-        return query;
     }
 }
 

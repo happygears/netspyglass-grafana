@@ -29,8 +29,13 @@ const targetDefaults = {
     category: QueryPrompts.category,
     variable: QueryPrompts.variable,
     orderBy: {
-        column: QueryPrompts.orderBy,
-        sort: orderBySortTypes[0]
+        column: {
+            name: '',
+            value: '',
+            alias: ''
+        },
+        sort: orderBySortTypes[0],
+        colName: QueryPrompts.orderBy
     },
     rawQuery: 0,
     limit: 100,
@@ -135,7 +140,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     setPanelSortFromOrderBy() {
         const index = _.findIndex(this.target.columns, (column) => {
-            return utils.compileColumnAlias(column) === this.target.orderBy.column || column.alias === this.target.orderBy.column;
+            return utils.compileColumnName(column) === this.target.orderBy.column.name;
         });
 
         this.panel.sort.col = index > -1 ? index : null;
@@ -144,7 +149,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     setOrderByFromPanelSort(value) {
         if (value.col !== null) {
-            this.target.orderBy.column = utils.compileColumnAlias(this.target.columns[value.col]) || this.target.columns[value.col].alias;
+            this.target.orderBy.column = {
+                name: utils.compileColumnName(this.target.columns[value.col]),
+                value: utils.compileColumnAlias(this.target.columns[value.col]),
+                alias: this.target.columns[value.col].alias
+            };
+            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
             this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
         } else {
             this.onClearOrderBy();
@@ -202,11 +212,19 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onChangeOrderBy() {
+        this.target.orderBy.column = this.target.orderBy.colName;
+        this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+
+        this._updateOrderBy();
+    }
+
+    onChangeOrderBySort() {
         this._updateOrderBy();
     }
 
     onClearOrderBy() {
-        this.target.orderBy.column = this.prompts.orderBy;
+        this.target.orderBy.column = {};
+        this.target.orderBy.colName = this.prompts.orderBy;
         this._updateOrderBy();
     }
 
@@ -230,6 +248,14 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onColumnChanged($column) {
+        if (this.target.orderBy.column.name === utils.compileColumnName($column)) {
+            this.target.orderBy.column = {
+                name: utils.compileColumnName($column),
+                value: utils.compileColumnAlias($column),
+                alias: $column.alias
+            };
+            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+        }
         this.execute();
     }
 
@@ -457,7 +483,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.target.columns.forEach((column) => {
                 list.push({
                     text: column.alias || utils.compileColumnName(column),
-                    value: utils.compileColumnAlias(column)
+                    value: {
+                        name: utils.compileColumnName(column),
+                        value: utils.compileColumnAlias(column),
+                        alias: column.alias
+                    }
                 })
             });
         }

@@ -94,13 +94,13 @@
                 </div>
 
                 <div class="gf-form">
-                    <gf-form-dropdown model="ctrl.target.orderBy.column" data-label-mode="true" data-get-options="ctrl.getOrderByOptions()" data-on-change="ctrl.onChangeOrderBy()">
+                    <gf-form-dropdown model="ctrl.target.orderBy.colName" data-label-mode="true" data-get-options="ctrl.getOrderByOptions()" data-on-change="ctrl.onChangeOrderBy()">
                     </gf-form-dropdown>
                 </div>
 
-                <div class="gf-form" data-ng-if="ctrl.target.orderBy.column && ctrl.target.orderBy.column !== ctrl.prompts.orderBy">
+                <div class="gf-form" data-ng-if="ctrl.target.orderBy.column && ctrl.target.orderBy.colName !== ctrl.prompts.orderBy">
                     <gf-form-dropdown model="ctrl.target.orderBy.sort" data-label-mode="true" data-get-options="ctrl.getOrderBySortOptions()"
-                        data-on-change="ctrl.onChangeOrderBy()">
+                        data-on-change="ctrl.onChangeOrderBySort()">
                     </gf-form-dropdown>
 
                     <a class="gf-form-label" data-ng-click="ctrl.onClearOrderBy()"><i class="fa fa-close"></i></a>

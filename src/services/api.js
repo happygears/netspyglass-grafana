@@ -195,8 +195,8 @@ class SQLQuery {
             }
         }
 
-        if (target.orderBy.column && target.orderBy.column !== QueryPrompts.orderBy) {
-            query.orderBy([`${target.orderBy.column} ${target.orderBy.sort}`]);
+        if (target.orderBy.column && target.orderBy.column.name) {
+            query.orderBy([`${target.orderBy.column.alias || target.orderBy.column.value} ${target.orderBy.sort}`]);
         } else {
             query.clearOrderBy();
         }

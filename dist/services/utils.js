@@ -32,6 +32,38 @@ System.register(['lodash', '../datemath'], function (_export, _context) {
                     }
 
                     return date.valueOf();
+                },
+                /**
+                 * compileColumnAlias - return the column name wrapped by a function when column has appliedFunctions, else return only column name
+                 * @param column {string}
+                 * @return {string}
+                 */
+                compileColumnName: function compileColumnName(column) {
+                    var columnName = column.name;
+
+                    if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
+                        columnName = column.appliedFunctions.map(function (func) {
+                            return func.name;
+                        }).join('(') + '(' + columnName + ')'.repeat(column.appliedFunctions.length);
+                    }
+
+                    return columnName;
+                },
+                /**
+                 * compileColumnAlias - return alias when column has appliedFunctions, else return column name
+                 * @param column {string}
+                 * @return {string}
+                 */
+                compileColumnAlias: function compileColumnAlias(column) {
+                    var columnName = column.name;
+
+                    if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
+                        columnName = column.appliedFunctions.map(function (func) {
+                            return func.name;
+                        }).join('_') + '_' + columnName;
+                    }
+
+                    return columnName;
                 }
             });
         }

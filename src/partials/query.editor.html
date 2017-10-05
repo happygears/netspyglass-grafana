@@ -31,7 +31,11 @@
             </div>
 
             <div class="gf-form gf-form--grow">
-                <div class="gf-form-label gf-form-label--grow"></div>
+                <div class="gf-form-label gf-form-label--grow">
+                    <i class="fa fa-question-circle"
+                       data-placement="top"
+                       data-bs-tooltip="'Select monitoring variable'"></i>
+                </div>
             </div>
         </div>
 
@@ -64,7 +68,16 @@
                         <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
 
                         <div class="gf-form gf-form--grow">
-                            <div class="gf-form-label gf-form-label--grow"></div>
+                            <div class="gf-form-label gf-form-label--grow">
+                                <i data-ng-if="ctrl.options.isTable"
+                                   class="fa fa-question-circle"
+                                   data-placement="top"
+                                   data-bs-tooltip="'Click `+` to add column. Drag-n-drop columns to reorder. Click menu to add functions and column alias.'"></i>
+                                <i data-ng-if="!ctrl.options.isTable"
+                                   class="fa fa-question-circle"
+                                   data-placement="top"
+                                   data-bs-tooltip="'Click menu to add functions and column alias.'"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,7 +138,13 @@
                     <a class="gf-form-label" data-ng-if="ctrl.target.groupBy.type && ctrl.target.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
                 </div>
                 <div class="gf-form gf-form--grow">
-                    <div class="gf-form-label gf-form-label--grow"></div>
+                    <div class="gf-form-label gf-form-label--grow">
+                        <i class="fa fa-question-circle"
+                           data-placement="top"
+                           data-bs-tooltip="'Choose column to group alias by.' +
+                           'Grouped values are passed as arguments to aggregation functions used with columns in SELECT.' +
+                           'You can group by a column that does not appear in SELECT.'"></i>
+                    </div>
                 </div>
             </div>
 
@@ -142,10 +161,12 @@
 
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-label gf-form-label--grow">
-                        <i class="fa fa-question-circle" data-bs-tooltip="'Restrict number of time series returned by this query. ' +
+                        <i class="fa fa-question-circle"
+                           data-placement="top"
+                           data-bs-tooltip="'Restrict number of time series returned by this query. ' +
                            'Limit is applied after sorting. If this field is empty, result is unrestricted, ' +
                            'however the server may apply its own restriction to avoid sending ' +
-                           'thousands of time series to Grafana'" data-placement="bottom"></i>
+                           'thousands of time series to Grafana'" ></i>
                     </div>
                 </div>
             </div>

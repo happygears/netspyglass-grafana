@@ -240,7 +240,12 @@ export class NetSpyGlassDatasource {
             });
 
             columns.push({text: '---------', separator: true});
-            columns = _.concat(columns, categories);
+
+            // columns = _.concat(columns, categories);
+            columns.push({
+                text: 'variables',
+                submenu: categories
+            });
 
             return columns;
         });

@@ -24,6 +24,10 @@ hg-dropdown {
       max-height: 300px;
     }
   }
+
+  .dropdown-submenu > .dropdown-menu {
+    border-radius: 0;
+  }
 }
 
 .dropdown-menu--custom {

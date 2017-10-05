@@ -7,8 +7,16 @@
         data-ng-class="{'dropdown-submenu': item.submenu.length, 'dropdown--separator': item.separator}">
         <a>{{ ::item.text }}</a>
         <ul class="dropdown-menu" role="menu" data-ng-if="item.submenu">
-            <li data-ng-repeat="subItem in item.submenu | orderBy: 'text' ">
-                <a data-ng-click="$ctrl.onSelectValue(subItem.value)">{{ ::subItem.text }}</a>
+            <li data-ng-repeat="subItem in item.submenu | orderBy: 'text' "
+                data-ng-class="{'dropdown-submenu': subItem.submenu.length}">
+                <a data-ng-if="!item.submenu">{{ ::subItem.text }}</a>
+                <a data-ng-if="item.submenu" data-ng-click="$ctrl.onSelectValue(subItem.value)">{{ ::subItem.text }}</a>
+
+                <ul class="dropdown-menu" role="menu" data-ng-if="subItem.submenu">
+                    <li data-ng-repeat="subSubItem in subItem.submenu | orderBy: 'text' ">
+                        <a data-ng-click="$ctrl.onSelectValue(subSubItem.value)">{{ ::subSubItem.text }}</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </li>

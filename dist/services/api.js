@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_export, _context) {
+System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular'], function (_export, _context) {
     "use strict";
 
-    var SQLBuilderFactory, QueryPrompts, GrafanaVariables, angular, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
+    var SQLBuilderFactory, QueryPrompts, GrafanaVariables, utils, angular, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
 
     function _toConsumableArray(arr) {
         if (Array.isArray(arr)) {
@@ -42,6 +42,8 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
         }, function (_dictionary) {
             QueryPrompts = _dictionary.QueryPrompts;
             GrafanaVariables = _dictionary.GrafanaVariables;
+        }, function (_utils) {
+            utils = _utils.default;
         }, function (_angular) {
             angular = _angular.default;
         }],
@@ -74,21 +76,22 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                 _createClass(SQLQuery, [{
                     key: 'processColumn',
                     value: function processColumn(column) {
+                        var needToCreateAliases = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
                         if (angular.isString(column)) {
                             return column;
                         }
 
                         if (angular.isObject(column)) {
-                            var columnName = column.name;
-
-                            if (column.appliedFunctions && angular.isArray(column.appliedFunctions) && column.appliedFunctions.length) {
-                                columnName = column.appliedFunctions.map(function (func) {
-                                    return func.name;
-                                }).join('(') + '(' + columnName + ')'.repeat(column.appliedFunctions.length);
-                            }
+                            var columnName = utils.compileColumnName(column);
 
                             if (column.alias) {
                                 columnName += ' as ' + column.alias;
+                            } else if (needToCreateAliases) {
+                                var alias = utils.compileColumnAlias(column);
+                                if (alias !== columnName) {
+                                    columnName += ' as ' + alias;
+                                }
                             }
 
                             return columnName;
@@ -194,6 +197,8 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                 }, {
                     key: 'generateSQLQuery',
                     value: function generateSQLQuery(target, options) {
+                        var _this = this;
+
                         var useTemplates = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
                         var columns = Array.isArray(target.columns) ? target.columns : [];
@@ -218,7 +223,9 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                             return false;
                         }
 
-                        query.select(columns.map(this.processColumn));
+                        query.select(columns.map(function (column) {
+                            return _this.processColumn(column, target.isTablePanel);
+                        }));
                         query.from(target.variable);
                         query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags), adHoc, timeVar]);
 
@@ -230,8 +237,8 @@ System.register(['../hg-sql-builder', '../dictionary', 'angular'], function (_ex
                             }
                         }
 
-                        if (target.orderBy.column && target.orderBy.column !== QueryPrompts.orderBy) {
-                            query.orderBy([target.orderBy.column + ' ' + target.orderBy.sort]);
+                        if (target.orderBy.column && target.orderBy.column.name) {
+                            query.orderBy([(target.orderBy.column.alias || target.orderBy.column.value) + ' ' + target.orderBy.sort]);
                         } else {
                             query.clearOrderBy();
                         }

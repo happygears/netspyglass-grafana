@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', './dictionary'], function (_export, _context) {
+System.register(['app/plugins/sdk', './dictionary', './services/utils'], function (_export, _context) {
     "use strict";
 
-    var QueryCtrl, QueryPrompts, GrafanaVariables, _createClass, orderBySortTypes, targetDefaults, NetSpyGlassQueryCtrl;
+    var QueryCtrl, QueryPrompts, GrafanaVariables, utils, _createClass, orderBySortTypes, targetDefaults, NetSpyGlassQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -41,6 +41,8 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
         }, function (_dictionary) {
             QueryPrompts = _dictionary.QueryPrompts;
             GrafanaVariables = _dictionary.GrafanaVariables;
+        }, function (_servicesUtils) {
+            utils = _servicesUtils.default;
         }],
         execute: function () {
             _createClass = function () {
@@ -68,8 +70,13 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                 category: QueryPrompts.category,
                 variable: QueryPrompts.variable,
                 orderBy: {
-                    column: QueryPrompts.orderBy,
-                    sort: orderBySortTypes[0]
+                    column: {
+                        name: '',
+                        value: '',
+                        alias: ''
+                    },
+                    sort: orderBySortTypes[0],
+                    colName: QueryPrompts.orderBy
                 },
                 rawQuery: 0,
                 limit: 100,
@@ -166,6 +173,7 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                         _.defaultsDeep(this.target, targetDefaults);
 
                         this.target.format = this.options.isGraph || this.options.isSinglestat ? 'time_series' : 'table';
+                        this.target.isTablePanel = this.options.isTable;
 
                         if (this.options.isGraph || this.options.isSinglestat) {
                             if (!_.find(this.target.columns, { name: 'time' })) {
@@ -183,7 +191,7 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                         var _this3 = this;
 
                         var index = _.findIndex(this.target.columns, function (column) {
-                            return column.name === _this3.target.orderBy.column || column.alias === _this3.target.orderBy.column;
+                            return utils.compileColumnName(column) === _this3.target.orderBy.column.name;
                         });
 
                         this.panel.sort.col = index > -1 ? index : null;
@@ -193,7 +201,12 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                     key: 'setOrderByFromPanelSort',
                     value: function setOrderByFromPanelSort(value) {
                         if (value.col !== null) {
-                            this.target.orderBy.column = this.target.columns[value.col].alias || this.target.columns[value.col].name;
+                            this.target.orderBy.column = {
+                                name: utils.compileColumnName(this.target.columns[value.col]),
+                                value: utils.compileColumnAlias(this.target.columns[value.col]),
+                                alias: this.target.columns[value.col].alias
+                            };
+                            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
                             this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
                         } else {
                             this.onClearOrderBy();
@@ -271,12 +284,21 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                 }, {
                     key: 'onChangeOrderBy',
                     value: function onChangeOrderBy() {
+                        this.target.orderBy.column = this.target.orderBy.colName;
+                        this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+
+                        this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onChangeOrderBySort',
+                    value: function onChangeOrderBySort() {
                         this._updateOrderBy();
                     }
                 }, {
                     key: 'onClearOrderBy',
                     value: function onClearOrderBy() {
-                        this.target.orderBy.column = this.prompts.orderBy;
+                        this.target.orderBy.column = {};
+                        this.target.orderBy.colName = this.prompts.orderBy;
                         this._updateOrderBy();
                     }
                 }, {
@@ -303,6 +325,14 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                 }, {
                     key: 'onColumnChanged',
                     value: function onColumnChanged($column) {
+                        if (this.target.orderBy.column.name === utils.compileColumnName($column)) {
+                            this.target.orderBy.column = {
+                                name: utils.compileColumnName($column),
+                                value: utils.compileColumnAlias($column),
+                                alias: $column.alias
+                            };
+                            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+                        }
                         this.execute();
                     }
                 }, {
@@ -525,11 +555,15 @@ System.register(['app/plugins/sdk', './dictionary'], function (_export, _context
                         if (this.options.isGraph) {
                             list.push({ text: 'metric', value: 'metric' });
                         } else if (this.options.isTable) {
-                            this.target.columns.forEach(function (el) {
-                                if (el.appliedFunctions.length && !el.alias) return;
-
-                                var val = el.alias || el.name;
-                                list.push({ text: val, value: val });
+                            this.target.columns.forEach(function (column) {
+                                list.push({
+                                    text: column.alias || utils.compileColumnName(column),
+                                    value: {
+                                        name: utils.compileColumnName(column),
+                                        value: utils.compileColumnAlias(column),
+                                        alias: column.alias
+                                    }
+                                });
                             });
                         }
 

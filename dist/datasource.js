@@ -287,7 +287,12 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             });
 
                             columns.push({ text: '---------', separator: true });
-                            columns = _.concat(columns, categories);
+
+                            // columns = _.concat(columns, categories);
+                            columns.push({
+                                text: 'variables',
+                                submenu: categories
+                            });
 
                             return columns;
                         });

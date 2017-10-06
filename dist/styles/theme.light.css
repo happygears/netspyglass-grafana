@@ -155,17 +155,24 @@ hg-columns-menu {
   .dropdown-menu > li > a {
     color: #292929; }
   .dropdown-menu > li:hover > a,
+  .dropdown-menu > li.submenu-open > a,
   .dropdown-menu > li > a:hover {
     background: #f4f5f8;
     color: #292929; }
+  .dropdown-menu .dropdown-submenu.submenu-open > a::after,
+  .dropdown-menu .dropdown-submenu:hover > a::after {
+    border-left-color: #292929; }
 
 hg-dropdown {
   position: relative; }
-  hg-dropdown > .dropdown-menu > li.dropdown-submenu > ul {
-    top: auto;
-    bottom: 0;
-    overflow-y: auto;
-    max-height: 300px; }
+  hg-dropdown > .dropdown-menu {
+    display: block; }
+  hg-dropdown .dropdown-submenu > .dropdown-menu {
+    border-radius: 0; }
+  hg-dropdown .dropdown-submenu:hover > .dropdown-menu {
+    display: none; }
+  hg-dropdown .dropdown-submenu.submenu-open > .dropdown-menu {
+    display: block; }
 
 .dropdown-menu--custom li.dropdown--separator {
   margin: 5px 0;

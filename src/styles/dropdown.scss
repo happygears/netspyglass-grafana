@@ -6,9 +6,14 @@
   }
 
   & > li:hover > a,
+  & > li.submenu-open > a,
   & > li > a:hover {
     background: $columns-dropdown-highlight-bg;
     color: $columns-dropdown-highlight-color;
+  }
+  .dropdown-submenu.submenu-open > a::after,
+  .dropdown-submenu:hover > a::after {
+    border-left-color: $columns-dropdown-highlight-color;
   }
 }
 
@@ -16,17 +21,20 @@ hg-dropdown {
   position: relative;
 
   & > .dropdown-menu {
-
-    & > li.dropdown-submenu > ul {
-      top: auto;
-      bottom: 0;
-      overflow-y: auto;
-      max-height: 300px;
-    }
+    display: block;
   }
 
-  .dropdown-submenu > .dropdown-menu {
-    border-radius: 0;
+  .dropdown-submenu {
+    & > .dropdown-menu {
+      border-radius: 0;
+    }
+
+    &:hover > .dropdown-menu {
+      display: none;
+    }
+    &.submenu-open > .dropdown-menu {
+      display: block;
+    }
   }
 }
 

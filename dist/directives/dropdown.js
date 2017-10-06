@@ -25,6 +25,7 @@ System.register([], function (_export, _context) {
             },
             link: function link($scope, $element, $attrs, ctrl) {
                 var $body = angular.element('body');
+
                 $element.find('.pointer').on('click', function (e) {
                     // e.stopPropagation();
                     e.preventDefault();
@@ -42,8 +43,6 @@ System.register([], function (_export, _context) {
                     $scope.$apply(function () {
                         ctrl.isOpened = !ctrl.isOpened;
                     });
-
-                    $element.toggleClass('open', ctrl.isOpened);
                 });
 
                 $element.on('$destroy', function () {
@@ -57,6 +56,18 @@ System.register([], function (_export, _context) {
                         $element.toggleClass('open', ctrl.isOpened);
                     });
                 }
+
+                ctrl.toggleSubMenu = function ($event) {
+                    $event.stopPropagation();
+                    $event.preventDefault();
+
+                    var link = angular.element($event.currentTarget),
+                        submenuItems = link.parent().parent().find('.dropdown-submenu'),
+                        submenuItemCurrent = link.parent();
+
+                    submenuItems.removeClass('submenu-open');
+                    submenuItemCurrent.toggleClass('submenu-open');
+                };
             }
         };
     }

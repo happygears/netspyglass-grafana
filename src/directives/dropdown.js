@@ -50,6 +50,7 @@ export default function DropdownDirective() {
         },
         link: function ($scope, $element, $attrs, ctrl) {
             const $body = angular.element('body');
+
             $element
                 .find('.pointer')
                 .on('click', function (e) {
@@ -69,10 +70,7 @@ export default function DropdownDirective() {
                     $scope.$apply(function () {
                         ctrl.isOpened = !ctrl.isOpened;
                     });
-
-                    $element.toggleClass('open', ctrl.isOpened);
                 });
-
 
             $element.on('$destroy', function () {
                 $body.off('click', onBodyClick);
@@ -84,6 +82,18 @@ export default function DropdownDirective() {
                     ctrl.isOpened = false;
                     $element.toggleClass('open', ctrl.isOpened);
                 });
+            }
+
+            ctrl.toggleSubMenu = function($event) {
+                $event.stopPropagation();
+                $event.preventDefault();
+
+                const link = angular.element($event.currentTarget),
+                    submenuItems = link.parent().parent().find('.dropdown-submenu'),
+                    submenuItemCurrent = link.parent();
+
+                submenuItems.removeClass('submenu-open');
+                submenuItemCurrent.toggleClass('submenu-open');
             }
         }
     };

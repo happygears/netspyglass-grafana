@@ -87,35 +87,33 @@ hg-columns-menu {
       outline: none;
       user-select: none;
       color: #1DE7B5; }
-  hg-columns-menu > .dropdown-menu {
-    right: 0 !important;
-    left: auto !important; }
-    hg-columns-menu > .dropdown-menu a[href^="#for-function"] {
-      display: none; }
-    hg-columns-menu > .dropdown-menu a[href^="#for-dropdown-menu"] {
-      display: block; }
-    hg-columns-menu > .dropdown-menu a[href^="#for-dropdown-menu-alias-remove"] {
-      display: none; }
-    hg-columns-menu > .dropdown-menu--has-alias a[href^="#for-dropdown-menu-alias-add"] {
-      display: none; }
-    hg-columns-menu > .dropdown-menu--has-alias a[href^="#for-dropdown-menu-alias-remove"] {
-      display: block; }
-    hg-columns-menu > .dropdown-menu--for-function a[href^="#for-function"] {
-      display: block; }
-    hg-columns-menu > .dropdown-menu--for-function a[href^="#for-dropdown-menu"] {
-      display: none; }
+  hg-columns-menu > .dropdown-menu a[href^="#for-function"] {
+    display: none; }
+  hg-columns-menu > .dropdown-menu a[href^="#for-dropdown-menu"] {
+    display: block; }
+  hg-columns-menu > .dropdown-menu a[href^="#for-dropdown-menu-alias-remove"] {
+    display: none; }
+  hg-columns-menu > .dropdown-menu--has-alias a[href^="#for-dropdown-menu-alias-add"] {
+    display: none; }
+  hg-columns-menu > .dropdown-menu--has-alias a[href^="#for-dropdown-menu-alias-remove"] {
+    display: block; }
+  hg-columns-menu > .dropdown-menu--for-function a[href^="#for-function"] {
+    display: block; }
+  hg-columns-menu > .dropdown-menu--for-function a[href^="#for-dropdown-menu"] {
+    display: none; }
   hg-columns-menu .col-container {
     display: flex;
-    padding: 0 0 0 7px;
     border-right: 1px solid #f9f9f9; }
     hg-columns-menu .col-container__item {
       padding-left: 0;
       padding-right: 0;
-      margin-right: 7px !important; }
+      margin-right: 0.45rem !important; }
       hg-columns-menu .col-container__item.query-keyword {
         width: auto; }
   hg-columns-menu .gf-form-label.dropdown-toggle {
-    margin-right: 0; }
+    margin-right: 0;
+    padding-left: 0.45rem;
+    padding-right: 0.45rem; }
 
 .gf-form--column-editor {
   -webkit-box-align: stretch;
@@ -126,6 +124,8 @@ hg-columns-menu {
   .gf-form--column-editor .gf-form-label {
     box-sizing: border-box; }
   .gf-form--column-editor .gf-form-label.pointer {
+    margin-right: 0;
+    margin-left: 0;
     padding-right: 0;
     padding-left: 0;
     outline: none;

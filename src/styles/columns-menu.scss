@@ -3,7 +3,7 @@ hg-columns-menu {
     position: relative;
     margin-right: 2px;
     background: $columns-bg;
-    $margin: 7px;
+    $margin: 0.45rem;
 
     &.on-drag-enter {
         box-shadow: 0 0 2px $column-hover-link-color;
@@ -25,8 +25,6 @@ hg-columns-menu {
     }
 
     > .dropdown-menu  {
-        right: 0 !important;
-        left: auto !important;
         
         a[href^="#for-function"] {
             display: none;
@@ -63,7 +61,6 @@ hg-columns-menu {
 
     .col-container {
         display: flex;
-        padding: 0 0 0 $margin;
         border-right: 1px solid $columns-menu-border; 
 
         &__item {
@@ -79,6 +76,8 @@ hg-columns-menu {
 
     .gf-form-label.dropdown-toggle {
         margin-right: 0;
+        padding-left: $margin;
+        padding-right: $margin;
     }
 }
 
@@ -97,6 +96,8 @@ hg-columns-menu {
         }
 
         .gf-form-label.pointer {
+            margin-right: 0;
+            margin-left: 0;
             padding-right: 0;
             padding-left: 0;  
             outline: none;

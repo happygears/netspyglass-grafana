@@ -31,8 +31,9 @@
             data-ng-model-options="{allowInvalid: true, updateOn: 'blur'}"
             data-ng-model="$ctrl.column.alias"
             data-ng-pattern="/^[a-z]{1,}[a-zA-Z0-9_]*$/"
-            data-ng-change="$ctrl.notifyChange()" 
-            type="text" class="gf-form-input max-width-6" spellcheck="false">
+            data-ng-change="$ctrl.notifyChange()"
+            size="{{ $ctrl.column.alias.length + 1}}"
+            type="text" class="gf-form-input gf-form-input--alias" spellcheck="false">
     </form>
 </div>   
 

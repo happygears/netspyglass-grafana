@@ -134,9 +134,14 @@ hg-columns-menu {
     background: transparent;
     margin-left: 0;
     margin-right: 0;
-    text-align: center;
+    text-align: left;
     outline: none;
     box-shadow: none; }
+    .gf-form--column-editor .gf-form-input--alias {
+      min-width: 50px;
+      text-align: center;
+      padding-right: 0.15rem;
+      padding-left: 0.15rem; }
     .gf-form--column-editor .gf-form-input.ng-invalid {
       color: red; }
 

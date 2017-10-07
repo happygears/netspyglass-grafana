@@ -26,7 +26,6 @@ const orderBySortTypes = ['ASC', 'DESC'];
 const targetDefaults = {
     type: 'nsgql',
     columns: [{name: 'metric', visible: true}],
-    category: QueryPrompts.category,
     variable: QueryPrompts.variable,
     orderBy: {
         column: {

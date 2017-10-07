@@ -166,7 +166,7 @@ class SQLQuery {
         };
         let adHoc = null;
 
-        if (options.adHoc && options.adHoc.length) { 
+        if (options.adHoc && options.adHoc.length) {
             adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
         }
 

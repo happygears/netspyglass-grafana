@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "./node_modules/grunt-cli/bin/grunt",
+    "test": "./node_modules/grunt-cli/bin/grunt mochaTest"
   },
   "repository": {
     "type": "git",
@@ -14,10 +15,13 @@
   "author": "",
   "license": "Happy Gears EULA",
   "devDependencies": {
+    "angular": "^1.6.1",
+    "angular-mocks": "^1.6.1",
     "babel": "~6.23.0",
     "chai": "~3.5.0",
     "grunt": "^1.0.1",
     "grunt-babel": "^6.0.0",
+    "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "^2.3.0",

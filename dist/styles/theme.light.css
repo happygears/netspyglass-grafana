@@ -1,6 +1,3 @@
-.generic-datasource-query-row .query-keyword {
-  width: 75px; }
-
 .form-help-expanded td {
   padding: 4px; }
 
@@ -108,8 +105,6 @@ hg-columns-menu {
       padding-left: 0;
       padding-right: 0;
       margin-right: 0.45rem !important; }
-      hg-columns-menu .col-container__item.query-keyword {
-        width: auto; }
   hg-columns-menu .gf-form-label.dropdown-toggle {
     margin-right: 0;
     padding-left: 0.45rem;

@@ -19,7 +19,7 @@ class SQLQuery {
             return column;
         }
 
-        if (angular.isObject(column)) {
+        if (angular.isObject(column) && !angular.isArray(column)) {
             let columnName = utils.compileColumnName(column);
 
             if (column.alias) {

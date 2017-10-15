@@ -16,21 +16,20 @@ prunk.mock('app/plugins/sdk', {
 // Required for loading angularjs
 global.document = new JSDOM('<html><head><script></script></head><body></body></html>');
 global.window = global.document.window;
+global.window.mocha = {};
+global.window.beforeEach = beforeEach;
+global.window.afterEach = afterEach;
 
-require('mocha');
 require('angular/angular');
 require('angular-mocks');
 
 global.angular = window.angular;
-// global.inject = global.angular.mock.inject;
-// global.ngModule = global.angular.mock.module;
-
-angular.module('grafana', []);
-angular.module('grafana.directives', []);
-
-
-// Setup Chai
-// chai.should();
+global.inject = global.angular.mock.inject;
+global.ngModule = global.angular.mock.module;
 global.assert = chai.assert;
 global.expect = chai.expect;
 global.NSG_PLUGIN_ID = 'nsg-test';
+
+
+global.angular.module('grafana', []);
+global.angular.module('grafana.directives', []);

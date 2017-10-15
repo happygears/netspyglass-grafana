@@ -1,16 +1,17 @@
 module.exports = function(grunt) {
-
-  var IS_DEV = process.env.NODE_ENV !== 'production';
-
-  require('load-grunt-tasks')(grunt);
-
+  const IS_DEV = process.env.NODE_ENV !== 'production';
   const fs = require('fs');
   const path = require('path');
   const pluginData = require(path.join(__dirname, 'plugin.json'));
   const destPath = IS_DEV ? 'dist_dev' : 'dist';
 
-  grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-mocha-test');
+
 
   grunt.initConfig({
 
@@ -39,7 +40,7 @@ module.exports = function(grunt) {
     watch: {
       rebuild_all: {
         files: ['src/**/*', 'plugin.json'],
-        tasks: ['default'],
+        tasks: ['build'],
         options: {spawn: false, atBegin: true}
       }
     },
@@ -47,7 +48,7 @@ module.exports = function(grunt) {
     babel: {
       options: {
         sourceMap: IS_DEV,
-        presets:  ['es2015']
+        presets:  ['env']
       },
       dist: {
         options: {
@@ -86,10 +87,10 @@ module.exports = function(grunt) {
     },
 
     mochaTest: {
+      options: {
+        reporter: 'spec'
+      },
       test: {
-        options: {
-          reporter: 'spec'
-        },
         src: [destPath + '/test/spec/test-main.js', destPath + '/test/spec/*_spec.js']
       }
     },
@@ -111,6 +112,9 @@ module.exports = function(grunt) {
     }
   });
 
-  //TODO: fix tests
-  grunt.registerTask('default', ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel']);//, 'mochaTest'
+  grunt.registerTask('build', ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel:dist']);
+
+  grunt.registerTask('test', ['babel:distTestNoSystemJs', 'babel:distTestsSpecsNoSystemJs', 'mochaTest']);
+
+  grunt.registerTask('default', IS_DEV ? ['build'] : ['build', 'test']);
 };

@@ -1,4 +1,4 @@
-import {Datasource} from '../modules';
+import {Datasource} from '../module';
 import _ from 'lodash';
 import Q from 'q';
 

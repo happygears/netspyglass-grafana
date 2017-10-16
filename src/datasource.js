@@ -70,6 +70,7 @@ export class NetSpyGlassDatasource {
         const aliases = {};
         const adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
+
         //this variable is used for building "raw" query in the getSQLString method
         this.queryOptions = {timeRange, interval: options.interval, adHoc: adhocFilters};
 

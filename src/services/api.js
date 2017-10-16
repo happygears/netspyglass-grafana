@@ -3,6 +3,7 @@ import {QueryPrompts} from '../dictionary';
 import {GrafanaVariables} from '../dictionary';
 import utils from './utils';
 import angular from 'angular';
+import _ from 'lodash';
 
 const sqlBuilder = SQLBuilderFactory();
 

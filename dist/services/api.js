@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular'], function (_export, _context) {
+System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lodash'], function (_export, _context) {
     "use strict";
 
-    var SQLBuilderFactory, QueryPrompts, GrafanaVariables, utils, angular, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
+    var SQLBuilderFactory, QueryPrompts, GrafanaVariables, utils, angular, _, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
 
     function _toConsumableArray(arr) {
         if (Array.isArray(arr)) {
@@ -46,6 +46,8 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular'], fu
             utils = _utils.default;
         }, function (_angular) {
             angular = _angular.default;
+        }, function (_lodash) {
+            _ = _lodash.default;
         }],
         execute: function () {
             _createClass = function () {
@@ -82,7 +84,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular'], fu
                             return column;
                         }
 
-                        if (angular.isObject(column)) {
+                        if (angular.isObject(column) && !angular.isArray(column)) {
                             var columnName = utils.compileColumnName(column);
 
                             if (column.alias) {

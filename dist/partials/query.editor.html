@@ -2,30 +2,30 @@
                   class="generic-datasource-query-row"
                   can-collapse="true"
                   has-text-edit-mode="true"
-                  data-ng-class="{'loading': ctrl.target.loading}">
+                  data-ng-class="{'loading': ctrl.store.loading}">
 
-    <div class="gf-form" data-ng-show="ctrl.errors[ctrl.target.refId]">
-        <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.target.refId]}}</pre>
+    <div class="gf-form" data-ng-show="ctrl.errors[ctrl.store.refId]">
+        <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.store.refId]}}</pre>
     </div>
 
-    <div class="editor-part editor-part--row" data-ng-if="ctrl.target.rawQuery">
+    <div class="editor-part editor-part--row" data-ng-if="ctrl.store.rawQuery">
         <div class="gf-form">
             <textarea class="gf-form-input gf-form-input--textarea input-medium max-width"
                       data-provide="typeahead"
-                      data-ng-model="ctrl.target.nsgqlString"
+                      data-ng-model="ctrl.store.nsgqlString"
                       data-ng-blur="ctrl.execute()"
                       spellcheck='false' placeholder="SELECT tag FROM tagFacet WHERE id=1"></textarea>
         </div>
     </div>
 
-    <div class="editor-part editor-part--filter" data-ng-if="!ctrl.target.rawQuery">
+    <div class="editor-part editor-part--filter" data-ng-if="!ctrl.store.rawQuery">
         <div class="gf-form-inline">
             <div class="gf-form">
                 <label class="gf-form-label query-keyword width-7">FROM</label>
             </div>
             <div class="gf-form">
                 <hg-dropdown 
-                    data-value="ctrl.target.variable" 
+                    data-value="ctrl.store.variable" 
                     data-on-value-changed="ctrl.onSelectCategory($value)" 
                     data-get-options="ctrl.getCategories()"></hg-dropdown>
             </div>
@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div data-ng-show="ctrl.target.variable != ctrl.prompts.variable">
+        <div data-ng-show="ctrl.store.variable != ctrl.prompts.variable">
 
             <div class="gf-form-inline gf-form-inline--columns">
                 <div class="gf-form">
@@ -56,8 +56,8 @@
                             data-drag-channel="columns"
                             data-columns-list="ctrl.options.columns" 
                             data-column="column" 
-                            data-ng-repeat="column in ctrl.target.columns | filter:{visible: true}"
-                            data-ng-if="ctrl.target.columns.length && (ctrl.options.isTable && ctrl.options.columns.length || !ctrl.options.isTable)"
+                            data-ng-repeat="column in ctrl.store.columns | filter:{visible: true}"
+                            data-ng-if="ctrl.store.columns.length && (ctrl.options.isTable && ctrl.options.columns.length || !ctrl.options.isTable)"
                             data-is-table="ctrl.options.isTable" 
                             data-available-remove="ctrl.options.isTable" 
                             data-on-column-remove="ctrl.onColumnRemove($column)" 
@@ -107,12 +107,12 @@
                 </div>
 
                 <div class="gf-form">
-                    <gf-form-dropdown model="ctrl.target.orderBy.colName" data-label-mode="true" data-get-options="ctrl.getOrderByOptions()" data-on-change="ctrl.onChangeOrderBy()">
+                    <gf-form-dropdown model="ctrl.store.orderBy.colName" data-label-mode="true" data-get-options="ctrl.getOrderByOptions()" data-on-change="ctrl.onChangeOrderBy()">
                     </gf-form-dropdown>
                 </div>
 
-                <div class="gf-form" data-ng-if="ctrl.target.orderBy.column && ctrl.target.orderBy.colName !== ctrl.prompts.orderBy">
-                    <gf-form-dropdown model="ctrl.target.orderBy.sort" data-label-mode="true" data-get-options="ctrl.getOrderBySortOptions()"
+                <div class="gf-form" data-ng-if="ctrl.store.orderBy.column && ctrl.store.orderBy.colName !== ctrl.prompts.orderBy">
+                    <gf-form-dropdown model="ctrl.store.orderBy.sort" data-label-mode="true" data-get-options="ctrl.getOrderBySortOptions()"
                         data-on-change="ctrl.onChangeOrderBySort()">
                     </gf-form-dropdown>
 
@@ -127,15 +127,15 @@
             <div class="gf-form-inline">
                 <div class="gf-form">
                     <label class="gf-form-label query-keyword width-7">GROUP BY</label>
-                    <gf-form-dropdown model="ctrl.target.groupBy.type" data-label-mode="true" data-get-options="ctrl.getGroupByTypes()">
+                    <gf-form-dropdown model="ctrl.store.groupBy.type" data-label-mode="true" data-get-options="ctrl.getGroupByTypes()">
                     </gf-form-dropdown>
                 </div>
-                <div class="gf-form" data-ng-if="ctrl.target.groupBy.type && ctrl.target.groupBy.type != ctrl.prompts.groupByType">
-                    <gf-form-dropdown model="ctrl.target.groupBy.value" data-lookup-text="true" data-allow-custom="true" data-label-mode="true"
+                <div class="gf-form" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type != ctrl.prompts.groupByType">
+                    <gf-form-dropdown model="ctrl.store.groupBy.value" data-lookup-text="true" data-allow-custom="true" data-label-mode="true"
                         data-get-options="ctrl.getGroupByVariables()" data-on-change="ctrl.execute()">
                     </gf-form-dropdown>
 
-                    <a class="gf-form-label" data-ng-if="ctrl.target.groupBy.type && ctrl.target.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
+                    <a class="gf-form-label" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
                 </div>
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-label gf-form-label--grow">
@@ -154,7 +154,7 @@
                 </div>
 
                 <div class="gf-form">
-                    <gf-form-dropdown model="ctrl.target.limit" data-lookup-text="true" data-allow-custom="true" data-label-mode="true" data-get-options="ctrl.getLimitOptions()"
+                    <gf-form-dropdown model="ctrl.store.limit" data-lookup-text="true" data-allow-custom="true" data-label-mode="true" data-get-options="ctrl.getLimitOptions()"
                         data-on-change="ctrl.execute()">
                     </gf-form-dropdown>
                 </div>
@@ -176,7 +176,7 @@
                     <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
                 </div>
                 <div class="gf-form gf-form--grow">
-                    <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.target.alias" spellcheck="false"
+                    <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.store.alias" spellcheck="false"
                         placeholder="Naming pattern" ng-blur="ctrl.execute()">
                 </div>
                 <div class="gf-form ">
@@ -191,12 +191,12 @@
 
 
     <!--<div style="border: 1px solid red; margin: 20px 0">-->
-    <!--<pre>{{ ctrl.target }}</pre>-->
+    <!--<pre>{{ ctrl.store }}</pre>-->
     <!--</div>-->
 
     <!--<div style="border: 1px solid red; margin: 20px 0">-->
     <!--<pre> {{  ctrl.options | json}}</pre>-->
     <!--</div>-->
 
-    <!--<test data-prop="ctrl.target.variable"></test>-->
+    <!--<test data-prop="ctrl.store.variable"></test>-->
 </query-editor-row>

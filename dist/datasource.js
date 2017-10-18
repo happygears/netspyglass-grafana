@@ -149,6 +149,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         var sqlTargets = targets.map(function (target) {
                             var nsgTarget = _.cloneDeep(target._nsgTarget) || {};
                             nsgTarget.refId = target.refId;
+                            nsgTarget.hide = target.hide;
                             return nsgTarget;
                         }).filter(function (target) {
                             return target.hide !== true;
@@ -283,7 +284,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             columns.push({ text: '---------', separator: true });
                             columns.push({
                                 text: 'predefined columns',
-                                submenu: [{ text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }, { text: 'device', value: 'device' }, { text: 'component', value: 'component' }]
+                                submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }]
                             });
 
                             columns.push({ text: '---------', separator: true });

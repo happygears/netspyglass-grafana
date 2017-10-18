@@ -122,7 +122,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     key: 'execute',
                     value: function execute() {
                         this.errors = {};
-                        this.target.loading = true;
+                        this.store.loading = true;
                         this.panelCtrl.refresh();
                     }
                 }, {
@@ -141,7 +141,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         });
 
                         this.panelCtrl.events.emitter.on('render', function () {
-                            _this2.target.loading = false;
+                            _this2.store.loading = false;
                         });
 
                         if (this.options.isTable) {
@@ -153,35 +153,27 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                 }
                             }, true);
                         }
-
-                        // We will track this values and upate it on original query beacause QueryRowCtrl tracking it on original target
-                        this.$scope.$watch('ctrl.target.hide', function (nextValue, prevValue) {
-                            _this2._originalTarget.hide = nextValue;
-                        });
                     }
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
-                        // namespaceing our target variables
-                        this._originalTarget = this.target;
-                        this.target._nsgTarget = this._originalTarget._nsgTarget || {};
-                        this.target._nsgTarget.refId = this.target.refId; //save original refId
-                        this.target._nsgTarget.hide = this.target.hide;
-                        this.target = this.target._nsgTarget;
+                        this.target._nsgTarget = this.target._nsgTarget || {};
+                        this.store = this.target._nsgTarget;
+                        this.store.refId = this.target.refId;
 
-                        _.defaultsDeep(this.target, targetDefaults);
+                        _.defaultsDeep(this.store, targetDefaults);
 
-                        this.target.format = this.options.isGraph || this.options.isSinglestat ? 'time_series' : 'table';
-                        this.target.isTablePanel = this.options.isTable;
+                        this.store.format = this.options.isGraph || this.options.isSinglestat ? 'time_series' : 'table';
+                        this.store.isTablePanel = this.options.isTable;
 
                         if (this.options.isGraph || this.options.isSinglestat) {
-                            if (!_.find(this.target.columns, { name: 'time' })) {
-                                this.target.columns.push({ name: 'time', visible: false });
+                            if (!_.find(this.store.columns, { name: 'time' })) {
+                                this.store.columns.push({ name: 'time', visible: false });
                             }
                         }
 
                         if (this.options.isSinglestat) {
-                            this.target.limit = 1;
+                            this.store.limit = 1;
                         }
                     }
                 }, {
@@ -189,24 +181,24 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function setPanelSortFromOrderBy() {
                         var _this3 = this;
 
-                        var index = _.findIndex(this.target.columns, function (column) {
-                            return utils.compileColumnName(column) === _this3.target.orderBy.column.name;
+                        var index = _.findIndex(this.store.columns, function (column) {
+                            return utils.compileColumnName(column) === _this3.store.orderBy.column.name;
                         });
 
                         this.panel.sort.col = index > -1 ? index : null;
-                        this.panel.sort.desc = this.target.orderBy.sort == orderBySortTypes[1];
+                        this.panel.sort.desc = this.store.orderBy.sort == orderBySortTypes[1];
                     }
                 }, {
                     key: 'setOrderByFromPanelSort',
                     value: function setOrderByFromPanelSort(value) {
                         if (value.col !== null) {
-                            this.target.orderBy.column = {
-                                name: utils.compileColumnName(this.target.columns[value.col]),
-                                value: utils.compileColumnAlias(this.target.columns[value.col]),
-                                alias: this.target.columns[value.col].alias
+                            this.store.orderBy.column = {
+                                name: utils.compileColumnName(this.store.columns[value.col]),
+                                value: utils.compileColumnAlias(this.store.columns[value.col]),
+                                alias: this.store.columns[value.col].alias
                             };
-                            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
-                            this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
+                            this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
+                            this.store.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
                         } else {
                             this.onClearOrderBy();
                         }
@@ -217,13 +209,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         var uiSegmentSrv = this.uiSegmentSrv;
                         var segments = [];
 
-                        if (this.target.tags.length) {
+                        if (this.store.tags.length) {
                             var _iteratorNormalCompletion = true;
                             var _didIteratorError = false;
                             var _iteratorError = undefined;
 
                             try {
-                                for (var _iterator = this.target.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                for (var _iterator = this.store.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                                     var tag = _step.value;
 
                                     if (tag.condition) {
@@ -267,7 +259,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onSelectCategory',
                     value: function onSelectCategory($variable) {
-                        this.target.variable = $variable;
+                        this.store.variable = $variable;
                         this.loadColumns();
                         this.execute();
                     }
@@ -283,8 +275,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onChangeOrderBy',
                     value: function onChangeOrderBy() {
-                        this.target.orderBy.column = this.target.orderBy.colName;
-                        this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+                        this.store.orderBy.column = this.store.orderBy.colName;
+                        this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
 
                         this._updateOrderBy();
                     }
@@ -296,25 +288,25 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onClearOrderBy',
                     value: function onClearOrderBy() {
-                        this.target.orderBy.column = {};
-                        this.target.orderBy.colName = this.prompts.orderBy;
+                        this.store.orderBy.column = {};
+                        this.store.orderBy.colName = this.prompts.orderBy;
                         this._updateOrderBy();
                     }
                 }, {
                     key: 'onClearGroupBy',
                     value: function onClearGroupBy() {
-                        this.target.groupBy.type = QueryPrompts.groupByType;
-                        this.target.groupBy.value = QueryPrompts.groupBy;
+                        this.store.groupBy.type = QueryPrompts.groupByType;
+                        this.store.groupBy.value = QueryPrompts.groupBy;
                         this.execute();
                     }
                 }, {
                     key: 'onColumnRemove',
                     value: function onColumnRemove($column) {
-                        var index = this.target.columns.indexOf($column);
+                        var index = this.store.columns.indexOf($column);
 
                         if (index !== -1) {
-                            this.target.columns[index].willRemove = true;
-                            this.target.columns.splice(index, 1);
+                            this.store.columns[index].willRemove = true;
+                            this.store.columns.splice(index, 1);
                             this.execute();
                             return { index: index };
                         }
@@ -324,20 +316,20 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onColumnChanged',
                     value: function onColumnChanged($column) {
-                        if (this.target.orderBy.column.name === utils.compileColumnName($column)) {
-                            this.target.orderBy.column = {
+                        if (this.store.orderBy.column.name === utils.compileColumnName($column)) {
+                            this.store.orderBy.column = {
                                 name: utils.compileColumnName($column),
                                 value: utils.compileColumnAlias($column),
                                 alias: $column.alias
                             };
-                            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+                            this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
                         }
                         this.execute();
                     }
                 }, {
                     key: 'onColumnAdd',
                     value: function onColumnAdd() {
-                        this.target.columns.push({
+                        this.store.columns.push({
                             visible: true,
                             name: this.prompts.column
                         });
@@ -348,13 +340,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         $event.preventDefault();
                         $event.stopPropagation();
 
-                        var srcIndex = this.target.columns.indexOf(column);
+                        var srcIndex = this.store.columns.indexOf(column);
                         var dstIndex = $data;
 
                         if (srcIndex >= 0 && dstIndex >= 0 && srcIndex !== dstIndex) {
-                            var srcColumn = this.target.columns[srcIndex];
-                            this.target.columns[srcIndex] = this.target.columns[dstIndex];
-                            this.target.columns[dstIndex] = srcColumn;
+                            var srcColumn = this.store.columns[srcIndex];
+                            this.store.columns[srcIndex] = this.store.columns[dstIndex];
+                            this.store.columns[dstIndex] = srcColumn;
                             this.setPanelSortFromOrderBy();
                             this.execute();
                         }
@@ -364,17 +356,17 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function loadColumns() {
                         var _this5 = this;
 
-                        if (this.target.variable && this.target.variable !== QueryPrompts.column && this.options.isTable) {
+                        if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isTable) {
                             var found = -1;
                             _.each(this.options.categories, function (category) {
-                                found = _.findIndex(category.submenu, { value: _this5.target.variable });
+                                found = _.findIndex(category.submenu, { value: _this5.store.variable });
                                 if (~found) {
                                     return false;
                                 }
                             });
 
                             if (~found) {
-                                return this.datasource.getColumns(this.target.variable).then(function (columns) {
+                                return this.datasource.getColumns(this.store.variable).then(function (columns) {
                                     _this5.options.columns = columns;
                                 });
                             }
@@ -387,28 +379,28 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function toggleEditorMode() {
                         var _this6 = this;
 
-                        if (!this.target.rawQuery) {
-                            var query = this.datasource.getSQLString(this.target);
+                        if (!this.store.rawQuery) {
+                            var query = this.datasource.getSQLString(this.store);
 
                             this.options.rawQueryString = query;
-                            this.target.nsgqlString = query;
+                            this.store.nsgqlString = query;
 
-                            this.target.rawQuery = 1;
+                            this.store.rawQuery = 1;
                             return;
                         }
 
-                        if (this.options.rawQueryString != this.target.nsgqlString) {
+                        if (this.options.rawQueryString != this.store.nsgqlString) {
                             this.$rootScope.appEvent('confirm-modal', {
                                 title: 'Confirm',
                                 text: 'Are your sure? Your changes will be lost.',
                                 yesText: "Yes",
                                 icon: "fa-trash",
                                 onConfirm: function onConfirm() {
-                                    _this6.target.rawQuery = 0;
+                                    _this6.store.rawQuery = 0;
                                 }
                             });
                         } else {
-                            this.target.rawQuery = 0;
+                            this.store.rawQuery = 0;
                         }
                     }
                 }, {
@@ -421,11 +413,11 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         var segments = this.options.segments;
                         var promise = $q.resolve([]);
 
-                        if (this.target.variable) {
+                        if (this.store.variable) {
                             switch (segment.type) {
                                 case 'key':
                                 case 'plus-button':
-                                    promise = this.datasource.getFacets(this.target.variable).then(function (facets) {
+                                    promise = this.datasource.getFacets(this.store.variable).then(function (facets) {
                                         return ['component', 'device'].concat(facets);
                                     });
                                     break;
@@ -433,7 +425,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                 case 'value':
                                     promise = this.datasource.getSuggestions({
                                         type: segments[index - 2].value,
-                                        variable: this.target.variable,
+                                        variable: this.store.variable,
                                         tags: this._filterPreviousWhereTags(index)
                                     });
                                     break;
@@ -462,7 +454,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: '_filterPreviousWhereTags',
                     value: function _filterPreviousWhereTags(currentIndex) {
-                        return this.target.tags.filter(function (el, index) {
+                        return this.store.tags.filter(function (el, index) {
                             return index < currentIndex / 3 - 1;
                         });
                     }
@@ -543,7 +535,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             }
                         });
 
-                        this.target.tags = tags;
+                        this.store.tags = tags;
                         this.execute();
                     }
                 }, {
@@ -554,7 +546,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         if (this.options.isGraph) {
                             list.push({ text: 'metric', value: 'metric' });
                         } else if (this.options.isTable) {
-                            this.target.columns.forEach(function (column) {
+                            this.store.columns.forEach(function (column) {
                                 list.push({
                                     text: column.alias || utils.compileColumnName(column),
                                     value: {
@@ -586,13 +578,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getGroupByVariables',
                     value: function getGroupByVariables() {
-                        switch (this.target.groupBy.type) {
+                        switch (this.store.groupBy.type) {
                             case 'time':
                                 return this.$injector.get('$q').resolve([{ text: GrafanaVariables.interval, value: GrafanaVariables.interval }, { text: '1s', value: '1s' }, { text: '1m', value: '1m' }, { text: '1h', value: '1h' }, { text: '1d', value: '1d' }]);
                                 break;
                             case 'column':
                                 var list = [{ text: 'device', value: 'device' }];
-                                return this.datasource.getFacets(this.target.variable).then(function (data) {
+                                return this.datasource.getFacets(this.store.variable).then(function (data) {
                                     data.forEach(function (el) {
                                         list.push({ text: el, value: el });
                                     });

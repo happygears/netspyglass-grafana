@@ -76,7 +76,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     execute() {
         this.errors = {};
-        this.target.loading = true;
+        this.store.loading = true;
         this.panelCtrl.refresh();
     }
 
@@ -91,7 +91,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         });
         
         this.panelCtrl.events.emitter.on('render', () => {
-            this.target.loading = false;
+            this.store.loading = false;
         });
 
         if (this.options.isTable) {
@@ -103,58 +103,50 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 }
             }, true);
         }
-
-        // We will track this values and upate it on original query beacause QueryRowCtrl tracking it on original target
-        this.$scope.$watch('ctrl.target.hide', (nextValue, prevValue) => {
-            this._originalTarget.hide = nextValue;
-        });
     }
 
     initTarget() {
-        // namespaceing our target variables
-        this._originalTarget = this.target; 
-        this.target._nsgTarget = this._originalTarget._nsgTarget || {};
-        this.target._nsgTarget.refId = this.target.refId; //save original refId
-        this.target._nsgTarget.hide = this.target.hide;
-        this.target = this.target._nsgTarget;
+        this.target._nsgTarget = this.target._nsgTarget || {};
+        this.store = this.target._nsgTarget;
+        this.store.refId = this.target.refId; 
         
         _.defaultsDeep(
-            this.target,
+            this.store,
             targetDefaults
         );
 
-        this.target.format = (this.options.isGraph || this.options.isSinglestat) ? 'time_series' : 'table';
-        this.target.isTablePanel = this.options.isTable;
+        this.store.format = (this.options.isGraph || this.options.isSinglestat) ? 'time_series' : 'table';
+        this.store.isTablePanel = this.options.isTable;
 
         if (this.options.isGraph || this.options.isSinglestat) {
-            if (!_.find(this.target.columns, {name: 'time'})) {
-                this.target.columns.push({name: 'time', visible: false});
+            if (!_.find(this.store.columns, {name: 'time'})) {
+                this.store.columns.push({name: 'time', visible: false});
             }
         }
 
         if (this.options.isSinglestat) {
-            this.target.limit = 1;
+            this.store.limit = 1;
         }
     }
 
     setPanelSortFromOrderBy() {
-        const index = _.findIndex(this.target.columns, (column) => {
-            return utils.compileColumnName(column) === this.target.orderBy.column.name;
+        const index = _.findIndex(this.store.columns, (column) => {
+            return utils.compileColumnName(column) === this.store.orderBy.column.name;
         });
 
         this.panel.sort.col = index > -1 ? index : null;
-        this.panel.sort.desc = this.target.orderBy.sort == orderBySortTypes[1];
+        this.panel.sort.desc = this.store.orderBy.sort == orderBySortTypes[1];
     }
 
     setOrderByFromPanelSort(value) {
         if (value.col !== null) {
-            this.target.orderBy.column = {
-                name: utils.compileColumnName(this.target.columns[value.col]),
-                value: utils.compileColumnAlias(this.target.columns[value.col]),
-                alias: this.target.columns[value.col].alias
+            this.store.orderBy.column = {
+                name: utils.compileColumnName(this.store.columns[value.col]),
+                value: utils.compileColumnAlias(this.store.columns[value.col]),
+                alias: this.store.columns[value.col].alias
             };
-            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
-            this.target.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
+            this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
+            this.store.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
         } else {
             this.onClearOrderBy();
         }
@@ -167,8 +159,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         const uiSegmentSrv = this.uiSegmentSrv;
         let segments = [];
 
-        if (this.target.tags.length) {
-            for (let tag of this.target.tags) {
+        if (this.store.tags.length) {
+            for (let tag of this.store.tags) {
                 if (tag.condition) {
                     segments.push(uiSegmentSrv.newCondition(tag.condition));
                 }
@@ -197,7 +189,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @param {string} $variable
      */
     onSelectCategory($variable) {
-        this.target.variable = $variable;
+        this.store.variable = $variable;
         this.loadColumns();
         this.execute();
     }
@@ -211,8 +203,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onChangeOrderBy() {
-        this.target.orderBy.column = this.target.orderBy.colName;
-        this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+        this.store.orderBy.column = this.store.orderBy.colName;
+        this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
 
         this._updateOrderBy();
     }
@@ -222,23 +214,23 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onClearOrderBy() {
-        this.target.orderBy.column = {};
-        this.target.orderBy.colName = this.prompts.orderBy;
+        this.store.orderBy.column = {};
+        this.store.orderBy.colName = this.prompts.orderBy;
         this._updateOrderBy();
     }
 
     onClearGroupBy() {
-        this.target.groupBy.type = QueryPrompts.groupByType;
-        this.target.groupBy.value = QueryPrompts.groupBy;
+        this.store.groupBy.type = QueryPrompts.groupByType;
+        this.store.groupBy.value = QueryPrompts.groupBy;
         this.execute();
     }
 
     onColumnRemove($column) {
-        const index = this.target.columns.indexOf($column);
+        const index = this.store.columns.indexOf($column);
 
         if (index !== -1) {
-            this.target.columns[index].willRemove = true;
-            this.target.columns.splice(index, 1);
+            this.store.columns[index].willRemove = true;
+            this.store.columns.splice(index, 1);
             this.execute();
             return {index};
         }
@@ -247,19 +239,19 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onColumnChanged($column) {
-        if (this.target.orderBy.column.name === utils.compileColumnName($column)) {
-            this.target.orderBy.column = {
+        if (this.store.orderBy.column.name === utils.compileColumnName($column)) {
+            this.store.orderBy.column = {
                 name: utils.compileColumnName($column),
                 value: utils.compileColumnAlias($column),
                 alias: $column.alias
             };
-            this.target.orderBy.colName = this.target.orderBy.column.alias || this.target.orderBy.column.name;
+            this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
         }
         this.execute();
     }
 
     onColumnAdd() {
-        this.target.columns.push({
+        this.store.columns.push({
             visible: true,
             name: this.prompts.column
         });
@@ -269,13 +261,13 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         $event.preventDefault();
         $event.stopPropagation();
         
-        const srcIndex = this.target.columns.indexOf(column);
+        const srcIndex = this.store.columns.indexOf(column);
         const dstIndex = $data;
         
         if (srcIndex >= 0  && dstIndex >= 0 && srcIndex !== dstIndex) {
-            const srcColumn = this.target.columns[srcIndex];
-            this.target.columns[srcIndex] = this.target.columns[dstIndex];
-            this.target.columns[dstIndex] = srcColumn;
+            const srcColumn = this.store.columns[srcIndex];
+            this.store.columns[srcIndex] = this.store.columns[dstIndex];
+            this.store.columns[dstIndex] = srcColumn;
             this.setPanelSortFromOrderBy();
             this.execute();
         }
@@ -285,10 +277,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @returns {Promise|boolean}
      */
     loadColumns() {
-        if (this.target.variable && this.target.variable !== QueryPrompts.column && this.options.isTable) {
+        if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isTable) {
             let found = -1;    
             _.each(this.options.categories, (category) => {
-                found = _.findIndex(category.submenu, {value: this.target.variable });
+                found = _.findIndex(category.submenu, {value: this.store.variable });
                 if (~found) {
                     return false;
                 }
@@ -296,7 +288,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
             if (~found) {
                 return this.datasource
-                    .getColumns(this.target.variable)
+                    .getColumns(this.store.variable)
                     .then((columns) => {
                         this.options.columns = columns;
                     });
@@ -307,28 +299,28 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     toggleEditorMode() {
-        if (!this.target.rawQuery) {
-            const query = this.datasource.getSQLString(this.target);
+        if (!this.store.rawQuery) {
+            const query = this.datasource.getSQLString(this.store);
 
             this.options.rawQueryString = query;
-            this.target.nsgqlString = query;
+            this.store.nsgqlString = query;
 
-            this.target.rawQuery = 1;
+            this.store.rawQuery = 1;
             return;
         }
 
-        if( this.options.rawQueryString != this.target.nsgqlString ) {
+        if( this.options.rawQueryString != this.store.nsgqlString ) {
             this.$rootScope.appEvent('confirm-modal', {
                 title: 'Confirm',
                 text: 'Are your sure? Your changes will be lost.',
                 yesText: "Yes",
                 icon: "fa-trash",
                 onConfirm: () => {
-                    this.target.rawQuery = 0;
+                    this.store.rawQuery = 0;
                 }
             });
         } else {
-            this.target.rawQuery = 0;
+            this.store.rawQuery = 0;
         }
     }
 
@@ -343,19 +335,19 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         const segments = this.options.segments;
         let promise = $q.resolve([]);
 
-        if (this.target.variable) {
+        if (this.store.variable) {
             switch (segment.type) {
                 case 'key':
                 case 'plus-button':
                     promise = this.datasource
-                        .getFacets(this.target.variable)
+                        .getFacets(this.store.variable)
                         .then((facets) => ['component', 'device'].concat(facets));
                     break;
 
                 case 'value':
                     promise = this.datasource.getSuggestions({
                         type: segments[index - 2].value,
-                        variable: this.target.variable,
+                        variable: this.store.variable,
                         tags: this._filterPreviousWhereTags(index),
                     });
                     break;
@@ -390,7 +382,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @returns {Array} - returns array of tag objects that placed before current tag triplet
      */
     _filterPreviousWhereTags(currentIndex) {
-        return this.target.tags.filter((el, index) => index < currentIndex/3 - 1)
+        return this.store.tags.filter((el, index) => index < currentIndex/3 - 1)
     }
 
     /**
@@ -469,7 +461,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             }
         });
 
-        this.target.tags = tags;
+        this.store.tags = tags;
         this.execute();
     }
 
@@ -479,7 +471,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         if (this.options.isGraph) {
             list.push({text: 'metric', value: 'metric'});
         } else if (this.options.isTable) {
-            this.target.columns.forEach((column) => {
+            this.store.columns.forEach((column) => {
                 list.push({
                     text: column.alias || utils.compileColumnName(column),
                     value: {
@@ -524,7 +516,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     getGroupByVariables() {
-        switch (this.target.groupBy.type) {
+        switch (this.store.groupBy.type) {
             case 'time':
                 return this.$injector.get('$q').resolve([
                     {text: GrafanaVariables.interval, value: GrafanaVariables.interval},
@@ -536,7 +528,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 break;
             case 'column':
                 const list = [{text: 'device', value: 'device'}];
-                return this.datasource.getFacets(this.target.variable).then((data) => {
+                return this.datasource.getFacets(this.store.variable).then((data) => {
                     data.forEach((el) => {
                         list.push({text: el, value: el})
                     });

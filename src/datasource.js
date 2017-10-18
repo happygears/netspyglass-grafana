@@ -233,10 +233,14 @@ export class NetSpyGlassDatasource {
             columns.push({
                 text: 'predefined columns',
                 submenu: [
-                    {text: 'metric', value: 'metric'},
-                    {text: 'time', value: 'time'},
-                    {text: 'device', value: 'device'},
+                    {text: 'address', value: 'address'},
+                    {text: 'boxDescr', value: 'boxDescr'},
                     {text: 'component', value: 'component'},
+                    {text: 'device', value: 'device'},
+                    {text: 'description', value: 'description'},
+                    {text: 'discoveryTime', value: 'discoveryTime'},
+                    {text: 'metric', value: 'metric'},
+                    {text: 'time', value: 'time'}
                 ]
             });
 

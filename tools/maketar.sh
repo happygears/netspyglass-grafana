@@ -18,7 +18,7 @@ then
     #
     if $(tar --version | grep -qi gnu)
     then
-        tar -cf netspyglass-datasource.tar --transform=s/^dist/$datasource_id/g --exclude test  dist/*
+        tar -cf netspyglass-datasource-v2.tar --transform=s/^dist/$datasource_id/g --exclude test  dist/*
         exit
     fi
 
@@ -29,12 +29,10 @@ then
         # I could not test with "classic" because I do not have access to a system with it.
         # Options "-c", "-f" and "--exclude" work the same way for BSD and GNU tar
         #
-        tar -cf netspyglass-datasource.tar -s "!^dist!$datasource_id!" --exclude test  dist/*
+        tar -cf netspyglass-datasource-v2.tar -s "!^dist!$datasource_id!" --exclude test  dist/*
         exit
     fi
 fi
 
 echo "Could not find tar on this system, can not build archive"
 exit 1
-
-

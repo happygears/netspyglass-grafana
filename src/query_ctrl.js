@@ -261,13 +261,13 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         $event.preventDefault();
         $event.stopPropagation();
         
-        const srcIndex = this.store.columns.indexOf(column);
-        const dstIndex = $data;
+        let dstIndex = this.store.columns.indexOf(column);
+        let srcIndex = $data;
         
         if (srcIndex >= 0  && dstIndex >= 0 && srcIndex !== dstIndex) {
-            const srcColumn = this.store.columns[srcIndex];
-            this.store.columns[srcIndex] = this.store.columns[dstIndex];
-            this.store.columns[dstIndex] = srcColumn;
+            const srcColumn = angular.copy(this.store.columns[srcIndex]);
+            this.store.columns.splice(srcIndex, 1);
+            this.store.columns.splice(dstIndex, 0, srcColumn);
             this.setPanelSortFromOrderBy();
             this.execute();
         }

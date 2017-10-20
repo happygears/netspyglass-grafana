@@ -5,8 +5,33 @@ hg-columns-menu {
     background: $columns-bg;
     $margin: 0.45rem;
 
+    
     &.on-drag-enter {
-        box-shadow: 0 0 2px $column-hover-link-color;
+        box-shadow: 0 0 1px $column-hover-link-color;
+    }
+
+    &.on-drag-hover {
+        border: 1px dashed $column-hover-link-color;
+        box-sizing: border-box;
+
+        &:before, &:after {
+            box-sizing: border-box;
+            display: block;
+            content: "";
+            width: 25px;
+            border: none;
+        }
+    }
+
+    &.on-dragging {
+        box-sizing: border-box;
+        box-shadow: none;
+        border: 1px solid transparent;
+        opacity: 0.7;
+
+        &:before, &:after {
+            display: none !important;
+        }
     }
 
     .select-col__func--open {

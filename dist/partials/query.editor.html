@@ -107,12 +107,19 @@
                 </div>
 
                 <div class="gf-form">
-                    <gf-form-dropdown model="ctrl.store.orderBy.colName" data-label-mode="true" data-get-options="ctrl.getOrderByOptions()" data-on-change="ctrl.onChangeOrderBy()">
+                    <gf-form-dropdown 
+                        model="ctrl.store.orderBy.colName" 
+                        data-label-mode="true" 
+                        data-get-options="ctrl.getOrderByOptions()" 
+                        data-on-change="ctrl.onChangeOrderBy()">
                     </gf-form-dropdown>
                 </div>
 
                 <div class="gf-form" data-ng-if="ctrl.store.orderBy.column && ctrl.store.orderBy.colName !== ctrl.prompts.orderBy">
-                    <gf-form-dropdown model="ctrl.store.orderBy.sort" data-label-mode="true" data-get-options="ctrl.getOrderBySortOptions()"
+                    <gf-form-dropdown 
+                        data-model="ctrl.store.orderBy.sort" 
+                        data-label-mode="true" 
+                        data-get-options="ctrl.getOrderBySortOptions()"
                         data-on-change="ctrl.onChangeOrderBySort()">
                     </gf-form-dropdown>
 

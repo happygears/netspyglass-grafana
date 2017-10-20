@@ -134,6 +134,7 @@ System.register(['lodash'], function (_export, _context) {
                     this.$injector = $injector;
                     this.$scope = $scope;
                     this.menuItems = _.clone(menuItems);
+                    this.aliasPattern = /^[a-z]{1,}[-a-zA-Z0-9_~!@#\$%\^&*\(\)_ \'\"]*$/;
                 }
 
                 _createClass(ColumnsMenuController, [{

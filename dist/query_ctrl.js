@@ -340,13 +340,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         $event.preventDefault();
                         $event.stopPropagation();
 
-                        var srcIndex = this.store.columns.indexOf(column);
-                        var dstIndex = $data;
+                        var dstIndex = this.store.columns.indexOf(column);
+                        var srcIndex = $data;
 
                         if (srcIndex >= 0 && dstIndex >= 0 && srcIndex !== dstIndex) {
-                            var srcColumn = this.store.columns[srcIndex];
-                            this.store.columns[srcIndex] = this.store.columns[dstIndex];
-                            this.store.columns[dstIndex] = srcColumn;
+                            var srcColumn = angular.copy(this.store.columns[srcIndex]);
+                            this.store.columns.splice(srcIndex, 1);
+                            this.store.columns.splice(dstIndex, 0, srcColumn);
                             this.setPanelSortFromOrderBy();
                             this.execute();
                         }

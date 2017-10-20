@@ -296,7 +296,7 @@ System.register([], function (_export, _context) {
       };
 
       SQLBuilder.escape = function (str) {
-        return str.replace(/\'/g, '\\\'');
+        return '`' + str + '`';
       };
 
       SQLBuilder.OPERATORS = {

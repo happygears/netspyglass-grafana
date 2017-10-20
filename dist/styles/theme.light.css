@@ -75,7 +75,23 @@ hg-columns-menu {
   margin-right: 2px;
   background: #f4f5f8; }
   hg-columns-menu.on-drag-enter {
-    box-shadow: 0 0 2px #222; }
+    box-shadow: 0 0 1px #222; }
+  hg-columns-menu.on-drag-hover {
+    border: 1px dashed #222;
+    box-sizing: border-box; }
+    hg-columns-menu.on-drag-hover:before, hg-columns-menu.on-drag-hover:after {
+      box-sizing: border-box;
+      display: block;
+      content: "";
+      width: 25px;
+      border: none; }
+  hg-columns-menu.on-dragging {
+    box-sizing: border-box;
+    box-shadow: none;
+    border: 1px solid transparent;
+    opacity: 0.7; }
+    hg-columns-menu.on-dragging:before, hg-columns-menu.on-dragging:after {
+      display: none !important; }
   hg-columns-menu .select-col__func--open {
     cursor: pointer; }
     hg-columns-menu .select-col__func--open:hover {

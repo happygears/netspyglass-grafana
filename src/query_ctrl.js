@@ -465,6 +465,23 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.execute();
     }
 
+
+    // getFooOptions() {
+    //     let list = [];
+        
+    //     list.push({text: 'metric1', value: 'metric1'});
+    //     list.push({text: 'metric2', value: 'metric2'});
+    //     list.push({text: `sdadad`, value: `sdadad'`});
+        
+    //     return this.$injector
+    //         .get('$q')
+    //         .resolve(list);
+    // }
+
+    // onChangeFoo() {
+    //     console.log(this.store.foo);
+    // }
+
     getOrderByOptions() {
         let list = [];
 

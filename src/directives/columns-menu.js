@@ -42,6 +42,7 @@ class ColumnsMenuController {
         this.$injector = $injector;
         this.$scope = $scope;
         this.menuItems = _.clone(menuItems);
+        this.aliasPattern = /^[a-z]{1,}[-a-zA-Z0-9_~!@#\$%\^&*\(\)_ \'\"]*$/;
     }
 
     $onInit() {

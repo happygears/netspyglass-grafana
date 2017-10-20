@@ -24,11 +24,11 @@ class SQLQuery {
             let columnName = utils.compileColumnName(column);
 
             if (column.alias) {
-                columnName += ` as ${column.alias}`;
+                columnName += ` as ${sqlBuilder.escape(column.alias)}`;
             } else if (needToCreateAliases) {
                 let alias = utils.compileColumnAlias(column);
                 if (alias !== columnName) {
-                    columnName += ` as ${alias}`;
+                    columnName += ` as ${sqlBuilder.escape(alias)}`;
                 }
             }
 
@@ -197,7 +197,7 @@ class SQLQuery {
         }
 
         if (target.orderBy.column && target.orderBy.column.name) {
-            query.orderBy([`${target.orderBy.column.alias || target.orderBy.column.value} ${target.orderBy.sort}`]);
+            query.orderBy([`${sqlBuilder.escape(target.orderBy.column.alias || target.orderBy.column.value)} ${target.orderBy.sort}`]);
         } else {
             query.clearOrderBy();
         }

@@ -115,6 +115,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag }),
                         rawQueryString: ''
                     };
+
+                    _this.pluginVersion = _this.datasource.meta.info.version;
                     return _this;
                 }
 

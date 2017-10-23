@@ -29,6 +29,10 @@
             content: '\00a0'
         }
     }
+
+    &--secondary {
+        opacity: 0.5;
+    }
 }
 
 .gf-form-inline {

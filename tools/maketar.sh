@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#
 
 if ! test -d dist
 then
@@ -6,33 +7,19 @@ then
     exit 1
 fi
 
-datasource_id=$(python -c 'import json; print json.load(open("plugin.json"))["id"]')
+DATASOURCE_ID=$(python -c 'import json; print json.load(open("plugin.json"))["id"]')
 
-echo "plugin id: $datasource_id"
+echo "plugin id: $DATASOURCE_ID"
 
-if test $(which tar)
-then
-    # Check which flavor of tar does this system have: GNU tar or BSD tar.
-    # Other flavors exist too but they are relatively rare. See
-    #  http://unix.stackexchange.com/questions/101561/what-are-the-differences-between-bsdtar-and-gnu-tar
-    #
-    if $(tar --version | grep -qi gnu)
-    then
-        tar -cf netspyglass-datasource-v2.tar --transform=s/^dist/$datasource_id/g --exclude test  dist/*
-        exit
-    fi
+STAGE_DIR="/var/tmp/netspyglass-grafana/${DATASOURCE_ID}"
+rm -rf ${STAGE_DIR}
+mkdir -p ${STAGE_DIR}
 
-    if $(tar --version | grep -qi bsd)
-    then
-        # "-s" used like this is BSD tar option. GNU tar also has "-s" but it has different function.
-        # This usage of "-s" option should probably work both with libarchive tar and "classic" BSD tar, but
-        # I could not test with "classic" because I do not have access to a system with it.
-        # Options "-c", "-f" and "--exclude" work the same way for BSD and GNU tar
-        #
-        tar -cf netspyglass-datasource-v2.tar -s "!^dist!$datasource_id!" --exclude test  dist/*
-        exit
-    fi
-fi
+rsync -avr dist/* ${STAGE_DIR}/
 
-echo "Could not find tar on this system, can not build archive"
-exit 1
+COMMIT=$(git log -1   --pretty=%h)
+
+sed -i .bak "s/\"version\": \"2.0.0\",/\"version\": \"2.0.0-$COMMIT\",/"  ${STAGE_DIR}/plugin.json || exit 1
+rm -f ${STAGE_DIR}/plugin.json.bak
+
+tar -cf netspyglass-datasource-v2.tar -C ${STAGE_DIR}/../ --exclude test  ${DATASOURCE_ID}

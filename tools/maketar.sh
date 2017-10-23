@@ -19,7 +19,7 @@ rsync -avr dist/* ${STAGE_DIR}/
 
 COMMIT=$(git log -1   --pretty=%h)
 
-sed -i .bak "s/\"version\": \"2.0.0\",/\"version\": \"2.0.0-$COMMIT\",/"  ${STAGE_DIR}/plugin.json || exit 1
+sed -i.bak "s/\"version\": \"2.0.0\",/\"version\": \"2.0.0-$COMMIT\",/"  ${STAGE_DIR}/plugin.json || exit 1
 rm -f ${STAGE_DIR}/plugin.json.bak
 
 tar -cf netspyglass-datasource-v2.tar -C ${STAGE_DIR}/../ --exclude test  ${DATASOURCE_ID}

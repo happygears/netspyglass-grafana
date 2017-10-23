@@ -57,17 +57,17 @@ the directory `/var/lib/grafana/plugins/`, then restart the server with command
 
 Data Source configuration:
 
-![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-edit-data-source.png)
+![datasource configuration](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-edit-data-source.png)
 
 ![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-query-editor-1.png)
 
 ![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-query-editor-nsgql.png)
 
-![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-device-dashboard.png)
+![device dshboard](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-device-dashboard.png)
 
-![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-graph-panel.png)
+![graph panel](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-graph-panel.png)
 
-![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-table-panel.png)
+![table panel](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/nsg-grafana-plugin-v2-table-panel.png)
 
 ## Minimal supported version of Grafana is 4.1.1
 

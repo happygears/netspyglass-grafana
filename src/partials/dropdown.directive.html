@@ -6,7 +6,8 @@
     <li data-ng-repeat="item in $ctrl.list"
         data-ng-class="{'dropdown-submenu': item.submenu.length, 'dropdown--separator': item.separator}">
 
-        <a data-ng-click="$ctrl.toggleSubMenu($event)">{{ ::item.text }}</a>
+        <a data-ng-if="item.submenu.length" data-ng-click="$ctrl.toggleSubMenu($event)">{{ ::item.text }}</a>
+        <a data-ng-if="!item.submenu.length" data-ng-click="$ctrl.onSelectValue(item.value)">{{ ::item.text }}</a>
 
         <ul class="a dropdown-menu" role="menu" data-ng-if="item.submenu">
             <li data-ng-repeat="subItem in item.submenu | orderBy: 'text' "

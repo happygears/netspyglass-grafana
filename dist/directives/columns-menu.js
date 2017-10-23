@@ -162,14 +162,20 @@ System.register(['lodash'], function (_export, _context) {
                             var aliasChanged = _this.$scope.column_form && !_this.$scope.column_form.alias || _this.$scope.column_form.alias.$valid;
 
                             if (aliasChanged) {
-                                _this.onColumnChanged({ $column: _this.column });
+                                _this.onColumnChanged({ $column: _this.column, $prevColumnState: _this.prevColumnState });
                             }
                         });
+                    }
+                }, {
+                    key: 'savePreviousColumnState',
+                    value: function savePreviousColumnState() {
+                        this.prevColumnState = angular.merge({}, this.column);
                     }
                 }, {
                     key: 'onColumnSelect',
                     value: function onColumnSelect($value) {
                         if ($value) {
+                            this.savePreviousColumnState();
                             this.column.name = $value;
                             this.notifyChange();
                         }
@@ -177,24 +183,29 @@ System.register(['lodash'], function (_export, _context) {
                 }, {
                     key: 'onColumnAddAlias',
                     value: function onColumnAddAlias() {
+                        this.savePreviousColumnState();
                         this.column.alias = 'col_' + this.colCounter;
                         this.notifyChange();
                     }
                 }, {
                     key: 'onColumnRemoveAlias',
                     value: function onColumnRemoveAlias() {
+                        this.savePreviousColumnState();
                         this.column.alias = '';
                         this.notifyChange();
                     }
                 }, {
                     key: 'onClear',
                     value: function onClear() {
+                        this.savePreviousColumnState();
                         this.column.appliedFunctions.splice(0, this.column.appliedFunctions.length);
                         this.notifyChange();
                     }
                 }, {
                     key: 'onSelectFunction',
                     value: function onSelectFunction(name, fIndex) {
+                        this.savePreviousColumnState();
+
                         fIndex = Number(fIndex);
 
                         if (name === 'for-function-remove') {

@@ -66,34 +66,44 @@ class ColumnsMenuController {
                 this.$scope.column_form.alias.$valid;
             
             if (aliasChanged) {
-                this.onColumnChanged({$column: this.column});
+                this.onColumnChanged({$column: this.column, $prevColumnState: this.prevColumnState});
             }
         });
     }
 
+    savePreviousColumnState() {
+        this.prevColumnState = angular.merge({}, this.column);
+    }
+
     onColumnSelect($value) {
         if ($value) {
+            this.savePreviousColumnState();
             this.column.name = $value;
             this.notifyChange();
         }
     }
 
     onColumnAddAlias() {
+        this.savePreviousColumnState();
         this.column.alias = `col_${this.colCounter}`;
         this.notifyChange();
     }
 
     onColumnRemoveAlias() {
+        this.savePreviousColumnState();
         this.column.alias = '';
         this.notifyChange();
     }
 
     onClear() {
+        this.savePreviousColumnState();
         this.column.appliedFunctions.splice(0, this.column.appliedFunctions.length);
         this.notifyChange();
     }
 
     onSelectFunction(name, fIndex) {
+        this.savePreviousColumnState();
+
         fIndex = Number(fIndex);
 
         if (name === 'for-function-remove') {

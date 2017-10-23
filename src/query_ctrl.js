@@ -231,6 +231,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         if (index !== -1) {
             this.store.columns[index].willRemove = true;
             this.store.columns.splice(index, 1);
+
+            if (this.store.orderBy.column.name === utils.compileColumnName($column)) {
+                this.onClearOrderBy();
+            }
+
             this.execute();
             return {index};
         }
@@ -238,8 +243,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         return false;
     }
 
-    onColumnChanged($column) {
-        if (this.store.orderBy.column.name === utils.compileColumnName($column)) {
+    onColumnChanged($column, $prevColumnState) {
+        if (this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
             this.store.orderBy.column = {
                 name: utils.compileColumnName($column),
                 value: utils.compileColumnAlias($column),

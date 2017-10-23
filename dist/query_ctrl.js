@@ -307,6 +307,11 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         if (index !== -1) {
                             this.store.columns[index].willRemove = true;
                             this.store.columns.splice(index, 1);
+
+                            if (this.store.orderBy.column.name === utils.compileColumnName($column)) {
+                                this.onClearOrderBy();
+                            }
+
                             this.execute();
                             return { index: index };
                         }
@@ -315,8 +320,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     }
                 }, {
                     key: 'onColumnChanged',
-                    value: function onColumnChanged($column) {
-                        if (this.store.orderBy.column.name === utils.compileColumnName($column)) {
+                    value: function onColumnChanged($column, $prevColumnState) {
+                        if (this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
                             this.store.orderBy.column = {
                                 name: utils.compileColumnName($column),
                                 value: utils.compileColumnAlias($column),

@@ -22,6 +22,8 @@
   border-radius: 0; }
   .gf-form-label--grow::after {
     content: '\00a0'; }
+  .gf-form-label--secondary {
+    opacity: 0.5; }
 
 .gf-form-inline {
   align-items: flex-start; }

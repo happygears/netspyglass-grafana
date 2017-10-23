@@ -72,6 +72,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
             rawQueryString: '',
         };
+
+        this.pluginVersion = this.datasource.meta.info.version;
     }
 
     execute() {

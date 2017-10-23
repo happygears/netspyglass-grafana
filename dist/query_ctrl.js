@@ -274,8 +274,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     }
                 }, {
                     key: 'onChangeOrderBy',
-                    value: function onChangeOrderBy() {
-                        this.store.orderBy.column = this.store.orderBy.colName;
+                    value: function onChangeOrderBy($value) {
+                        this.store.orderBy.column = $value;
                         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
 
                         this._updateOrderBy();

@@ -32,7 +32,10 @@ const menuItems = [
         submenu: [
             {text: 'tslast', href: '#tslast'},
             {text: 'tsmin', href: '#tsmin'},
-            {text: 'tsmax', href: '#tsmax'}
+            {text: 'tsmax', href: '#tsmax'},
+            {text: 'tsavg', href: '#tsavg'},
+            {text: 'tsmedian', href: '#tsmedian'},
+            {text: 'tspercentile95', href: '#tspercentile95'}
         ]
     }
 ];

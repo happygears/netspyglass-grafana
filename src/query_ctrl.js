@@ -368,7 +368,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
                 case 'operator':
                     return $q.resolve(this.uiSegmentSrv.newOperators([
-                        '=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP'
+                        '=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP', 'ISNULL', 'NOTNULL'
                     ]));
                     break;
             }
@@ -425,8 +425,16 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 segment.cssClass = 'query-segment-key';
             }
 
-            if (segment.type === 'key' && segments[index+2].type === 'value') {
-                segments.splice(index+2, 1, segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
+            if (segment.type === 'key' && segments[index + 2].type === 'value') {
+                segments.splice(index + 2, 1, segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
+            }
+
+            if (segment.type === 'operator') {
+                if (segment.value === 'ISNULL' || segment.value === 'NOTNULL') {
+                    segments[index + 1].cssClass = 'query-segment-key query-segment-key--hidden';
+                } else {
+                    segments[index + 1].cssClass = 'query-segment-key';
+                }
             }
 
             if ((index + 1) === segments.length) {

@@ -18,6 +18,9 @@
   top: 50%;
   border-top: 1px dashed #717171; }
 
+.query-segment-key--hidden {
+  display: none; }
+
 .gf-form-label {
   border-radius: 0; }
   .gf-form-label--grow::after {

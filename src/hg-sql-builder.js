@@ -116,6 +116,15 @@ class SQLBuilder {
     if( typeof el !== 'string' ) return false;
     return !!SQLBuilder.OPERATORS[el];
   }
+
+  static proccessMultiOperand(where, idx, multiOperand, baseString) {
+      if(multiOperand && where.length > idx+1) {
+          let localOperand = SQLBuilder.isOperand(where[idx+1]) ? where[idx+1] : 'AND';
+          return `${baseString} ${localOperand}`;
+      } else {
+          return `${baseString}`;
+      }
+  }
 }
 
 SQLBuilder.buildWhere = function (where) {
@@ -183,8 +192,8 @@ SQLBuilder.buildWhere = function (where) {
 
                             sql.push(joinString);
                             return;
-                        } else if (operator === SQLBuilder.OPERATORS.NOT_NULL) {
-                            sql.push(`${key} ${SQLBuilder.OPERATORS.NOT_NULL}`);
+                        } else if (operator === SQLBuilder.OPERATORS.NOT_NULL || operator === SQLBuilder.OPERATORS.IS_NULL) {
+                            sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, `${key} ${operator}`));
                             return;
                         } else if (WITH_BRACKETS.indexOf(operator) !== -1) {
                             value = `('${value.join('\', \'')}')`;
@@ -195,13 +204,7 @@ SQLBuilder.buildWhere = function (where) {
                         value = `'${value}'`;
                     }
 
-
-                    if(multiOperand && where.length > idx+1) {
-                        let localOperand = SQLBuilder.isOperand(where[idx+1]) ? where[idx+1] : 'AND';
-                        sql.push(`${key} ${operator} ${value} ${localOperand}`)
-                    } else {
-                        sql.push(`${key} ${operator} ${value}`);
-                    }
+                    sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, `${key} ${operator} ${value}`));
                 })
             } else if (angular.isString(wherePart)) {
                 if( !(multiOperand && SQLBuilder.isOperand(wherePart)) ) {

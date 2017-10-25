@@ -192,6 +192,16 @@ System.register([], function (_export, _context) {
             if (typeof el !== 'string') return false;
             return !!SQLBuilder.OPERATORS[el];
           }
+        }, {
+          key: 'proccessMultiOperand',
+          value: function proccessMultiOperand(where, idx, multiOperand, baseString) {
+            if (multiOperand && where.length > idx + 1) {
+              var localOperand = SQLBuilder.isOperand(where[idx + 1]) ? where[idx + 1] : 'AND';
+              return baseString + ' ' + localOperand;
+            } else {
+              return '' + baseString;
+            }
+          }
         }]);
 
         return SQLBuilder;
@@ -257,8 +267,8 @@ System.register([], function (_export, _context) {
 
                     sql.push(joinString);
                     return;
-                  } else if (operator === SQLBuilder.OPERATORS.NOT_NULL) {
-                    sql.push(key + ' ' + SQLBuilder.OPERATORS.NOT_NULL);
+                  } else if (operator === SQLBuilder.OPERATORS.NOT_NULL || operator === SQLBuilder.OPERATORS.IS_NULL) {
+                    sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, key + ' ' + operator));
                     return;
                   } else if (WITH_BRACKETS.indexOf(operator) !== -1) {
                     value = '(\'' + value.join('\', \'') + '\')';
@@ -269,12 +279,7 @@ System.register([], function (_export, _context) {
                   value = '\'' + value + '\'';
                 }
 
-                if (multiOperand && where.length > idx + 1) {
-                  var localOperand = SQLBuilder.isOperand(where[idx + 1]) ? where[idx + 1] : 'AND';
-                  sql.push(key + ' ' + operator + ' ' + value + ' ' + localOperand);
-                } else {
-                  sql.push(key + ' ' + operator + ' ' + value);
-                }
+                sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, key + ' ' + operator + ' ' + value));
               });
             } else if (angular.isString(wherePart)) {
               if (!(multiOperand && SQLBuilder.isOperand(wherePart))) {

@@ -124,7 +124,7 @@ System.register(['lodash'], function (_export, _context) {
                 submenu: [{ text: 'avg', href: '#avg' }, { text: 'median', href: '#median' }, { text: 'min', href: '#min' }, { text: 'max', href: '#max' }, { text: 'sum', href: '#sum' }, { text: 'count', href: '#count' }]
             }, {
                 text: 'Aggregation By Time',
-                submenu: [{ text: 'tslast', href: '#tslast' }, { text: 'tsmin', href: '#tsmin' }, { text: 'tsmax', href: '#tsmax' }, { text: 'tsavg', href: '#tsavg' }, { text: 'tsmedian', href: '#tsmedian' }, { text: 'tspercentile95', href: '#tspercentile95' }]
+                submenu: [{ text: 'tslast', href: '#tslast' }, { text: 'tsmin', href: '#tsmin' }, { text: 'tsmax', href: '#tsmax' }, { text: 'tsavg', href: '#tsavg' }, { text: 'tsmedian', href: '#tsmedian' }, { text: 'tspercentile95', href: '#tspercentile95' }, { text: 'tslinear', href: '#tslinear' }]
             }];
 
             ColumnsMenuController = function () {

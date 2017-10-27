@@ -35,7 +35,8 @@ const menuItems = [
             {text: 'tsmax', href: '#tsmax'},
             {text: 'tsavg', href: '#tsavg'},
             {text: 'tsmedian', href: '#tsmedian'},
-            {text: 'tspercentile95', href: '#tspercentile95'}
+            {text: 'tspercentile95', href: '#tspercentile95'},
+            {text: 'tslinear', href: '#tslinear'}
         ]
     }
 ];

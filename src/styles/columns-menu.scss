@@ -4,6 +4,8 @@ hg-columns-menu {
     margin-right: 2px;
     background: $columns-bg;
     $margin: 0.45rem;
+    border: 1px solid transparent;
+    box-sizing: border-box;
 
     
     &.on-drag-enter {
@@ -12,15 +14,6 @@ hg-columns-menu {
 
     &.on-drag-hover {
         border: 1px dashed $column-hover-link-color;
-        box-sizing: border-box;
-
-        &:before, &:after {
-            box-sizing: border-box;
-            display: block;
-            content: "";
-            width: 25px;
-            border: none;
-        }
     }
 
     &.on-dragging {

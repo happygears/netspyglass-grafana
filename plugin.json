@@ -28,11 +28,11 @@
       "large": "img/nsg-logo-md.png"
     },
     "version": "2.0.0",
-    "updated": "2017-09-21"
+    "updated": "2017-10-30"
   },
 
   "dependencies": {
-    "grafanaVersion": "4.1.x",
+    "grafanaVersion": "4.4.x",
     "plugins": [ ]
   }
 }

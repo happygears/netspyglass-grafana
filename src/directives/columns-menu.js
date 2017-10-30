@@ -1,5 +1,4 @@
-import * as _ from 'lodash';
-
+import _ from 'lodash';
 const prevent = ' $event.preventDefault();';
 
 const menuItems = [

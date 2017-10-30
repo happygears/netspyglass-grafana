@@ -79,7 +79,7 @@ hg-columns-menu {
   position: relative;
   margin-right: 2px;
   background: #f4f5f8;
-  border: 1px solid transparent;
+  border: none;
   box-sizing: border-box; }
   hg-columns-menu.on-drag-enter {
     box-shadow: 0 0 1px #222; }
@@ -115,8 +115,7 @@ hg-columns-menu {
   hg-columns-menu > .dropdown-menu--for-function a[href^="#for-dropdown-menu"] {
     display: none; }
   hg-columns-menu .col-container {
-    display: flex;
-    border-right: 1px solid #f9f9f9; }
+    display: flex; }
     hg-columns-menu .col-container__item {
       padding-left: 0;
       padding-right: 0;

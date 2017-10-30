@@ -69,7 +69,7 @@ Data Source configuration:
 
 ![table panel](https://raw.githubusercontent.com/happygears/netspyglass-grafana/v2.0.x/doc/screenshots/nsg-grafana-plugin-v2-table-panel.png)
 
-## Minimal supported version of Grafana is 4.1.1
+## Minimal supported version of Grafana is 4.4.0
 
 (C) 2017 Happy Gears, Inc  www.happygears.net
 
@@ -79,7 +79,7 @@ Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
 
 ### v2.0.0
-## Tested with Grafana 4.1.1 - this is the minimal required version
+## Tested with Grafana 4.4.0 - this is the minimal required version
 
 1. In this version of the plugin, we have completely changed the approach to getting data from 
    the server, so this version is not compatible with the older ones. The server API was changed to 

@@ -6,7 +6,9 @@
         <label class="gf-form-label width-7">
             <span class="gf-form-query-letter-cell-letter">Network ID</span>
         </label>
-        <input ng-model="ctrl.current.jsonData.networkId" ng-init="ctrl.current.jsonData.networkId = ctrl.current.jsonData.networkId || 1"type="text" data-provide="typeahead" class="gf-form-input input-medium" spellcheck="false" style="width: 315px;" placeholder="1" value="1">
+        <input ng-model="ctrl.current.jsonData.networkId" ng-init="ctrl.current.jsonData.networkId = ctrl.current.jsonData.networkId || 1" type="text"
+               data-provide="typeahead" class="gf-form-input input-medium" 
+               spellcheck="false" style="width: 315px;" placeholder="1" value="1">
         <info-popover mode="right-absolute">
             Network id is equal to 1 if you just installed NetSpyGlass and created network. The id changes when you change network name in NetSpyGlass
         </info-popover>

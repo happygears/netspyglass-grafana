@@ -110,6 +110,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         isGraph: _this.panel.type === 'graph',
                         isTable: _this.panel.type === 'table',
                         isSinglestat: _this.panel.type === 'singlestat',
+                        isHeatmap: _this.panel.type === 'heatmap',
                         categories: [],
                         segments: [],
                         removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag }),
@@ -165,10 +166,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         _.defaultsDeep(this.store, targetDefaults);
 
-                        this.store.format = this.options.isGraph || this.options.isSinglestat ? 'time_series' : 'table';
+                        this.store.format = this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap ? 'time_series' : 'table';
                         this.store.isTablePanel = this.options.isTable;
 
-                        if (this.options.isGraph || this.options.isSinglestat) {
+                        if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
                             if (!_.find(this.store.columns, { name: 'time' })) {
                                 this.store.columns.push({ name: 'time', visible: false });
                             }

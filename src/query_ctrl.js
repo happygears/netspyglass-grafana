@@ -67,6 +67,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             isGraph: this.panel.type === 'graph',
             isTable: this.panel.type === 'table',
             isSinglestat: this.panel.type === 'singlestat',
+            isHeatmap: this.panel.type === 'heatmap',
             categories: [],
             segments: [],
             removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
@@ -117,10 +118,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             targetDefaults
         );
 
-        this.store.format = (this.options.isGraph || this.options.isSinglestat) ? 'time_series' : 'table';
+        this.store.format = (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) ? 'time_series' : 'table';
         this.store.isTablePanel = this.options.isTable;
 
-        if (this.options.isGraph || this.options.isSinglestat) {
+        if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
             if (!_.find(this.store.columns, {name: 'time'})) {
                 this.store.columns.push({name: 'time', visible: false});
             }

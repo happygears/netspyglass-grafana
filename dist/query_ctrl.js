@@ -560,7 +560,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         var list = [];
 
                         if (this.options.isGraph) {
-                            list.push({ text: 'metric', value: 'metric' });
+                            list.push({
+                                text: 'metric',
+                                value: {
+                                    name: 'metric',
+                                    value: 'metric'
+                                }
+                            });
                         } else if (this.options.isTable) {
                             this.store.columns.forEach(function (column) {
                                 list.push({

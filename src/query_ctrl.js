@@ -502,7 +502,13 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         let list = [];
 
         if (this.options.isGraph) {
-            list.push({text: 'metric', value: 'metric'});
+            list.push({
+                text: 'metric',
+                value: {
+                    name: 'metric',
+                    value: 'metric',
+                }
+            });
         } else if (this.options.isTable) {
             this.store.columns.forEach((column) => {
                 list.push({

@@ -101,6 +101,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     var options = {
                         baseUrl: url + '/v2',
                         token: accessToken || false,
+                        basicAuth: instanceSettings.basicAuth,
+                        withCredentials: instanceSettings.withCredentials,
                         endpoints: {
                             data: '/query/net/' + networkId + '/data',
                             test: '/ping/net/' + networkId + '/test'

@@ -44,6 +44,8 @@ export class NetSpyGlassDatasource {
         const options = {
             baseUrl: `${url}/v2`,
             token: accessToken || false,
+            basicAuth: instanceSettings.basicAuth,
+            withCredentials: instanceSettings.withCredentials,
             endpoints: {
                 data: `/query/net/${networkId}/data`,
                 test: `/ping/net/${networkId}/test`

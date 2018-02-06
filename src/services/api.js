@@ -349,18 +349,29 @@ class NSGQLApi {
      * @param {string} method
      */
     _request(resource, data, method = 'POST') {
-        let query = '?';
+        
+        const options = {
+            headers: {'Content-Type': 'application/json'},
+            method: method,
+            data: data,
+            url: this.options.baseUrl + resource
+        };
 
         if (this.options.token) {
-            query += this.$backend.$http.defaults.paramSerializer({access_token: this.options.token});
+            let query =  '?' + this.$backend.$http.
+                defaults.paramSerializer({access_token: this.options.token});
+            options.url += query;
         }
 
-        return this.$backend.datasourceRequest({
-            url: this.options.baseUrl + resource + query,
-            data: data,
-            method: method,
-            headers: {'Content-Type': 'application/json'}
-        });
+        if (this.options.basicAuth || this.options.withCredentials) {
+            options.withCredentials = true;
+        }
+
+        if (this.options.basicAuth) {
+            options.headers.Authorization = this.options.basicAuth;
+        }
+
+        return this.$backend.datasourceRequest(options);
     }
 }
 

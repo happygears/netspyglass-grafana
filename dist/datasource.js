@@ -93,14 +93,15 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                     var _instanceSettings$jso = instanceSettings.jsonData,
                         networkId = _instanceSettings$jso.networkId,
-                        accessToken = _instanceSettings$jso.accessToken;
+                        accessToken = _instanceSettings$jso.accessToken,
+                        useToken = _instanceSettings$jso.useToken;
                     var url = instanceSettings.url;
 
 
                     /** @type INSGQLApiOptions */
                     var options = {
                         baseUrl: url + '/v2',
-                        token: accessToken || false,
+                        token: useToken && accessToken ? accessToken : false,
                         basicAuth: instanceSettings.basicAuth,
                         withCredentials: instanceSettings.withCredentials,
                         endpoints: {

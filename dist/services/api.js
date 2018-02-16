@@ -399,7 +399,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
 
 
                         var options = {
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
                             method: method,
                             data: data,
                             url: this.options.baseUrl + resource

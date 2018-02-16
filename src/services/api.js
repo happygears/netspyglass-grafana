@@ -351,7 +351,7 @@ class NSGQLApi {
     _request(resource, data, method = 'POST') {
         
         const options = {
-            headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
             method: method,
             data: data,
             url: this.options.baseUrl + resource

@@ -1,7 +1,7 @@
 # NetSpyGlass data source plugin for Grafana 
 
 This data source enabled Grafana to query metrics collected and stored
-by [NetSpyGlass](http://www.happygears.net) server.
+by [NetSpyGlass](http://www.netspyglass.com) server.
 
 NetSpyGlass is integrated network mapping and monitoring system that presents live monitoring 
 data as series of animated network maps. NetSpyGlass discovers your network using SNMP,
@@ -22,9 +22,13 @@ as it grows and can scale to thousands of devices and millions of metrics.
 
 ## Features
 
-  - Flexible query editor with device, component and tags match
-  - Support for the Graph and Table panels
-  - Support for Dashboard template variables
+  - Data Source plugin provides a flexible query editor with device, component and tags match
+  - Data queries use SQL-like syntax (called [NsgQL](http://docs.netspyglass.com/2.2.x/nsgql.html) )
+  - The user can build queries using by choosing variables, matching operators
+    and attributes, and other parameters using drop-down lists, or 
+    by typing NsgQL query manually
+  - Data Source supports Graph, Table, and Singlestat panels
+  - Dashboard template variables and ad-hoc filters are supported
   - With this plugin, Grafana makes queries directly to NetSpyGlass
     server to receive lists of available metrics, devices, components
     and tags. This means it is agnostic with respect to the time series
@@ -32,20 +36,11 @@ as it grows and can scale to thousands of devices and millions of metrics.
     them (rrd, graphite, InfluxDb, hbase)
   - 
 
-## Templated dashboards support
-
-Device name, component name or any tag defined in NetSpyGlass can be used
-as template variable. For example, this can be used to build an interactive 
-dashboard that can display information for a device you choose. Dashboard
-makes special query to NetSpyGlass server to receive list of devices. Once
-you choose the device, all panels in the dashboard switch to show data
-collected from this device. Component names or tags can be used in a similar
-way to build interactive dashboards.
 
 ## Installation
 
 1. clone this git repository
-2. run script `./tools/maketar.sh`. This script produces archive `netspyglass-datasource.tar`
+2. run script `./tools/maketar.sh`. This script produces archive `netspyglass-datasource-v2.tar`
 3. Copy this archive to the server where Grafana runs and unpack it in 
 the directory `/var/lib/grafana/plugins/`, then restart the server with command
 `sudo service grafana-server restart`.
@@ -55,33 +50,45 @@ the directory `/var/lib/grafana/plugins/`, then restart the server with command
  configuration file `nw2.conf` using parameter key `api.accessTokens.grafana`
 5. Click "Add" and then "Save and Test" to test communication with
  the server
+
  
 
 ## Screenshots
 
 Data Source configuration:
 
-![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/netspyglass_data_source.png)
+![datasource configuration](https://raw.githubusercontent.com/happygears/netspyglass-grafana/v2.0.x/doc/screenshots/nsg-grafana-plugin-v2-edit-data-source.png)
 
+![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/v2.0.x/doc/screenshots/nsg-grafana-plugin-v2-query-editor-1.png)
 
-Example of a graph query that matches metrics by tag "Role.Switch":
+![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/v2.0.x/doc/screenshots/nsg-grafana-plugin-v2-query-editor-nsgql.png)
 
-![query editor screenshot](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/graph_query_with_tag_match_annotated.png)
+![device dshboard](https://raw.githubusercontent.com/happygears/netspyglass-grafana/v2.0.x/doc/screenshots/nsg-grafana-plugin-v2-device-dashboard.png)
 
+![graph panel](https://raw.githubusercontent.com/happygears/netspyglass-grafana/v2.0.x/doc/screenshots/nsg-grafana-plugin-v2-graph-panel.png)
 
-Building "top N" report in Grafana table panel (selects top 5):
+![table panel](https://raw.githubusercontent.com/happygears/netspyglass-grafana/v2.0.x/doc/screenshots/nsg-grafana-plugin-v2-table-panel.png)
 
-![top N report](https://raw.githubusercontent.com/happygears/netspyglass-grafana/master/doc/screenshots/top_n_table_panel_editor_annotated.png)
+## Minimal supported version of Grafana is 4.4.0
 
-## Tested with Grafana 4.0.1
-
-(C) 2016 Happy Gears, Inc  www.happygears.net
+(C) 2017 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
 # Change Log
 
-### v 1.0.4
+
+### v2.0.0
+## Tested with Grafana 4.4.0 - this is the minimal required version
+
+1. In this version of the plugin, we have completely changed the approach to getting data from 
+   the server, so this version is not compatible with the older ones. The server API was changed to 
+   a SQL-like syntax ( [NsgQL](http://docs.netspyglass.com/2.2.x/nsgql.html) ). The query builder is 
+   implemented from scratch in a more modern form.
+
+
+## Tested with Grafana 4.0.1
+### v1.0.4
 
 1. fixed regression caused by the switch to lodash 4.x. This bug broke time intervals "today", 
    "yesterday" and others like that.

@@ -137,4 +137,3 @@ System.register(['lodash', 'moment'], function (_export, _context) {
         }
     };
 });
-//# sourceMappingURL=datemath.js.map

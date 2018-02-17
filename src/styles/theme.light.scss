@@ -1,0 +1,13 @@
+$columns-bg: #f4f5f8;
+$columns-menu-border: #f9f9f9;
+$column-focused-function-color: #1DE7B5;
+$column-hover-link-color: #222;
+
+$columns-dropdown-bg: #fff;
+$columns-dropdown-color: #292929;
+$columns-dropdown-highlight-bg: #f4f5f8;
+$columns-dropdown-highlight-color: #292929;
+
+@import './query-editor.scss';
+@import './columns-menu.scss';
+@import './dropdown.scss';

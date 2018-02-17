@@ -1,11 +1,11 @@
 {
   "name": "grafana-netspyglass",
   "private": true,
-  "version": "0.9.0",
+  "version": "2.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "grunt",
+    "test": "grunt build test"
   },
   "repository": {
     "type": "git",
@@ -13,30 +13,31 @@
   },
   "author": "",
   "license": "Happy Gears EULA",
-  "devDependencies": {
-    "grunt": "~0.4.5",
-    "babel": "~6.5.1",
-    "grunt-babel": "~6.0.0",
-    "grunt-contrib-copy": "~0.8.2",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-contrib-uglify": "~0.11.0",
-    "grunt-mocha-test": "~0.12.7",
-    "grunt-systemjs-builder": "^0.2.5",
-    "load-grunt-tasks": "~3.2.0",
-    "grunt-execute": "~0.2.2",
-    "grunt-contrib-clean": "~0.6.0",
-    "prunk": "~1.2.1",
-    "jsdom": "~3.1.2",
-    "q": "~1.4.1",
-    "chai": "~3.5.0"
-  },
   "dependencies": {
-    "moment": "~2.10.6",
-    "babel-plugin-transform-es2015-for-of": "^6.6.0",
-    "babel-plugin-transform-es2015-modules-systemjs": "^6.5.0",
-    "babel-preset-es2015": "^6.5.0",
-    "lodash": "~4.0.0",
-    "mocha": "^2.4.5"
+    "grunt": "~1.0.1",
+    "grunt-babel": "^7.0.0",
+    "grunt-cli": "~1.2.0",
+    "grunt-contrib-clean": "~1.1.0",
+    "grunt-contrib-copy": "~1.0.0",
+    "grunt-contrib-watch": "~1.0.0",
+    "grunt-sass": "~2.0.0",
+    "grunt-mocha-test": "~0.13.3",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-define": "^1.3.0",
+    "babel-plugin-transform-es2015-for-of": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-systemjs": "^6.24.1",
+    "babel-preset-env": "^1.6.0"
+  },
+  "devDependencies": {
+    "angular": "~1.6.1",
+    "angular-mocks": "~1.6.1",
+    "chai": "~3.5.0",
+    "jsdom": "~11.1.0",
+    "lodash": "~4.17.4",
+    "mocha": "~3.5.3",
+    "moment": "^2.19.1",
+    "prunk": "~1.3.0",
+    "q": "~1.5.0"
   },
   "homepage": "http://www.happygears.net"
 }

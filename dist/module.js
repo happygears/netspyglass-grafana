@@ -1,51 +1,83 @@
 'use strict';
 
-System.register(['./datasource', './query_ctrl'], function (_export, _context) {
-  "use strict";
+System.register(['angular', './datasource', './query_ctrl', './directives/columns-menu', './directives/dropdown', 'app/plugins/sdk'], function (_export, _context) {
+    "use strict";
 
-  var NetSpyGlassDatasource, NetSpyGlassDatasourceQueryCtrl, GenericConfigCtrl, GenericQueryOptionsCtrl, GenericAnnotationsQueryCtrl;
+    var angular, NetSpyGlassDatasource, NetSpyGlassQueryCtrl, ColumnsMenuDirective, DropdownDirective, loadPluginCss, GenericConfigCtrl, GenericQueryOptionsCtrl, GenericAnnotationsQueryCtrl;
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
     }
-  }
 
-  return {
-    setters: [function (_datasource) {
-      NetSpyGlassDatasource = _datasource.NetSpyGlassDatasource;
-    }, function (_query_ctrl) {
-      NetSpyGlassDatasourceQueryCtrl = _query_ctrl.NetSpyGlassDatasourceQueryCtrl;
-    }],
-    execute: function () {
-      _export('ConfigCtrl', GenericConfigCtrl = function GenericConfigCtrl() {
-        _classCallCheck(this, GenericConfigCtrl);
-      });
+    return {
+        setters: [function (_angular) {
+            angular = _angular.default;
+        }, function (_datasource) {
+            NetSpyGlassDatasource = _datasource.NetSpyGlassDatasource;
+        }, function (_query_ctrl) {
+            NetSpyGlassQueryCtrl = _query_ctrl.NetSpyGlassQueryCtrl;
+        }, function (_directivesColumnsMenu) {
+            ColumnsMenuDirective = _directivesColumnsMenu.default;
+        }, function (_directivesDropdown) {
+            DropdownDirective = _directivesDropdown.default;
+        }, function (_appPluginsSdk) {
+            loadPluginCss = _appPluginsSdk.loadPluginCss;
+        }],
+        execute: function () {
+            /*
+             * Copyright (c) 2016.  Happy Gears, Inc
+             *
+             * Licensed under the Apache License, Version 2.0 (the "License");
+             * you may not use this file except in compliance with the License.
+             * You may obtain a copy of the License at
+             *
+             *     http://www.apache.org/licenses/LICENSE-2.0
+             *
+             * Unless required by applicable law or agreed to in writing, software
+             * distributed under the License is distributed on an "AS IS" BASIS,
+             * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+             * See the License for the specific language governing permissions and
+             * limitations under the License.
+             */
 
-      GenericConfigCtrl.templateUrl = 'partials/config.html';
+            ColumnsMenuDirective.templateUrl = 'partials_foo/config.html';
 
-      _export('QueryOptionsCtrl', GenericQueryOptionsCtrl = function GenericQueryOptionsCtrl() {
-        _classCallCheck(this, GenericQueryOptionsCtrl);
-      });
+            _export('ConfigCtrl', GenericConfigCtrl = function GenericConfigCtrl() {
+                _classCallCheck(this, GenericConfigCtrl);
+            });
 
-      GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
+            GenericConfigCtrl.templateUrl = 'partials/config.html';
 
-      _export('AnnotationsQueryCtrl', GenericAnnotationsQueryCtrl = function GenericAnnotationsQueryCtrl() {
-        _classCallCheck(this, GenericAnnotationsQueryCtrl);
-      });
+            _export('QueryOptionsCtrl', GenericQueryOptionsCtrl = function GenericQueryOptionsCtrl() {
+                _classCallCheck(this, GenericQueryOptionsCtrl);
+            });
 
-      GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
+            GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
 
-      _export('Datasource', NetSpyGlassDatasource);
+            _export('AnnotationsQueryCtrl', GenericAnnotationsQueryCtrl = function GenericAnnotationsQueryCtrl() {
+                _classCallCheck(this, GenericAnnotationsQueryCtrl);
+            });
 
-      _export('QueryCtrl', NetSpyGlassDatasourceQueryCtrl);
+            GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
 
-      _export('ConfigCtrl', GenericConfigCtrl);
+            angular.module('grafana.directives').directive('hgColumnsMenu', ColumnsMenuDirective).directive('hgDropdown', DropdownDirective);
 
-      _export('QueryOptionsCtrl', GenericQueryOptionsCtrl);
+            loadPluginCss({
+                dark: 'plugins/happygears-netspyglass-datasource-v2' + '/styles/theme.dark.css',
+                light: 'plugins/happygears-netspyglass-datasource-v2' + '/styles/theme.light.css'
+            });
 
-      _export('AnnotationsQueryCtrl', GenericAnnotationsQueryCtrl);
-    }
-  };
+            _export('Datasource', NetSpyGlassDatasource);
+
+            _export('QueryCtrl', NetSpyGlassQueryCtrl);
+
+            _export('ConfigCtrl', GenericConfigCtrl);
+
+            _export('QueryOptionsCtrl', GenericQueryOptionsCtrl);
+
+            _export('AnnotationsQueryCtrl', GenericAnnotationsQueryCtrl);
+        }
+    };
 });
-//# sourceMappingURL=module.js.map

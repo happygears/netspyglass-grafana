@@ -1,0 +1,15 @@
+$columns-bg: #292929;
+$columns-menu-border: #2f2f2f;
+$column-focused-function-color: #2A85EE;
+$column-hover-link-color: #fff;
+
+$columns-dropdown-bg: #5D5D5D;
+$columns-dropdown-color: #D8D9DA;
+$columns-dropdown-highlight-bg: #777777;
+$columns-dropdown-highlight-color: #D8D9DA;
+
+@import './query-editor.scss';
+@import './columns-menu.scss';
+@import './dropdown.scss';
+
+

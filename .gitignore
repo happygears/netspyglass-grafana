@@ -1,6 +1,7 @@
 node_modules
 npm-debug.log
 coverage/
+dist_dev/
 
 # Editor junk
 *.sublime-workspace
@@ -16,3 +17,4 @@ grafana
 
 # generated tar archive
 *.tar
+/package-lock.json

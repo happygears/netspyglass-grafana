@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', './datemath'], function (_export, _context) {
+System.register(['lodash', './services/api', './services/utils'], function (_export, _context) {
     "use strict";
 
-    var _, dateMath, _createClass, NetSpyGlassDatasource;
+    var _, NSGQLApi, SQLQuery, utils, _slicedToArray, _createClass, QueryTableNames, NetSpyGlassDatasource;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -14,10 +14,51 @@ System.register(['lodash', './datemath'], function (_export, _context) {
     return {
         setters: [function (_lodash) {
             _ = _lodash.default;
-        }, function (_datemath) {
-            dateMath = _datemath;
+        }, function (_servicesApi) {
+            NSGQLApi = _servicesApi.NSGQLApi;
+            SQLQuery = _servicesApi.SQLQuery;
+        }, function (_servicesUtils) {
+            utils = _servicesUtils.default;
         }],
         execute: function () {
+            _slicedToArray = function () {
+                function sliceIterator(arr, i) {
+                    var _arr = [];
+                    var _n = true;
+                    var _d = false;
+                    var _e = undefined;
+
+                    try {
+                        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+                            _arr.push(_s.value);
+
+                            if (i && _arr.length === i) break;
+                        }
+                    } catch (err) {
+                        _d = true;
+                        _e = err;
+                    } finally {
+                        try {
+                            if (!_n && _i["return"]) _i["return"]();
+                        } finally {
+                            if (_d) throw _e;
+                        }
+                    }
+
+                    return _arr;
+                }
+
+                return function (arr, i) {
+                    if (Array.isArray(arr)) {
+                        return arr;
+                    } else if (Symbol.iterator in Object(arr)) {
+                        return sliceIterator(arr, i);
+                    } else {
+                        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+                    }
+                };
+            }();
+
             _createClass = function () {
                 function defineProperties(target, props) {
                     for (var i = 0; i < props.length; i++) {
@@ -36,422 +77,286 @@ System.register(['lodash', './datemath'], function (_export, _context) {
                 };
             }();
 
-            _export('NetSpyGlassDatasource', NetSpyGlassDatasource = function () {
-                _createClass(NetSpyGlassDatasource, null, [{
-                    key: 'mapToTextValue',
-                    value: function mapToTextValue(result) {
-                        return _.map(result.data, function (d, i) {
-                            return { text: d, value: i };
-                        });
-                    }
-                }, {
-                    key: 'mapToTextText',
-                    value: function mapToTextText(result) {
-                        return _.map(result.data, function (d, i) {
-                            return { text: d, value: d };
-                        });
-                    }
-                }, {
-                    key: 'transformTagMatch',
-                    value: function transformTagMatch(tagMatches) {
-                        var tags = [];
-                        var idx;
-                        for (idx = 0; idx < tagMatches.length; idx++) {
-                            var tm = tagMatches[idx];
-                            var tt = (tm.tagOperation === '<>' ? '!' : '') + tm.tagFacet + (tm.tagWord !== '' ? '.' + tm.tagWord : '');
-                            tags.push(tt);
-                        }
-                        return tags.join(',');
-                    }
-                }]);
+            QueryTableNames = {
+                DEVICES: 'devices'
+            };
 
+            _export('NetSpyGlassDatasource', NetSpyGlassDatasource = function () {
+                /**
+                 * @param {PluginSettings} instanceSettings
+                 * @param $q
+                 * @param backendSrv
+                 * @param templateSrv
+                 */
                 function NetSpyGlassDatasource(instanceSettings, $q, backendSrv, templateSrv) {
                     _classCallCheck(this, NetSpyGlassDatasource);
 
-                    this.type = instanceSettings.type;
-                    this.url = instanceSettings.url;
-                    this.name = instanceSettings.name;
+                    var _instanceSettings$jso = instanceSettings.jsonData,
+                        networkId = _instanceSettings$jso.networkId,
+                        accessToken = _instanceSettings$jso.accessToken,
+                        useToken = _instanceSettings$jso.useToken;
+                    var url = instanceSettings.url;
+
+
+                    /** @type INSGQLApiOptions */
+                    var options = {
+                        baseUrl: url + '/v2',
+                        token: useToken && accessToken ? accessToken : false,
+                        basicAuth: instanceSettings.basicAuth,
+                        withCredentials: instanceSettings.withCredentials,
+                        endpoints: {
+                            data: '/query/net/' + networkId + '/data',
+                            test: '/ping/net/' + networkId + '/test'
+                        }
+                    };
+
+                    this.api = new NSGQLApi(backendSrv, $q, options);
                     this.$q = $q;
-                    this.backendSrv = backendSrv;
                     this.templateSrv = templateSrv;
-                    this.networkId = instanceSettings.jsonData.networkId || 1;
-                    this.accessToken = instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '' ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
-                    this.endpointsBase = '/v2/query/net/' + this.networkId;
-                    this.endpoints = {};
-                    this.endpoints.category = this.endpointsBase + '/categories/' + this.accessToken;
-                    this.endpoints.variable = this.endpointsBase + '/variables/';
-                    this.endpoints.query = this.endpointsBase + '/data/' + this.accessToken;
-                    this.endpoints.test = '/v2/ping/net/' + this.networkId + "/test/" + this.accessToken;
-
-                    this.blankDropDownElement = '---';
-
-                    this.blankValues = {};
-                    this.blankValues.alias = '';
-                    this.blankValues.variable = 'select variable';
-                    this.blankValues.device = 'select device';
-                    this.blankValues.component = 'select component';
-                    this.blankValues.description = '';
-                    this.blankValues.sortByEl = 'select sorting';
-                    this.blankValues.selector = ' -- ';
-                    this.blankValues.aggregator = ' -- ';
-                    this.blankValues.limit = 'select limit';
-                    this.blankValues.group = 'select group';
-                    this.blankValues.tagFacet = this.blankDropDownElement;
-                    this.blankValues.tagWord = this.blankDropDownElement;
-                    this.blankValues.interval = 'select interval';
-                    this.blankValues.tagData = [];
-                    this.blankValues.tags = '';
-                    this.blankValues.format = '';
-                    this.blankValues.columns = '';
-                    this.blankValues.unique = '';
-                    this.blankValues.refId = '';
-
-                    this.clearString = '-- clear selection --';
+                    this.sqlQuery = new SQLQuery(templateSrv);
                 }
 
                 /**
-                 * makes actual API call to NetSpyGlass server
-                 *
-                 * @param endpoint   API call endpoint
-                 * @param method     GET or POST
-                 * @param query      query object
-                 * @returns {*}
-                 * @private
+                 * @description This function is called when plugin builds a graph
+                 * @param options {QueryOptions} an object built from the data entered in the query dialog
+                 * @returns {Promise}
                  */
 
 
                 _createClass(NetSpyGlassDatasource, [{
-                    key: '_apiCall',
-                    value: function _apiCall(endpoint, method, query) {
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            data: query,
-                            method: method,
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                    }
-                }, {
                     key: 'query',
                     value: function query(options) {
-                        var self = this;
-                        // build query object (this replaces dashboard template vars)
-                        var query = this.buildQueryFromQueryDialogData(options);
+                        var _this = this;
+
+                        var targets = options.targets,
+                            rangeRaw = options.rangeRaw;
+
+                        var timeRange = {
+                            from: utils.getTime(rangeRaw.from, false),
+                            to: utils.getTime(rangeRaw.to, true)
+                        };
                         var aliases = {};
-                        for (var idx = 0; idx < options.targets.length; idx++) {
-                            var targetDlg = options.targets[idx];
-                            aliases[targetDlg.refId] = targetDlg.alias;
+                        var adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
+
+                        //this variable is used for building "raw" query in the getSQLString method
+                        this.queryOptions = { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters };
+
+                        var processTarget = function processTarget(target) {
+                            aliases[target.refId] = target.alias;
+
+                            var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, _this.queryOptions) : _this.sqlQuery.generateSQLQuery(target, _this.queryOptions);
+
+                            return _this.api.generateTarget(_this.templateSrv.replace(sql), target.format, target.refId);
+                        };
+
+                        var sqlTargets = targets.map(function (target) {
+                            var nsgTarget = _.cloneDeep(target._nsgTarget) || {};
+                            nsgTarget.refId = target.refId;
+                            nsgTarget.hide = target.hide;
+                            return nsgTarget;
+                        }).filter(function (target) {
+                            return target.hide !== true;
+                        }).map(processTarget).filter(function (target) {
+                            return target.nsgql !== false;
+                        });
+
+                        if (sqlTargets.length === 0) {
+                            return this.$q.resolve({ data: [] });
                         }
-                        for (var i = 0; i < query.targets.length; i++) {
-                            var target = query.targets[i];
-                            // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
-                            target.sortByEl = target.sortByEl !== 'none' ? 'metric:' + target.sortByEl : target.sortByEl;
-                        }
-                        var queryAsStr = JSON.stringify(query);
-                        queryAsStr = this.templateSrv.replace(queryAsStr, options.scopedVars);
-                        var response = this._apiCall(this.endpoints.query, 'POST', queryAsStr);
-                        // then: function(a,b,c)
-                        return response.then(function (response) {
-                            var data = response.data;
-                            if (!data) return response;
 
-                            // data is an Array of these:
-                            //
-                            // component:  "eth0"
-                            // datapoints: Array[121]
-                            // device:     "synas1"
-                            // target:     "ifInRate:synas1:eth0"
-                            // variable:   "ifInRate"
-
-                            for (idx = 0; idx < data.length; idx++) {
-                                var series = data[idx];
-                                if (!series || !series.datapoints || !series.target) continue;
-                                var alias = aliases[series.id];
-                                if (alias) series.target = self.getSeriesName(series, alias);
-                            }
-
-                            return response;
+                        return this.api.queryData(sqlTargets).then(function (data) {
+                            return _this._proccessingDataErrors(data);
+                        }).then(function (data) {
+                            return _this._processingGraphAliases(data, aliases);
+                        }).then(function (list) {
+                            return { data: list };
                         });
                     }
                 }, {
                     key: 'getSeriesName',
-                    value: function getSeriesName(series, alias) {
-                        // NSGDB-82: we want to be able to use template vars as aliases
-                        var aliasWithVarsReplaced = this.templateSrv.replace(alias);
-
+                    value: function getSeriesName(item, alias) {
                         var regex = /\$(\w+)|\[\[([\s\S]+?)]]/g;
-                        return aliasWithVarsReplaced.replace(regex, function (match, g1, g2) {
+
+                        alias = this.templateSrv.replace(alias);
+
+                        return alias.replace(regex, function (match, g1, g2) {
                             var group = g1 || g2;
 
-                            if (group === 'm' || group === 'measurement' || group === 'variable') {
-                                return series.variable;
+                            switch (group) {
+                                case 'm':
+                                case 'measurement':
+                                case 'variable':
+                                    return item.variable;
+                                case 'device':
+                                    return item.device;
+                                case 'component':
+                                    return item.component;
+                                case 'description':
+                                    return item.description;
                             }
-                            if (group === 'device') return series.device;
-                            if (group === 'component') return series.component;
-                            if (group === 'description') return series.description;
 
-                            // if variable has no tags, we can't substitute tag words
-                            if (!series.tags) {
+                            if (!item.tags || !item.tags[group]) {
                                 return match;
+                            } else {
+                                return item.tags[group];
                             }
-
-                            // see if it is tag facet
-                            var tag = series.tags[group];
-                            if (typeof tag === 'undefined') return match;
-                            return tag;
                         });
+                    }
+                }, {
+                    key: '_proccessingDataErrors',
+                    value: function _proccessingDataErrors(data) {
+                        var errorsList = _.filter(data, 'error'),
+                            errors = {};
+
+                        if (errorsList.length) {
+                            errorsList.forEach(function (error) {
+                                errors[error.id.toUpperCase()] = error.error;
+                            });
+
+                            throw errors;
+                        }
+
+                        return data;
+                    }
+                }, {
+                    key: '_processingGraphAliases',
+                    value: function _processingGraphAliases(data, aliases) {
+                        var _this2 = this;
+
+                        data.forEach(function (item) {
+                            var alias = aliases[item.id.toUpperCase()];
+                            if (!item || !item.datapoints || !item.target || !alias) return;
+
+                            item.target = _this2.getSeriesName(item, alias);
+                        });
+
+                        return data;
                     }
                 }, {
                     key: 'testDatasource',
                     value: function testDatasource() {
-                        var endpoint = this.endpoints.test;
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + endpoint,
-                            method: 'GET'
-                        }).then(function (response) {
-                            if (response.status === 200) {
-                                return { status: "success", message: "Data source is working", title: "Success" };
+                        return this.api.ping();
+                    }
+                }, {
+                    key: 'getCategories',
+                    value: function getCategories() {
+                        var query = this.sqlQuery.categories();
+                        return this.api.queryData(query, NSGQLApi.FORMAT_JSON).then(function (data) {
+                            var categories = _.groupBy(data[0].rows, 'category'),
+                                result = [];
+
+                            for (var category in categories) {
+                                result.push({
+                                    text: category,
+                                    submenu: categories[category].map(function (category) {
+                                        return { text: category.name, value: category.name };
+                                    })
+                                });
                             }
+
+                            return result;
+                        }).catch(function () {
+                            return [];
                         });
                     }
                 }, {
-                    key: 'annotationQuery',
-                    value: function annotationQuery(options) {
-                        var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
-                        var annotationQuery = {
-                            range: options.range,
-                            annotation: {
-                                name: options.annotation.name,
-                                datasource: options.annotation.datasource,
-                                enable: options.annotation.enable,
-                                iconColor: options.annotation.iconColor,
-                                query: query
-                            },
-                            rangeRaw: options.rangeRaw
-                        };
-                        return this.backendSrv.datasourceRequest({
-                            url: this.url + '/annotations' + this.accessToken,
-                            method: 'POST',
-                            data: annotationQuery
-                        }).then(function (result) {
-                            return result.data;
+                    key: 'getFacets',
+                    value: function getFacets(variable) {
+                        var query = this.sqlQuery.facets(variable);
+                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST).catch(function () {
+                            return [];
                         });
+                    }
+                }, {
+                    key: 'getColumns',
+                    value: function getColumns(variable) {
+                        return this.$q.all([this.getCategories(), this.getFacets(variable)]).then(function (data) {
+                            var _data = _slicedToArray(data, 2),
+                                categories = _data[0],
+                                tags = _data[1];
+
+                            var columns = [];
+
+                            columns.push({
+                                text: 'tags',
+                                submenu: tags.map(function (tag) {
+                                    return { text: tag, value: tag };
+                                })
+                            });
+
+                            columns.push({ text: '---------', separator: true });
+                            columns.push({
+                                text: 'predefined columns',
+                                submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }]
+                            });
+
+                            columns.push({ text: '---------', separator: true });
+
+                            // columns = _.concat(columns, categories);
+                            columns.push({
+                                text: 'variables',
+                                submenu: categories
+                            });
+
+                            return columns;
+                        });
+                    }
+                }, {
+                    key: 'getSuggestions',
+                    value: function getSuggestions(data) {
+                        var query = void 0;
+
+                        query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
+                        query = this.templateSrv.replace(query);
+
+                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST).catch(function () {
+                            return [];
+                        });
+                    }
+                }, {
+                    key: 'getSQLString',
+                    value: function getSQLString(target) {
+                        return this.sqlQuery.generateSQLQuery(target, this.queryOptions, true);
                     }
                 }, {
                     key: 'metricFindQuery',
                     value: function metricFindQuery(query) {
-                        var interpolated;
-                        try {
-                            interpolated = this.templateSrv.replace(query, query.scopedVars);
-                        } catch (err) {
-                            return this.$q.reject(err);
-                        }
-                        var data = this.buildQueryFromText(interpolated);
-                        var target = data.targets[0];
-                        target.format = 'list';
-                        return this._apiCall(this.endpoints.query, 'POST', JSON.stringify(data)).then(NetSpyGlassDatasource.mapToTextText);
-                    }
-                }, {
-                    key: 'findCategoriesQuery',
-                    value: function findCategoriesQuery() {
-                        return this._apiCall(this.endpoints.category, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
-                    }
-                }, {
-                    key: 'findVariablesQuery',
-                    value: function findVariablesQuery(options) {
-                        var endpoint = this.endpoints.variable + options.category + this.accessToken;
-                        return this._apiCall(endpoint, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
-                    }
-                }, {
-                    key: 'findDevices',
-                    value: function findDevices(options) {
-                        var data = this.buildQuery(options);
-                        var target = data.targets[0];
-                        target.device = ''; // erase to ignore current selection in the dialog
-                        target.component = '';
-                        target.columns = 'device';
-                        target.unique = 'device';
-                        target.sortByEl = 'device:ascending';
-                        target.format = 'list';
-                        target.limit = -1;
-                        var query = JSON.stringify(data);
-                        query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
-                    }
-                }, {
-                    key: 'findComponents',
-                    value: function findComponents(options) {
-                        var data = this.buildQuery(options);
-                        var target = data.targets[0];
-                        target.component = ''; // erase to ignore current selection in the dialog
-                        target.columns = 'component';
-                        target.unique = 'component';
-                        target.sortByEl = 'component:ascending';
-                        target.format = 'list';
-                        target.limit = -1;
-                        var query = JSON.stringify(data);
-                        query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
-                    }
-                }, {
-                    key: 'findTagFacets',
-                    value: function findTagFacets(options, index) {
-                        var clonedOptions = jQuery.extend(true, {}, options);
-                        clonedOptions.tagData[index].tagFacet = '';
-                        clonedOptions.tagData[index].tagWord = '';
-                        var data = this.buildQuery(clonedOptions);
-                        var target = data.targets[0];
-                        target.columns = 'tagFacet';
-                        target.unique = 'tagFacet';
-                        target.sortByEl = 'tagFacet:ascending';
-                        target.format = 'list';
-                        target.limit = -1;
-                        var query = JSON.stringify(data);
-                        query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
-                    }
-                }, {
-                    key: 'findTagWordsQuery',
-                    value: function findTagWordsQuery(options, index) {
-                        var clonedOptions = jQuery.extend(true, {}, options);
-                        var facet = clonedOptions.tagData[index].tagFacet;
-                        clonedOptions.tagData[index].tagWord = '';
-                        var data = this.buildQuery(clonedOptions);
-                        var target = data.targets[0];
-                        target.columns = facet;
-                        target.unique = facet;
-                        target.sortByEl = facet + ':ascending';
-                        target.format = 'list';
-                        target.limit = -1;
-                        var query = JSON.stringify(data);
-                        query = this.templateSrv.replace(query, options.scopedVars);
-                        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
-                    }
-                }, {
-                    key: 'templateSrvParameters',
-                    value: function templateSrvParameters(queryObject) {
-                        var _this = this;
-
-                        queryObject.targets = _.map(queryObject.targets, function (target) {
-                            var updatedTarget = jQuery.extend(true, {}, target);
-                            updatedTarget.category = _this.replaceTemplateVars(updatedTarget.category);
-                            updatedTarget.device = _this.replaceTemplateVars(updatedTarget.device);
-                            updatedTarget.component = _this.replaceTemplateVars(updatedTarget.component);
-                            updatedTarget.description = _this.replaceTemplateVars(updatedTarget.description);
-                            updatedTarget.limit = updatedTarget.limit === '' ? -1 : updatedTarget.limit;
-                            // target.alias = this.replaceTemplateVars(target.alias);
-                            return updatedTarget;
+                        query = this.templateSrv.replace(query);
+                        return this.api.queryData(query, NSGQLApi.FORMAT_LIST).then(function (data) {
+                            return data.map(function (el) {
+                                return { text: el };
+                            });
+                        }).catch(function () {
+                            return [];
                         });
-                        return queryObject;
                     }
                 }, {
-                    key: 'replaceTemplateVars',
-                    value: function replaceTemplateVars(field) {
-                        if (typeof field === 'undefined') return field;
-                        var replaced = this.templateSrv.replace(field);
-                        // if templateSrc could not replace macro with a value, replace it with an empty string
-                        if (field.startsWith('$') && replaced.startsWith('$')) replaced = '';
-                        return replaced;
-                    }
-                }, {
-                    key: 'removeBlanks',
-                    value: function removeBlanks(item) {
-                        var _this2 = this;
-
-                        var temp = {};
-                        for (var key in item) {
-                            if (!(key in this.blankValues)) {
-                                continue;
-                            }
-                            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.blankValues[key]) {
-                                continue;
-                            }
-                            if (key == 'tagFacet' || key == 'tagWord') {
-                                continue;
-                            }
-                            if (key == 'tagData') {
-                                temp[key] = item[key].filter(function (t) {
-                                    return !_this2.isBlankTagMatch(t);
-                                });
-                            } else {
-                                temp[key] = item[key];
-                            }
-                        }
-                        return temp;
-                    }
-                }, {
-                    key: 'isBlankTagMatch',
-                    value: function isBlankTagMatch(tm) {
-                        if (tm.tagFacet === "" || tm.tagFacet === this.blankDropDownElement) return true;
-                        return !!(tm.tagWord === "" || tm.tagWord === this.blankDropDownElement);
-                    }
-                }, {
-                    key: 'buildQuery',
-                    value: function buildQuery(options) {
-                        var queryObject = {
-                            targets: [options]
-                        };
-                        return this.buildQueryFromQueryDialogData(queryObject);
-                    }
-                }, {
-                    key: 'buildQueryFromText',
-                    value: function buildQueryFromText(options) {
-                        var queryObject = {
-                            targets: [JSON.parse(options)]
-                        };
-                        return this.buildQueryFromQueryDialogData(queryObject);
-                    }
-                }, {
-                    key: 'buildQueryFromQueryDialogData',
-                    value: function buildQueryFromQueryDialogData(query) {
-                        this.templateSrvParameters(query);
-                        // if we have any "$word" left in the query, those are leftover template
-                        // variables that did not get expanded because they have no value
-                        query.targets = query.targets.filter(function (t) {
-                            return !t.hide;
+                    key: 'getTagKeys',
+                    value: function getTagKeys() {
+                        return this.api.queryData(this.sqlQuery.getTagKeysForAdHoc(), NSGQLApi.FORMAT_LIST).then(function (list) {
+                            return list.map(function (item) {
+                                return { text: item };
+                            });
+                        }).catch(function () {
+                            return [];
                         });
-                        var queryObject = {
-                            targets: []
-                        };
-                        var index;
-                        for (index = query.targets.length - 1; index >= 0; --index) {
-                            var target = this.removeBlanks(query.targets[index]);
-                            if (typeof target.tagData !== 'undefined') {
-                                target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
-                            }
-                            delete target.tagData;
-                            delete target.alias;
-                            target.id = target.refId;
-                            delete target.refId;
-                            queryObject.targets.push(target);
-                        }
-                        if (typeof query.rangeRaw != 'undefined') {
-                            // queryObject.from = this.getTimeFilter(query.rangeRaw.from);
-                            // queryObject.until = this.getTimeFilter(query.rangeRaw.to);
-                            queryObject.from = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.from, false);
-                            queryObject.until = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.to, true);
-                            queryObject.groupByTime = query.interval;
-                        }
-                        // queryObject.scopedVars = '$variable';
-                        return queryObject;
                     }
-                }], [{
-                    key: 'getTimeForApiCall',
-                    value: function getTimeForApiCall(date, roundUp) {
-                        if (_.isString(date)) {
-                            if (date === 'now') {
-                                return 'now';
-                            }
-
-                            var parts = /^now-(\d+)([dhmsM])$/.exec(date);
-                            if (parts) {
-                                return date;
-                                // var amount = parseInt(parts[1]);
-                                // var unit = parts[2];
-                                // return 'now-' + amount + unit;
-                            }
-                            date = dateMath.parse(date, roundUp);
-                        }
-                        return (date.valueOf() / 1000).toFixed(0) + 's';
+                }, {
+                    key: 'getTagValues',
+                    value: function getTagValues(options) {
+                        return this.api.queryData(this.sqlQuery.getTagValuesForAdHoc(options.key)).then(function (list) {
+                            return list.filter(function (item, pos, self) {
+                                return self.indexOf(item) === pos;
+                            }).map(function (item) {
+                                if (item.error) {
+                                    console.log(item.error);
+                                    return;
+                                }
+                                return { text: item };
+                            }).filter(Boolean);
+                        }).catch(function () {
+                            return [];
+                        });
                     }
                 }]);
 
@@ -462,4 +367,3 @@ System.register(['lodash', './datemath'], function (_export, _context) {
         }
     };
 });
-//# sourceMappingURL=datasource.js.map

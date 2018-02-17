@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
+System.register(['app/plugins/sdk', './dictionary', './services/utils'], function (_export, _context) {
     "use strict";
 
-    var QueryCtrl, _createClass, NetSpyGlassDatasourceQueryCtrl;
+    var QueryCtrl, QueryPrompts, GrafanaVariables, utils, _createClass, orderBySortTypes, targetDefaults, NetSpyGlassQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -38,7 +38,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
     return {
         setters: [function (_appPluginsSdk) {
             QueryCtrl = _appPluginsSdk.QueryCtrl;
-        }, function (_cssQueryEditorCss) {}],
+        }, function (_dictionary) {
+            QueryPrompts = _dictionary.QueryPrompts;
+            GrafanaVariables = _dictionary.GrafanaVariables;
+        }, function (_servicesUtils) {
+            utils = _servicesUtils.default;
+        }],
         execute: function () {
             _createClass = function () {
                 function defineProperties(target, props) {
@@ -58,251 +63,572 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
                 };
             }();
 
-            _export('NetSpyGlassDatasourceQueryCtrl', NetSpyGlassDatasourceQueryCtrl = function (_QueryCtrl) {
-                _inherits(NetSpyGlassDatasourceQueryCtrl, _QueryCtrl);
+            orderBySortTypes = ['ASC', 'DESC'];
+            targetDefaults = {
+                type: 'nsgql',
+                columns: [{ name: 'metric', visible: true }],
+                variable: QueryPrompts.variable,
+                orderBy: {
+                    column: {
+                        name: '',
+                        value: '',
+                        alias: ''
+                    },
+                    sort: orderBySortTypes[0],
+                    colName: QueryPrompts.orderBy
+                },
+                rawQuery: 0,
+                limit: 100,
+                tags: [],
+                groupBy: {
+                    type: QueryPrompts.groupByType,
+                    value: QueryPrompts.groupBy
+                }
+            };
 
-                function NetSpyGlassDatasourceQueryCtrl($scope, $injector, uiSegmentSrv) {
-                    _classCallCheck(this, NetSpyGlassDatasourceQueryCtrl);
+            _export('NetSpyGlassQueryCtrl', NetSpyGlassQueryCtrl = function (_QueryCtrl) {
+                _inherits(NetSpyGlassQueryCtrl, _QueryCtrl);
 
-                    var _this = _possibleConstructorReturn(this, (NetSpyGlassDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(NetSpyGlassDatasourceQueryCtrl)).call(this, $scope, $injector));
+                /**
+                 * @var {NetSpyGlassDatasource} datasource
+                 * @property refresh
+                 * @property panelCtrl
+                 */
 
-                    _this.prompts = {
-                        'category': 'select category',
-                        'variable': 'select variable',
-                        'device': 'select device',
-                        'component': 'select component'
+                function NetSpyGlassQueryCtrl($scope, $injector, $rootScope, uiSegmentSrv) {
+                    _classCallCheck(this, NetSpyGlassQueryCtrl);
+
+                    var _this = _possibleConstructorReturn(this, (NetSpyGlassQueryCtrl.__proto__ || Object.getPrototypeOf(NetSpyGlassQueryCtrl)).apply(this, arguments));
+
+                    _this.$scope = $scope;
+                    _this.$rootScope = $rootScope;
+                    _this.$injector = $injector;
+                    _this.prompts = QueryPrompts;
+                    _this.uiSegmentSrv = uiSegmentSrv;
+
+                    _this.options = {
+                        isGraph: _this.panel.type === 'graph',
+                        isTable: _this.panel.type === 'table',
+                        isSinglestat: _this.panel.type === 'singlestat',
+                        isHeatmap: _this.panel.type === 'heatmap',
+                        categories: [],
+                        segments: [],
+                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag }),
+                        rawQueryString: ''
                     };
 
-                    _this.scope = $scope;
-                    _this.injector = $injector;
-                    _this.uiSegmentSrv = uiSegmentSrv;
-                    _this.clearSelection = '-- clear selection --';
-                    _this.blankDropDownElement = '---';
-                    _this.target.category = _this.target.category || _this.prompts['category'];
-                    _this.target.variable = _this.target.variable || _this.prompts['variable'];
-                    _this.target.device = _this.target.device || _this.prompts['device'];
-                    _this.target.component = _this.target.component || _this.prompts['component'];
-                    _this.target.sortByEl = _this.target.sortByEl || 'none';
-                    _this.target.selector = _this.target.selector || ' -- ';
-                    _this.target.aggregator = _this.target.aggregator || ' -- ';
-                    _this.target.limit = _this.target.limit || '100';
-                    _this.target.group = _this.target.group || 'select group';
-                    _this.target.tagFacet = _this.target.tagFacet || _this.blankDropDownElement;
-                    _this.target.tagOperation = _this.target.tagOperation || '==';
-                    _this.target.tagWord = _this.target.tagWord || _this.blankDropDownElement;
-                    _this.target.tagData = _this.target.tagData || [];
-
-                    _this.target.format = _this.target.format || 'time_series';
-                    _this.target.formatDisplay = _this.target.formatDisplay || 'Time Series';
-
-                    _this.target.columns = _this.target.columns || 'time,variable,device,component,metric';
-                    _this.target.alias = _this.target.alias || '';
+                    _this.pluginVersion = _this.datasource.meta.info.version;
                     return _this;
                 }
 
-                _createClass(NetSpyGlassDatasourceQueryCtrl, [{
-                    key: 'isCategorySelected',
-                    value: function isCategorySelected() {
-                        return this.target.category !== this.prompts['category'] && this.target.category !== this.clearSelection;
+                _createClass(NetSpyGlassQueryCtrl, [{
+                    key: 'execute',
+                    value: function execute() {
+                        this.errors = {};
+                        this.store.loading = true;
+                        this.panelCtrl.refresh();
                     }
                 }, {
-                    key: 'isVariableSelected',
-                    value: function isVariableSelected() {
-                        return this.target.variable !== this.prompts['variable'] && this.target.variable !== this.clearSelection;
+                    key: 'init',
+                    value: function init() {
+                        var _this2 = this;
+
+                        this.initTarget();
+                        this.options.segments = this.restoreTags();
+                        this.getCategories().then(function () {
+                            return _this2.loadColumns();
+                        });
+
+                        this.panelCtrl.events.emitter.on('data-error', function (errors) {
+                            _this2.errors = _.cloneDeep(errors);
+                        });
+
+                        this.panelCtrl.events.emitter.on('render', function () {
+                            _this2.store.loading = false;
+                        });
+
+                        if (this.options.isTable) {
+                            this.setPanelSortFromOrderBy();
+                            this.$scope.$watch('ctrl.panel.sort', function (newVal, oldVal) {
+                                if (newVal.col !== oldVal.col || newVal.desc !== oldVal.desc) {
+                                    _this2.setOrderByFromPanelSort(newVal);
+                                    _this2.execute();
+                                }
+                            }, true);
+                        }
                     }
                 }, {
-                    key: 'tagDataAdd',
-                    value: function tagDataAdd() {
-                        this.target.tagData[this.target.tagData.length] = {
-                            tagFacet: this.blankDropDownElement,
-                            tagWord: this.blankDropDownElement,
-                            tagOperation: '=='
-                        };
-                        this.refresh();
+                    key: 'initTarget',
+                    value: function initTarget() {
+                        this.target._nsgTarget = this.target._nsgTarget || {};
+                        this.store = this.target._nsgTarget;
+                        this.store.refId = this.target.refId;
+
+                        _.defaultsDeep(this.store, targetDefaults);
+
+                        this.store.format = this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap ? 'time_series' : 'table';
+                        this.store.isTablePanel = this.options.isTable;
+
+                        if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
+                            if (!_.find(this.store.columns, { name: 'time' })) {
+                                this.store.columns.push({ name: 'time', visible: false });
+                            }
+                        }
+
+                        if (this.options.isSinglestat) {
+                            this.store.limit = 1;
+                        }
                     }
                 }, {
-                    key: 'tagDataRemove',
-                    value: function tagDataRemove(index) {
-                        this.target.tagData.splice(index, 1);
-                        this.refresh();
+                    key: 'setPanelSortFromOrderBy',
+                    value: function setPanelSortFromOrderBy() {
+                        var _this3 = this;
+
+                        var index = _.findIndex(this.store.columns, function (column) {
+                            return utils.compileColumnName(column) === _this3.store.orderBy.column.name;
+                        });
+
+                        this.panel.sort.col = index > -1 ? index : null;
+                        this.panel.sort.desc = this.store.orderBy.sort == orderBySortTypes[1];
+                    }
+                }, {
+                    key: 'setOrderByFromPanelSort',
+                    value: function setOrderByFromPanelSort(value) {
+                        if (value.col !== null) {
+                            this.store.orderBy.column = {
+                                name: utils.compileColumnName(this.store.columns[value.col]),
+                                value: utils.compileColumnAlias(this.store.columns[value.col]),
+                                alias: this.store.columns[value.col].alias
+                            };
+                            this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
+                            this.store.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
+                        } else {
+                            this.onClearOrderBy();
+                        }
+                    }
+                }, {
+                    key: 'restoreTags',
+                    value: function restoreTags() {
+                        var uiSegmentSrv = this.uiSegmentSrv;
+                        var segments = [];
+
+                        if (this.store.tags.length) {
+                            var _iteratorNormalCompletion = true;
+                            var _didIteratorError = false;
+                            var _iteratorError = undefined;
+
+                            try {
+                                for (var _iterator = this.store.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    var tag = _step.value;
+
+                                    if (tag.condition) {
+                                        segments.push(uiSegmentSrv.newCondition(tag.condition));
+                                    }
+
+                                    segments.push(uiSegmentSrv.newKey(tag.key));
+                                    segments.push(uiSegmentSrv.newOperator(tag.operator));
+                                    segments.push(uiSegmentSrv.newKeyValue(tag.value));
+                                }
+                            } catch (err) {
+                                _didIteratorError = true;
+                                _iteratorError = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                        _iterator.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError) {
+                                        throw _iteratorError;
+                                    }
+                                }
+                            }
+                        }
+
+                        segments.push(uiSegmentSrv.newPlusButton());
+
+                        return segments;
                     }
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        return this.datasource.findCategoriesQuery(this.target).then(this.transformToSegments(this.target.category, this.prompts['category']));
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+                        var _this4 = this;
+
+                        return this.datasource.getCategories().then(function (categories) {
+                            _this4.options.categories = categories;
+                            return categories;
+                        });
                     }
                 }, {
-                    key: 'transformToSegments',
-                    value: function transformToSegments(currentValue, prompt) {
-                        var _this2 = this;
+                    key: 'onSelectCategory',
+                    value: function onSelectCategory($variable) {
+                        this.store.variable = $variable;
+                        this.loadColumns();
+                        this.execute();
+                    }
+                }, {
+                    key: '_updateOrderBy',
+                    value: function _updateOrderBy() {
+                        if (this.options.isGraph) {
+                            this.execute();
+                        } else {
+                            this.setPanelSortFromOrderBy();
+                        }
+                    }
+                }, {
+                    key: 'onChangeOrderBy',
+                    value: function onChangeOrderBy($value) {
+                        this.store.orderBy.column = $value;
+                        this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
 
-                        console.log('transformToSegments called:  currentValue=' + currentValue + ' prompt=' + prompt);
-                        return function (results) {
-                            var segments = _.map(results, function (segment) {
-                                return _this2.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
-                            });
-                            // segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
+                        this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onChangeOrderBySort',
+                    value: function onChangeOrderBySort() {
+                        this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onClearOrderBy',
+                    value: function onClearOrderBy() {
+                        this.store.orderBy.column = {};
+                        this.store.orderBy.colName = this.prompts.orderBy;
+                        this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onClearGroupBy',
+                    value: function onClearGroupBy() {
+                        this.store.groupBy.type = QueryPrompts.groupByType;
+                        this.store.groupBy.value = QueryPrompts.groupBy;
+                        this.execute();
+                    }
+                }, {
+                    key: 'onColumnRemove',
+                    value: function onColumnRemove($column) {
+                        var index = this.store.columns.indexOf($column);
 
-                            // there is no need to add "clear selection" item if current value is already equal to prompt
-                            if (currentValue !== prompt) {
-                                segments.unshift(_this2.uiSegmentSrv.newSegment({ fake: true, value: _this2.clearSelection, html: prompt }));
+                        if (index !== -1) {
+                            this.store.columns[index].willRemove = true;
+                            this.store.columns.splice(index, 1);
+
+                            if (this.store.orderBy.column.name === utils.compileColumnName($column)) {
+                                this.onClearOrderBy();
                             }
-                            return segments;
-                        };
+
+                            this.execute();
+                            return { index: index };
+                        }
+
+                        return false;
                     }
                 }, {
-                    key: 'testRemove',
-                    value: function testRemove() {
-                        this.target.variable = this.prompts['variable'];
-                        this.getVariables();
-                        this.refresh();
+                    key: 'onColumnChanged',
+                    value: function onColumnChanged($column, $prevColumnState) {
+                        if (this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+                            this.store.orderBy.column = {
+                                name: utils.compileColumnName($column),
+                                value: utils.compileColumnAlias($column),
+                                alias: $column.alias
+                            };
+                            this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
+                        }
+                        this.execute();
                     }
                 }, {
-                    key: 'getVariables',
-                    value: function getVariables() {
-                        return this.datasource.findVariablesQuery(this.target).then(this.transformToSegments(this.target.variable, this.prompts['variable']));
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+                    key: 'onColumnAdd',
+                    value: function onColumnAdd() {
+                        this.store.columns.push({
+                            visible: true,
+                            name: this.prompts.column
+                        });
                     }
                 }, {
-                    key: 'getDevices',
-                    value: function getDevices() {
-                        return this.datasource.findDevices(this.target).then(this.transformToSegments(this.target.device, this.prompts['device']));
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+                    key: 'onDrop',
+                    value: function onDrop($event, $data, column) {
+                        $event.preventDefault();
+                        $event.stopPropagation();
+
+                        var dstIndex = this.store.columns.indexOf(column);
+                        var srcIndex = $data;
+
+                        if (srcIndex >= 0 && dstIndex >= 0 && srcIndex !== dstIndex) {
+                            var srcColumn = angular.copy(this.store.columns[srcIndex]);
+                            this.store.columns.splice(srcIndex, 1);
+                            this.store.columns.splice(dstIndex, 0, srcColumn);
+                            this.setPanelSortFromOrderBy();
+                            this.execute();
+                        }
                     }
                 }, {
-                    key: 'getComponents',
-                    value: function getComponents() {
-                        return this.datasource.findComponents(this.target).then(this.transformToSegments(this.target.component, this.prompts['component']));
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-                    }
-                }, {
-                    key: 'getTagsFacet',
-                    value: function getTagsFacet(index) {
-                        return this.datasource.findTagFacets(this.target, index).then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet)); // do not add "-- clear selection --" item
-                        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-                    }
-                }, {
-                    key: 'getTagsWord',
-                    value: function getTagsWord(index) {
-                        return this.datasource.findTagWordsQuery(this.target, index).then(this.transformToSegments(this.target.tagWord, this.target.tagWord)); // do not add "-- clear selection --" item
+                    key: 'loadColumns',
+                    value: function loadColumns() {
+                        var _this5 = this;
+
+                        if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isTable) {
+                            var found = -1;
+                            _.each(this.options.categories, function (category) {
+                                found = _.findIndex(category.submenu, { value: _this5.store.variable });
+                                if (~found) {
+                                    return false;
+                                }
+                            });
+
+                            if (~found) {
+                                return this.datasource.getColumns(this.store.variable).then(function (columns) {
+                                    _this5.options.columns = columns;
+                                });
+                            }
+                        }
+
+                        return false;
                     }
                 }, {
                     key: 'toggleEditorMode',
                     value: function toggleEditorMode() {
-                        this.target.rawQuery = !this.target.rawQuery;
-                    }
-                }, {
-                    key: 'onChangeInternalCategory',
-                    value: function onChangeInternalCategory() {
-                        if (this.target.category == this.clearSelection) {
-                            this.target.category = this.prompts['category'];
+                        var _this6 = this;
+
+                        if (!this.store.rawQuery) {
+                            var query = this.datasource.getSQLString(this.store);
+
+                            this.options.rawQueryString = query;
+                            this.store.nsgqlString = query;
+
+                            this.store.rawQuery = 1;
+                            return;
                         }
-                        // user has changed category, we should erase variable and other selections because they are
-                        // not valid anymore
-                        this.target.variable = this.prompts['variable'];
-                        this.target.device = this.prompts['device'];
-                        this.target.component = this.prompts['component'];
-                        this.target.tagData = [];
-                        // TODO: clear variable name when category changes. Only variable name field in the same target should change,
-                        // variable name fields in other targets should not change
-                        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-                        // angular.element('#variable-field').children().children('a').html(this.target.variable);
-                        // call refresh to force graph reload (which should turn blank since we dont have enough data
-                        // to build valid query)
-                        this.refresh();
-                    }
-                }, {
-                    key: 'onChangeInternalVariable',
-                    value: function onChangeInternalVariable() {
-                        console.log('Variable has changed to ' + this.target.variable);
-                        this.refresh();
-                    }
-                }, {
-                    key: 'onChangeInternalDevice',
-                    value: function onChangeInternalDevice() {
-                        if (this.target.device == this.clearSelection) {
-                            this.target.device = this.prompts['device'];
+
+                        if (this.options.rawQueryString != this.store.nsgqlString) {
+                            this.$rootScope.appEvent('confirm-modal', {
+                                title: 'Confirm',
+                                text: 'Are your sure? Your changes will be lost.',
+                                yesText: "Yes",
+                                icon: "fa-trash",
+                                onConfirm: function onConfirm() {
+                                    _this6.store.rawQuery = 0;
+                                }
+                            });
+                        } else {
+                            this.store.rawQuery = 0;
                         }
-                        this.refresh();
                     }
                 }, {
-                    key: 'onChangeInternalComponent',
-                    value: function onChangeInternalComponent() {
-                        if (this.target.component == this.clearSelection) {
-                            this.target.component = this.prompts['component'];
+                    key: 'getTagsOrValues',
+                    value: function getTagsOrValues(segment, index) {
+                        var _this7 = this;
+
+                        var $q = this.$injector.get('$q');
+                        var uiSegmentSrv = this.uiSegmentSrv;
+                        var segments = this.options.segments;
+                        var promise = $q.resolve([]);
+
+                        if (this.store.variable) {
+                            switch (segment.type) {
+                                case 'key':
+                                case 'plus-button':
+                                    promise = this.datasource.getFacets(this.store.variable).then(function (facets) {
+                                        return ['component', 'device'].concat(facets);
+                                    });
+                                    break;
+
+                                case 'value':
+                                    promise = this.datasource.getSuggestions({
+                                        type: segments[index - 2].value,
+                                        variable: this.store.variable,
+                                        tags: this._filterPreviousWhereTags(index)
+                                    });
+                                    break;
+
+                                case 'condition':
+                                    return $q.resolve([this.uiSegmentSrv.newCondition('AND'), this.uiSegmentSrv.newCondition('OR')]);
+                                    break;
+
+                                case 'operator':
+                                    return $q.resolve(this.uiSegmentSrv.newOperators(['=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP', 'ISNULL', 'NOTNULL']));
+                                    break;
+                            }
                         }
-                        this.refresh();
+
+                        return promise.then(function (list) {
+                            return list.map(function (item) {
+                                return uiSegmentSrv.newSegment({ value: '' + item });
+                            });
+                        }).then(function (results) {
+                            if (segment.type === 'key') {
+                                results.splice(0, 0, angular.copy(_this7.options.removeSegment));
+                            }
+                            return results;
+                        });
                     }
                 }, {
-                    key: 'onChangeInternalTagFacet',
-                    value: function onChangeInternalTagFacet(index) {
-                        // clear tag word when user changes tag facet. The dialog enters state where tag facet is selected
-                        // but tag word is not. This state is invalid and should be transient, it does not make sense
-                        // to call this.refresh() because query is yet incomplete
-                        this.target.tagData[index].tagWord = this.blankDropDownElement;
-                        // TODO: clear field "tag word" when "tag facet" changes. Only associated tag word should change,
-                        // tag word fields in another tag matches in the same target or other targets should not change.
-                        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-                        // angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
-                        this.refresh();
+                    key: '_filterPreviousWhereTags',
+                    value: function _filterPreviousWhereTags(currentIndex) {
+                        return this.store.tags.filter(function (el, index) {
+                            return index < currentIndex / 3 - 1;
+                        });
                     }
                 }, {
-                    key: 'onChangeInternalTagWord',
-                    value: function onChangeInternalTagWord(index) {
-                        this.refresh();
+                    key: 'tagSegmentUpdated',
+                    value: function tagSegmentUpdated(segment, index) {
+                        var segmentSrv = this.uiSegmentSrv;
+                        var segments = this.options.segments;
+                        segments[index] = segment;
+
+                        // handle remove tag condition
+
+                        if (segment.value === this.options.removeSegment.value) {
+                            segments.splice(index, 3);
+                            if (segments.length === 0) {
+                                segments.push(segmentSrv.newPlusButton());
+                            } else if (segments.length > 2) {
+                                segments.splice(Math.max(index - 1, 0), 1);
+                                if (segments[segments.length - 1].type !== 'plus-button') {
+                                    segments.push(segmentSrv.newPlusButton());
+                                }
+                            }
+                        } else {
+                            if (segment.type === 'plus-button') {
+                                if (index > 2) {
+                                    segments.splice(index, 0, segmentSrv.newCondition('AND'));
+                                }
+
+                                segments.push(segmentSrv.newOperator('='));
+                                segments.push(segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
+                                segment.type = 'key';
+                                segment.cssClass = 'query-segment-key';
+                            }
+
+                            if (segment.type === 'key' && segments[index + 2].type === 'value') {
+                                segments.splice(index + 2, 1, segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
+                            }
+
+                            if (segment.type === 'operator') {
+                                if (segment.value === 'ISNULL' || segment.value === 'NOTNULL') {
+                                    segments[index + 1].cssClass = 'query-segment-key query-segment-key--hidden';
+                                } else {
+                                    segments[index + 1].cssClass = 'query-segment-key';
+                                }
+                            }
+
+                            if (index + 1 === segments.length) {
+                                segments.push(segmentSrv.newPlusButton());
+                            }
+                        }
+
+                        this.rebuildTargetTagConditions();
                     }
                 }, {
-                    key: 'tagOperation',
-                    value: function tagOperation(index, operation) {
-                        this.target.tagData[index].tagOperation = operation;
-                        this.refresh();
+                    key: 'rebuildTargetTagConditions',
+                    value: function rebuildTargetTagConditions() {
+                        var _this8 = this;
+
+                        var segments = this.options.segments;
+                        var tags = [];
+                        var tagIndex = 0;
+                        var tagOperator = '';
+
+                        segments.forEach(function (segment, index) {
+                            switch (segment.type) {
+                                case 'key':
+                                    if (tags.length === 0) {
+                                        tags.push({});
+                                    }
+                                    tags[tagIndex].key = segment.value;
+                                    break;
+                                case 'value':
+                                    if (tagOperator = tags[tagIndex].operator) {
+                                        segments[index - 1] = _this8.uiSegmentSrv.newOperator(tagOperator);
+                                        tags[tagIndex].operator = tagOperator;
+                                    }
+                                    tags[tagIndex].value = segment.value;
+                                    break;
+                                case 'condition':
+                                    tags.push({ condition: segment.value });
+                                    tagIndex += 1;
+                                    break;
+                                case 'operator':
+                                    tags[tagIndex].operator = segment.value;
+                                    break;
+                            }
+                        });
+
+                        this.store.tags = tags;
+                        this.execute();
                     }
                 }, {
-                    key: 'setSortByEl',
-                    value: function setSortByEl(sortOrder) {
-                        this.target.sortByEl = sortOrder;
-                        this.refresh();
+                    key: 'getOrderByOptions',
+                    value: function getOrderByOptions() {
+                        var list = [];
+
+                        if (this.options.isGraph) {
+                            list.push({
+                                text: 'metric',
+                                value: {
+                                    name: 'metric',
+                                    value: 'metric'
+                                }
+                            });
+                        } else if (this.options.isTable) {
+                            this.store.columns.forEach(function (column) {
+                                list.push({
+                                    text: column.alias || utils.compileColumnName(column),
+                                    value: {
+                                        name: utils.compileColumnName(column),
+                                        value: utils.compileColumnAlias(column),
+                                        alias: column.alias
+                                    }
+                                });
+                            });
+                        }
+
+                        return this.$injector.get('$q').resolve(list);
                     }
                 }, {
-                    key: 'setSelector',
-                    value: function setSelector(element) {
-                        this.target.selector = element;
-                        this.refresh();
+                    key: 'getOrderBySortOptions',
+                    value: function getOrderBySortOptions() {
+                        return this.$injector.get('$q').resolve([{ text: orderBySortTypes[0], value: orderBySortTypes[0] }, { text: orderBySortTypes[1], value: orderBySortTypes[1] }]);
                     }
                 }, {
-                    key: 'setAggregator',
-                    value: function setAggregator(element) {
-                        this.target.aggregator = element;
-                        this.refresh();
+                    key: 'getLimitOptions',
+                    value: function getLimitOptions() {
+                        return this.$injector.get('$q').resolve([{ text: 'None', 'value': '' }, { text: '1', 'value': 1 }, { text: '5', 'value': 5 }, { text: '10', 'value': 10 }, { text: '50', 'value': 50 }, { text: '100', 'value': 100 }]);
                     }
                 }, {
-                    key: 'setAlias',
-                    value: function setAlias() {
-                        this.refresh();
+                    key: 'getGroupByTypes',
+                    value: function getGroupByTypes() {
+                        return this.$injector.get('$q').resolve([{ text: 'time', value: 'time' }, { text: 'column', value: 'column' }]);
                     }
                 }, {
-                    key: 'setFormat',
-                    value: function setFormat(element, elementDisplayStr) {
-                        this.target.format = element;
-                        this.target.formatDisplay = elementDisplayStr;
-                        this.refresh();
+                    key: 'getGroupByVariables',
+                    value: function getGroupByVariables() {
+                        switch (this.store.groupBy.type) {
+                            case 'time':
+                                return this.$injector.get('$q').resolve([{ text: GrafanaVariables.interval, value: GrafanaVariables.interval }, { text: '1s', value: '1s' }, { text: '1m', value: '1m' }, { text: '1h', value: '1h' }, { text: '1d', value: '1d' }]);
+                                break;
+                            case 'column':
+                                var list = [{ text: 'device', value: 'device' }];
+                                return this.datasource.getFacets(this.store.variable).then(function (data) {
+                                    data.forEach(function (el) {
+                                        list.push({ text: el, value: el });
+                                    });
+
+                                    return list;
+                                });
+                                break;
+                        }
                     }
                 }, {
-                    key: 'setColumns',
-                    value: function setColumns() {
-                        // console.log(this.target.columns);
-                        this.refresh();
+                    key: 'getCollapsedText',
+                    value: function getCollapsedText() {
+                        return 'This target is collapsed. Click to the row for open it.';
                     }
                 }]);
 
-                return NetSpyGlassDatasourceQueryCtrl;
+                return NetSpyGlassQueryCtrl;
             }(QueryCtrl));
 
-            _export('NetSpyGlassDatasourceQueryCtrl', NetSpyGlassDatasourceQueryCtrl);
+            _export('NetSpyGlassQueryCtrl', NetSpyGlassQueryCtrl);
 
-            NetSpyGlassDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+            NetSpyGlassQueryCtrl.templateUrl = 'partials/query.editor.html';
         }
     };
 });
-//# sourceMappingURL=query_ctrl.js.map

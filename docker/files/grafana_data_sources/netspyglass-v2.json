@@ -1,0 +1,18 @@
+{
+  "orgId": 1,
+  "name": "NetSpyGlass-v2",
+  "type": "happygears-netspyglass-datasource-v2",
+  "access": "proxy",
+  "url": "http://nsg_svc:9100",
+  "password": "",
+  "user": "",
+  "database": "",
+  "basicAuth": false,
+  "isDefault": true,
+  "jsonData": {
+    "accessToken": "jk132bQlp",
+    "networkId": 1,
+    "tlsSkipVerify": true,
+    "useToken": true
+  }
+}

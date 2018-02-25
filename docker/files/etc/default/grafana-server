@@ -1,0 +1,2 @@
+CONF_DIR=/opt/grafana
+CONF_FILE=$CONF_DIR/grafana.ini

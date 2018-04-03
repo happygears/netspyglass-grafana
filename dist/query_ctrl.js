@@ -434,7 +434,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     promise = this.datasource.getSuggestions({
                                         type: segments[index - 2].value,
                                         variable: this.store.variable,
-                                        tags: this._filterPreviousWhereTags(index)
+                                        tags: this._filterPreviousWhereTags(index),
+                                        scopedVars: this.panel.scopedVars
                                     });
                                     break;
 

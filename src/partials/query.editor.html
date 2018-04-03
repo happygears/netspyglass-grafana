@@ -3,7 +3,6 @@
                   can-collapse="true"
                   has-text-edit-mode="true"
                   data-ng-class="{'loading': ctrl.store.loading}">
-
     <div class="gf-form" data-ng-show="ctrl.errors[ctrl.store.refId]">
         <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.store.refId]}}</pre>
     </div>
@@ -136,8 +135,15 @@
                     </gf-form-dropdown>
                 </div>
                 <div class="gf-form" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type != ctrl.prompts.groupByType">
-                    <gf-form-dropdown model="ctrl.store.groupBy.value" data-lookup-text="true" data-allow-custom="true" data-label-mode="true"
-                        data-get-options="ctrl.getGroupByVariables()" data-on-change="ctrl.execute()">
+                    <gf-form-dropdown 
+                        data-model="ctrl.store.groupBy.value" 
+                        data-lookup-text="true" 
+                        data-allow-custom="true" 
+                        data-label-mode="true"
+                        data-get-options="ctrl.getGroupByVariables()"
+                        data-on-change="ctrl.execute()"
+                        data-hg-escape-regexp
+                        >
                     </gf-form-dropdown>
 
                     <a class="gf-form-label" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>

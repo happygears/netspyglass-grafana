@@ -89,8 +89,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.getCategories()
             .then(() => this.loadColumns());
 
-        this.panelCtrl.events.emitter.on('data-error', (errors) => {
-            this.errors = _.cloneDeep(errors);
+        this.panelCtrl.events.emitter.on('data-error', (response) => {
+            if (response.status && response.data && response.data.error) {
+                this.errors = this.panel.targets.reduce(function(result, target) {
+                    result[target.refId] = response.data.error;
+                    return result;
+                }, {});
+            } else {
+                this.errors = _.cloneDeep(response);
+            }
         });
         
         this.panelCtrl.events.emitter.on('render', () => {
@@ -111,8 +118,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     initTarget() {
         this.target._nsgTarget = this.target._nsgTarget || {};
         this.store = this.target._nsgTarget;
-        this.store.refId = this.target.refId; 
-        
+        this.store.refId = this.target.refId || 'A'; 
+
         _.defaultsDeep(
             this.store,
             targetDefaults
@@ -357,6 +364,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                         type: segments[index - 2].value,
                         variable: this.store.variable,
                         tags: this._filterPreviousWhereTags(index),
+                        scopedVars: this.panel.scopedVars
                     });
                     break;
 
@@ -480,23 +488,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.store.tags = tags;
         this.execute();
     }
-
-
-    // getFooOptions() {
-    //     let list = [];
-        
-    //     list.push({text: 'metric1', value: 'metric1'});
-    //     list.push({text: 'metric2', value: 'metric2'});
-    //     list.push({text: `sdadad`, value: `sdadad'`});
-        
-    //     return this.$injector
-    //         .get('$q')
-    //         .resolve(list);
-    // }
-
-    // onChangeFoo() {
-    //     console.log(this.store.foo);
-    // }
 
     getOrderByOptions() {
         let list = [];

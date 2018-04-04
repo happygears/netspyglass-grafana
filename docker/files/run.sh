@@ -34,13 +34,10 @@ PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
 
 service grafana-server start
 
-
-
-echo "SQL_HOST=$SQL_HOST"
-echo "SQL_USER=$SQL_USER"
-
 BASE_URL="http://admin:admin@localhost:3000"
 CONTENT_TYPE="Content-Type: application/json"
+
+set -x
 
 # Initialization of the database takes a while, so we should be patient.
 # wait for the server to come up and start to listen on the port.
@@ -51,7 +48,7 @@ do
 done
 
 
-ORG_ID=$(curl -X POST -H ${CONTENT_TYPE} -d '{"name":"netspyglass"}' ${BASE_URL}/api/orgs | \
+ORG_ID=$(curl -X POST -H "${CONTENT_TYPE}" -d '{"name":"netspyglass"}' ${BASE_URL}/api/orgs | \
     jq -r '.["orgId"]')
 
 # Expected response:  {"message":"Organization created","orgId":6}. Use the orgId for the next steps.
@@ -61,11 +58,11 @@ test -z "$ORG_ID" && {
     exit 1
 }
 
-curl -X POST -H ${CONTENT_TYPE} -d '{"loginOrEmail":"admin", "role": "Admin"}' ${BASE_URL}/api/orgs/${ORG_ID}/users
+curl -s -X POST -H "${CONTENT_TYPE}" -d '{"loginOrEmail":"admin", "role": "Admin"}' ${BASE_URL}/api/orgs/${ORG_ID}/users
 
-curl -X POST ${BASE_URL}/api/user/using/${ORG_ID}
+curl -s -X POST ${BASE_URL}/api/user/using/${ORG_ID}
 
-API_KEY=$(curl -X POST -H ${CONTENT_TYPE} -d '{"name":"apikeycurl", "role": "Admin"}' ${BASE_URL}/api/auth/keys | \
+API_KEY=$(curl -X POST -H "${CONTENT_TYPE}" -d '{"name":"apikeycurl", "role": "Admin"}' ${BASE_URL}/api/auth/keys | \
     jq -r '.["key"]')
 
 # response: {"name":"apikeycurl","key":"eyJrIjoiR0ZXZmt1UFc0OEpIOGN5RWdUalBJTllUTk83VlhtVGwiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjo2fQ=="}.

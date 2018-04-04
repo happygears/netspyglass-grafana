@@ -18,6 +18,8 @@ import {QueryCtrl} from 'app/plugins/sdk';
 import {QueryPrompts, GrafanaVariables} from './dictionary';
 import utils from './services/utils';
 
+
+
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment
  */
@@ -78,9 +80,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     execute() {
-        this.errors = {};
-        this.store.loading = true;
-        this.panelCtrl.refresh();
+        this.scheduler.sheduleTask(() => {
+            this.errors = {};
+            this.panelCtrl.refresh();
+        }); 
     }
 
     init() {
@@ -88,13 +91,16 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.options.segments = this.restoreTags();
         this.getCategories()
             .then(() => this.loadColumns());
+        
+        this.scheduler = utils.getScheduler();
 
-        this.panelCtrl.events.emitter.on('data-error', (response) => {
-            this.errors = _.cloneDeep(response);
+        this.panelCtrl.events.emitter.on('data-error', (errors) => {
+            this.errors = _.cloneDeep(errors);
+            this.scheduler.stop();
         });
         
         this.panelCtrl.events.emitter.on('render', () => {
-            this.store.loading = false;
+            this.scheduler.stop();
         });
 
         if (this.options.isTable) {

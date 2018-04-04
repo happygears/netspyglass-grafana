@@ -139,8 +139,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             return _this2.loadColumns();
                         });
 
-                        this.panelCtrl.events.emitter.on('data-error', function (errors) {
-                            _this2.errors = _.cloneDeep(errors);
+                        this.panelCtrl.events.emitter.on('data-error', function (response) {
+                            _this2.errors = _.cloneDeep(response);
                         });
 
                         this.panelCtrl.events.emitter.on('render', function () {
@@ -162,7 +162,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function initTarget() {
                         this.target._nsgTarget = this.target._nsgTarget || {};
                         this.store = this.target._nsgTarget;
-                        this.store.refId = this.target.refId;
+                        this.store.refId = this.target.refId || 'A';
 
                         _.defaultsDeep(this.store, targetDefaults);
 
@@ -434,8 +434,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     promise = this.datasource.getSuggestions({
                                         type: segments[index - 2].value,
                                         variable: this.store.variable,
-                                        tags: this._filterPreviousWhereTags(index),
-                                        scopedVars: this.panel.scopedVars
+                                        tags: this._filterPreviousWhereTags(index)
                                     });
                                     break;
 

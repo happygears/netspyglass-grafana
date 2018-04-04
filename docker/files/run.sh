@@ -5,14 +5,24 @@
 HAPPYGEARS_DIR="/happygears"
 
 GRAFANA_HOME_DIR="/opt/grafana"
-GRAFANA_DB="$GRAFANA_HOME_DIR/db/grafana.db"
-GRAFANA_DB_JOURNAL="${GRAFANA_HOME_DIR}/db/grafana.db-journal"
 GRAFANA_PLUGINS_DIR="$GRAFANA_HOME_DIR/plugins/"
-GRAFANA_PLUGIN_TAR="netspyglass-datasource-v2.tar"
-GRAFANA_API_TOKEN="eyJrIjoidGhXcFVHYnZMNEZtYWo5UDVwVlFEWTdOWFJpV2lmcUwiLCJuIjoiZG9ja2VyX3J1biIsImlkIjoxfQ=="
+
+#GRAFANA_DB="$GRAFANA_HOME_DIR/db/grafana.db"
+#GRAFANA_DB_JOURNAL="${GRAFANA_HOME_DIR}/db/grafana.db-journal"
+#GRAFANA_PLUGIN_TAR="netspyglass-datasource-v2.tar"
+#GRAFANA_API_TOKEN="eyJrIjoidGhXcFVHYnZMNEZtYWo5UDVwVlFEWTdOWFJpV2lmcUwiLCJuIjoiZG9ja2VyX3J1biIsImlkIjoxfQ=="
 
 GRAFANA_DASHBOARDS_DIR="$HAPPYGEARS_DIR/grafana/dashboards"
 GRAFANA_DATASOURCES_DIR="$HAPPYGEARS_DIR/grafana/data_sources"
+
+INIT_DIR=${GRAFANA_HOME_DIR}/.initialized
+
+mkdir ${INIT_DIR} 2>/dev/null || {
+    echo "${INIT_DIR} exsists. Assuming volume ${GRAFANA_HOME_DIR} initialization has already started"
+    service grafana-server start
+    tail -F ${GRAFANA_HOME_DIR}/logs/grafana.log
+    exit 0
+}
 
 cd ${HAPPYGEARS_DIR}
 
@@ -22,8 +32,53 @@ PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
     cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
 
+service grafana-server start
+
+
+
 echo "SQL_HOST=$SQL_HOST"
 echo "SQL_USER=$SQL_USER"
+
+BASE_URL="http://admin:admin@localhost:3000"
+CONTENT_TYPE="Content-Type: application/json"
+
+# Initialization of the database takes a while, so we should be patient.
+# wait for the server to come up and start to listen on the port.
+while :;
+do
+    curl -s --connect-timeout 10 ${BASE_URL}/api/admin/settings >/dev/null && break
+    sleep 10
+done
+
+
+ORG_ID=$(curl -X POST -H ${CONTENT_TYPE} -d '{"name":"netspyglass"}' ${BASE_URL}/api/orgs | \
+    jq -r '.["orgId"]')
+
+# Expected response:  {"message":"Organization created","orgId":6}. Use the orgId for the next steps.
+echo "Organization created, orgId=$ORG_ID"
+test -z "$ORG_ID" && {
+    echo "Something went wrong and I could not create Grafana organization"
+    exit 1
+}
+
+curl -X POST -H ${CONTENT_TYPE} -d '{"loginOrEmail":"admin", "role": "Admin"}' ${BASE_URL}/api/orgs/${ORG_ID}/users
+
+curl -X POST ${BASE_URL}/api/user/using/${ORG_ID}
+
+API_KEY=$(curl -X POST -H ${CONTENT_TYPE} -d '{"name":"apikeycurl", "role": "Admin"}' ${BASE_URL}/api/auth/keys | \
+    jq -r '.["key"]')
+
+# response: {"name":"apikeycurl","key":"eyJrIjoiR0ZXZmt1UFc0OEpIOGN5RWdUalBJTllUTk83VlhtVGwiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjo2fQ=="}.
+
+test -z "$API_KEY" && {
+    echo "Something went wrong and I could not create API key"
+    exit 1
+}
+
+echo "API_KEY=$API_KEY"
+
+
+
 
 #
 #

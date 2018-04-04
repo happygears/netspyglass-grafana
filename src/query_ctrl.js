@@ -90,14 +90,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             .then(() => this.loadColumns());
 
         this.panelCtrl.events.emitter.on('data-error', (response) => {
-            if (response.status && response.data && response.data.error) {
-                this.errors = this.panel.targets.reduce(function(result, target) {
-                    result[target.refId] = response.data.error;
-                    return result;
-                }, {});
-            } else {
-                this.errors = _.cloneDeep(response);
-            }
+            this.errors = _.cloneDeep(response);
         });
         
         this.panelCtrl.events.emitter.on('render', () => {

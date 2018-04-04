@@ -23,7 +23,7 @@
             </div>
             <div class="gf-form">
                 <hg-dropdown 
-                    data-value="ctrl.store.variable" 
+                    data-label="{{ ctrl.store.variable }}" 
                     data-on-value-changed="ctrl.onSelectCategory($value)" 
                     data-get-options="ctrl.getCategories()"></hg-dropdown>
             </div>
@@ -106,9 +106,9 @@
 
                 <div class="gf-form">
                     <hg-dropdown
-                            data-value="ctrl.store.orderBy.colName"
-                            data-on-value-changed="ctrl.onChangeOrderBy($value)"
-                            data-get-options="ctrl.getOrderByOptions()"></hg-dropdown>
+                        data-label="{{ ctrl.store.orderBy.colName }}"
+                        data-on-value-changed="ctrl.onChangeOrderBy($value)"
+                        data-get-options="ctrl.getOrderByOptions()"></hg-dropdown>
                 </div>
 
                 <div class="gf-form" data-ng-if="ctrl.store.orderBy.column && ctrl.store.orderBy.colName !== ctrl.prompts.orderBy">

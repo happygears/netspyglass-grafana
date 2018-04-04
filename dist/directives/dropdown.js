@@ -19,7 +19,8 @@ System.register([], function (_export, _context) {
             controllerAs: '$ctrl',
             bindToController: true,
             scope: {
-                value: '=',
+                label: '@',
+                value: '=?',
                 onValueChanged: '&',
                 getOptions: '&'
             },
@@ -112,7 +113,7 @@ System.register([], function (_export, _context) {
                     key: 'onSelectValue',
                     value: function onSelectValue(value) {
                         this.value = value;
-                        this.onValueChanged({ $value: this.value });
+                        this.onValueChanged({ $value: value });
                     }
                 }, {
                     key: 'getSelectOptions',

@@ -253,14 +253,17 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onColumnChanged($column, $prevColumnState) {
-        if (this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+        if (this.isTable && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+
             this.store.orderBy.column = {
                 name: utils.compileColumnName($column),
                 value: utils.compileColumnAlias($column),
                 alias: $column.alias
             };
+
             this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
         }
+
         this.execute();
     }
 
@@ -540,7 +543,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         return this.$injector.get('$q').resolve([
             {text: 'time', value: 'time'},
             {text: 'column', value: 'column'}
-        ])
+        ]);
     }
 
     getGroupByVariables() {

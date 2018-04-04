@@ -330,14 +330,17 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onColumnChanged',
                     value: function onColumnChanged($column, $prevColumnState) {
-                        if (this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+                        if (this.isTable && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+
                             this.store.orderBy.column = {
                                 name: utils.compileColumnName($column),
                                 value: utils.compileColumnAlias($column),
                                 alias: $column.alias
                             };
+
                             this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
                         }
+
                         this.execute();
                     }
                 }, {

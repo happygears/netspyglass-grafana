@@ -11,6 +11,8 @@ FROM grafana/grafana
 
 ENV HAPPYGEARS_DIR="/happygears"
 
+RUN apt-get -y update && apt-get install -y jq curl
+
 #RUN apt-get -y update && apt-get install -y apt-utils apt-transport-https curl
 #
 ## Add Grafana repository and gpg key

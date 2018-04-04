@@ -19,9 +19,10 @@ INIT_DIR=${GRAFANA_HOME_DIR}/.initialized
 
 mkdir ${INIT_DIR} 2>/dev/null || {
     echo "${INIT_DIR} exsists. Assuming volume ${GRAFANA_HOME_DIR} initialization has already started"
-    service grafana-server start
-    tail -F ${GRAFANA_HOME_DIR}/logs/grafana.log
-    exit 0
+    /run.sh
+#    service grafana-server start
+#    tail -F ${GRAFANA_HOME_DIR}/logs/grafana.log
+#    exit 0
 }
 
 cd ${HAPPYGEARS_DIR}
@@ -62,7 +63,7 @@ curl -s -X POST -H "${CONTENT_TYPE}" -d '{"loginOrEmail":"admin", "role": "Admin
 
 curl -s -X POST ${BASE_URL}/api/user/using/${ORG_ID}
 
-API_KEY=$(curl -X POST -H "${CONTENT_TYPE}" -d '{"name":"apikeycurl", "role": "Admin"}' ${BASE_URL}/api/auth/keys | \
+API_KEY=$(curl -s -X POST -H "${CONTENT_TYPE}" -d '{"name":"apikeycurl", "role": "Admin"}' ${BASE_URL}/api/auth/keys | \
     jq -r '.["key"]')
 
 # response: {"name":"apikeycurl","key":"eyJrIjoiR0ZXZmt1UFc0OEpIOGN5RWdUalBJTllUTk83VlhtVGwiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjo2fQ=="}.
@@ -74,7 +75,7 @@ test -z "$API_KEY" && {
 
 echo "API_KEY=$API_KEY"
 
-
+/run.sh
 
 
 #
@@ -137,7 +138,8 @@ echo "API_KEY=$API_KEY"
 #        http://localhost:3000/api/dashboards/db
 #    echo
 #done
-
-service grafana-server start
-
-tail -F ${GRAFANA_HOME_DIR}/logs/grafana.log
+#
+#
+#service grafana-server start
+#
+#tail -F ${GRAFANA_HOME_DIR}/logs/grafana.log

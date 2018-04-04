@@ -11,7 +11,7 @@ FROM grafana/grafana
 
 ENV HAPPYGEARS_DIR="/happygears"
 
-RUN apt-get -y update && apt-get install -y jq curl mysql-client-core-5.7
+RUN apt-get -y update && apt-get install -y jq curl mysql-client-core
 
 #RUN apt-get -y update && apt-get install -y apt-utils apt-transport-https curl
 #

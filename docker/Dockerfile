@@ -11,7 +11,7 @@ FROM grafana/grafana
 
 ENV HAPPYGEARS_DIR="/happygears"
 
-RUN apt-get -y update && apt-get install -y jq curl mysql-client
+RUN apt-get -y update && apt-get install -y jq
 
 #RUN apt-get -y update && apt-get install -y apt-utils apt-transport-https curl
 #
@@ -71,4 +71,4 @@ VOLUME ["$GRAFANA_VOLUME_DIR"]
 
 EXPOSE 3000
 
-ENTRYPOINT ["exec", "/start.sh"]
+ENTRYPOINT ["/start.sh"]

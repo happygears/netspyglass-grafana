@@ -1,11 +1,35 @@
 {
+  "__inputs": [],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "dashlist",
+      "name": "Dashboard list",
+      "version": "5.0.0"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.0.4"
+    }
+  ],
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "hideControls": false,
   "id": null,
   "links": [
     {
@@ -24,37 +48,31 @@
       "url": "http://www.netspyglass.com"
     }
   ],
-  "rows": [
+  "panels": [
     {
-      "collapse": false,
-      "height": "250px",
-      "panels": [
-        {
-          "headings": false,
-          "id": 1,
-          "limit": 20,
-          "links": [],
-          "query": "",
-          "recent": false,
-          "search": true,
-          "span": 12,
-          "starred": true,
-          "tags": [
-            "nsgv2.2"
-          ],
-          "title": "",
-          "type": "dashlist"
-        }
+      "folderId": 0,
+      "gridPos": {
+        "h": 22,
+        "w": 13,
+        "x": 0,
+        "y": 0
+      },
+      "headings": true,
+      "id": 2,
+      "limit": 20,
+      "links": [],
+      "query": "",
+      "recent": false,
+      "search": true,
+      "starred": true,
+      "tags": [
+        "nsgv2.2"
       ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "title": "",
+      "type": "dashlist"
     }
   ],
-  "schemaVersion": 14,
+  "schemaVersion": 16,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -91,5 +109,6 @@
   },
   "timezone": "",
   "title": "NetSpyGlass Dashboards",
-  "version": 5
+  "uid": "yoVou5iik",
+  "version": 2
 }

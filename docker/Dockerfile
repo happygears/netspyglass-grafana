@@ -59,7 +59,8 @@ RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
 
 COPY docker/files/start.sh                       /
-COPY docker/files/provisioning/*                 $HAPPYGEARS_DIR/grafana/provisioning/
+COPY docker/files/provisioning/dashboards                 $HAPPYGEARS_DIR/grafana/provisioning/
+COPY docker/files/provisioning/datasources                $HAPPYGEARS_DIR/grafana/provisioning/
 
 #COPY docker/files/grafana_dashboards/*           $HAPPYGEARS_DIR/grafana/dashboards/
 

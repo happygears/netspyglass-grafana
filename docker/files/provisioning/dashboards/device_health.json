@@ -1,0 +1,1679 @@
+{
+  "overwrite": true,
+  "meta": {
+    "type": "db",
+    "canSave": true,
+    "canEdit": true,
+    "canStar": true,
+    "slug": "device_health",
+    "expires": "0001-01-01T00:00:00Z",
+    "created": "2017-10-27T23:29:38Z",
+    "updated": "2017-10-27T23:42:05Z",
+    "updatedBy": "admin",
+    "createdBy": "admin",
+    "version": 3
+  },
+  "dashboard": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 1,
+    "hideControls": false,
+    "id": null,
+    "links": [
+      {
+        "icon": "cloud",
+        "tags": [],
+        "title": "NetSpyGlass",
+        "tooltip": "Back to NetSpyGlass",
+        "type": "link",
+        "url": "/v2"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "title": "www.netspyglass.com",
+        "type": "link",
+        "url": "http://www.netspyglass.com"
+      }
+    ],
+    "rows": [
+      {
+        "collapse": false,
+        "height": 75,
+        "panels": [
+          {
+            "columns": [],
+            "datasource": "NetSpyGlass-v2",
+            "fontSize": "100%",
+            "id": 6,
+            "links": [],
+            "pageSize": null,
+            "scroll": true,
+            "showHeader": true,
+            "sort": {
+              "col": null,
+              "desc": false
+            },
+            "span": 12,
+            "styles": [
+              {
+                "alias": "Time",
+                "dateFormat": "YYYY-MM-DD HH:mm:ss",
+                "pattern": "Time",
+                "type": "date"
+              },
+              {
+                "alias": "",
+                "colorMode": null,
+                "colors": [
+                  "rgba(245, 54, 54, 0.9)",
+                  "rgba(237, 129, 40, 0.89)",
+                  "rgba(50, 172, 45, 0.97)"
+                ],
+                "decimals": 2,
+                "pattern": "/.*/",
+                "thresholds": [],
+                "type": "number",
+                "unit": "short"
+              }
+            ],
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "device",
+                      "visible": true
+                    },
+                    {
+                      "appliedFunctions": [],
+                      "name": "Vendor",
+                      "visible": true
+                    },
+                    {
+                      "appliedFunctions": [],
+                      "name": "Model",
+                      "visible": true
+                    },
+                    {
+                      "appliedFunctions": [],
+                      "name": "SerialNumber",
+                      "visible": true
+                    },
+                    {
+                      "appliedFunctions": [],
+                      "name": "SoftwareRev",
+                      "visible": true
+                    }
+                  ],
+                  "format": "table",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": true,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "lastContactTime"
+                },
+                "refId": "A"
+              }
+            ],
+            "title": "",
+            "transform": "table",
+            "type": "table"
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": 174,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 1,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": false,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "snmpTimeoutsPercentage"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "SNMP Timeouts [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "label": null,
+                "logBase": 1,
+                "max": "100",
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 2,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": false,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "snmpRtt"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "SNMP RTT [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "ms",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": 191,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 7,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": false,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "icmpLoss"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "ICMP timeouts [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "label": null,
+                "logBase": 1,
+                "max": "100",
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 0,
+            "id": 8,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": false,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "/icmpAvgRtt.*/",
+                "color": "#ea6460",
+                "fillBelowTo": "icmpMinRtt",
+                "lines": false,
+                "linewidth": 3
+              },
+              {
+                "alias": "/icmpMaxRtt.*/",
+                "color": "#e24d42",
+                "fill": 1,
+                "fillBelowTo": "icmpAvgRtt",
+                "lines": false
+              },
+              {
+                "alias": "/icmpMinRtt.*/",
+                "lines": false
+              },
+              {
+                "alias": "/icmpAvgRtt.*/",
+                "lines": true
+              }
+            ],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "alias": "$variable",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "icmpAvgRtt"
+                },
+                "refId": "A"
+              },
+              {
+                "_nsgTarget": {
+                  "alias": "$variable",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "B",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "icmpMaxRtt"
+                },
+                "refId": "B"
+              },
+              {
+                "_nsgTarget": {
+                  "alias": "$variable",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "C",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "icmpMinRtt"
+                },
+                "refId": "C"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "ICMP RTT (min, avg, max) [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "ms",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": 188,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 3,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": false,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "timeSinceLastContact"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Time since last contact [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "s",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 10,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "minorChassisAlarm",
+                "color": "#c15c17"
+              },
+              {
+                "alias": "majorChassisAlarm",
+                "color": "#bf1b00"
+              }
+            ],
+            "spaceLength": 10,
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "alias": "$variable",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "minorChassisAlarm"
+                },
+                "refId": "A"
+              },
+              {
+                "_nsgTarget": {
+                  "alias": "$variable",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "B",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "majorChassisAlarm"
+                },
+                "refId": "B"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Chassis Alarms [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 11,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": false,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 4,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "alertCount"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Active Alerts [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": 171,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 4,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "alias": "$component",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "memUtil"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Memory Utilization [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "label": null,
+                "logBase": 1,
+                "max": "100",
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 5,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "alias": "$component",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "cpuUtil"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "CPU Utilization [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "percent",
+                "label": null,
+                "logBase": 1,
+                "max": "100",
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": 232,
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 1,
+            "id": 9,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "rightSide": true,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "alias": "$component",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 10,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "metric",
+                    "column": "metric",
+                    "sort": "DESC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "device",
+                      "operator": "=",
+                      "value": "$device"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "tempSensor"
+                },
+                "refId": "A"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Temperature (top 10) [$device]",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "celsius",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      }
+    ],
+    "schemaVersion": 14,
+    "style": "dark",
+    "tags": [
+      "nsgv2.2"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allValue": null,
+          "current": {
+            "tags": [],
+            "text": "Juniper",
+            "value": "Juniper"
+          },
+          "datasource": "NetSpyGlass-v2",
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "name": "vendor",
+          "options": [
+            {
+              "selected": true,
+              "text": "Juniper",
+              "value": "Juniper"
+            },
+            {
+              "selected": false,
+              "text": "Cisco",
+              "value": "Cisco"
+            }
+          ],
+          "query": "SELECT DISTINCT Vendor FROM devices WHERE Vendor != Unknown AND Vendor != HappyGears",
+          "refresh": 0,
+          "regex": "",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allValue": null,
+          "current": {
+            "text": "cty1-bb01",
+            "value": "cty1-bb01"
+          },
+          "datasource": "NetSpyGlass-v2",
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "name": "device",
+          "options": [
+            {
+              "selected": true,
+              "text": "cty1-bb01",
+              "value": "cty1-bb01"
+            },
+            {
+              "selected": false,
+              "text": "cty1-bb02",
+              "value": "cty1-bb02"
+            },
+            {
+              "selected": false,
+              "text": "cty1-dc01",
+              "value": "cty1-dc01"
+            },
+            {
+              "selected": false,
+              "text": "cty1-dc02",
+              "value": "cty1-dc02"
+            },
+            {
+              "selected": false,
+              "text": "cty1-pr01",
+              "value": "cty1-pr01"
+            },
+            {
+              "selected": false,
+              "text": "cty1-pr02",
+              "value": "cty1-pr02"
+            },
+            {
+              "selected": false,
+              "text": "cty2-bb01",
+              "value": "cty2-bb01"
+            },
+            {
+              "selected": false,
+              "text": "cty2-bb02",
+              "value": "cty2-bb02"
+            },
+            {
+              "selected": false,
+              "text": "cty2-dc01",
+              "value": "cty2-dc01"
+            },
+            {
+              "selected": false,
+              "text": "cty2-dc02",
+              "value": "cty2-dc02"
+            },
+            {
+              "selected": false,
+              "text": "cty2-pr01",
+              "value": "cty2-pr01"
+            },
+            {
+              "selected": false,
+              "text": "cty2-pr02",
+              "value": "cty2-pr02"
+            }
+          ],
+          "query": "SELECT DISTINCT name FROM devices WHERE Role != SimulatedNode AND Role != SimulatedBridge AND Vendor=$vendor ORDER BY name",
+          "refresh": 0,
+          "regex": "",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "",
+    "title": "Device Health",
+    "version": 13
+  }
+}

@@ -58,15 +58,16 @@ RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
     cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
 
-COPY docker/files/run.sh                         $HAPPYGEARS_DIR/grafana/
-COPY docker/files/grafana_dashboards/*           $HAPPYGEARS_DIR/grafana/dashboards/
-COPY docker/files/grafana_data_sources/*         $HAPPYGEARS_DIR/grafana/data_sources/
+COPY docker/files/start.sh                       /
+COPY docker/files/provisioning/*                 $HAPPYGEARS_DIR/grafana/provisioning/
 
-RUN  chmod +x $HAPPYGEARS_DIR/grafana/run.sh
+#COPY docker/files/grafana_dashboards/*           $HAPPYGEARS_DIR/grafana/dashboards/
+
+RUN  chmod +x /start.sh
 RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR
 
 VOLUME ["$GRAFANA_VOLUME_DIR"]
 
 EXPOSE 3000
 
-CMD exec $HAPPYGEARS_DIR/grafana/run.sh
+CMD exec /start.sh

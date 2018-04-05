@@ -1,0 +1,842 @@
+{
+  "overwrite": true,
+  "meta": {
+    "type": "db",
+    "canSave": true,
+    "canEdit": true,
+    "canStar": true,
+    "slug": "95-th-percentile",
+    "expires": "0001-01-01T00:00:00Z",
+    "created": "2017-10-27T23:29:38Z",
+    "updated": "2017-10-27T23:42:05Z",
+    "updatedBy": "admin",
+    "createdBy": "admin",
+    "version": 3
+  },
+  "dashboard": {
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "hideControls": false,
+    "id": null,
+    "links": [
+      {
+        "icon": "cloud",
+        "tags": [],
+        "title": "NetSpyGlass",
+        "tooltip": "Back to NetSpyGlass",
+        "type": "link",
+        "url": "/v2"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "title": "www.netspyglass.com",
+        "type": "link",
+        "url": "http://www.netspyglass.com"
+      }
+    ],
+    "refresh": "1m",
+    "rows": [
+      {
+        "collapse": false,
+        "height": "100",
+        "panels": [
+          {
+            "content": "# Graphs that match monitoring variables by tags\n\nThese graphs demonstrate how variables can be matched by tag to help make the graph future-proof. If a new peering to the same AS is added in the future, the line will appear in the corresponding graph automatically. \n\nThese graphs use NsgQL functions to calculate 95-th percentile and draw a line using linear regression",
+            "height": "100px",
+            "id": 5,
+            "links": [],
+            "mode": "markdown",
+            "span": 12,
+            "title": "",
+            "type": "text"
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      },
+      {
+        "collapse": false,
+        "height": "400px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 0,
+            "id": 1,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "x95-th percentile",
+                "fill": 0
+              }
+            ],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "alias": "$device:$component (inbound) $AS",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "BGP4Peer",
+                      "operator": "=",
+                      "value": "$AS"
+                    },
+                    {
+                      "condition": "AND",
+                      "key": "ifRole",
+                      "operator": "=",
+                      "value": "PhysicalPort"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "ifInRate"
+                },
+                "refId": "A"
+              },
+              {
+                "_nsgTarget": {
+                  "alias": "$device:$component (in, 95%) $AS",
+                  "columns": [
+                    {
+                      "alias": "",
+                      "appliedFunctions": [
+                        {
+                          "name": "tslinear"
+                        },
+                        {
+                          "name": "tspercentile95"
+                        }
+                      ],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "nsgqlString": "SELECT tslinear(tspercentile95(metric)) as `95-th percentile`,time FROM ifInRate WHERE (Link = 'gw-happygears.na.kolo.net:') AND $_timeFilter LIMIT 100, 0",
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "B",
+                  "tags": [
+                    {
+                      "key": "BGP4Peer",
+                      "operator": "=",
+                      "value": "$AS"
+                    },
+                    {
+                      "condition": "AND",
+                      "key": "ifRole",
+                      "operator": "=",
+                      "value": "PhysicalPort"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "ifInRate"
+                },
+                "refId": "B"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$AS (inbound, with 95-percentile)",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bps",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "NetSpyGlass-v2",
+            "fill": 0,
+            "id": 2,
+            "legend": {
+              "alignAsTable": true,
+              "avg": false,
+              "current": true,
+              "max": true,
+              "min": true,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 1,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [
+              {
+                "alias": "x95-th percentile",
+                "fill": 0
+              }
+            ],
+            "spaceLength": 10,
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "_nsgTarget": {
+                  "alias": "$device:$component (outbound) $AS",
+                  "columns": [
+                    {
+                      "appliedFunctions": [],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "A",
+                  "tags": [
+                    {
+                      "key": "BGP4Peer",
+                      "operator": "=",
+                      "value": "$AS"
+                    },
+                    {
+                      "condition": "AND",
+                      "key": "ifRole",
+                      "operator": "=",
+                      "value": "PhysicalPort"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "ifOutRate"
+                },
+                "refId": "A"
+              },
+              {
+                "_nsgTarget": {
+                  "alias": "$device:$component (out, 95%) $AS",
+                  "columns": [
+                    {
+                      "alias": "",
+                      "appliedFunctions": [
+                        {
+                          "name": "tslinear"
+                        },
+                        {
+                          "name": "tspercentile95"
+                        }
+                      ],
+                      "name": "metric",
+                      "visible": true
+                    },
+                    {
+                      "name": "time",
+                      "visible": false
+                    }
+                  ],
+                  "format": "time_series",
+                  "groupBy": {
+                    "type": "select type",
+                    "value": "select value"
+                  },
+                  "isTablePanel": false,
+                  "limit": 100,
+                  "loading": false,
+                  "nsgqlString": "SELECT tslinear(tspercentile95(metric)) as `95-th percentile`,time FROM ifInRate WHERE (Link = 'gw-happygears.na.kolo.net:') AND $_timeFilter LIMIT 100, 0",
+                  "orderBy": {
+                    "colName": "select value",
+                    "column": {
+                      "alias": "",
+                      "name": "",
+                      "value": ""
+                    },
+                    "sort": "ASC"
+                  },
+                  "rawQuery": 0,
+                  "refId": "B",
+                  "tags": [
+                    {
+                      "key": "BGP4Peer",
+                      "operator": "=",
+                      "value": "$AS"
+                    },
+                    {
+                      "condition": "AND",
+                      "key": "ifRole",
+                      "operator": "=",
+                      "value": "PhysicalPort"
+                    }
+                  ],
+                  "type": "nsgql",
+                  "variable": "ifOutRate"
+                },
+                "refId": "B"
+              }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$AS (outbound, with 95-percentile)",
+            "tooltip": {
+              "shared": true,
+              "sort": 0,
+              "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+              "buckets": null,
+              "mode": "time",
+              "name": null,
+              "show": true,
+              "values": []
+            },
+            "yaxes": [
+              {
+                "format": "bps",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": "0",
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "repeat": null,
+        "repeatIteration": null,
+        "repeatRowId": null,
+        "showTitle": false,
+        "title": "Dashboard Row",
+        "titleSize": "h6"
+      }
+    ],
+    "schemaVersion": 14,
+    "style": "dark",
+    "tags": [
+      "traffic",
+      "nsgv2.2"
+    ],
+    "templating": {
+      "list": [
+        {
+          "allValue": null,
+          "current": {
+            "tags": [],
+            "text": "AS12200",
+            "value": "AS12200"
+          },
+          "datasource": "NetSpyGlass-v2",
+          "hide": 0,
+          "includeAll": false,
+          "label": null,
+          "multi": false,
+          "name": "AS",
+          "options": [
+            {
+              "selected": false,
+              "text": "AS11404",
+              "value": "AS11404"
+            },
+            {
+              "selected": true,
+              "text": "AS12200",
+              "value": "AS12200"
+            },
+            {
+              "selected": false,
+              "text": "AS1299",
+              "value": "AS1299"
+            },
+            {
+              "selected": false,
+              "text": "AS13335",
+              "value": "AS13335"
+            },
+            {
+              "selected": false,
+              "text": "AS13760",
+              "value": "AS13760"
+            },
+            {
+              "selected": false,
+              "text": "AS13768",
+              "value": "AS13768"
+            },
+            {
+              "selected": false,
+              "text": "AS14340",
+              "value": "AS14340"
+            },
+            {
+              "selected": false,
+              "text": "AS14413",
+              "value": "AS14413"
+            },
+            {
+              "selected": false,
+              "text": "AS14860",
+              "value": "AS14860"
+            },
+            {
+              "selected": false,
+              "text": "AS15133",
+              "value": "AS15133"
+            },
+            {
+              "selected": false,
+              "text": "AS16265",
+              "value": "AS16265"
+            },
+            {
+              "selected": false,
+              "text": "AS16276",
+              "value": "AS16276"
+            },
+            {
+              "selected": false,
+              "text": "AS16591",
+              "value": "AS16591"
+            },
+            {
+              "selected": false,
+              "text": "AS174",
+              "value": "AS174"
+            },
+            {
+              "selected": false,
+              "text": "AS18734",
+              "value": "AS18734"
+            },
+            {
+              "selected": false,
+              "text": "AS19108",
+              "value": "AS19108"
+            },
+            {
+              "selected": false,
+              "text": "AS19754",
+              "value": "AS19754"
+            },
+            {
+              "selected": false,
+              "text": "AS20115",
+              "value": "AS20115"
+            },
+            {
+              "selected": false,
+              "text": "AS21928",
+              "value": "AS21928"
+            },
+            {
+              "selected": false,
+              "text": "AS22773",
+              "value": "AS22773"
+            },
+            {
+              "selected": false,
+              "text": "AS2635",
+              "value": "AS2635"
+            },
+            {
+              "selected": false,
+              "text": "AS27471",
+              "value": "AS27471"
+            },
+            {
+              "selected": false,
+              "text": "AS29791",
+              "value": "AS29791"
+            },
+            {
+              "selected": false,
+              "text": "AS32098",
+              "value": "AS32098"
+            },
+            {
+              "selected": false,
+              "text": "AS32212",
+              "value": "AS32212"
+            },
+            {
+              "selected": false,
+              "text": "AS32505",
+              "value": "AS32505"
+            },
+            {
+              "selected": false,
+              "text": "AS3257",
+              "value": "AS3257"
+            },
+            {
+              "selected": false,
+              "text": "AS33132",
+              "value": "AS33132"
+            },
+            {
+              "selected": false,
+              "text": "AS3356",
+              "value": "AS3356"
+            },
+            {
+              "selected": false,
+              "text": "AS35788",
+              "value": "AS35788"
+            },
+            {
+              "selected": false,
+              "text": "AS36236",
+              "value": "AS36236"
+            },
+            {
+              "selected": false,
+              "text": "AS36351",
+              "value": "AS36351"
+            },
+            {
+              "selected": false,
+              "text": "AS36692",
+              "value": "AS36692"
+            },
+            {
+              "selected": false,
+              "text": "AS46455",
+              "value": "AS46455"
+            },
+            {
+              "selected": false,
+              "text": "AS46489",
+              "value": "AS46489"
+            },
+            {
+              "selected": false,
+              "text": "AS4826",
+              "value": "AS4826"
+            },
+            {
+              "selected": false,
+              "text": "AS49544",
+              "value": "AS49544"
+            },
+            {
+              "selected": false,
+              "text": "AS53678",
+              "value": "AS53678"
+            },
+            {
+              "selected": false,
+              "text": "AS53828",
+              "value": "AS53828"
+            },
+            {
+              "selected": false,
+              "text": "AS54104",
+              "value": "AS54104"
+            },
+            {
+              "selected": false,
+              "text": "AS5580",
+              "value": "AS5580"
+            },
+            {
+              "selected": false,
+              "text": "AS6122",
+              "value": "AS6122"
+            },
+            {
+              "selected": false,
+              "text": "AS62646",
+              "value": "AS62646"
+            },
+            {
+              "selected": false,
+              "text": "AS62887",
+              "value": "AS62887"
+            },
+            {
+              "selected": false,
+              "text": "AS62904",
+              "value": "AS62904"
+            },
+            {
+              "selected": false,
+              "text": "AS63949",
+              "value": "AS63949"
+            },
+            {
+              "selected": false,
+              "text": "AS64518",
+              "value": "AS64518"
+            },
+            {
+              "selected": false,
+              "text": "AS64519",
+              "value": "AS64519"
+            },
+            {
+              "selected": false,
+              "text": "AS64529",
+              "value": "AS64529"
+            },
+            {
+              "selected": false,
+              "text": "AS64538",
+              "value": "AS64538"
+            },
+            {
+              "selected": false,
+              "text": "AS64539",
+              "value": "AS64539"
+            },
+            {
+              "selected": false,
+              "text": "AS64540",
+              "value": "AS64540"
+            },
+            {
+              "selected": false,
+              "text": "AS65167",
+              "value": "AS65167"
+            },
+            {
+              "selected": false,
+              "text": "AS65168",
+              "value": "AS65168"
+            },
+            {
+              "selected": false,
+              "text": "AS65511",
+              "value": "AS65511"
+            },
+            {
+              "selected": false,
+              "text": "AS6922",
+              "value": "AS6922"
+            },
+            {
+              "selected": false,
+              "text": "AS6939",
+              "value": "AS6939"
+            },
+            {
+              "selected": false,
+              "text": "AS7385",
+              "value": "AS7385"
+            },
+            {
+              "selected": false,
+              "text": "AS7459",
+              "value": "AS7459"
+            },
+            {
+              "selected": false,
+              "text": "AS7843",
+              "value": "AS7843"
+            },
+            {
+              "selected": false,
+              "text": "AS7922",
+              "value": "AS7922"
+            },
+            {
+              "selected": false,
+              "text": "AS8151",
+              "value": "AS8151"
+            },
+            {
+              "selected": false,
+              "text": "AS8560",
+              "value": "AS8560"
+            }
+          ],
+          "query": "SELECT DISTINCT BGP4Peer FROM ifOperStatus",
+          "refresh": 0,
+          "regex": "",
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "timezone": "",
+    "title": "95-th percentile (Match by peer AS)",
+    "version": 9
+  }
+}

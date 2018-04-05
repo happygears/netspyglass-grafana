@@ -19,7 +19,7 @@ INIT_DIR=${GRAFANA_HOME_DIR}/.initialized
 
 mkdir ${INIT_DIR} 2>/dev/null || {
     echo "${INIT_DIR} exsists. Assuming volume ${GRAFANA_HOME_DIR} initialization has already started"
-    /run.sh
+    start.sh
 #    service grafana-server start
 #    tail -F ${GRAFANA_HOME_DIR}/logs/grafana.log
 #    exit 0
@@ -75,7 +75,7 @@ test -z "$API_KEY" && {
 
 echo "API_KEY=$API_KEY"
 
-/run.sh
+start.sh
 
 
 #

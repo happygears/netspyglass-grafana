@@ -71,4 +71,4 @@ VOLUME ["$GRAFANA_VOLUME_DIR"]
 
 EXPOSE 3000
 
-CMD exec /start.sh
+ENTRYPOINT ["exec", "/start.sh"]

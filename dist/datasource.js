@@ -114,6 +114,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     this.$q = $q;
                     this.templateSrv = templateSrv;
                     this.sqlQuery = new SQLQuery(templateSrv);
+                    this._formatValue = this._formatValue.bind(this);
                 }
 
                 /**
@@ -139,14 +140,21 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         var adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
                         //this variable is used for building "raw" query in the getSQLString method
-                        this.queryOptions = { timeRange: timeRange, interval: options.interval, adHoc: adhocFilters };
+                        this.queryOptions = {
+                            timeRange: timeRange,
+                            interval: options.interval,
+                            adHoc: adhocFilters,
+                            scopedVars: options.scopedVars
+                        };
 
                         var processTarget = function processTarget(target) {
                             aliases[target.refId] = target.alias;
 
                             var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, _this.queryOptions) : _this.sqlQuery.generateSQLQuery(target, _this.queryOptions);
 
-                            return _this.api.generateTarget(_this.templateSrv.replace(sql), target.format, target.refId);
+                            sql = _this.templateSrv.replace(sql, options.scopedVars, _this._formatValue);
+
+                            return _this.api.generateTarget(sql, target.format, target.refId);
                         };
 
                         var sqlTargets = targets.map(function (target) {
@@ -217,6 +225,20 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         }
 
                         return data;
+                    }
+                }, {
+                    key: '_formatValue',
+                    value: function _formatValue(value) {
+                        if (_.isArray(value)) {
+                            console.log(value);
+                            if (value.length === 1) {
+                                value = value[0];
+                            } else {
+                                return '' + value.join("', '");
+                            }
+                        }
+
+                        return this.templateSrv.formatValue(value);
                     }
                 }, {
                     key: '_processingGraphAliases',
@@ -306,8 +328,9 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     value: function getSuggestions(data) {
                         var query = void 0;
 
-                        query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
-                        query = this.templateSrv.replace(query);
+                        query = this.sqlQuery.suggestion(data.type, data.variable, data.tags, data.scopedVars);
+
+                        query = this.templateSrv.replace(query, data.scopedVars);
 
                         return this.api.queryData(query, NSGQLApi.FORMAT_LIST).catch(function () {
                             return [];

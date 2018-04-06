@@ -11,7 +11,7 @@ ENV HAPPYGEARS_DIR="/happygears"
 
 RUN apt-get -y update && apt-get install -y jq
 
-#WORKDIR $HAPPYGEARS_DIR
+WORKDIR $HAPPYGEARS_DIR
 
 ENV GRAFANA_VOLUME_DIR="/opt/grafana"
 ENV GRAFANA_LOGS_DIR="$GRAFANA_VOLUME_DIR/logs"

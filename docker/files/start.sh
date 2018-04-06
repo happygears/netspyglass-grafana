@@ -17,11 +17,11 @@ PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
     cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
 
-#mkdir -p ${GRAFANA_PROVISIONING_DIR}
-#chown grafana.grafana ${GRAFANA_PROVISIONING_DIR}
-#
-#cp -r ${HAPPYGEARS_DIR}/grafana/provisioning/*  ${GRAFANA_PROVISIONING_DIR}/
-#
-#ls -laR ${GRAFANA_PROVISIONING_DIR}/
+mkdir -p ${GRAFANA_PROVISIONING_DIR}
+chown grafana.grafana ${GRAFANA_PROVISIONING_DIR}
+
+cp -r ${HAPPYGEARS_DIR}/grafana/provisioning/*  ${GRAFANA_PROVISIONING_DIR}/
+
+ls -laR ${GRAFANA_PROVISIONING_DIR}/
 
 /run.sh

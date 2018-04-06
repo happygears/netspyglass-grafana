@@ -25,11 +25,13 @@ RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
     cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
 
+# provisioning files (both datasource and dashboards) must exist before Grafana starts
+# but actual dashboards can be added later. Once Grafana sees dashboards provisioning file,
+# it begins to monitor the directory and loads dashboards when they appear in it.
+
 COPY docker/files/start.sh                       /
 COPY docker/files/provisioning/dashboards        $HAPPYGEARS_DIR/grafana/provisioning/dashboards/
 COPY docker/files/provisioning/datasources       $HAPPYGEARS_DIR/grafana/provisioning/datasources/
-
-#COPY docker/files/grafana_dashboards/*           $HAPPYGEARS_DIR/grafana/dashboards/
 
 RUN  chmod +x /start.sh
 RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR

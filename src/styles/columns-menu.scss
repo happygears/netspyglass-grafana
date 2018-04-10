@@ -6,6 +6,7 @@ hg-columns-menu {
     $margin: 0.45rem;
     border: none;
     box-sizing: border-box;
+    display: block;
 
     
     &.on-drag-enter {
@@ -42,8 +43,16 @@ hg-columns-menu {
         }
     }
 
+    .dropdown-menu {
+        min-width: 180px;
+
+        .dropdown-menu {
+            min-width: 200px;
+        }
+    }
+
     > .dropdown-menu  {
-        
+
         a[href^="#for-function"] {
             display: none;
         }

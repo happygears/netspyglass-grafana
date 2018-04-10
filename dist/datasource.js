@@ -230,7 +230,6 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     key: '_formatValue',
                     value: function _formatValue(value) {
                         if (_.isArray(value)) {
-                            console.log(value);
                             if (value.length === 1) {
                                 value = value[0];
                             } else {
@@ -344,7 +343,9 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'metricFindQuery',
                     value: function metricFindQuery(query) {
-                        query = this.templateSrv.replace(query);
+                        query = this.sqlQuery.replaceVariables(query);
+                        query = this.templateSrv.replace(query, null, this._formatValue);
+
                         return this.api.queryData(query, NSGQLApi.FORMAT_LIST).then(function (data) {
                             return data.map(function (el) {
                                 return { text: el };

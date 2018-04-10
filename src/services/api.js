@@ -265,48 +265,49 @@ class SQLQuery {
         return query.compile();
     }
 
+    replaceVariables(sql, scopedVars = {}) {
+        const varRegexp = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
+        const isRegExp  = /REGEXP['"\s]+$/ig;
+        let result;
+
+        while (result = varRegexp.exec(sql)) {
+            let variable = this.getTemplateValue(result[0], scopedVars);
+
+            if (variable) {
+                let quote = sql.substr(result.index - 1, 1);
+                let hasQuotes = /['"]{1}/.test(quote);
+
+                if (!hasQuotes) {
+                    quote = `'`;
+                }
+
+                if (!_.isArray(variable)) {
+                    variable = [variable];
+                }
+
+                if (isRegExp.test(sql.substr(0, result.index))) {
+                    variable = variable.join('|');
+                } else {
+                    variable = variable.join(`${quote}, ${quote}`);
+                }
+
+                if (!hasQuotes) {
+                    variable = `${quote}${variable}${quote}`;
+                }
+
+                sql = sql.replace(result[0], variable);
+            }
+        }
+
+        return sql;
+    }
+
     generateSQLQueryFromString(target, options) {
         const timeFilter = `time BETWEEN '${options.timeRange.from}' AND '${options.timeRange.to}'`;
         const interval = `${options.interval}`;
         const adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc, options.scopedVars));
-        const localReplace = (sql) => {
-            const varRegexp = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
-            const isRegExp  = /REGEXP['"\s]+$/ig;
-            let result;
 
-            while (result = varRegexp.exec(sql)) {
-                let variable = this.getTemplateValue(result[0], options.scopedVars);
-
-                if (variable) {
-                    let quote = sql.substr(result.index - 1, 1);
-                    let hasQuotes = /['"]{1}/.test(quote);
-                    
-                    if (!hasQuotes) {
-                        quote = `'`;
-                    }
-
-                    if (!_.isArray(variable)) {
-                        variable = [variable];
-                    }
-
-                    if (isRegExp.test(sql.substr(0, result.index))) {
-                        variable = variable.join('|');
-                    } else {
-                        variable = variable.join(`${quote}, ${quote}`);
-                    }
-
-                    if (!hasQuotes) {
-                        variable = `${quote}${variable}${quote}`;
-                    }
-
-                    sql = sql.replace(result[0], variable);
-                }
-            }
-
-            return sql;
-        };
-
-        let query = localReplace(target.nsgqlString);
+        let query = this.replaceVariables(target.nsgqlString, options.scopedVars);
 
         if (query && query.indexOf(GrafanaVariables.timeFilter) > 0) {
             query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);

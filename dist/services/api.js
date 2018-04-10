@@ -308,51 +308,53 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         return query.compile();
                     }
                 }, {
+                    key: 'replaceVariables',
+                    value: function replaceVariables(sql) {
+                        var scopedVars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+                        var varRegexp = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
+                        var isRegExp = /REGEXP['"\s]+$/ig;
+                        var result = void 0;
+
+                        while (result = varRegexp.exec(sql)) {
+                            var variable = this.getTemplateValue(result[0], scopedVars);
+
+                            if (variable) {
+                                var quote = sql.substr(result.index - 1, 1);
+                                var hasQuotes = /['"]{1}/.test(quote);
+
+                                if (!hasQuotes) {
+                                    quote = '\'';
+                                }
+
+                                if (!_.isArray(variable)) {
+                                    variable = [variable];
+                                }
+
+                                if (isRegExp.test(sql.substr(0, result.index))) {
+                                    variable = variable.join('|');
+                                } else {
+                                    variable = variable.join(quote + ', ' + quote);
+                                }
+
+                                if (!hasQuotes) {
+                                    variable = '' + quote + variable + quote;
+                                }
+
+                                sql = sql.replace(result[0], variable);
+                            }
+                        }
+
+                        return sql;
+                    }
+                }, {
                     key: 'generateSQLQueryFromString',
                     value: function generateSQLQueryFromString(target, options) {
-                        var _this3 = this;
-
                         var timeFilter = 'time BETWEEN \'' + options.timeRange.from + '\' AND \'' + options.timeRange.to + '\'';
                         var interval = '' + options.interval;
                         var adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc, options.scopedVars));
-                        var localReplace = function localReplace(sql) {
-                            var varRegexp = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
-                            var isRegExp = /REGEXP['"\s]+$/ig;
-                            var result = void 0;
 
-                            while (result = varRegexp.exec(sql)) {
-                                var variable = _this3.getTemplateValue(result[0], options.scopedVars);
-
-                                if (variable) {
-                                    var quote = sql.substr(result.index - 1, 1);
-                                    var hasQuotes = /['"]{1}/.test(quote);
-
-                                    if (!hasQuotes) {
-                                        quote = '\'';
-                                    }
-
-                                    if (!_.isArray(variable)) {
-                                        variable = [variable];
-                                    }
-
-                                    if (isRegExp.test(sql.substr(0, result.index))) {
-                                        variable = variable.join('|');
-                                    } else {
-                                        variable = variable.join(quote + ', ' + quote);
-                                    }
-
-                                    if (!hasQuotes) {
-                                        variable = '' + quote + variable + quote;
-                                    }
-
-                                    sql = sql.replace(result[0], variable);
-                                }
-                            }
-
-                            return sql;
-                        };
-
-                        var query = localReplace(target.nsgqlString);
+                        var query = this.replaceVariables(target.nsgqlString, options.scopedVars);
 
                         if (query && query.indexOf(GrafanaVariables.timeFilter) > 0) {
                             query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);

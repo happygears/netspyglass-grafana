@@ -311,7 +311,9 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     metricFindQuery(query) {
-        query = this.templateSrv.replace(query);
+        query = this.sqlQuery.replaceVariables(query);
+        query = this.templateSrv.replace(query, null, this._formatValue);
+
         return this.api
             .queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
                 return data.map(el => ({text: el}));

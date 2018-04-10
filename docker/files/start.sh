@@ -8,14 +8,6 @@ GRAFANA_HOME_DIR="/opt/grafana"
 GRAFANA_PLUGINS_DIR="$GRAFANA_HOME_DIR/plugins/"
 GRAFANA_PROVISIONING_DIR="$GRAFANA_HOME_DIR/provisioning"
 
-#INIT_DIR=${GRAFANA_HOME_DIR}/.initialized
-#
-#mkdir ${INIT_DIR} 2>/dev/null || {
-#    echo "${INIT_DIR} exists. Assuming volume ${GRAFANA_HOME_DIR} has already been initialized"
-#    /run.sh
-#    exit 0
-#}
-
 cd ${HAPPYGEARS_DIR}
 
 set -x

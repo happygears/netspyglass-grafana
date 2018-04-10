@@ -8,5 +8,5 @@ providers:
   disableDeletion: false
   editable: false
   options:
-    path: /happygears/grafana/dashboards
+    path: /opt/grafana/dashboards
 

@@ -14,7 +14,7 @@
     <hg-dropdown
         class="col-container__item"
         data-ng-if="$ctrl.isTable"
-        data-value="$ctrl.column.name"
+        data-label="{{ $ctrl.column.name }}"
         data-on-value-changed="$ctrl.onColumnSelect($value)"
         data-get-options="$ctrl.getColumnsList()"></hg-dropdown>
 

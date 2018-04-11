@@ -113,118 +113,125 @@ class SQLBuilder {
   }
 
   static isOperand(el) {
-    if( typeof el !== 'string' ) return false;
+    if (typeof el !== 'string') return false;
     return !!SQLBuilder.OPERATORS[el];
   }
 
   static proccessMultiOperand(where, idx, multiOperand, baseString) {
-      if(multiOperand && where.length > idx+1) {
-          let localOperand = SQLBuilder.isOperand(where[idx+1]) ? where[idx+1] : 'AND';
-          return `${baseString} ${localOperand}`;
-      } else {
-          return `${baseString}`;
-      }
+    if (multiOperand && where.length > idx + 1) {
+      let localOperand = SQLBuilder.isOperand(where[idx + 1]) ? where[idx + 1] : 'AND';
+      return `${baseString} ${localOperand}`;
+    } else {
+      return `${baseString}`;
+    }
   }
 }
 
 SQLBuilder.buildWhere = function (where) {
-    if (where === null || where === undefined) return;
+  if (where === null || where === undefined) return;
 
-    let sql = [];
-    let operand = SQLBuilder.OPERATORS.AND;
-    let multiOperand = Array.isArray(where) && where.reduce((result,el) => {
-            return SQLBuilder.isOperand(el) ? result + 1 : result;
-        },0) > 1;
+  let sql = [];
+  let operand = SQLBuilder.OPERATORS.AND;
+  let multiOperand = Array.isArray(where) && where.reduce((result, el) => {
+    return SQLBuilder.isOperand(el) ? result + 1 : result;
+  }, 0) > 1;
 
-    const WITH_BRACKETS = [
-        SQLBuilder.OPERATORS.IN,
-        SQLBuilder.OPERATORS.NOT_IN
-    ];
+  const WITH_BRACKETS = [
+    SQLBuilder.OPERATORS.IN,
+    SQLBuilder.OPERATORS.NOT_IN
+  ];
 
-    if (!angular.isArray(where) && angular.isObject(where)) {
-        where = [operand, where];
-    }
+  const REGEXP = [
+    SQLBuilder.OPERATORS.REGEXP,
+    SQLBuilder.OPERATORS.NOT_REGEXP
+  ];
 
-    if (where.length >= 2) {
-        operand = where[0];
-        where = where.splice(1);
+  if (!angular.isArray(where) && angular.isObject(where)) {
+    where = [operand, where];
+  }
 
-        where.forEach((wherePart, idx) => {
-            if (angular.isArray(wherePart)) {
-                sql.push(`(${this.buildWhere(wherePart)})`);
-            } else if (angular.isObject(wherePart)) {
-                angular.forEach(wherePart, function (value, key) {
-                    let operator = '=';
+  if (where.length >= 2) {
+    operand = where[0];
+    where = where.splice(1);
 
-                    if (angular.isArray(value)) {
-                        operator = value[0].toUpperCase();
-                        value = value.slice(1);
+    where.forEach((wherePart, idx) => {
+      if (angular.isArray(wherePart)) {
+        sql.push(`(${this.buildWhere(wherePart)})`);
+      } else if (angular.isObject(wherePart)) {
+        angular.forEach(wherePart, function (value, key) {
+          let operator = '=';
 
-                        if(operator === SQLBuilder.OPERATORS.BETWEEN) {
-                            let result;
+          if (angular.isArray(value)) {
+            operator = value[0].toUpperCase();
+            value = value.slice(1);
 
-                            result = value.reduce( (current, item) => {
-                                if (current.length) {
-                                    current += ` ${SQLBuilder.OPERATORS.AND} `;
-                                }
-                                return current + `'${item}'`;
-                            }, '');
+            if (operator === SQLBuilder.OPERATORS.BETWEEN) {
+              let result;
 
-                            value = result;
-
-                        } else if (operator === SQLBuilder.OPERATORS.MATCH_IP) {
-                            let joinString;
-
-                            joinString = value.reduce(function (current, item) {
-                                let op;
-
-                                op = item.indexOf('/') === -1
-                                    ? SQLBuilder.OPERATORS.EQ
-                                    : SQLBuilder.OPERATORS.MATCH_IP_SUBNET;
-
-
-                                if (current.length) {
-                                    current += ` ${SQLBuilder.OPERATORS.OR} `;
-                                }
-
-                                return current + `${key} ${op} '${item}'`;
-                            }, '');
-
-                            sql.push(joinString);
-                            return;
-                        } else if (operator === SQLBuilder.OPERATORS.NOT_NULL || operator === SQLBuilder.OPERATORS.IS_NULL) {
-                            sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, `${key} ${operator}`));
-                            return;
-                        } else if (WITH_BRACKETS.indexOf(operator) !== -1) {
-                            value = `('${value.join('\', \'')}')`;
-                        } else {
-                            value = `'${value}'`;
-                        }
-                    } else {
-                        value = `'${value}'`;
-                    }
-
-                    sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, `${key} ${operator} ${value}`));
-                })
-            } else if (angular.isString(wherePart)) {
-                if( !(multiOperand && SQLBuilder.isOperand(wherePart)) ) {
-                    sql.push(wherePart);
+              result = value.reduce((current, item) => {
+                if (current.length) {
+                  current += ` ${SQLBuilder.OPERATORS.AND} `;
                 }
+                return current + `'${item}'`;
+              }, '');
+
+              value = result;
+
+            } else if (operator === SQLBuilder.OPERATORS.MATCH_IP) {
+              let joinString;
+
+              joinString = value.reduce(function (current, item) {
+                let op;
+
+                op = item.indexOf('/') === -1
+                  ? SQLBuilder.OPERATORS.EQ
+                  : SQLBuilder.OPERATORS.MATCH_IP_SUBNET;
+
+
+                if (current.length) {
+                  current += ` ${SQLBuilder.OPERATORS.OR} `;
+                }
+
+                return current + `${key} ${op} '${item}'`;
+              }, '');
+
+              sql.push(joinString);
+              return;
+            } else if (operator === SQLBuilder.OPERATORS.NOT_NULL || operator === SQLBuilder.OPERATORS.IS_NULL) {
+              sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, `${key} ${operator}`));
+              return;
+            } else if (WITH_BRACKETS.indexOf(operator) !== -1) {
+              value = `('${value.join(`', '`)}')`;
+            } else if (REGEXP.indexOf(operator) !== -1) {
+              value = `'${value.join('|')}'`;
+            } else {
+              value = `'${value}'`;
             }
-        });
+          } else {
+            value = `'${value}'`;
+          }
 
-        if(!multiOperand) {
-            return sql.join(` ${operand} `);
-        } else {
-            return sql.join(' ');
+          sql.push(SQLBuilder.proccessMultiOperand(where, idx, multiOperand, `${key} ${operator} ${value}`));
+        })
+      } else if (angular.isString(wherePart)) {
+        if (!(multiOperand && SQLBuilder.isOperand(wherePart))) {
+          sql.push(wherePart);
         }
+      }
+    });
 
-
-    } else  if (where.length === 1) {
-        where = [];
+    if (!multiOperand) {
+      return sql.join(` ${operand} `);
+    } else {
+      return sql.join(' ');
     }
 
-    return where.join(` ${operand} `);
+
+  } else if (where.length === 1) {
+    where = [];
+  }
+
+  return where.join(` ${operand} `);
 };
 
 SQLBuilder.escape = function (str) {
@@ -238,6 +245,7 @@ SQLBuilder.OPERATORS = {
   NOT_IN: 'NOT IN',
   EQ: '=',
   NOT_EQ: '<>',
+  NOT_EQ_2: '!=',
   REGEXP: 'REGEXP',
   NOT_REGEXP: 'NOT REGEXP',
   IS_NULL: 'ISNULL',
@@ -247,7 +255,7 @@ SQLBuilder.OPERATORS = {
   BETWEEN: 'BETWEEN'
 };
 
-function SQLBuilderFactory () {
+function SQLBuilderFactory() {
   return {
     OP: SQLBuilder.OPERATORS,
     escape: SQLBuilder.escape,

@@ -3,11 +3,13 @@
 System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lodash'], function (_export, _context) {
     "use strict";
 
-    var SQLBuilderFactory, QueryPrompts, GrafanaVariables, utils, angular, _, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
+    var SQLBuilderFactory, GrafanaVariables, QueryPrompts, utils, angular, _, _slicedToArray, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
 
     function _toConsumableArray(arr) {
         if (Array.isArray(arr)) {
-            for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+            for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+                arr2[i] = arr[i];
+            }
 
             return arr2;
         } else {
@@ -40,8 +42,8 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
         setters: [function (_hgSqlBuilder) {
             SQLBuilderFactory = _hgSqlBuilder.default;
         }, function (_dictionary) {
-            QueryPrompts = _dictionary.QueryPrompts;
             GrafanaVariables = _dictionary.GrafanaVariables;
+            QueryPrompts = _dictionary.QueryPrompts;
         }, function (_utils) {
             utils = _utils.default;
         }, function (_angular) {
@@ -50,6 +52,44 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
             _ = _lodash.default;
         }],
         execute: function () {
+            _slicedToArray = function () {
+                function sliceIterator(arr, i) {
+                    var _arr = [];
+                    var _n = true;
+                    var _d = false;
+                    var _e = undefined;
+
+                    try {
+                        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+                            _arr.push(_s.value);
+
+                            if (i && _arr.length === i) break;
+                        }
+                    } catch (err) {
+                        _d = true;
+                        _e = err;
+                    } finally {
+                        try {
+                            if (!_n && _i["return"]) _i["return"]();
+                        } finally {
+                            if (_d) throw _e;
+                        }
+                    }
+
+                    return _arr;
+                }
+
+                return function (arr, i) {
+                    if (Array.isArray(arr)) {
+                        return arr;
+                    } else if (Symbol.iterator in Object(arr)) {
+                        return sliceIterator(arr, i);
+                    } else {
+                        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+                    }
+                };
+            }();
+
             _createClass = function () {
                 function defineProperties(target, props) {
                     for (var i = 0; i < props.length; i++) {
@@ -71,8 +111,10 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
             sqlBuilder = SQLBuilderFactory();
 
             _export('SQLQuery', SQLQuery = function () {
-                function SQLQuery() {
+                function SQLQuery(templateSrv) {
                     _classCallCheck(this, SQLQuery);
+
+                    this.templateSrv = templateSrv;
                 }
 
                 _createClass(SQLQuery, [{
@@ -128,16 +170,17 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                     key: 'suggestion',
                     value: function suggestion(type, from) {
                         var tags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+                        var scopedVars = arguments[3];
 
                         var query = sqlBuilder.factory().setDistinct(true).from(from).select([type]).orderBy([type]);
 
                         switch (type) {
                             case 'device':
                             case 'component':
-                                query.where(this.generateWhereFromTags(tags));
+                                query.where(this.generateWhereFromTags(tags, scopedVars));
                                 break;
                             default:
-                                query.where([sqlBuilder.OP.AND, _defineProperty({}, type, [sqlBuilder.OP.NOT_NULL]), this.generateWhereFromTags(tags)]);
+                                query.where([sqlBuilder.OP.AND, _defineProperty({}, type, [sqlBuilder.OP.NOT_NULL]), this.generateWhereFromTags(tags, scopedVars)]);
                                 break;
                         }
 
@@ -173,19 +216,70 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         });
                     }
                 }, {
+                    key: 'getTemplateValue',
+                    value: function getTemplateValue(str, scopedVars) {
+                        var name = str.substr(1);
+
+                        if (name in scopedVars) {
+                            return scopedVars[name].value;
+                        }
+
+                        var variable = _.find(this.templateSrv.variables, { name: name });
+
+                        if (variable) {
+                            if (this.templateSrv.isAllValue(variable.current.value)) {
+                                return this.templateSrv.getAllValue(variable);
+                            } else {
+                                return _.cloneDeep(variable.current.value);
+                            }
+                        }
+
+                        return str;
+                    }
+                }, {
                     key: 'generateWhereFromTags',
                     value: function generateWhereFromTags() {
+                        var _this = this;
+
                         var tags = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+                        var scopedVars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
                         var result = [];
 
+                        var updateOpertor = function updateOpertor(opertor) {
+                            switch (opertor) {
+                                case sqlBuilder.OP.EQ:
+                                    return sqlBuilder.OP.IN;
+                                case sqlBuilder.OP.NOT_EQ:
+                                case sqlBuilder.OP.NOT_EQ_2:
+                                    return sqlBuilder.OP.NOT_IN;
+                                default:
+                                    return opertor;
+                            }
+                        };
+
                         tags.forEach(function (tag) {
+                            if (tag.value && tag.value[0] === '$') {
+                                tag.value = _this.getTemplateValue(tag.value, scopedVars);
+                                if (_.isArray(tag.value)) {
+                                    if (tag.value.length === 1) {
+                                        tag.value = tag.value[0];
+                                    } else if (tag.value.length > 1) {
+                                        tag.operator = updateOpertor(tag.operator);
+                                    }
+                                }
+                            }
+
                             if (tag.value !== QueryPrompts.whereValue) {
                                 if (tag.condition) {
                                     result.push(tag.condition);
                                 }
 
-                                result.push(_defineProperty({}, tag.key, [tag.operator, tag.value]));
+                                if (_.isArray(tag.value)) {
+                                    result.push(_defineProperty({}, tag.key, [tag.operator].concat(_toConsumableArray(tag.value))));
+                                } else {
+                                    result.push(_defineProperty({}, tag.key, [tag.operator, tag.value]));
+                                }
                             }
                         });
 
@@ -199,19 +293,18 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                 }, {
                     key: 'generateSQLQuery',
                     value: function generateSQLQuery(target, options) {
-                        var _this = this;
+                        var _this2 = this;
 
                         var useTemplates = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-                        var columns = Array.isArray(target.columns) ? target.columns : [];
-                        var query = sqlBuilder.factory();
-                        var timeVar = useTemplates ? GrafanaVariables.timeFilter : {
-                            time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
-                        };
+
                         var adHoc = null;
+                        var columns = _.isArray(target.columns) ? target.columns : [];
+                        var query = sqlBuilder.factory();
+                        var timeVar = useTemplates ? GrafanaVariables.timeFilter : { time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to] };
 
                         if (options.adHoc && options.adHoc.length) {
-                            adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
+                            adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc, options.scopedVars);
                         }
 
                         if (columns.length) {
@@ -220,15 +313,15 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                             });
                         }
 
-                        if (columns.length === 0 || target.variable == QueryPrompts.variable) {
+                        if (columns.length === 0 || target.variable === QueryPrompts.variable) {
                             return false;
                         }
 
                         query.select(columns.map(function (column) {
-                            return _this.processColumn(column, target.isTablePanel);
+                            return _this2.processColumn(column, target.isTablePanel);
                         }));
                         query.from(target.variable);
-                        query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags), adHoc, timeVar]);
+                        query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags, options.scopedVars), adHoc, timeVar]);
 
                         if (target.limit) {
                             if (typeof target.limit === 'string') {
@@ -253,13 +346,62 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         return query.compile();
                     }
                 }, {
+                    key: 'replaceVariables',
+                    value: function replaceVariables(sql) {
+                        var scopedVars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+                        var varRegexp = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
+                        var isRegExp = /REGEXP['"\s]+$/ig;
+                        var result = void 0;
+
+                        while (result = varRegexp.exec(sql)) {
+                            var _result = result,
+                                _result2 = _slicedToArray(_result, 1),
+                                name = _result2[0];
+
+                            // We do not want replace private variables
+                            if (/^\$_/.test(name)) {
+                                continue;
+                            }
+
+                            var variable = this.getTemplateValue(name, scopedVars);
+
+                            if (variable) {
+                                var quote = sql.substr(result.index - 1, 1);
+                                var hasQuotes = /['"]{1}/.test(quote);
+
+                                if (!hasQuotes) {
+                                    quote = '\'';
+                                }
+
+                                if (!_.isArray(variable)) {
+                                    variable = [variable];
+                                }
+
+                                if (isRegExp.test(sql.substr(0, result.index))) {
+                                    variable = variable.join('|');
+                                } else {
+                                    variable = variable.join(quote + ', ' + quote);
+                                }
+
+                                if (!hasQuotes) {
+                                    variable = '' + quote + variable + quote;
+                                }
+
+                                sql = sql.replace(name, variable);
+                            }
+                        }
+
+                        return sql;
+                    }
+                }, {
                     key: 'generateSQLQueryFromString',
                     value: function generateSQLQueryFromString(target, options) {
                         var timeFilter = 'time BETWEEN \'' + options.timeRange.from + '\' AND \'' + options.timeRange.to + '\'';
                         var interval = '' + options.interval;
-                        var adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc));
+                        var adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc, options.scopedVars));
 
-                        var query = target.nsgqlString;
+                        var query = this.replaceVariables(target.nsgqlString, options.scopedVars);
 
                         if (query && query.indexOf(GrafanaVariables.timeFilter) > 0) {
                             query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);
@@ -397,18 +539,28 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                     value: function _request(resource, data) {
                         var method = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'POST';
 
-                        var query = '?';
+
+                        var options = {
+                            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                            method: method,
+                            data: data,
+                            url: this.options.baseUrl + resource
+                        };
 
                         if (this.options.token) {
-                            query += this.$backend.$http.defaults.paramSerializer({ access_token: this.options.token });
+                            var query = '?' + this.$backend.$http.defaults.paramSerializer({ access_token: this.options.token });
+                            options.url += query;
                         }
 
-                        return this.$backend.datasourceRequest({
-                            url: this.options.baseUrl + resource + query,
-                            data: data,
-                            method: method,
-                            headers: { 'Content-Type': 'application/json' }
-                        });
+                        if (this.options.basicAuth || this.options.withCredentials) {
+                            options.withCredentials = true;
+                        }
+
+                        if (this.options.basicAuth) {
+                            options.headers.Authorization = this.options.basicAuth;
+                        }
+
+                        return this.$backend.datasourceRequest(options);
                     }
                 }]);
 

@@ -80,7 +80,8 @@ hg-columns-menu {
   margin-right: 2px;
   background: #f4f5f8;
   border: none;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  display: block; }
   hg-columns-menu.on-drag-enter {
     box-shadow: 0 0 1px #222; }
   hg-columns-menu.on-drag-hover {
@@ -100,6 +101,10 @@ hg-columns-menu {
       outline: none;
       user-select: none;
       color: #1DE7B5; }
+  hg-columns-menu .dropdown-menu {
+    min-width: 180px; }
+    hg-columns-menu .dropdown-menu .dropdown-menu {
+      min-width: 200px; }
   hg-columns-menu > .dropdown-menu a[href^="#for-function"] {
     display: none; }
   hg-columns-menu > .dropdown-menu a[href^="#for-dropdown-menu"] {

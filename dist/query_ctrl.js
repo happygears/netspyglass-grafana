@@ -66,7 +66,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
             orderBySortTypes = ['ASC', 'DESC'];
             targetDefaults = {
                 type: 'nsgql',
-                columns: [{ name: 'metric', visible: true }],
+                columns: [{
+                    name: 'metric',
+                    visible: true
+                }],
                 variable: QueryPrompts.variable,
                 orderBy: {
                     column: {
@@ -113,7 +116,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         isHeatmap: _this.panel.type === 'heatmap',
                         categories: [],
                         segments: [],
-                        removeSegment: uiSegmentSrv.newSegment({ fake: true, value: _this.prompts.removeTag }),
+                        removeSegment: uiSegmentSrv.newSegment({
+                            fake: true,
+                            value: _this.prompts.removeTag
+                        }),
                         rawQueryString: ''
                     };
 
@@ -124,35 +130,41 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 _createClass(NetSpyGlassQueryCtrl, [{
                     key: 'execute',
                     value: function execute() {
-                        this.errors = {};
-                        this.store.loading = true;
-                        this.panelCtrl.refresh();
+                        var _this2 = this;
+
+                        this.scheduler.sheduleTask(function () {
+                            _this2.errors = {};
+                            _this2.panelCtrl.refresh();
+                        });
                     }
                 }, {
                     key: 'init',
                     value: function init() {
-                        var _this2 = this;
+                        var _this3 = this;
 
                         this.initTarget();
                         this.options.segments = this.restoreTags();
                         this.getCategories().then(function () {
-                            return _this2.loadColumns();
+                            return _this3.loadColumns();
                         });
 
+                        this.scheduler = utils.getScheduler();
+
                         this.panelCtrl.events.emitter.on('data-error', function (errors) {
-                            _this2.errors = _.cloneDeep(errors);
+                            _this3.errors = _.cloneDeep(errors);
+                            _this3.scheduler.stop();
                         });
 
                         this.panelCtrl.events.emitter.on('render', function () {
-                            _this2.store.loading = false;
+                            _this3.scheduler.stop();
                         });
 
                         if (this.options.isTable) {
                             this.setPanelSortFromOrderBy();
                             this.$scope.$watch('ctrl.panel.sort', function (newVal, oldVal) {
                                 if (newVal.col !== oldVal.col || newVal.desc !== oldVal.desc) {
-                                    _this2.setOrderByFromPanelSort(newVal);
-                                    _this2.execute();
+                                    _this3.setOrderByFromPanelSort(newVal);
+                                    _this3.execute();
                                 }
                             }, true);
                         }
@@ -162,7 +174,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function initTarget() {
                         this.target._nsgTarget = this.target._nsgTarget || {};
                         this.store = this.target._nsgTarget;
-                        this.store.refId = this.target.refId;
+                        this.store.refId = this.target.refId || 'A';
 
                         _.defaultsDeep(this.store, targetDefaults);
 
@@ -170,8 +182,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         this.store.isTablePanel = this.options.isTable;
 
                         if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
-                            if (!_.find(this.store.columns, { name: 'time' })) {
-                                this.store.columns.push({ name: 'time', visible: false });
+                            if (!_.find(this.store.columns, {
+                                name: 'time'
+                            })) {
+                                this.store.columns.push({
+                                    name: 'time',
+                                    visible: false
+                                });
                             }
                         }
 
@@ -182,10 +199,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'setPanelSortFromOrderBy',
                     value: function setPanelSortFromOrderBy() {
-                        var _this3 = this;
+                        var _this4 = this;
 
                         var index = _.findIndex(this.store.columns, function (column) {
-                            return utils.compileColumnName(column) === _this3.store.orderBy.column.name;
+                            return utils.compileColumnName(column) === _this4.store.orderBy.column.name;
                         });
 
                         this.panel.sort.col = index > -1 ? index : null;
@@ -252,10 +269,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        var _this4 = this;
+                        var _this5 = this;
 
                         return this.datasource.getCategories().then(function (categories) {
-                            _this4.options.categories = categories;
+                            _this5.options.categories = categories;
                             return categories;
                         });
                     }
@@ -316,7 +333,9 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             }
 
                             this.execute();
-                            return { index: index };
+                            return {
+                                index: index
+                            };
                         }
 
                         return false;
@@ -324,14 +343,17 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onColumnChanged',
                     value: function onColumnChanged($column, $prevColumnState) {
-                        if (this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+                        if (this.isTable && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+
                             this.store.orderBy.column = {
                                 name: utils.compileColumnName($column),
                                 value: utils.compileColumnAlias($column),
                                 alias: $column.alias
                             };
+
                             this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
                         }
+
                         this.execute();
                     }
                 }, {
@@ -362,12 +384,15 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'loadColumns',
                     value: function loadColumns() {
-                        var _this5 = this;
+                        var _this6 = this;
 
                         if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isTable) {
+
                             var found = -1;
                             _.each(this.options.categories, function (category) {
-                                found = _.findIndex(category.submenu, { value: _this5.store.variable });
+                                found = _.findIndex(category.submenu, {
+                                    value: _this6.store.variable
+                                });
                                 if (~found) {
                                     return false;
                                 }
@@ -375,7 +400,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                             if (~found) {
                                 return this.datasource.getColumns(this.store.variable).then(function (columns) {
-                                    _this5.options.columns = columns;
+                                    _this6.options.columns = columns;
                                 });
                             }
                         }
@@ -385,7 +410,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'toggleEditorMode',
                     value: function toggleEditorMode() {
-                        var _this6 = this;
+                        var _this7 = this;
 
                         if (!this.store.rawQuery) {
                             var query = this.datasource.getSQLString(this.store);
@@ -404,7 +429,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                 yesText: "Yes",
                                 icon: "fa-trash",
                                 onConfirm: function onConfirm() {
-                                    _this6.store.rawQuery = 0;
+                                    _this7.store.rawQuery = 0;
                                 }
                             });
                         } else {
@@ -414,7 +439,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getTagsOrValues',
                     value: function getTagsOrValues(segment, index) {
-                        var _this7 = this;
+                        var _this8 = this;
 
                         var $q = this.$injector.get('$q');
                         var uiSegmentSrv = this.uiSegmentSrv;
@@ -434,7 +459,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     promise = this.datasource.getSuggestions({
                                         type: segments[index - 2].value,
                                         variable: this.store.variable,
-                                        tags: this._filterPreviousWhereTags(index)
+                                        tags: this._filterPreviousWhereTags(index),
+                                        scopedVars: this.panel.scopedVars
                                     });
                                     break;
 
@@ -450,11 +476,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         return promise.then(function (list) {
                             return list.map(function (item) {
-                                return uiSegmentSrv.newSegment({ value: '' + item });
+                                return uiSegmentSrv.newSegment({
+                                    value: '' + item
+                                });
                             });
                         }).then(function (results) {
                             if (segment.type === 'key') {
-                                results.splice(0, 0, angular.copy(_this7.options.removeSegment));
+                                results.splice(0, 0, angular.copy(_this8.options.removeSegment));
                             }
                             return results;
                         });
@@ -519,7 +547,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'rebuildTargetTagConditions',
                     value: function rebuildTargetTagConditions() {
-                        var _this8 = this;
+                        var _this9 = this;
 
                         var segments = this.options.segments;
                         var tags = [];
@@ -536,13 +564,15 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     break;
                                 case 'value':
                                     if (tagOperator = tags[tagIndex].operator) {
-                                        segments[index - 1] = _this8.uiSegmentSrv.newOperator(tagOperator);
+                                        segments[index - 1] = _this9.uiSegmentSrv.newOperator(tagOperator);
                                         tags[tagIndex].operator = tagOperator;
                                     }
                                     tags[tagIndex].value = segment.value;
                                     break;
                                 case 'condition':
-                                    tags.push({ condition: segment.value });
+                                    tags.push({
+                                        condition: segment.value
+                                    });
                                     tagIndex += 1;
                                     break;
                                 case 'operator':
@@ -585,30 +615,81 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getOrderBySortOptions',
                     value: function getOrderBySortOptions() {
-                        return this.$injector.get('$q').resolve([{ text: orderBySortTypes[0], value: orderBySortTypes[0] }, { text: orderBySortTypes[1], value: orderBySortTypes[1] }]);
+                        return this.$injector.get('$q').resolve([{
+                            text: orderBySortTypes[0],
+                            value: orderBySortTypes[0]
+                        }, {
+                            text: orderBySortTypes[1],
+                            value: orderBySortTypes[1]
+                        }]);
                     }
                 }, {
                     key: 'getLimitOptions',
                     value: function getLimitOptions() {
-                        return this.$injector.get('$q').resolve([{ text: 'None', 'value': '' }, { text: '1', 'value': 1 }, { text: '5', 'value': 5 }, { text: '10', 'value': 10 }, { text: '50', 'value': 50 }, { text: '100', 'value': 100 }]);
+                        return this.$injector.get('$q').resolve([{
+                            text: 'None',
+                            'value': ''
+                        }, {
+                            text: '1',
+                            'value': 1
+                        }, {
+                            text: '5',
+                            'value': 5
+                        }, {
+                            text: '10',
+                            'value': 10
+                        }, {
+                            text: '50',
+                            'value': 50
+                        }, {
+                            text: '100',
+                            'value': 100
+                        }]);
                     }
                 }, {
                     key: 'getGroupByTypes',
                     value: function getGroupByTypes() {
-                        return this.$injector.get('$q').resolve([{ text: 'time', value: 'time' }, { text: 'column', value: 'column' }]);
+                        return this.$injector.get('$q').resolve([{
+                            text: 'time',
+                            value: 'time'
+                        }, {
+                            text: 'column',
+                            value: 'column'
+                        }]);
                     }
                 }, {
                     key: 'getGroupByVariables',
                     value: function getGroupByVariables() {
                         switch (this.store.groupBy.type) {
                             case 'time':
-                                return this.$injector.get('$q').resolve([{ text: GrafanaVariables.interval, value: GrafanaVariables.interval }, { text: '1s', value: '1s' }, { text: '1m', value: '1m' }, { text: '1h', value: '1h' }, { text: '1d', value: '1d' }]);
+                                return this.$injector.get('$q').resolve([{
+                                    text: GrafanaVariables.interval,
+                                    value: GrafanaVariables.interval
+                                }, {
+                                    text: '1s',
+                                    value: '1s'
+                                }, {
+                                    text: '1m',
+                                    value: '1m'
+                                }, {
+                                    text: '1h',
+                                    value: '1h'
+                                }, {
+                                    text: '1d',
+                                    value: '1d'
+                                }]);
                                 break;
                             case 'column':
-                                var list = [{ text: 'device', value: 'device' }];
+                                var list = [{
+                                    text: 'device',
+                                    value: 'device'
+                                }];
                                 return this.datasource.getFacets(this.store.variable).then(function (data) {
                                     data.forEach(function (el) {
-                                        list.push({ text: el, value: el });
+                                        list.push({
+                                            text: el,
+                                            value: el
+                                        });
                                     });
 
                                     return list;

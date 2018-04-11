@@ -28,7 +28,7 @@ const QueryTableNames = {
  * @typedef {{}} QueryTarget
  * @typedef {{rangeRaw: {from: string, to: string} targets: QueryTarget[]}} QueryOptions
  */
-
+ 
 export class NetSpyGlassDatasource {
     /**
      * @param {PluginSettings} instanceSettings
@@ -37,13 +37,15 @@ export class NetSpyGlassDatasource {
      * @param templateSrv
      */
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
-        const {networkId, accessToken} = instanceSettings.jsonData;
+        const {networkId, accessToken, useToken} = instanceSettings.jsonData;
         const {url} = instanceSettings;
 
         /** @type INSGQLApiOptions */
         const options = {
             baseUrl: `${url}/v2`,
-            token: accessToken || false,
+            token: useToken  && accessToken ? accessToken: false,
+            basicAuth: instanceSettings.basicAuth,
+            withCredentials: instanceSettings.withCredentials,
             endpoints: {
                 data: `/query/net/${networkId}/data`,
                 test: `/ping/net/${networkId}/test`
@@ -54,6 +56,7 @@ export class NetSpyGlassDatasource {
         this.$q = $q;
         this.templateSrv = templateSrv;
         this.sqlQuery = new SQLQuery(templateSrv);
+        this._formatValue = this._formatValue.bind(this);
     }
 
     /**
@@ -71,16 +74,23 @@ export class NetSpyGlassDatasource {
         const adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
         //this variable is used for building "raw" query in the getSQLString method
-        this.queryOptions = {timeRange, interval: options.interval, adHoc: adhocFilters};
+        this.queryOptions = {
+            timeRange, 
+            interval: options.interval, 
+            adHoc: adhocFilters,
+            scopedVars: options.scopedVars
+        };
 
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;
 
-            const sql = target.rawQuery
+            let sql = target.rawQuery
                 ? this.sqlQuery.generateSQLQueryFromString(target, this.queryOptions)
                 : this.sqlQuery.generateSQLQuery(target, this.queryOptions);
 
-            return this.api.generateTarget(this.templateSrv.replace(sql), target.format, target.refId);
+            sql = this.templateSrv.replace(sql, options.scopedVars, this._formatValue);
+
+            return this.api.generateTarget(sql, target.format, target.refId);
         };
 
         const sqlTargets = targets
@@ -154,7 +164,20 @@ export class NetSpyGlassDatasource {
         }
 
         return data;
+    }    
+
+    _formatValue(value) {
+        if (_.isArray(value)) {
+            if (value.length === 1) {
+                value = value[0];
+            } else {
+                return `${value.join("', '")}`;
+            }
+        }
+
+        return this.templateSrv.formatValue(value);
     }
+
 
     /**
      * @param data
@@ -262,8 +285,14 @@ export class NetSpyGlassDatasource {
     getSuggestions(data) {
         let query;
 
-        query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
-        query = this.templateSrv.replace(query);
+        query = this.sqlQuery.suggestion(
+            data.type, 
+            data.variable, 
+            data.tags,
+            data.scopedVars
+        );
+        
+        query = this.templateSrv.replace(query, data.scopedVars);
 
         return this.api
             .queryData(query, NSGQLApi.FORMAT_LIST)
@@ -282,7 +311,9 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     metricFindQuery(query) {
-        query = this.templateSrv.replace(query);
+        query = this.sqlQuery.replaceVariables(query);
+        query = this.templateSrv.replace(query, null, this._formatValue);
+
         return this.api
             .queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
                 return data.map(el => ({text: el}));

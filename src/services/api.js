@@ -1,6 +1,5 @@
 import SQLBuilderFactory from '../hg-sql-builder';
-import {QueryPrompts} from '../dictionary';
-import {GrafanaVariables} from '../dictionary';
+import {GrafanaVariables, QueryPrompts} from '../dictionary';
 import utils from './utils';
 import angular from 'angular';
 import _ from 'lodash';
@@ -13,7 +12,9 @@ const sqlBuilder = SQLBuilderFactory();
 
 class SQLQuery {
 
-    constructor() {}
+    constructor(templateSrv) {
+        this.templateSrv = templateSrv;
+    }
 
     processColumn(column, needToCreateAliases = false) {
         if (angular.isString(column)) {
@@ -68,7 +69,7 @@ class SQLQuery {
      * @param {string} from
      * @param {array} tags
      */
-    suggestion(type, from, tags = []) {
+    suggestion(type, from, tags = [], scopedVars) {
         const query = sqlBuilder
             .factory()
             .setDistinct(true)
@@ -79,13 +80,13 @@ class SQLQuery {
         switch (type) {
             case 'device':
             case 'component':
-                query.where(this.generateWhereFromTags(tags));
+                query.where(this.generateWhereFromTags(tags, scopedVars));
                 break;
             default:
                 query.where([
                     sqlBuilder.OP.AND,
                     {[type]: [sqlBuilder.OP.NOT_NULL]},
-                    this.generateWhereFromTags(tags)
+                    this.generateWhereFromTags(tags, scopedVars)
                 ]);
                 break;
         }
@@ -118,6 +119,7 @@ class SQLQuery {
                 },
                 orderBy: [tagFacet]
             }).compile(),
+            
             sqlBuilder.factory({
                 select: [tagFacet],
                 distinct: true,
@@ -132,22 +134,71 @@ class SQLQuery {
         return queries.map((query) => ({nsgql: query, format: NSGQLApi.FORMAT_LIST}));
     }
 
+    getTemplateValue (str, scopedVars) {
+        const name = str.substr(1);
+        
+        if (name in scopedVars) {
+            return scopedVars[name].value;
+        }
+
+        const variable = _.find(this.templateSrv.variables, {name});
+
+        if (variable) {
+            if (this.templateSrv.isAllValue(variable.current.value)) {
+                return this.templateSrv.getAllValue(variable);
+            } else {
+                return _.cloneDeep(variable.current.value);
+            }
+        }
+
+        return str;
+    }
+
     /**
      * @param {array} tags
      * @returns {array}
      */
-    generateWhereFromTags(tags = []) {
+    generateWhereFromTags(tags = [], scopedVars = {}) {
         let result = [];
 
+        const updateOpertor = function(opertor) {
+            switch (opertor) {
+                case sqlBuilder.OP.EQ:
+                    return sqlBuilder.OP.IN;
+                case sqlBuilder.OP.NOT_EQ:
+                case sqlBuilder.OP.NOT_EQ_2:
+                    return sqlBuilder.OP.NOT_IN;
+                default:
+                    return opertor;
+            }
+        };
+
         tags.forEach((tag) => {
+            if (tag.value && tag.value[0] === '$') {
+                tag.value = this.getTemplateValue(tag.value, scopedVars);
+                if (_.isArray(tag.value)) {
+                    if (tag.value.length === 1) {
+                        tag.value = tag.value[0];
+                    } else if (tag.value.length > 1) {
+                        tag.operator = updateOpertor(tag.operator);
+                    }
+                }
+            }
+
             if (tag.value !== QueryPrompts.whereValue) {
                 if (tag.condition) {
                     result.push(tag.condition);
                 }
 
-                result.push({
-                    [tag.key]: [tag.operator, tag.value]
-                });
+                if (_.isArray(tag.value)) {
+                    result.push({
+                        [tag.key]: [tag.operator, ...tag.value]
+                    });
+                } else {
+                    result.push({
+                        [tag.key]: [tag.operator, tag.value]
+                    });
+                }   
             }
         });
 
@@ -160,22 +211,25 @@ class SQLQuery {
     }
 
     generateSQLQuery(target, options, useTemplates = false) {
-        let columns = Array.isArray(target.columns) ? target.columns : [];
-        const query = sqlBuilder.factory();
-        const timeVar = useTemplates ? GrafanaVariables.timeFilter : {
-            time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]
-        };
+        
         let adHoc = null;
+        let columns = _.isArray(target.columns) ? target.columns : [];
+        const query = sqlBuilder.factory();
+        const timeVar = useTemplates 
+            ? GrafanaVariables.timeFilter
+            : { time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]};
 
         if (options.adHoc && options.adHoc.length) {
-            adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc);
+            adHoc = useTemplates 
+                ? GrafanaVariables.adHocFilter 
+                : this.generateWhereFromTags(options.adHoc, options.scopedVars);
         }
 
         if (columns.length) {
             columns = columns.filter((column) => column.name !== QueryPrompts.column);
         }
 
-        if (columns.length === 0 || target.variable == QueryPrompts.variable) {
+        if (columns.length === 0 || target.variable === QueryPrompts.variable) {
             return false;
         }
 
@@ -183,7 +237,7 @@ class SQLQuery {
         query.from(target.variable);
         query.where([
             sqlBuilder.OP.AND,
-            this.generateWhereFromTags(target.tags),
+            this.generateWhereFromTags(target.tags, options.scopedVars),
             adHoc,
             timeVar
         ]);
@@ -211,12 +265,56 @@ class SQLQuery {
         return query.compile();
     }
 
+    replaceVariables(sql, scopedVars = {}) {
+        const varRegexp = /\$(\w+)|\[\[([\s\S]+?)\]\]/g;
+        const isRegExp  = /REGEXP['"\s]+$/ig;
+        let result;
+
+        while (result = varRegexp.exec(sql)) {
+            const [name] = result; 
+
+            // We do not want replace private variables
+            if (/^\$_/.test(name)) {
+                continue;
+            }
+
+            let variable = this.getTemplateValue(name, scopedVars);
+
+            if (variable) {
+                let quote = sql.substr(result.index - 1, 1);
+                let hasQuotes = /['"]{1}/.test(quote);
+
+                if (!hasQuotes) {
+                    quote = `'`;
+                }
+
+                if (!_.isArray(variable)) {
+                    variable = [variable];
+                }
+
+                if (isRegExp.test(sql.substr(0, result.index))) {
+                    variable = variable.join('|');
+                } else {
+                    variable = variable.join(`${quote}, ${quote}`);
+                }
+
+                if (!hasQuotes) {
+                    variable = `${quote}${variable}${quote}`;
+                }
+
+                sql = sql.replace(name, variable);
+            }
+        }
+
+        return sql;
+    }
+
     generateSQLQueryFromString(target, options) {
         const timeFilter = `time BETWEEN '${options.timeRange.from}' AND '${options.timeRange.to}'`;
         const interval = `${options.interval}`;
-        const adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc));
+        const adhocWhere = sqlBuilder.buildWhere(this.generateWhereFromTags(options.adHoc, options.scopedVars));
 
-        let query = target.nsgqlString;
+        let query = this.replaceVariables(target.nsgqlString, options.scopedVars);
 
         if (query && query.indexOf(GrafanaVariables.timeFilter) > 0) {
             query = _.replace(query, GrafanaVariables.timeFilter, timeFilter);
@@ -349,18 +447,29 @@ class NSGQLApi {
      * @param {string} method
      */
     _request(resource, data, method = 'POST') {
-        let query = '?';
+        
+        const options = {
+            headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+            method: method,
+            data: data,
+            url: this.options.baseUrl + resource
+        };
 
         if (this.options.token) {
-            query += this.$backend.$http.defaults.paramSerializer({access_token: this.options.token});
+            let query =  '?' + this.$backend.$http.
+                defaults.paramSerializer({access_token: this.options.token});
+            options.url += query;
         }
 
-        return this.$backend.datasourceRequest({
-            url: this.options.baseUrl + resource + query,
-            data: data,
-            method: method,
-            headers: {'Content-Type': 'application/json'}
-        });
+        if (this.options.basicAuth || this.options.withCredentials) {
+            options.withCredentials = true;
+        }
+
+        if (this.options.basicAuth) {
+            options.headers.Authorization = this.options.basicAuth;
+        }
+
+        return this.$backend.datasourceRequest(options);
     }
 }
 

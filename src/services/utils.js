@@ -1,6 +1,42 @@
 import _ from 'lodash';
 import * as dateMath from '../datemath';
 
+class Timer {
+    constructor() {
+        this._run = false;
+        this._nextTask = null;
+        this._currentTask = null;
+    }
+
+    /**
+     * @param {Function} task 
+     */
+    sheduleTask(task) {
+        if (this._run === false) {
+            this._run = true;
+            this._currentTask = task;
+            task();
+        } else {
+            this._nextTask = task;
+        }
+    }
+
+    stop() {
+        this._taskEnd();
+    }
+
+    _taskEnd() {
+        if (this._nextTask) {
+            this._nextTask();
+            this._currentTask = this._nextTask;
+            this._nextTask = null;
+        } else {
+            this._currentTask = null;
+            this._run = false;
+        }
+    }
+}
+
 export default {
     getTime: function (date, roundUp) {
         if (_.isString(date)) {
@@ -49,5 +85,14 @@ export default {
         }
 
         return columnName;
+    },
+
+    getScheduler: function()  {
+        if (!this._timer) {
+            this._timer = new Timer();
+        }
+
+        return this._timer;
     }
 };
+

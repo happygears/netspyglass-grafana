@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['angular', './datasource', './query_ctrl', './directives/columns-menu', './directives/dropdown', 'app/plugins/sdk'], function (_export, _context) {
+System.register(['angular', 'lodash', './datasource', './query_ctrl', './directives/columns-menu', './directives/dropdown', 'app/plugins/sdk'], function (_export, _context) {
     "use strict";
 
-    var angular, NetSpyGlassDatasource, NetSpyGlassQueryCtrl, ColumnsMenuDirective, DropdownDirective, loadPluginCss, GenericConfigCtrl, GenericQueryOptionsCtrl, GenericAnnotationsQueryCtrl;
+    var angular, _, NetSpyGlassDatasource, NetSpyGlassQueryCtrl, ColumnsMenuDirective, DropdownDirective, loadPluginCss, GenericConfigCtrl, GenericQueryOptionsCtrl, GenericAnnotationsQueryCtrl;
 
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
@@ -14,6 +14,8 @@ System.register(['angular', './datasource', './query_ctrl', './directives/column
     return {
         setters: [function (_angular) {
             angular = _angular.default;
+        }, function (_lodash) {
+            _ = _lodash.default;
         }, function (_datasource) {
             NetSpyGlassDatasource = _datasource.NetSpyGlassDatasource;
         }, function (_query_ctrl) {
@@ -62,7 +64,22 @@ System.register(['angular', './datasource', './query_ctrl', './directives/column
 
             GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
 
-            angular.module('grafana.directives').directive('hgColumnsMenu', ColumnsMenuDirective).directive('hgDropdown', DropdownDirective);
+            angular.module('grafana.directives').directive('hgColumnsMenu', ColumnsMenuDirective).directive('hgDropdown', DropdownDirective).directive('hgEscapeRegexp', function () {
+                return {
+                    restrict: 'A',
+                    priority: 1001,
+                    link: function link($scope, $element) {
+                        var typeahead = $element.find('input').data('typeahead');
+
+                        var originalMatcher = typeahead.matcher;
+
+                        typeahead.matcher = function (item) {
+                            var self = { query: _.escapeRegExp(this.query) };
+                            return originalMatcher.call(self, item);
+                        };
+                    }
+                };
+            });
 
             loadPluginCss({
                 dark: 'plugins/happygears-netspyglass-datasource-v2' + '/styles/theme.dark.css',

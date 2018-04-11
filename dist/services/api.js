@@ -3,7 +3,7 @@
 System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lodash'], function (_export, _context) {
     "use strict";
 
-    var SQLBuilderFactory, GrafanaVariables, QueryPrompts, utils, angular, _, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
+    var SQLBuilderFactory, GrafanaVariables, QueryPrompts, utils, angular, _, _slicedToArray, _createClass, sqlBuilder, SQLQuery, Cache, NSGQLApi;
 
     function _toConsumableArray(arr) {
         if (Array.isArray(arr)) {
@@ -52,6 +52,44 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
             _ = _lodash.default;
         }],
         execute: function () {
+            _slicedToArray = function () {
+                function sliceIterator(arr, i) {
+                    var _arr = [];
+                    var _n = true;
+                    var _d = false;
+                    var _e = undefined;
+
+                    try {
+                        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+                            _arr.push(_s.value);
+
+                            if (i && _arr.length === i) break;
+                        }
+                    } catch (err) {
+                        _d = true;
+                        _e = err;
+                    } finally {
+                        try {
+                            if (!_n && _i["return"]) _i["return"]();
+                        } finally {
+                            if (_d) throw _e;
+                        }
+                    }
+
+                    return _arr;
+                }
+
+                return function (arr, i) {
+                    if (Array.isArray(arr)) {
+                        return arr;
+                    } else if (Symbol.iterator in Object(arr)) {
+                        return sliceIterator(arr, i);
+                    } else {
+                        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+                    }
+                };
+            }();
+
             _createClass = function () {
                 function defineProperties(target, props) {
                     for (var i = 0; i < props.length; i++) {
@@ -317,13 +355,16 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         var result = void 0;
 
                         while (result = varRegexp.exec(sql)) {
+                            var _result = result,
+                                _result2 = _slicedToArray(_result, 1),
+                                name = _result2[0];
 
-                            if (/^\$_/.test(result[0])) {
-                                console.log('Skip private variable');
+                            // We do not want replace private variables
+                            if (/^\$_/.test(name)) {
                                 continue;
                             }
 
-                            var variable = this.getTemplateValue(result[0], scopedVars);
+                            var variable = this.getTemplateValue(name, scopedVars);
 
                             if (variable) {
                                 var quote = sql.substr(result.index - 1, 1);
@@ -347,7 +388,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                                     variable = '' + quote + variable + quote;
                                 }
 
-                                sql = sql.replace(result[0], variable);
+                                sql = sql.replace(name, variable);
                             }
                         }
 

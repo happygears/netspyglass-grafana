@@ -5,8 +5,16 @@ import Q from 'q';
 
 describe('APIQuery', function() {
     const ctx = {};
+    const mock = {};
     const templateService = {
-        variables: {}
+        mock: mock,
+        variables: [],
+        isAllValue: function() {
+            return this.mock.isAllValue(...arguments);
+        },
+        getAllValue: function() {
+            return this.mock.getAllValue(...arguments);
+        }
     };
 
     describe('Test processColumns', function() {
@@ -113,24 +121,121 @@ describe('APIQuery', function() {
 
     describe('Test variables replacement', function () {
 
-
-
         it('should replace plain variable', function () {
+            mock.isAllValue = function() { return false; };
+            mock.getAllValue = function () { return ''; };
+
+            ctx.query.templateSrv.variables = [
+                {
+                    name: 'DEVICE',
+                    current: {value: 'cty1-bb01'}
+                }
+            ];
+
             const sql = 'select * from cpuUtil where device = $DEVICE';
-            ctx.query.replaceVariables(sql);
+            expect(ctx.query.replaceVariables(sql))
+                .to
+                .equals('select * from cpuUtil where device = \'cty1-bb01\'');
         });
 
         it('should replace multiple variables', function () {
+            mock.isAllValue = function() { return false; };
+            mock.getAllValue = function () { return ''; };
 
+            ctx.query.templateSrv.variables = [
+                {name: 'DEVICE1', current: {value: 'cty1-bb01'}},
+                {name: 'DEVICE2', current: {value: 'cty1-bb02'}},
+                {name: 'DEVICE3', current: {value: 'cty1-bb03'}},
+            ];
+
+            const sql = `select * from cpuUtil where device = $DEVICE1 or device = $DEVICE2 or device = $DEVICE3`;
+            const expectSql = `select * from cpuUtil where device = 'cty1-bb01' or device = 'cty1-bb02' or device = 'cty1-bb03'`;
+
+            expect(ctx.query.replaceVariables(sql))
+                .to
+                .equals(expectSql);
         });
 
         it('should correct replace multivalue variable', function () {
 
+            mock.isAllValue = function() { 
+                return true; 
+            };
+            
+            mock.getAllValue = function () { 
+                return ['cty1-bb01', 'cty1-bb02', 'cty1-bb03']; 
+            };
+
+            ctx.query.templateSrv.variables = [
+                {
+                    name: 'DEVICES',
+                    options: ['cty1-bb01', 'cty1-bb02', 'cty1-bb03'],
+                    current: {
+                        value: ''
+                    }
+                }
+            ];
+
+            const sql = `select * from cpuUtil where device IN ($DEVICES)`;
+            const expectSql = `select * from cpuUtil where device IN ('cty1-bb01', 'cty1-bb02', 'cty1-bb03')`;
+
+            expect(ctx.query.replaceVariables(sql))
+                .to
+                .equals(expectSql);
         });
 
-        it('should correct change operation when value is multi', function () {
+        it('should correct rendex REGEXP', function () {
+            mock.isAllValue = function() { 
+                return true; 
+            };
+            
+            mock.getAllValue = function () { 
+                return ['foo', 'bar']; 
+            };
 
+            ctx.query.templateSrv.variables = [
+                {
+                    name: 'DEVICES',
+                    options: ['foo', 'bar'],
+                    current: {
+                        value: ''
+                    }
+                }
+            ];
+
+            const sql = `select * from cpuUtil where device REGEXP $DEVICES`;
+            const expectSql = `select * from cpuUtil where device REGEXP 'foo|bar'`;
+
+            expect(ctx.query.replaceVariables(sql))
+                .to
+                .equals(expectSql);
         });
 
+        it('should not add quotes when the variable is already in quotes', function () {
+            mock.isAllValue = function() { 
+                return true; 
+            };
+            
+            mock.getAllValue = function () { 
+                return ['foo', 'bar']; 
+            };
+
+            ctx.query.templateSrv.variables = [
+                {
+                    name: 'DEVICES',
+                    options: ['foo', 'bar'],
+                    current: {
+                        value: ''
+                    }
+                }
+            ];
+
+            const sql = `select * from cpuUtil where device REGEXP '$DEVICES'`;
+            const expectSql = `select * from cpuUtil where device REGEXP 'foo|bar'`;
+
+            expect(ctx.query.replaceVariables(sql))
+                .to
+                .equals(expectSql);
+        });
     });
 });

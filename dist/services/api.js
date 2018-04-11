@@ -317,6 +317,12 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         var result = void 0;
 
                         while (result = varRegexp.exec(sql)) {
+
+                            if (/^\$_/.test(result[0])) {
+                                console.log('Skip private variable');
+                                continue;
+                            }
+
                             var variable = this.getTemplateValue(result[0], scopedVars);
 
                             if (variable) {

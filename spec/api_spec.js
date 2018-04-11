@@ -5,11 +5,14 @@ import Q from 'q';
 
 describe('APIQuery', function() {
     const ctx = {};
+    const templateService = {
+        variables: {}
+    };
 
     describe('Test processColumns', function() {
 
         beforeEach(function() {
-            ctx.query = new SQLQuery();
+            ctx.query = new SQLQuery(templateService);
             ctx.sqlBuilder = SQLBuilderFactory();
         });
 
@@ -99,12 +102,35 @@ describe('APIQuery', function() {
     describe('Test building where from given tags', function () {
         it('Should return correct where part from tags', function() {
             const tags = [
-                {"key": "Model", "operator": "=", "value": "linux"},
-                {"condition": "AND", "key": "device", "operator": "=", "value": "carrier"}
+                {'key': 'Model', 'operator': '=', 'value': 'linux'},
+                {'condition': 'AND', 'key': 'device', 'operator': '=', 'value': 'carrier'}
             ];
 
             expect(ctx.query.generateWhereFromTags([])).to.equals(null);
             expect(ctx.sqlBuilder.factory({where: ctx.query.generateWhereFromTags(tags)}).compile()).to.equals('WHERE Model = \'linux\' AND device = \'carrier\'');
         });
+    });
+
+    describe('Test variables replacement', function () {
+
+
+
+        it('should replace plain variable', function () {
+            const sql = 'select * from cpuUtil where device = $DEVICE';
+            ctx.query.replaceVariables(sql);
+        });
+
+        it('should replace multiple variables', function () {
+
+        });
+
+        it('should correct replace multivalue variable', function () {
+
+        });
+
+        it('should correct change operation when value is multi', function () {
+
+        });
+
     });
 });

@@ -271,7 +271,14 @@ class SQLQuery {
         let result;
 
         while (result = varRegexp.exec(sql)) {
-            let variable = this.getTemplateValue(result[0], scopedVars);
+            const [name] = result; 
+
+            // We do not want replace private variables
+            if (/^\$_/.test(name)) {
+                continue;
+            }
+
+            let variable = this.getTemplateValue(name, scopedVars);
 
             if (variable) {
                 let quote = sql.substr(result.index - 1, 1);
@@ -295,7 +302,7 @@ class SQLQuery {
                     variable = `${quote}${variable}${quote}`;
                 }
 
-                sql = sql.replace(result[0], variable);
+                sql = sql.replace(name, variable);
             }
         }
 

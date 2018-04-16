@@ -172,11 +172,18 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
+                        var defaults = _.extend({}, targetDefaults);
+
                         this.target._nsgTarget = this.target._nsgTarget || {};
                         this.store = this.target._nsgTarget;
                         this.store.refId = this.target.refId || 'A';
 
-                        _.defaultsDeep(this.store, targetDefaults);
+                        //if new target created in graph panel
+                        if (!this.store.columns && this.options.isGraph) {
+                            defaults = this.setGraphDefaults(defaults);
+                        }
+
+                        _.defaultsDeep(this.store, defaults);
 
                         this.store.format = this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap ? 'time_series' : 'table';
                         this.store.isTablePanel = this.options.isTable;
@@ -195,6 +202,15 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         if (this.options.isSinglestat) {
                             this.store.limit = 1;
                         }
+                    }
+                }, {
+                    key: 'setGraphDefaults',
+                    value: function setGraphDefaults(params) {
+                        params.groupBy.type = 'time';
+                        params.groupBy.value = '$_interval';
+                        params.columns[0].appliedFunctions = [{ name: 'tsavg' }];
+
+                        return params;
                     }
                 }, {
                     key: 'setPanelSortFromOrderBy',

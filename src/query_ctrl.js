@@ -126,13 +126,20 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     initTarget() {
+        let defaults = _.extend({}, targetDefaults);
+
         this.target._nsgTarget = this.target._nsgTarget || {};
         this.store = this.target._nsgTarget;
         this.store.refId = this.target.refId || 'A';
 
+        //if new target created in graph panel
+        if (!this.store.columns && this.options.isGraph) {
+            defaults = this.setGraphDefaults(defaults);
+        }
+
         _.defaultsDeep(
             this.store,
-            targetDefaults
+            defaults
         );
 
         this.store.format = (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) ? 'time_series' : 'table';
@@ -152,6 +159,14 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         if (this.options.isSinglestat) {
             this.store.limit = 1;
         }
+    }
+
+    setGraphDefaults(params) {
+        params.groupBy.type = 'time';
+        params.groupBy.value = '$_interval';
+        params.columns[0].appliedFunctions = [{name: 'tsavg'}];
+
+        return params;
     }
 
     setPanelSortFromOrderBy() {

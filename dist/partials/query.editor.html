@@ -184,33 +184,25 @@
                     <div class="gf-form-label gf-form-label--secondary">Plugin version: {{ctrl.pluginVersion}}</div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="gf-form-inline" data-ng-if="ctrl.options.isGraph">
-                <div class="gf-form">
-                    <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
-                </div>
-                <div class="gf-form gf-form--grow">
-                    <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.store.alias" spellcheck="false"
-                        placeholder="Naming pattern" ng-blur="ctrl.execute()">
-                </div>
-                <div class="gf-form ">
-                    <div class="gf-form-label">
-                        <i class="fa fa-question-circle" data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
-                            data-placement="bottom" data-original-title="" title=""></i>
-                    </div>
+    <div class="editor-part" data-ng-if="ctrl.options.isGraph">
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
+            </div>
+            <div class="gf-form gf-form--grow">
+                <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.store.alias" spellcheck="false"
+                       placeholder="Naming pattern" ng-blur="ctrl.execute()">
+            </div>
+            <div class="gf-form ">
+                <div class="gf-form-label">
+                    <i class="fa fa-question-circle" data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
+                       data-placement="bottom" data-original-title="" title=""></i>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <!--<div style="border: 1px solid red; margin: 20px 0">-->
-    <!--<pre>{{ ctrl.store }}</pre>-->
-    <!--</div>-->
-
-    <!--<div style="border: 1px solid red; margin: 20px 0">-->
-    <!--<pre> {{  ctrl.options | json}}</pre>-->
-    <!--</div>-->
-
-    <!--<test data-prop="ctrl.store.variable"></test>-->
 </query-editor-row>

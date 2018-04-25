@@ -150,6 +150,10 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         var processTarget = function processTarget(target) {
                             aliases[target.refId] = target.alias;
 
+                            if (target.orderBy.column.name === 'column') {
+                                target.orderBy.column.value = target.orderBy.colValue;
+                            }
+
                             var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, _this.queryOptions) : _this.sqlQuery.generateSQLQuery(target, _this.queryOptions);
 
                             sql = _this.templateSrv.replace(sql, options.scopedVars, _this._formatValue);

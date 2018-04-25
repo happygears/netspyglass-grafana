@@ -44,7 +44,8 @@ const targetDefaults = {
             alias: ''
         },
         sort: orderBySortTypes[0],
-        colName: QueryPrompts.orderBy
+        colName: QueryPrompts.orderBy,
+        colValue: QueryPrompts.orderBy,
     },
     rawQuery: 0,
     limit: 100,
@@ -246,7 +247,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.store.orderBy.column = $value;
         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
 
-        this._updateOrderBy();
+        if (this.store.orderBy.column.name !== 'column') {
+            this._updateOrderBy();
+        }
     }
 
     onChangeOrderBySort() {
@@ -256,6 +259,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onClearOrderBy() {
         this.store.orderBy.column = {};
         this.store.orderBy.colName = this.prompts.orderBy;
+        this.store.orderBy.colValue = this.prompts.orderBy;
         this._updateOrderBy();
     }
 
@@ -544,6 +548,13 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     value: 'metric',
                 }
             });
+            list.push({
+                text: 'column',
+                value: {
+                    name: 'column',
+                    value: 'column',
+                }
+            });
         } else if (this.options.isTable) {
             this.store.columns.forEach((column) => {
                 list.push({
@@ -574,6 +585,23 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     value: orderBySortTypes[1]
                 }
             ]);
+    }
+
+    getOrderByColumns() {
+        const list = [{
+            text: 'device',
+            value: 'device'
+        }];
+        return this.datasource.getFacets(this.store.variable).then((data) => {
+            data.forEach((el) => {
+                list.push({
+                    text: el,
+                    value: el
+                })
+            });
+
+            return list;
+        });
     }
 
     getLimitOptions() {

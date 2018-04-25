@@ -78,7 +78,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         alias: ''
                     },
                     sort: orderBySortTypes[0],
-                    colName: QueryPrompts.orderBy
+                    colName: QueryPrompts.orderBy,
+                    colValue: QueryPrompts.orderBy
                 },
                 rawQuery: 0,
                 limit: 100,
@@ -314,7 +315,9 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         this.store.orderBy.column = $value;
                         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
 
-                        this._updateOrderBy();
+                        if (this.store.orderBy.column.name !== 'column') {
+                            this._updateOrderBy();
+                        }
                     }
                 }, {
                     key: 'onChangeOrderBySort',
@@ -326,6 +329,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function onClearOrderBy() {
                         this.store.orderBy.column = {};
                         this.store.orderBy.colName = this.prompts.orderBy;
+                        this.store.orderBy.colValue = this.prompts.orderBy;
                         this._updateOrderBy();
                     }
                 }, {
@@ -613,6 +617,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     value: 'metric'
                                 }
                             });
+                            list.push({
+                                text: 'column',
+                                value: {
+                                    name: 'column',
+                                    value: 'column'
+                                }
+                            });
                         } else if (this.options.isTable) {
                             this.store.columns.forEach(function (column) {
                                 list.push({
@@ -638,6 +649,24 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             text: orderBySortTypes[1],
                             value: orderBySortTypes[1]
                         }]);
+                    }
+                }, {
+                    key: 'getOrderByColumns',
+                    value: function getOrderByColumns() {
+                        var list = [{
+                            text: 'device',
+                            value: 'device'
+                        }];
+                        return this.datasource.getFacets(this.store.variable).then(function (data) {
+                            data.forEach(function (el) {
+                                list.push({
+                                    text: el,
+                                    value: el
+                                });
+                            });
+
+                            return list;
+                        });
                     }
                 }, {
                     key: 'getLimitOptions',

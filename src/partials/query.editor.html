@@ -111,6 +111,17 @@
                         data-get-options="ctrl.getOrderByOptions()"></hg-dropdown>
                 </div>
 
+                <div class="gf-form" data-ng-if="ctrl.store.orderBy.colName === 'column'">
+                    <gf-form-dropdown
+                            data-model="ctrl.store.orderBy.colValue"
+                            data-lookup-text="true"
+                            data-label-mode="true"
+                            data-get-options="ctrl.getOrderByColumns()"
+                            data-on-change="ctrl.execute()"
+                            data-hg-escape-regexp>
+                    </gf-form-dropdown>
+                </div>
+
                 <div class="gf-form" data-ng-if="ctrl.store.orderBy.column && ctrl.store.orderBy.colName !== ctrl.prompts.orderBy">
                     <gf-form-dropdown 
                         data-model="ctrl.store.orderBy.sort" 

@@ -84,6 +84,10 @@ export class NetSpyGlassDatasource {
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;
 
+            if (target.orderBy.column.name === 'column') {
+                target.orderBy.column.value = target.orderBy.colValue;
+            }
+
             let sql = target.rawQuery
                 ? this.sqlQuery.generateSQLQueryFromString(target, this.queryOptions)
                 : this.sqlQuery.generateSQLQuery(target, this.queryOptions);

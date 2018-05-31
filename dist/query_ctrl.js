@@ -303,6 +303,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: '_updateOrderBy',
                     value: function _updateOrderBy() {
+                        if (this.store.orderBy.column.name == 'column') {
+                            this.store.orderBy.column.value = this.store.orderBy.colValue;
+                        }
+
                         if (this.options.isGraph) {
                             this.execute();
                         } else {
@@ -314,10 +318,12 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function onChangeOrderBy($value) {
                         this.store.orderBy.column = $value;
                         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
-
-                        if (this.store.orderBy.column.name !== 'column') {
-                            this._updateOrderBy();
-                        }
+                        this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onChangeOrderByValue',
+                    value: function onChangeOrderByValue() {
+                        this._updateOrderBy();
                     }
                 }, {
                     key: 'onChangeOrderBySort',
@@ -626,6 +632,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             });
                         } else if (this.options.isTable) {
                             this.store.columns.forEach(function (column) {
+                                if (column.name == QueryPrompts.column) return;
+
                                 list.push({
                                     text: column.alias || utils.compileColumnName(column),
                                     value: {

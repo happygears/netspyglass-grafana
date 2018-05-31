@@ -236,6 +236,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     _updateOrderBy() {
+        if (this.store.orderBy.column.name == 'column') {
+            this.store.orderBy.column.value = this.store.orderBy.colValue;
+        }
+
         if (this.options.isGraph) {
             this.execute();
         } else {
@@ -246,10 +250,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onChangeOrderBy($value) {
         this.store.orderBy.column = $value;
         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
+        this._updateOrderBy();
+    }
 
-        if (this.store.orderBy.column.name !== 'column') {
-            this._updateOrderBy();
-        }
+    onChangeOrderByValue() {
+        this._updateOrderBy();
     }
 
     onChangeOrderBySort() {
@@ -557,6 +562,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             });
         } else if (this.options.isTable) {
             this.store.columns.forEach((column) => {
+                if (column.name == QueryPrompts.column) return;
+
                 list.push({
                     text: column.alias || utils.compileColumnName(column),
                     value: {

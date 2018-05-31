@@ -331,7 +331,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                             }
                         }
 
-                        if (target.orderBy.column && target.orderBy.column.name) {
+                        if (target.orderBy.column && target.orderBy.column.value && target.orderBy.column.value !== QueryPrompts.orderBy) {
                             query.orderBy([sqlBuilder.escape(target.orderBy.column.alias || target.orderBy.column.value) + ' ' + target.orderBy.sort]);
                         } else {
                             query.clearOrderBy();

@@ -138,7 +138,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             defaults = this.setGraphDefaults(defaults);
         }
 
-        _.defaultsDeep(
+        _.defaults(
             this.store,
             defaults
         );

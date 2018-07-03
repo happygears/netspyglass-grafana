@@ -184,7 +184,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             defaults = this.setGraphDefaults(defaults);
                         }
 
-                        _.defaultsDeep(this.store, defaults);
+                        _.defaults(this.store, defaults);
 
                         this.store.format = this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap ? 'time_series' : 'table';
                         this.store.isTablePanel = this.options.isTable;

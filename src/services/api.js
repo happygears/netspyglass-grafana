@@ -408,22 +408,24 @@ class NSGQLApi {
         }
 
         if (cacheKey && Cache.hasOwnProperty(cacheKey) && !reloadCache) {
-            return this.$q.resolve(_.cloneDeep(Cache[cacheKey]));
+            return this.$q.resolve({
+                data: _.cloneDeep(Cache[cacheKey])
+            });
         }
 
         return this._request(this.options.endpoints.data, {targets}, 'POST')
             .then(function (response) {
-                if (response.status === 200) {
-                    const data = response.data || response;
-
-                    if (data && cacheKey) {
-                        Cache[cacheKey] = _.cloneDeep(data);
-                    }
-
-                    return data;
+                if (response.data && cacheKey) {
+                    Cache[cacheKey] = _.cloneDeep(response.data);
                 }
 
-                return [];
+                return response;
+            }, function(err) {
+                throw {
+                    message: 'Network Error: ' + err.statusText + '(' + err.status + ')',
+                    data: err.data,
+                    config: err.config,
+                };
             });
     }
 

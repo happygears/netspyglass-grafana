@@ -2,8 +2,9 @@
                   class="generic-datasource-query-row"
                   can-collapse="true"
                   has-text-edit-mode="true">
-    <div class="gf-form" data-ng-show="ctrl.errors[ctrl.store.refId]">
-        <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.store.refId]}}</pre>
+
+    <div class="gf-form" data-ng-show="ctrl.errors.data[ctrl.store.refId]">
+        <pre class="gf-form-pre alert alert-error">{{ctrl.errors.data[ctrl.store.refId]}}</pre>
     </div>
 
     <div class="editor-part editor-part--row" data-ng-if="ctrl.store.rawQuery">

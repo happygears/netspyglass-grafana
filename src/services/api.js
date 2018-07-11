@@ -408,19 +408,25 @@ class NSGQLApi {
         }
 
         if (cacheKey && Cache.hasOwnProperty(cacheKey) && !reloadCache) {
-            return this.$q.resolve({
-                data: _.cloneDeep(Cache[cacheKey])
-            });
+            return this.$q.resolve(_.cloneDeep(Cache[cacheKey]));
         }
 
         return this._request(this.options.endpoints.data, {targets}, 'POST')
-            .then(function (response) {
-                if (response.data && cacheKey) {
-                    Cache[cacheKey] = _.cloneDeep(response.data);
+            .then((response) => {
+                if (response.status === 200) {
+                    const data = response.data || response;
+
+                    if (data && cacheKey) {
+                        Cache[cacheKey] = _.cloneDeep(data);
+                    }
+
+                    this._proccessingNsgQlErrors(response);
+
+                    return data;
                 }
 
-                return response;
-            }, function(err) {
+                return [];
+            }, (err) => {
                 throw {
                     message: 'Network Error: ' + err.statusText + '(' + err.status + ')',
                     data: err.data,
@@ -472,6 +478,29 @@ class NSGQLApi {
         }
 
         return this.$backend.datasourceRequest(options);
+    }
+
+    /**
+     * @param response
+     * @returns {*}
+     */
+    _proccessingNsgQlErrors(response) {
+        let errorsList = _.filter(response.data, 'error'),
+            errors = {};
+
+        if (errorsList.length) {
+            errorsList.forEach((error) => {
+                errors[(error.id).toUpperCase()] = error.error;
+            });
+
+            throw {
+                message: `NsgQL Error`,
+                data: errors,
+                config: response.config,
+            }
+        }
+
+        return response;
     }
 }
 

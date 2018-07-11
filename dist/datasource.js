@@ -176,11 +176,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             return this.$q.resolve({ data: [] });
                         }
 
-                        return this.api.queryData(sqlTargets).then(function (response) {
-                            return _this._proccessingDataErrors(response);
-                        }).then(function (response) {
-                            return _this._processResponseData(response);
-                        }).then(function (data) {
+                        return this.api.queryData(sqlTargets).then(function (data) {
                             return _this._processingGraphAliases(data, aliases);
                         }).then(function (list) {
                             return { data: list };
@@ -215,35 +211,6 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                                 return item.tags[group];
                             }
                         });
-                    }
-                }, {
-                    key: '_processResponseData',
-                    value: function _processResponseData(response) {
-                        if (response.status === 200) {
-                            return response.data || response;
-                        }
-
-                        return [];
-                    }
-                }, {
-                    key: '_proccessingDataErrors',
-                    value: function _proccessingDataErrors(response) {
-                        var errorsList = _.filter(response.data, 'error'),
-                            errors = {};
-
-                        if (errorsList.length) {
-                            errorsList.forEach(function (error) {
-                                errors[error.id.toUpperCase()] = error.error;
-                            });
-
-                            throw {
-                                message: 'NsgQL Error',
-                                data: errors,
-                                config: response.config
-                            };
-                        }
-
-                        return response;
                     }
                 }, {
                     key: '_formatValue',

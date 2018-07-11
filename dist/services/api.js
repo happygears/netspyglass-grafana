@@ -490,6 +490,8 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                 }, {
                     key: 'queryData',
                     value: function queryData() {
+                        var _this3 = this;
+
                         var targets = [];
 
                         var _arguments = Array.prototype.slice.call(arguments),
@@ -505,17 +507,23 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         }
 
                         if (cacheKey && Cache.hasOwnProperty(cacheKey) && !reloadCache) {
-                            return this.$q.resolve({
-                                data: _.cloneDeep(Cache[cacheKey])
-                            });
+                            return this.$q.resolve(_.cloneDeep(Cache[cacheKey]));
                         }
 
                         return this._request(this.options.endpoints.data, { targets: targets }, 'POST').then(function (response) {
-                            if (response.data && cacheKey) {
-                                Cache[cacheKey] = _.cloneDeep(response.data);
+                            if (response.status === 200) {
+                                var data = response.data || response;
+
+                                if (data && cacheKey) {
+                                    Cache[cacheKey] = _.cloneDeep(data);
+                                }
+
+                                _this3._proccessingNsgQlErrors(response);
+
+                                return data;
                             }
 
-                            return response;
+                            return [];
                         }, function (err) {
                             throw {
                                 message: 'Network Error: ' + err.statusText + '(' + err.status + ')',
@@ -563,6 +571,26 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         }
 
                         return this.$backend.datasourceRequest(options);
+                    }
+                }, {
+                    key: '_proccessingNsgQlErrors',
+                    value: function _proccessingNsgQlErrors(response) {
+                        var errorsList = _.filter(response.data, 'error'),
+                            errors = {};
+
+                        if (errorsList.length) {
+                            errorsList.forEach(function (error) {
+                                errors[error.id.toUpperCase()] = error.error;
+                            });
+
+                            throw {
+                                message: 'NsgQL Error',
+                                data: errors,
+                                config: response.config
+                            };
+                        }
+
+                        return response;
                     }
                 }]);
 

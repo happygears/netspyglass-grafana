@@ -113,8 +113,6 @@ export class NetSpyGlassDatasource {
         }
 
         return this.api.queryData(sqlTargets)
-            .then(response => this._proccessingDataErrors(response))
-            .then(response => this._processResponseData(response))
             .then(data => this._processingGraphAliases(data, aliases))
             .then(list => ({data: list}));
     }
@@ -151,41 +149,6 @@ export class NetSpyGlassDatasource {
         });
 
     };
-
-    /**
-     * @param response
-     * @returns {*}
-     */
-    _processResponseData(response) {
-        if (response.status === 200) {
-            return response.data || response;
-        }
-
-        return [];
-    }
-
-    /**
-     * @param response
-     * @returns {*}
-     */
-    _proccessingDataErrors(response) {
-        let errorsList = _.filter(response.data, 'error'),
-            errors = {};
-
-        if (errorsList.length) {
-            errorsList.forEach((error) => {
-                errors[(error.id).toUpperCase()] = error.error;
-            });
-
-            throw {
-                message: `NsgQL Error`,
-                data: errors,
-                config: response.config,
-            }
-        }
-
-        return response;
-    }
 
     _formatValue(value) {
         if (_.isArray(value)) {

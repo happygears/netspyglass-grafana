@@ -95,7 +95,7 @@ describe('APIQuery', function() {
 
     describe('Test AdHoc', function () {
         it('Should return sql for addHoc', function() {
-            expect(ctx.query.getTagKeysForAdHoc()).to.equals('SELECT facet FROM tags');
+            expect(ctx.query.getTagKeysForAdHoc()).to.equals('SELECT facet FROM tags ORDER BY facet');
         });
 
         it('Should return sql for addHoc when facet is selected', function() {

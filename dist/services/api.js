@@ -332,7 +332,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                             }
                         }
 
-                        if (target.orderBy.column && target.orderBy.column.name) {
+                        if (target.orderBy.column && target.orderBy.column.value && target.orderBy.column.value !== QueryPrompts.orderBy) {
                             query.orderBy([sqlBuilder.escape(target.orderBy.column.alias || target.orderBy.column.value) + ' ' + target.orderBy.sort]);
                         } else {
                             query.clearOrderBy();
@@ -491,6 +491,8 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                 }, {
                     key: 'queryData',
                     value: function queryData() {
+                        var _this3 = this;
+
                         var targets = [];
 
                         var _arguments = Array.prototype.slice.call(arguments),
@@ -517,10 +519,18 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                                     Cache[cacheKey] = _.cloneDeep(data);
                                 }
 
+                                _this3._proccessingNsgQlErrors(response);
+
                                 return data;
                             }
 
                             return [];
+                        }, function (err) {
+                            throw {
+                                message: 'Network Error: ' + err.statusText + '(' + err.status + ')',
+                                data: err.data,
+                                config: err.config
+                            };
                         });
                     }
                 }, {
@@ -562,6 +572,26 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         }
 
                         return this.$backend.datasourceRequest(options);
+                    }
+                }, {
+                    key: '_proccessingNsgQlErrors',
+                    value: function _proccessingNsgQlErrors(response) {
+                        var errorsList = _.filter(response.data, 'error'),
+                            errors = {};
+
+                        if (errorsList.length) {
+                            errorsList.forEach(function (error) {
+                                errors[error.id.toUpperCase()] = error.error;
+                            });
+
+                            throw {
+                                message: 'NsgQL Error',
+                                data: errors,
+                                config: response.config
+                            };
+                        }
+
+                        return response;
                     }
                 }]);
 

@@ -44,7 +44,8 @@ const targetDefaults = {
             alias: ''
         },
         sort: orderBySortTypes[0],
-        colName: QueryPrompts.orderBy
+        colName: QueryPrompts.orderBy,
+        colValue: QueryPrompts.orderBy,
     },
     rawQuery: 0,
     limit: 100,
@@ -126,13 +127,20 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     initTarget() {
+        let defaults = _.extend({}, targetDefaults);
+
         this.target._nsgTarget = this.target._nsgTarget || {};
         this.store = this.target._nsgTarget;
         this.store.refId = this.target.refId || 'A';
 
-        _.defaultsDeep(
+        //if new target created in graph panel
+        if (!this.store.columns && this.options.isGraph) {
+            defaults = this.setGraphDefaults(defaults);
+        }
+
+        _.defaults(
             this.store,
-            targetDefaults
+            defaults
         );
 
         this.store.format = (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) ? 'time_series' : 'table';
@@ -152,6 +160,14 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         if (this.options.isSinglestat) {
             this.store.limit = 1;
         }
+    }
+
+    setGraphDefaults(params) {
+        params.groupBy.type = 'time';
+        params.groupBy.value = '$_interval';
+        params.columns[0].appliedFunctions = [{name: 'tsavg'}];
+
+        return params;
     }
 
     setPanelSortFromOrderBy() {
@@ -220,6 +236,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     _updateOrderBy() {
+        if (this.store.orderBy.column.name == 'column') {
+            this.store.orderBy.column.value = this.store.orderBy.colValue;
+        }
+
         if (this.options.isGraph) {
             this.execute();
         } else {
@@ -230,7 +250,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onChangeOrderBy($value) {
         this.store.orderBy.column = $value;
         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
+        this._updateOrderBy();
+    }
 
+    onChangeOrderByValue() {
         this._updateOrderBy();
     }
 
@@ -241,6 +264,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onClearOrderBy() {
         this.store.orderBy.column = {};
         this.store.orderBy.colName = this.prompts.orderBy;
+        this.store.orderBy.colValue = this.prompts.orderBy;
         this._updateOrderBy();
     }
 
@@ -529,8 +553,17 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     value: 'metric',
                 }
             });
+            list.push({
+                text: 'column',
+                value: {
+                    name: 'column',
+                    value: 'column',
+                }
+            });
         } else if (this.options.isTable) {
             this.store.columns.forEach((column) => {
+                if (column.name == QueryPrompts.column) return;
+
                 list.push({
                     text: column.alias || utils.compileColumnName(column),
                     value: {
@@ -559,6 +592,23 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     value: orderBySortTypes[1]
                 }
             ]);
+    }
+
+    getOrderByColumns() {
+        const list = [{
+            text: 'device',
+            value: 'device'
+        }];
+        return this.datasource.getFacets(this.store.variable).then((data) => {
+            data.forEach((el) => {
+                list.push({
+                    text: el,
+                    value: el
+                })
+            });
+
+            return list;
+        });
     }
 
     getLimitOptions() {

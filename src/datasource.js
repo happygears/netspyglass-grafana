@@ -84,6 +84,10 @@ export class NetSpyGlassDatasource {
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;
 
+            if (target.orderBy.column.name === 'column') {
+                target.orderBy.column.value = target.orderBy.colValue;
+            }
+
             let sql = target.rawQuery
                 ? this.sqlQuery.generateSQLQueryFromString(target, this.queryOptions)
                 : this.sqlQuery.generateSQLQuery(target, this.queryOptions);
@@ -109,7 +113,6 @@ export class NetSpyGlassDatasource {
         }
 
         return this.api.queryData(sqlTargets)
-            .then(data => this._proccessingDataErrors(data))
             .then(data => this._processingGraphAliases(data, aliases))
             .then(list => ({data: list}));
     }
@@ -146,25 +149,6 @@ export class NetSpyGlassDatasource {
         });
 
     };
-
-    /**
-     * @param data
-     * @returns {*}
-     */
-    _proccessingDataErrors(data) {
-        let errorsList = _.filter(data, 'error'),
-            errors = {};
-
-        if (errorsList.length) {
-            errorsList.forEach((error) => {
-                errors[(error.id).toUpperCase()] = error.error;
-            });
-
-            throw errors;
-        }
-
-        return data;
-    }    
 
     _formatValue(value) {
         if (_.isArray(value)) {

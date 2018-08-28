@@ -150,6 +150,10 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         var processTarget = function processTarget(target) {
                             aliases[target.refId] = target.alias;
 
+                            if (target.orderBy.column.name === 'column') {
+                                target.orderBy.column.value = target.orderBy.colValue;
+                            }
+
                             var sql = target.rawQuery ? _this.sqlQuery.generateSQLQueryFromString(target, _this.queryOptions) : _this.sqlQuery.generateSQLQuery(target, _this.queryOptions);
 
                             sql = _this.templateSrv.replace(sql, options.scopedVars, _this._formatValue);
@@ -173,8 +177,6 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         }
 
                         return this.api.queryData(sqlTargets).then(function (data) {
-                            return _this._proccessingDataErrors(data);
-                        }).then(function (data) {
                             return _this._processingGraphAliases(data, aliases);
                         }).then(function (list) {
                             return { data: list };
@@ -209,22 +211,6 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                                 return item.tags[group];
                             }
                         });
-                    }
-                }, {
-                    key: '_proccessingDataErrors',
-                    value: function _proccessingDataErrors(data) {
-                        var errorsList = _.filter(data, 'error'),
-                            errors = {};
-
-                        if (errorsList.length) {
-                            errorsList.forEach(function (error) {
-                                errors[error.id.toUpperCase()] = error.error;
-                            });
-
-                            throw errors;
-                        }
-
-                        return data;
                     }
                 }, {
                     key: '_formatValue',

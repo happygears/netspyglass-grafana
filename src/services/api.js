@@ -251,7 +251,7 @@ class SQLQuery {
             }
         }
 
-        if (target.orderBy.column && target.orderBy.column.name) {
+        if (target.orderBy.column && target.orderBy.column.value && target.orderBy.column.value !== QueryPrompts.orderBy) {
             query.orderBy([`${sqlBuilder.escape(target.orderBy.column.alias || target.orderBy.column.value)} ${target.orderBy.sort}`]);
         } else {
             query.clearOrderBy();
@@ -413,7 +413,7 @@ class NSGQLApi {
         }
 
         return this._request(this.options.endpoints.data, {targets}, 'POST')
-            .then(function (response) {
+            .then((response) => {
                 if (response.status === 200) {
                     const data = response.data || response;
 
@@ -421,10 +421,18 @@ class NSGQLApi {
                         Cache[cacheKey] = _.cloneDeep(data);
                     }
 
+                    this._proccessingNsgQlErrors(response);
+
                     return data;
                 }
 
                 return [];
+            }, (err) => {
+                throw {
+                    message: 'Network Error: ' + err.statusText + '(' + err.status + ')',
+                    data: err.data,
+                    config: err.config,
+                };
             });
     }
 
@@ -471,6 +479,29 @@ class NSGQLApi {
         }
 
         return this.$backend.datasourceRequest(options);
+    }
+
+    /**
+     * @param response
+     * @returns {*}
+     */
+    _proccessingNsgQlErrors(response) {
+        let errorsList = _.filter(response.data, 'error'),
+            errors = {};
+
+        if (errorsList.length) {
+            errorsList.forEach((error) => {
+                errors[(error.id).toUpperCase()] = error.error;
+            });
+
+            throw {
+                message: `NsgQL Error`,
+                data: errors,
+                config: response.config,
+            }
+        }
+
+        return response;
     }
 }
 

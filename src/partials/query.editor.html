@@ -2,8 +2,9 @@
                   class="generic-datasource-query-row"
                   can-collapse="true"
                   has-text-edit-mode="true">
-    <div class="gf-form" data-ng-show="ctrl.errors[ctrl.store.refId]">
-        <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.store.refId]}}</pre>
+
+    <div class="gf-form" data-ng-show="ctrl.errors.data[ctrl.store.refId]">
+        <pre class="gf-form-pre alert alert-error">{{ctrl.errors.data[ctrl.store.refId]}}</pre>
     </div>
 
     <div class="editor-part editor-part--row" data-ng-if="ctrl.store.rawQuery">
@@ -111,6 +112,17 @@
                         data-get-options="ctrl.getOrderByOptions()"></hg-dropdown>
                 </div>
 
+                <div class="gf-form" data-ng-if="ctrl.store.orderBy.colName === 'column'">
+                    <gf-form-dropdown
+                            data-model="ctrl.store.orderBy.colValue"
+                            data-lookup-text="true"
+                            data-label-mode="true"
+                            data-get-options="ctrl.getOrderByColumns()"
+                            data-on-change="ctrl.onChangeOrderByValue()"
+                            data-hg-escape-regexp>
+                    </gf-form-dropdown>
+                </div>
+
                 <div class="gf-form" data-ng-if="ctrl.store.orderBy.column && ctrl.store.orderBy.colName !== ctrl.prompts.orderBy">
                     <gf-form-dropdown 
                         data-model="ctrl.store.orderBy.sort" 
@@ -184,33 +196,25 @@
                     <div class="gf-form-label gf-form-label--secondary">Plugin version: {{ctrl.pluginVersion}}</div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="gf-form-inline" data-ng-if="ctrl.options.isGraph">
-                <div class="gf-form">
-                    <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
-                </div>
-                <div class="gf-form gf-form--grow">
-                    <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.store.alias" spellcheck="false"
-                        placeholder="Naming pattern" ng-blur="ctrl.execute()">
-                </div>
-                <div class="gf-form ">
-                    <div class="gf-form-label">
-                        <i class="fa fa-question-circle" data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
-                            data-placement="bottom" data-original-title="" title=""></i>
-                    </div>
+    <div class="editor-part" data-ng-if="ctrl.options.isGraph">
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
+            </div>
+            <div class="gf-form gf-form--grow">
+                <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.store.alias" spellcheck="false"
+                       placeholder="Naming pattern" ng-blur="ctrl.execute()">
+            </div>
+            <div class="gf-form ">
+                <div class="gf-form-label">
+                    <i class="fa fa-question-circle" data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
+                       data-placement="bottom" data-original-title="" title=""></i>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <!--<div style="border: 1px solid red; margin: 20px 0">-->
-    <!--<pre>{{ ctrl.store }}</pre>-->
-    <!--</div>-->
-
-    <!--<div style="border: 1px solid red; margin: 20px 0">-->
-    <!--<pre> {{  ctrl.options | json}}</pre>-->
-    <!--</div>-->
-
-    <!--<test data-prop="ctrl.store.variable"></test>-->
 </query-editor-row>

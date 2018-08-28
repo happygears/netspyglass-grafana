@@ -1,7 +1,7 @@
 {
   "name": "grafana-netspyglass",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.7",
   "description": "",
   "scripts": {
     "build": "grunt",
@@ -32,6 +32,8 @@
     "angular": "~1.6.1",
     "angular-mocks": "~1.6.1",
     "chai": "~3.5.0",
+    "grunt-bump": "^0.8.0",
+    "grunt-prompt": "^1.3.3",
     "jsdom": "~11.1.0",
     "lodash": "~4.17.4",
     "mocha": "~3.5.3",

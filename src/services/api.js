@@ -100,7 +100,8 @@ class SQLQuery {
     getTagKeysForAdHoc() {
         return sqlBuilder.factory({
             select: ['facet'],
-            from: 'tags'
+            from: 'tags',
+            orderBy: ['facet']
         }).compile();
     }
 

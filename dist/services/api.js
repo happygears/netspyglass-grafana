@@ -191,7 +191,8 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                     value: function getTagKeysForAdHoc() {
                         return sqlBuilder.factory({
                             select: ['facet'],
-                            from: 'tags'
+                            from: 'tags',
+                            orderBy: ['facet']
                         }).compile();
                     }
                 }, {

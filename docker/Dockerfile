@@ -15,8 +15,6 @@ ENV HAPPYGEARS_DIR="/happygears"
 USER root
 RUN apt-get update && apt-get install -qq -y jq
 
-USER grafana
-
 WORKDIR $HAPPYGEARS_DIR
 
 ENV GRAFANA_VOLUME_DIR="/opt/grafana"
@@ -45,5 +43,7 @@ RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR
 VOLUME ["$GRAFANA_VOLUME_DIR"]
 
 EXPOSE 3000
+
+USER grafana
 
 ENTRYPOINT ["/start.sh"]

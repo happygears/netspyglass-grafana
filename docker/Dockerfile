@@ -1,18 +1,21 @@
 
 # https://docs.docker.com/engine/reference/builder/
 #
-# beginning with Grafana 5.2, base image is based on CentOS
+# base image is based on debian:stretch-slim
 #
 # See:
 #
 # http://docs.grafana.org/installation/docker/
-# https://github.com/grafana/grafana/blob/master/docker/buildcontainer/Dockerfile
+# https://github.com/grafana/grafana/blob/master/packaging/docker/Dockerfile
 
 FROM grafana/grafana
 
 ENV HAPPYGEARS_DIR="/happygears"
 
-RUN yum -y install jq
+USER root
+RUN apt-get update && apt-get install -qq -y jq
+
+USER grafana
 
 WORKDIR $HAPPYGEARS_DIR
 

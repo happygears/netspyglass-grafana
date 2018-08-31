@@ -7,8 +7,10 @@
 #
 # http://docs.grafana.org/installation/docker/
 # https://github.com/grafana/grafana/blob/master/packaging/docker/Dockerfile
+#
+# https://hub.docker.com/r/grafana/grafana/tags/
 
-FROM grafana/grafana
+FROM grafana/grafana:5.2.3
 
 ENV HAPPYGEARS_DIR="/happygears"
 

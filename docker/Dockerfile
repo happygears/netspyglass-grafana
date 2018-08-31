@@ -1,15 +1,18 @@
 
 # https://docs.docker.com/engine/reference/builder/
-
-# base image is based on Ubuntu 16.04 and has all dependency packages, latest dev NetSpyGlass and
-# Grafana v4.5.2
 #
+# beginning with Grafana 5.2, base image is based on CentOS
+#
+# See:
+#
+# http://docs.grafana.org/installation/docker/
+# https://github.com/grafana/grafana/blob/master/docker/buildcontainer/Dockerfile
 
 FROM grafana/grafana
 
 ENV HAPPYGEARS_DIR="/happygears"
 
-RUN apt-get -y update && apt-get install -y jq
+RUN yum -y install jq
 
 WORKDIR $HAPPYGEARS_DIR
 

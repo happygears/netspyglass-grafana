@@ -37,13 +37,14 @@ export class NetSpyGlassDatasource {
      * @param templateSrv
      */
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
-        const {networkId, accessToken, useToken} = instanceSettings.jsonData;
+        const {networkId, accessToken, useToken, addTokenToHeader} = instanceSettings.jsonData;
         const {url} = instanceSettings;
 
         /** @type INSGQLApiOptions */
         const options = {
             baseUrl: `${url}/v2`,
             token: useToken  && accessToken ? accessToken: false,
+            useTokenInHeader: addTokenToHeader,
             basicAuth: instanceSettings.basicAuth,
             withCredentials: instanceSettings.withCredentials,
             endpoints: {

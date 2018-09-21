@@ -552,15 +552,21 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
 
 
                         var options = {
-                            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest' },
                             method: method,
                             data: data,
                             url: this.options.baseUrl + resource
                         };
 
                         if (this.options.token) {
-                            var query = '?' + this.$backend.$http.defaults.paramSerializer({ access_token: this.options.token });
-                            options.url += query;
+                            if (this.options.useTokenInHeader) {
+                                options.headers['X-NSG-Auth-API-Token'] = this.options.token;
+                            } else {
+                                var query = '?' + this.$backend.$http.defaults.paramSerializer({ access_token: this.options.token });
+                                options.url += query;
+                            }
                         }
 
                         if (this.options.basicAuth || this.options.withCredentials) {

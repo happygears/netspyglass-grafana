@@ -94,7 +94,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     var _instanceSettings$jso = instanceSettings.jsonData,
                         networkId = _instanceSettings$jso.networkId,
                         accessToken = _instanceSettings$jso.accessToken,
-                        useToken = _instanceSettings$jso.useToken;
+                        useToken = _instanceSettings$jso.useToken,
+                        addTokenToHeader = _instanceSettings$jso.addTokenToHeader;
                     var url = instanceSettings.url;
 
 
@@ -102,6 +103,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     var options = {
                         baseUrl: url + '/v2',
                         token: useToken && accessToken ? accessToken : false,
+                        useTokenInHeader: addTokenToHeader,
                         basicAuth: instanceSettings.basicAuth,
                         withCredentials: instanceSettings.withCredentials,
                         endpoints: {

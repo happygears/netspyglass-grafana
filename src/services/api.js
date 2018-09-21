@@ -458,16 +458,22 @@ class NSGQLApi {
     _request(resource, data, method = 'POST') {
         
         const options = {
-            headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'},
             method: method,
             data: data,
             url: this.options.baseUrl + resource
         };
 
         if (this.options.token) {
-            let query =  '?' + this.$backend.$http.
-                defaults.paramSerializer({access_token: this.options.token});
-            options.url += query;
+            if (this.options.useTokenInHeader) {
+                options.headers['X-NSG-Auth-API-Token'] = this.options.token;
+            } else {
+                let query =  '?' + this.$backend.$http.
+                    defaults.paramSerializer({access_token: this.options.token});
+                options.url += query;
+            }
         }
 
         if (this.options.basicAuth || this.options.withCredentials) {

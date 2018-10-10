@@ -296,7 +296,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             columns.push({ text: '---------', separator: true });
                             columns.push({
                                 text: 'predefined columns',
-                                submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }]
+                                submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'combinedRoles', value: 'combinedRoles' }, { text: 'combinedNsgRoles', value: 'combinedNsgRoles' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }]
                             });
 
                             columns.push({ text: '---------', separator: true });

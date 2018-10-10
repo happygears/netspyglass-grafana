@@ -243,6 +243,8 @@ export class NetSpyGlassDatasource {
                 submenu: [
                     {text: 'address', value: 'address'},
                     {text: 'boxDescr', value: 'boxDescr'},
+                    {text: 'combinedRoles', value: 'combinedRoles'},
+                    {text: 'combinedNsgRoles', value: 'combinedNsgRoles'},
                     {text: 'component', value: 'component'},
                     {text: 'device', value: 'device'},
                     {text: 'description', value: 'description'},

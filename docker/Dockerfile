@@ -41,6 +41,7 @@ COPY docker/files/provisioning/datasources       $HAPPYGEARS_DIR/grafana/provisi
 
 RUN  chmod +x /start.sh
 RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR
+RUN  chown -R grafana.grafana       $HAPPYGEARS_DIR/grafana/provisioning/
 
 VOLUME ["$GRAFANA_VOLUME_DIR"]
 

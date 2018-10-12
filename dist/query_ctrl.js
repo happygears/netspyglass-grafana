@@ -173,7 +173,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
-                        var defaults = _.extend({}, targetDefaults);
+                        var defaults = _.merge({}, targetDefaults);
 
                         this.target._nsgTarget = this.target._nsgTarget || {};
                         this.store = this.target._nsgTarget;

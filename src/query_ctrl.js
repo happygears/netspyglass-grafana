@@ -127,7 +127,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     initTarget() {
-        let defaults = _.extend({}, targetDefaults);
+        let defaults = _.merge({}, targetDefaults);
 
         this.target._nsgTarget = this.target._nsgTarget || {};
         this.store = this.target._nsgTarget;

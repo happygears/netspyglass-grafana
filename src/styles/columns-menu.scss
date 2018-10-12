@@ -1,13 +1,13 @@
 
 hg-columns-menu {
     position: relative;
-    margin-right: 2px;
+    margin-right: 2px !important;
     background: $columns-bg;
     $margin: 0.45rem;
     border: none;
     box-sizing: border-box;
     display: block;
-
+    border-radius: 2px;
     
     &.on-drag-enter {
         box-shadow: 0 0 1px $column-hover-link-color;
@@ -88,19 +88,35 @@ hg-columns-menu {
 
     .col-container {
         display: flex;
-        // border-right: 1px solid $columns-menu-border; 
 
-        &__item {
+        &__item:last-child,
+        &__item:last-child .gf-form-label,
+        &__item:last-child input {
+            border-radius: 0 2px 2px 0 !important;
+        }
+
+        &__item:first-child .gf-form-label,
+        & > .gf-form-label:first-child {
+            padding-left: $margin;
+        }
+
+        .gf-form-label {
             padding-left: 0;
-            padding-right: 0;
-            margin-right: $margin !important;
+            margin-right: 0 !important;
+            border-left: none;
+            border-right: none;
+        }
+
+        hg-dropdown .gf-form-label {
+            padding-right: $margin !important;
         }
     }
 
-    .gf-form-label.dropdown-toggle {
+    .dropdown-toggle.gf-form-btn {
+        padding-left: 0.45em;
+        padding-right: 0.45em;
+        border-radius: 2px 0 0 2px;
         margin-right: 0;
-        padding-left: $margin;
-        padding-right: $margin;
     }
 }
 

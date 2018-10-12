@@ -279,6 +279,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getColumns',
                     value: function getColumns(variable) {
+                        var _this3 = this;
+
                         return this.$q.all([this.getCategories(), this.getFacets(variable)]).then(function (data) {
                             var _data = _slicedToArray(data, 2),
                                 categories = _data[0],
@@ -294,10 +296,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             });
 
                             columns.push({ text: '---------', separator: true });
-                            columns.push({
-                                text: 'predefined columns',
-                                submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'combinedRoles', value: 'combinedRoles' }, { text: 'combinedNsgRoles', value: 'combinedNsgRoles' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }]
-                            });
+                            columns.push(_this3.getPredefinedColumns());
 
                             columns.push({ text: '---------', separator: true });
 
@@ -309,6 +308,14 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             return columns;
                         });
+                    }
+                }, {
+                    key: 'getPredefinedColumns',
+                    value: function getPredefinedColumns() {
+                        return {
+                            text: 'predefined columns',
+                            submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'combinedRoles', value: 'combinedRoles' }, { text: 'combinedNsgRoles', value: 'combinedNsgRoles' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }]
+                        };
                     }
                 }, {
                     key: 'getSuggestions',
@@ -368,6 +375,28 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             }).filter(Boolean);
                         }).catch(function () {
                             return [];
+                        });
+                    }
+                }, {
+                    key: 'getCombinedList',
+                    value: function getCombinedList(variable) {
+                        var _this4 = this;
+
+                        return this.getFacets(variable).then(function (tags) {
+                            var list = [];
+
+                            list.push({
+                                text: 'tags',
+                                submenu: tags.map(function (tag) {
+                                    return { text: tag, value: tag };
+                                })
+                            });
+
+                            list.push({ text: '---------', separator: true });
+
+                            list.push(_this4.getPredefinedColumns());
+
+                            return list;
                         });
                     }
                 }]);

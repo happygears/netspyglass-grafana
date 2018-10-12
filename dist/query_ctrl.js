@@ -322,7 +322,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     }
                 }, {
                     key: 'onChangeOrderByValue',
-                    value: function onChangeOrderByValue() {
+                    value: function onChangeOrderByValue($value) {
+                        this.store.orderBy.colValue = $value;
                         this._updateOrderBy();
                     }
                 }, {
@@ -337,6 +338,12 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         this.store.orderBy.colName = this.prompts.orderBy;
                         this.store.orderBy.colValue = this.prompts.orderBy;
                         this._updateOrderBy();
+                    }
+                }, {
+                    key: 'onChangeGroupByValue',
+                    value: function onChangeGroupByValue($value) {
+                        this.store.groupBy.value = $value;
+                        this.execute();
                     }
                 }, {
                     key: 'onClearGroupBy',
@@ -661,20 +668,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getOrderByColumns',
                     value: function getOrderByColumns() {
-                        var list = [{
-                            text: 'device',
-                            value: 'device'
-                        }];
-                        return this.datasource.getFacets(this.store.variable).then(function (data) {
-                            data.forEach(function (el) {
-                                list.push({
-                                    text: el,
-                                    value: el
-                                });
-                            });
-
-                            return list;
-                        });
+                        return this.datasource.getCombinedList(this.store.variable);
                     }
                 }, {
                     key: 'getLimitOptions',
@@ -733,20 +727,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                 }]);
                                 break;
                             case 'column':
-                                var list = [{
-                                    text: 'device',
-                                    value: 'device'
-                                }];
-                                return this.datasource.getFacets(this.store.variable).then(function (data) {
-                                    data.forEach(function (el) {
-                                        list.push({
-                                            text: el,
-                                            value: el
-                                        });
-                                    });
-
-                                    return list;
-                                });
+                                return this.datasource.getCombinedList(this.store.variable);
                                 break;
                         }
                     }

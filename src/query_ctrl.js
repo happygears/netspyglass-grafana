@@ -253,7 +253,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this._updateOrderBy();
     }
 
-    onChangeOrderByValue() {
+    onChangeOrderByValue($value) {
+        this.store.orderBy.colValue = $value;
         this._updateOrderBy();
     }
 
@@ -266,6 +267,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.store.orderBy.colName = this.prompts.orderBy;
         this.store.orderBy.colValue = this.prompts.orderBy;
         this._updateOrderBy();
+    }
+
+    onChangeGroupByValue($value) {
+        this.store.groupBy.value = $value;
+        this.execute();
     }
 
     onClearGroupBy() {
@@ -595,20 +601,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     getOrderByColumns() {
-        const list = [{
-            text: 'device',
-            value: 'device'
-        }];
-        return this.datasource.getFacets(this.store.variable).then((data) => {
-            data.forEach((el) => {
-                list.push({
-                    text: el,
-                    value: el
-                })
-            });
-
-            return list;
-        });
+        return this.datasource.getCombinedList(this.store.variable);
     }
 
     getLimitOptions() {
@@ -677,20 +670,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 ]);
                 break;
             case 'column':
-                const list = [{
-                    text: 'device',
-                    value: 'device'
-                }];
-                return this.datasource.getFacets(this.store.variable).then((data) => {
-                    data.forEach((el) => {
-                        list.push({
-                            text: el,
-                            value: el
-                        })
-                    });
-
-                    return list;
-                });
+                return this.datasource.getCombinedList(this.store.variable);
                 break;
         }
     }

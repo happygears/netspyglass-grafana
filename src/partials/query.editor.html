@@ -61,10 +61,27 @@
                             data-available-remove="ctrl.options.isTable" 
                             data-on-column-remove="ctrl.onColumnRemove($column)" 
                             data-on-column-changed="ctrl.onColumnChanged($column, $prevColumnState)"
-                            class="gf-form gf-form--column-editor">
+                            class="gf-form gf-form--column-editor"
+                            data-ng-class="{'one-per-line': ctrl.store.isSeparatedColumns && ctrl.options.isTable}">
                         </hg-columns-menu>
 
                         <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
+
+                        <a class="gf-form-label"
+                           data-ng-if="ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-click="ctrl.toggleColumnsView()"
+                           data-placement="top"
+                           data-bs-tooltip="'Switch to align columns by default'">
+                            <i class="fa fa-th"></i>
+                        </a>
+
+                        <a class="gf-form-label"
+                           data-ng-if="!ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-click="ctrl.toggleColumnsView()"
+                           data-placement="top"
+                           data-bs-tooltip="'Switch to align columns one per line'">
+                            <i class="fa fa-th-list"></i>
+                        </a>
 
                         <div class="gf-form gf-form--grow">
                             <div class="gf-form-label gf-form-label--grow">

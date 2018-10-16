@@ -53,7 +53,8 @@ const targetDefaults = {
     groupBy: {
         type: QueryPrompts.groupByType,
         value: QueryPrompts.groupBy
-    }
+    },
+    isSeparatedColumns: false
 };
 
 //http://angular-dragdrop.github.io/angular-dragdrop/
@@ -677,6 +678,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     getCollapsedText() {
         return 'This target is collapsed. Click to the row for open it.';
+    }
+
+    toggleColumnsView() {
+        this.store.isSeparatedColumns = !this.store.isSeparatedColumns;
     }
 }
 

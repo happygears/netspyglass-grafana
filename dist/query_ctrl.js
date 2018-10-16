@@ -87,7 +87,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 groupBy: {
                     type: QueryPrompts.groupByType,
                     value: QueryPrompts.groupBy
-                }
+                },
+                isSeparatedColumns: false
             };
 
             _export('NetSpyGlassQueryCtrl', NetSpyGlassQueryCtrl = function (_QueryCtrl) {
@@ -735,6 +736,11 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     key: 'getCollapsedText',
                     value: function getCollapsedText() {
                         return 'This target is collapsed. Click to the row for open it.';
+                    }
+                }, {
+                    key: 'toggleColumnsView',
+                    value: function toggleColumnsView() {
+                        this.store.isSeparatedColumns = !this.store.isSeparatedColumns;
                     }
                 }]);
 

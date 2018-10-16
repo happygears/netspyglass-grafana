@@ -2,7 +2,6 @@
 hg-columns-menu {
     position: relative;
     margin-right: 2px !important;
-    background: $columns-bg;
     $margin: 0.45rem;
     border: none;
     box-sizing: border-box;
@@ -26,6 +25,10 @@ hg-columns-menu {
         &:before, &:after {
             display: none !important;
         }
+    }
+
+    &.one-per-line {
+        width: 100%;
     }
 
     .select-col__func--open {

@@ -68,7 +68,7 @@
                         <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
 
                         <a class="gf-form-label"
-                           data-ng-if="ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-show="ctrl.store.isSeparatedColumns && ctrl.options.isTable"
                            data-ng-click="ctrl.toggleColumnsView()"
                            data-placement="top"
                            data-bs-tooltip="'Switch to align columns by default'">
@@ -76,7 +76,7 @@
                         </a>
 
                         <a class="gf-form-label"
-                           data-ng-if="!ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-show="!ctrl.store.isSeparatedColumns && ctrl.options.isTable"
                            data-ng-click="ctrl.toggleColumnsView()"
                            data-placement="top"
                            data-bs-tooltip="'Switch to align columns one per line'">

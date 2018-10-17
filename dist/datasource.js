@@ -152,7 +152,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         var processTarget = function processTarget(target) {
                             aliases[target.refId] = target.alias;
 
-                            if (target.orderBy.column.name === 'column') {
+                            if (target.orderBy && target.orderBy.column.name === 'column') {
                                 target.orderBy.column.value = target.orderBy.colValue;
                             }
 

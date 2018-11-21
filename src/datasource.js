@@ -83,6 +83,8 @@ export class NetSpyGlassDatasource {
         };
 
         const processTarget = (target) => {
+            let maxDataPoints = options.maxDataPoints && target.format === 'time_series' ? options.maxDataPoints : undefined;
+
             aliases[target.refId] = target.alias;
 
             if (target.orderBy && target.orderBy.column.name === 'column') {
@@ -95,7 +97,7 @@ export class NetSpyGlassDatasource {
 
             sql = this.templateSrv.replace(sql, options.scopedVars, this._formatValue);
 
-            return this.api.generateTarget(sql, target.format, target.refId);
+            return this.api.generateTarget(sql, target.format, target.refId, maxDataPoints);
         };
 
         const sqlTargets = targets

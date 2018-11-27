@@ -26,7 +26,7 @@
 
     <span data-ng-if="$ctrl.column.alias" class="gf-form-label col-container__item query-keyword">AS</span>
 
-    <form class="col-container__item" novalidate name="column_form" data-ng-if="$ctrl.column.alias">
+    <form class="col-container__item" novalidate name="column_form" data-ng-show="$ctrl.column.alias">
         <input name="alias"
             data-ng-model-options="{allowInvalid: true, updateOn: 'blur'}"
             data-ng-model="$ctrl.column.alias"

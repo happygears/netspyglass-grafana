@@ -2,8 +2,10 @@ module.exports = function(grunt) {
   const IS_DEV = process.env.NODE_ENV !== 'production';
   const fs = require('fs');
   const path = require('path');
+  const semver = require('semver');
   const pluginData = require(path.join(__dirname, 'plugin.json'));
   const destPath = IS_DEV ? 'dist_dev' : 'dist';
+  const currentVersion = pluginData.info.version;
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -11,6 +13,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-mocha-test');
+
+  grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-prompt');
 
 
   grunt.initConfig({
@@ -109,6 +114,64 @@ module.exports = function(grunt) {
           extDot: 'last'
         }]
       }
+    },
+
+    bump: {
+      options: {
+        files: ['package.json', 'plugin.json'],
+        updateConfigs: [],
+        commit: false,
+        createTag: false,
+        push: false,
+      }
+    },
+
+    prompt: {
+      bump: {
+        options: {
+          questions: [
+            {
+              config:  'bump.increment',
+              type:    'list',
+              message: 'Bump version from ' + currentVersion + ' to:',
+              choices: [
+                {
+                  value: 'build',
+                  name:  'Build:  '+ (currentVersion + '-?') + ' Unstable, betas, and release candidates.'
+                },
+                {
+                  value: 'patch',
+                  name:  'Patch:  ' + semver.inc(currentVersion, 'patch') + ' Backwards-compatible bug fixes.'
+                },
+                {
+                  value: 'minor',
+                  name:  'Minor:  ' + semver.inc(currentVersion, 'minor') + ' Add functionality in a backwards-compatible manner.'
+                },
+                {
+                  value: 'major',
+                  name:  'Major:  ' + semver.inc(currentVersion, 'major') + ' Incompatible API changes.'
+                },
+                {
+                  value: 'custom',
+                  name:  'Custom: ?.?.? Specify version...'
+                }
+              ]
+            },
+            {
+              config:   'bump.version',
+              type:     'input',
+              message:  'What specific version would you like',
+              when:     function (answers) {
+                  return answers['bump.increment'] === 'custom';
+              },
+              validate: function (value) {
+                  var valid = semver.valid(value);
+                  return !!valid || 'Must be a valid semver, such as 1.2.3-rc1. See http://semver.org/ for more details.';
+              }
+            },
+          ]
+        }
+      }
     }
   });
 
@@ -116,5 +179,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', ['babel:distTestNoSystemJs', 'babel:distTestsSpecsNoSystemJs', 'mochaTest']);
 
-  grunt.registerTask('default', IS_DEV ? ['build'] : ['build', 'test']);
+  grunt.registerTask('bumpVersion', ['prompt:bump', 'bump']);
+
+  grunt.registerTask('default', IS_DEV ? ['build'] : ['bumpVersion', 'build', 'test']);
 };

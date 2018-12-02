@@ -1,4 +1,3 @@
-
 class DropdownController {
     constructor($injector, $scope) {
         this.$injector = $injector;
@@ -11,7 +10,7 @@ class DropdownController {
 
     onSelectValue(value) {
         this.value = value;
-        this.onValueChanged({$value: this.value});
+        this.onValueChanged({$value: value});
     }
 
     /**
@@ -44,7 +43,8 @@ export default function DropdownDirective() {
         controllerAs: '$ctrl',
         bindToController: true,
         scope: {
-            value: '=',
+            label: '@',
+            value: '=?',
             onValueChanged: '&',
             getOptions: '&'
         },

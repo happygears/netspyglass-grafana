@@ -28,7 +28,7 @@ const QueryTableNames = {
  * @typedef {{}} QueryTarget
  * @typedef {{rangeRaw: {from: string, to: string} targets: QueryTarget[]}} QueryOptions
  */
-
+ 
 export class NetSpyGlassDatasource {
     /**
      * @param {PluginSettings} instanceSettings
@@ -37,13 +37,14 @@ export class NetSpyGlassDatasource {
      * @param templateSrv
      */
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
-        const {networkId, accessToken, useToken} = instanceSettings.jsonData;
+        const {networkId, accessToken, useToken, addTokenToHeader} = instanceSettings.jsonData;
         const {url} = instanceSettings;
 
         /** @type INSGQLApiOptions */
         const options = {
             baseUrl: `${url}/v2`,
             token: useToken  && accessToken ? accessToken: false,
+            useTokenInHeader: addTokenToHeader,
             basicAuth: instanceSettings.basicAuth,
             withCredentials: instanceSettings.withCredentials,
             endpoints: {
@@ -56,6 +57,7 @@ export class NetSpyGlassDatasource {
         this.$q = $q;
         this.templateSrv = templateSrv;
         this.sqlQuery = new SQLQuery(templateSrv);
+        this._formatValue = this._formatValue.bind(this);
     }
 
     /**
@@ -73,16 +75,27 @@ export class NetSpyGlassDatasource {
         const adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
         //this variable is used for building "raw" query in the getSQLString method
-        this.queryOptions = {timeRange, interval: options.interval, adHoc: adhocFilters};
+        this.queryOptions = {
+            timeRange, 
+            interval: options.interval, 
+            adHoc: adhocFilters,
+            scopedVars: options.scopedVars
+        };
 
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;
 
-            const sql = target.rawQuery
+            if (target.orderBy && target.orderBy.column.name === 'column') {
+                target.orderBy.column.value = target.orderBy.colValue;
+            }
+
+            let sql = target.rawQuery
                 ? this.sqlQuery.generateSQLQueryFromString(target, this.queryOptions)
                 : this.sqlQuery.generateSQLQuery(target, this.queryOptions);
 
-            return this.api.generateTarget(this.templateSrv.replace(sql), target.format, target.refId);
+            sql = this.templateSrv.replace(sql, options.scopedVars, this._formatValue);
+
+            return this.api.generateTarget(sql, target.format, target.refId);
         };
 
         const sqlTargets = targets
@@ -101,7 +114,6 @@ export class NetSpyGlassDatasource {
         }
 
         return this.api.queryData(sqlTargets)
-            .then(data => this._proccessingDataErrors(data))
             .then(data => this._processingGraphAliases(data, aliases))
             .then(list => ({data: list}));
     }
@@ -139,24 +151,18 @@ export class NetSpyGlassDatasource {
 
     };
 
-    /**
-     * @param data
-     * @returns {*}
-     */
-    _proccessingDataErrors(data) {
-        let errorsList = _.filter(data, 'error'),
-            errors = {};
-
-        if (errorsList.length) {
-            errorsList.forEach((error) => {
-                errors[(error.id).toUpperCase()] = error.error;
-            });
-
-            throw errors;
+    _formatValue(value) {
+        if (_.isArray(value)) {
+            if (value.length === 1) {
+                value = value[0];
+            } else {
+                return `${value.join("', '")}`;
+            }
         }
 
-        return data;
+        return this.templateSrv.formatValue(value);
     }
+
 
     /**
      * @param data
@@ -222,7 +228,7 @@ export class NetSpyGlassDatasource {
         return this.$q.all([
             this.getCategories(),
             this.getFacets(variable)
-        ]).then(function (data) {
+        ]).then((data) => {
             const [categories, tags] = data;
             let columns = [];
 
@@ -232,19 +238,7 @@ export class NetSpyGlassDatasource {
             });
 
             columns.push({text: '---------', separator: true});
-            columns.push({
-                text: 'predefined columns',
-                submenu: [
-                    {text: 'address', value: 'address'},
-                    {text: 'boxDescr', value: 'boxDescr'},
-                    {text: 'component', value: 'component'},
-                    {text: 'device', value: 'device'},
-                    {text: 'description', value: 'description'},
-                    {text: 'discoveryTime', value: 'discoveryTime'},
-                    {text: 'metric', value: 'metric'},
-                    {text: 'time', value: 'time'}
-                ]
-            });
+            columns.push(this.getPredefinedColumns());
 
             columns.push({text: '---------', separator: true});
 
@@ -258,14 +252,38 @@ export class NetSpyGlassDatasource {
         });
     }
 
+    getPredefinedColumns() {
+        return {
+            text: 'predefined columns',
+            submenu: [
+                {text: 'address', value: 'address'},
+                {text: 'boxDescr', value: 'boxDescr'},
+                {text: 'combinedRoles', value: 'combinedRoles'},
+                {text: 'combinedNsgRoles', value: 'combinedNsgRoles'},
+                {text: 'component', value: 'component'},
+                {text: 'device', value: 'device'},
+                {text: 'description', value: 'description'},
+                {text: 'discoveryTime', value: 'discoveryTime'},
+                {text: 'metric', value: 'metric'},
+                {text: 'time', value: 'time'}
+            ]
+        };
+    }
+
     /**
      * @returns {Promise}
      */
     getSuggestions(data) {
         let query;
 
-        query = this.sqlQuery.suggestion(data.type, data.variable, data.tags);
-        query = this.templateSrv.replace(query);
+        query = this.sqlQuery.suggestion(
+            data.type, 
+            data.variable, 
+            data.tags,
+            data.scopedVars
+        );
+        
+        query = this.templateSrv.replace(query, data.scopedVars);
 
         return this.api
             .queryData(query, NSGQLApi.FORMAT_LIST)
@@ -284,7 +302,9 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     metricFindQuery(query) {
-        query = this.templateSrv.replace(query);
+        query = this.sqlQuery.replaceVariables(query);
+        query = this.templateSrv.replace(query, null, this._formatValue);
+
         return this.api
             .queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
                 return data.map(el => ({text: el}));
@@ -324,4 +344,25 @@ export class NetSpyGlassDatasource {
             })
             .catch(() => ([]));
     };
+
+    /**
+     *
+     */
+    getCombinedList(variable) {
+        return this.getFacets(variable)
+            .then((tags) => {
+                const list = [];
+
+                list.push({
+                    text: 'tags',
+                    submenu: tags.map((tag) => ({text: tag, value: tag}))
+                });
+
+                list.push({text: '---------', separator: true});
+
+                list.push(this.getPredefinedColumns());
+
+                return list;
+            });
+    }
 }

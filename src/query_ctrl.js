@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import {QueryCtrl} from 'app/plugins/sdk';
-import {QueryPrompts, GrafanaVariables} from './dictionary';
+import {
+    QueryCtrl
+} from 'app/plugins/sdk';
+import {
+    QueryPrompts,
+    GrafanaVariables
+} from './dictionary';
 import utils from './services/utils';
+
+
 
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment
@@ -25,7 +32,10 @@ const orderBySortTypes = ['ASC', 'DESC'];
 
 const targetDefaults = {
     type: 'nsgql',
-    columns: [{name: 'metric', visible: true}],
+    columns: [{
+        name: 'metric',
+        visible: true
+    }],
     variable: QueryPrompts.variable,
     orderBy: {
         column: {
@@ -34,7 +44,8 @@ const targetDefaults = {
             alias: ''
         },
         sort: orderBySortTypes[0],
-        colName: QueryPrompts.orderBy
+        colName: QueryPrompts.orderBy,
+        colValue: QueryPrompts.orderBy,
     },
     rawQuery: 0,
     limit: 100,
@@ -42,7 +53,8 @@ const targetDefaults = {
     groupBy: {
         type: QueryPrompts.groupByType,
         value: QueryPrompts.groupBy
-    }
+    },
+    isSeparatedColumns: false
 };
 
 //http://angular-dragdrop.github.io/angular-dragdrop/
@@ -70,7 +82,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             isHeatmap: this.panel.type === 'heatmap',
             categories: [],
             segments: [],
-            removeSegment: uiSegmentSrv.newSegment({fake: true, value: this.prompts.removeTag}),
+            removeSegment: uiSegmentSrv.newSegment({
+                fake: true,
+                value: this.prompts.removeTag
+            }),
             rawQueryString: '',
         };
 
@@ -78,9 +93,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     execute() {
-        this.errors = {};
-        this.store.loading = true;
-        this.panelCtrl.refresh();
+        this.scheduler.sheduleTask(() => {
+            this.errors = {};
+            this.panelCtrl.refresh();
+        });
     }
 
     init() {
@@ -89,12 +105,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.getCategories()
             .then(() => this.loadColumns());
 
+        this.scheduler = utils.getScheduler();
+
         this.panelCtrl.events.emitter.on('data-error', (errors) => {
             this.errors = _.cloneDeep(errors);
+            this.scheduler.stop();
         });
-        
+
         this.panelCtrl.events.emitter.on('render', () => {
-            this.store.loading = false;
+            this.scheduler.stop();
         });
 
         if (this.options.isTable) {
@@ -109,27 +128,47 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     initTarget() {
+        let defaults = _.merge({}, targetDefaults);
+
         this.target._nsgTarget = this.target._nsgTarget || {};
         this.store = this.target._nsgTarget;
-        this.store.refId = this.target.refId; 
-        
-        _.defaultsDeep(
+        this.store.refId = this.target.refId || 'A';
+
+        //if new target created in graph panel
+        if (!this.store.columns && this.options.isGraph) {
+            defaults = this.setGraphDefaults(defaults);
+        }
+
+        _.defaults(
             this.store,
-            targetDefaults
+            defaults
         );
 
         this.store.format = (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) ? 'time_series' : 'table';
         this.store.isTablePanel = this.options.isTable;
 
         if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
-            if (!_.find(this.store.columns, {name: 'time'})) {
-                this.store.columns.push({name: 'time', visible: false});
+            if (!_.find(this.store.columns, {
+                    name: 'time'
+                })) {
+                this.store.columns.push({
+                    name: 'time',
+                    visible: false
+                });
             }
         }
 
         if (this.options.isSinglestat) {
             this.store.limit = 1;
         }
+    }
+
+    setGraphDefaults(params) {
+        params.groupBy.type = 'time';
+        params.groupBy.value = '$_interval';
+        params.columns[0].appliedFunctions = [{name: 'tsavg'}];
+
+        return params;
     }
 
     setPanelSortFromOrderBy() {
@@ -198,6 +237,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     _updateOrderBy() {
+        if (this.store.orderBy.column.name == 'column') {
+            this.store.orderBy.column.value = this.store.orderBy.colValue;
+        }
+
         if (this.options.isGraph) {
             this.execute();
         } else {
@@ -208,7 +251,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onChangeOrderBy($value) {
         this.store.orderBy.column = $value;
         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
+        this._updateOrderBy();
+    }
 
+    onChangeOrderByValue($value) {
+        this.store.orderBy.colValue = $value;
         this._updateOrderBy();
     }
 
@@ -219,7 +266,13 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onClearOrderBy() {
         this.store.orderBy.column = {};
         this.store.orderBy.colName = this.prompts.orderBy;
+        this.store.orderBy.colValue = this.prompts.orderBy;
         this._updateOrderBy();
+    }
+
+    onChangeGroupByValue($value) {
+        this.store.groupBy.value = $value;
+        this.execute();
     }
 
     onClearGroupBy() {
@@ -240,21 +293,26 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             }
 
             this.execute();
-            return {index};
+            return {
+                index
+            };
         }
 
         return false;
     }
 
     onColumnChanged($column, $prevColumnState) {
-        if (this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+        if (this.isTable && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+
             this.store.orderBy.column = {
                 name: utils.compileColumnName($column),
                 value: utils.compileColumnAlias($column),
                 alias: $column.alias
             };
+
             this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
         }
+
         this.execute();
     }
 
@@ -268,11 +326,11 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onDrop($event, $data, column) {
         $event.preventDefault();
         $event.stopPropagation();
-        
+
         let dstIndex = this.store.columns.indexOf(column);
         let srcIndex = $data;
-        
-        if (srcIndex >= 0  && dstIndex >= 0 && srcIndex !== dstIndex) {
+
+        if (srcIndex >= 0 && dstIndex >= 0 && srcIndex !== dstIndex) {
             const srcColumn = angular.copy(this.store.columns[srcIndex]);
             this.store.columns.splice(srcIndex, 1);
             this.store.columns.splice(dstIndex, 0, srcColumn);
@@ -285,10 +343,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @returns {Promise|boolean}
      */
     loadColumns() {
-        if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isTable) {
-            let found = -1;    
+        if (this.store.variable && 
+            this.store.variable !== QueryPrompts.column && 
+            this.options.isTable) {
+            
+            let found = -1;
             _.each(this.options.categories, (category) => {
-                found = _.findIndex(category.submenu, {value: this.store.variable });
+                found = _.findIndex(category.submenu, {
+                    value: this.store.variable
+                });
                 if (~found) {
                     return false;
                 }
@@ -317,7 +380,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             return;
         }
 
-        if( this.options.rawQueryString != this.store.nsgqlString ) {
+        if (this.options.rawQueryString != this.store.nsgqlString) {
             this.$rootScope.appEvent('confirm-modal', {
                 title: 'Confirm',
                 text: 'Are your sure? Your changes will be lost.',
@@ -356,7 +419,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     promise = this.datasource.getSuggestions({
                         type: segments[index - 2].value,
                         variable: this.store.variable,
-                        tags: this._filterPreviousWhereTags(index),
+                        // tags: this._filterPreviousWhereTags(index),
+                        scopedVars: this.panel.scopedVars
                     });
                     break;
 
@@ -376,7 +440,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         }
 
         return promise
-            .then((list) => list.map((item) => uiSegmentSrv.newSegment({value: `${item}`})))
+            .then((list) => list.map((item) => uiSegmentSrv.newSegment({
+                value: `${item}`
+            })))
             .then(results => {
                 if (segment.type === 'key') {
                     results.splice(0, 0, angular.copy(this.options.removeSegment));
@@ -390,7 +456,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @returns {Array} - returns array of tag objects that placed before current tag triplet
      */
     _filterPreviousWhereTags(currentIndex) {
-        return this.store.tags.filter((el, index) => index < currentIndex/3 - 1)
+        return this.store.tags.filter((el, index) => index < currentIndex / 3 - 1)
     }
 
     /**
@@ -468,7 +534,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     tags[tagIndex].value = segment.value;
                     break;
                 case 'condition':
-                    tags.push({condition: segment.value});
+                    tags.push({
+                        condition: segment.value
+                    });
                     tagIndex += 1;
                     break;
                 case 'operator':
@@ -481,23 +549,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.execute();
     }
 
-
-    // getFooOptions() {
-    //     let list = [];
-        
-    //     list.push({text: 'metric1', value: 'metric1'});
-    //     list.push({text: 'metric2', value: 'metric2'});
-    //     list.push({text: `sdadad`, value: `sdadad'`});
-        
-    //     return this.$injector
-    //         .get('$q')
-    //         .resolve(list);
-    // }
-
-    // onChangeFoo() {
-    //     console.log(this.store.foo);
-    // }
-
     getOrderByOptions() {
         let list = [];
 
@@ -509,8 +560,17 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     value: 'metric',
                 }
             });
+            list.push({
+                text: 'column',
+                value: {
+                    name: 'column',
+                    value: 'column',
+                }
+            });
         } else if (this.options.isTable) {
             this.store.columns.forEach((column) => {
+                if (column.name == QueryPrompts.column) return;
+
                 list.push({
                     text: column.alias || utils.compileColumnName(column),
                     value: {
@@ -530,56 +590,98 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     getOrderBySortOptions() {
         return this.$injector
             .get('$q')
-            .resolve([
-                {text: orderBySortTypes[0], value: orderBySortTypes[0]},
-                {text: orderBySortTypes[1], value: orderBySortTypes[1]}
+            .resolve([{
+                    text: orderBySortTypes[0],
+                    value: orderBySortTypes[0]
+                },
+                {
+                    text: orderBySortTypes[1],
+                    value: orderBySortTypes[1]
+                }
             ]);
     }
 
+    getOrderByColumns() {
+        return this.datasource.getCombinedList(this.store.variable);
+    }
+
     getLimitOptions() {
-        return this.$injector.get('$q').resolve([
-            {text: 'None', 'value': ''},
-            {text: '1', 'value': 1},
-            {text: '5', 'value': 5},
-            {text: '10', 'value': 10},
-            {text: '50', 'value': 50},
-            {text: '100', 'value': 100}
+        return this.$injector.get('$q').resolve([{
+                text: 'None',
+                'value': ''
+            },
+            {
+                text: '1',
+                'value': 1
+            },
+            {
+                text: '5',
+                'value': 5
+            },
+            {
+                text: '10',
+                'value': 10
+            },
+            {
+                text: '50',
+                'value': 50
+            },
+            {
+                text: '100',
+                'value': 100
+            }
         ]);
     }
 
     getGroupByTypes() {
-        return this.$injector.get('$q').resolve([
-            {text: 'time', value: 'time'},
-            {text: 'column', value: 'column'}
-        ])
+        return this.$injector.get('$q').resolve([{
+                text: 'time',
+                value: 'time'
+            },
+            {
+                text: 'column',
+                value: 'column'
+            }
+        ]);
     }
 
     getGroupByVariables() {
         switch (this.store.groupBy.type) {
             case 'time':
-                return this.$injector.get('$q').resolve([
-                    {text: GrafanaVariables.interval, value: GrafanaVariables.interval},
-                    {text: '1s', value: '1s'},
-                    {text: '1m', value: '1m'},
-                    {text: '1h', value: '1h'},
-                    {text: '1d', value: '1d'},
+                return this.$injector.get('$q').resolve([{
+                        text: GrafanaVariables.interval,
+                        value: GrafanaVariables.interval
+                    },
+                    {
+                        text: '1s',
+                        value: '1s'
+                    },
+                    {
+                        text: '1m',
+                        value: '1m'
+                    },
+                    {
+                        text: '1h',
+                        value: '1h'
+                    },
+                    {
+                        text: '1d',
+                        value: '1d'
+                    },
                 ]);
                 break;
             case 'column':
-                const list = [{text: 'device', value: 'device'}];
-                return this.datasource.getFacets(this.store.variable).then((data) => {
-                    data.forEach((el) => {
-                        list.push({text: el, value: el})
-                    });
-
-                    return list;
-                });
+                return this.datasource.getCombinedList(this.store.variable);
                 break;
         }
     }
 
     getCollapsedText() {
         return 'This target is collapsed. Click to the row for open it.';
+    }
+
+    toggleColumnsView() {
+        this.store.isSeparatedColumns = !this.store.isSeparatedColumns;
     }
 }
 

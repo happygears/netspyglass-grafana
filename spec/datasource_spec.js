@@ -54,8 +54,8 @@ const customTarget = {
         rawQuery: 1,
         limit: 100,
         tags: [],
-        groupBy: {"type": "select type", "value": "select value"},
-        format: "time_series",
+        groupBy: {'type': 'select type', 'value': 'select value'},
+        format: 'time_series',
         isTablePanel: false,
         loading: false,
         nsgqlString: "SELECT metric,time FROM cpuUtil WHERE $_timeFilter LIMIT 100, 0"

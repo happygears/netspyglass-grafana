@@ -1,11 +1,10 @@
 <query-editor-row query-ctrl="ctrl"
                   class="generic-datasource-query-row"
                   can-collapse="true"
-                  has-text-edit-mode="true"
-                  data-ng-class="{'loading': ctrl.store.loading}">
+                  has-text-edit-mode="true">
 
-    <div class="gf-form" data-ng-show="ctrl.errors[ctrl.store.refId]">
-        <pre class="gf-form-pre alert alert-error">{{ctrl.errors[ctrl.store.refId]}}</pre>
+    <div class="gf-form" data-ng-show="ctrl.errors.data[ctrl.store.refId]">
+        <pre class="gf-form-pre alert alert-error">{{ctrl.errors.data[ctrl.store.refId]}}</pre>
     </div>
 
     <div class="editor-part editor-part--row" data-ng-if="ctrl.store.rawQuery">
@@ -25,7 +24,7 @@
             </div>
             <div class="gf-form">
                 <hg-dropdown 
-                    data-value="ctrl.store.variable" 
+                    data-label="{{ ctrl.store.variable }}" 
                     data-on-value-changed="ctrl.onSelectCategory($value)" 
                     data-get-options="ctrl.getCategories()"></hg-dropdown>
             </div>
@@ -62,10 +61,27 @@
                             data-available-remove="ctrl.options.isTable" 
                             data-on-column-remove="ctrl.onColumnRemove($column)" 
                             data-on-column-changed="ctrl.onColumnChanged($column, $prevColumnState)"
-                            class="gf-form gf-form--column-editor">
+                            class="gf-form gf-form--column-editor"
+                            data-ng-class="{'one-per-line': ctrl.store.isSeparatedColumns && ctrl.options.isTable}">
                         </hg-columns-menu>
 
                         <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
+
+                        <a class="gf-form-label"
+                           data-ng-show="ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-click="ctrl.toggleColumnsView()"
+                           data-placement="top"
+                           data-bs-tooltip="'Switch to align columns by default'">
+                            <i class="fa fa-th"></i>
+                        </a>
+
+                        <a class="gf-form-label"
+                           data-ng-show="!ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-click="ctrl.toggleColumnsView()"
+                           data-placement="top"
+                           data-bs-tooltip="'Switch to align columns one per line'">
+                            <i class="fa fa-th-list"></i>
+                        </a>
 
                         <div class="gf-form gf-form--grow">
                             <div class="gf-form-label gf-form-label--grow">
@@ -108,9 +124,16 @@
 
                 <div class="gf-form">
                     <hg-dropdown
-                            data-value="ctrl.store.orderBy.colName"
-                            data-on-value-changed="ctrl.onChangeOrderBy($value)"
-                            data-get-options="ctrl.getOrderByOptions()"></hg-dropdown>
+                        data-label="{{ ctrl.store.orderBy.colName }}"
+                        data-on-value-changed="ctrl.onChangeOrderBy($value)"
+                        data-get-options="ctrl.getOrderByOptions()"></hg-dropdown>
+                </div>
+
+                <div class="gf-form" data-ng-if="ctrl.store.orderBy.colName === 'column'">
+                    <hg-dropdown
+                            data-label="{{ ctrl.store.orderBy.colValue }}"
+                            data-on-value-changed="ctrl.onChangeOrderByValue($value)"
+                            data-get-options="ctrl.getOrderByColumns()"></hg-dropdown>
                 </div>
 
                 <div class="gf-form" data-ng-if="ctrl.store.orderBy.column && ctrl.store.orderBy.colName !== ctrl.prompts.orderBy">
@@ -136,9 +159,10 @@
                     </gf-form-dropdown>
                 </div>
                 <div class="gf-form" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type != ctrl.prompts.groupByType">
-                    <gf-form-dropdown model="ctrl.store.groupBy.value" data-lookup-text="true" data-allow-custom="true" data-label-mode="true"
-                        data-get-options="ctrl.getGroupByVariables()" data-on-change="ctrl.execute()">
-                    </gf-form-dropdown>
+                    <hg-dropdown
+                            data-label="{{ ctrl.store.groupBy.value }}"
+                            data-on-value-changed="ctrl.onChangeGroupByValue($value)"
+                            data-get-options="ctrl.getGroupByVariables()"></hg-dropdown>
 
                     <a class="gf-form-label" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
                 </div>
@@ -179,33 +203,25 @@
                     <div class="gf-form-label gf-form-label--secondary">Plugin version: {{ctrl.pluginVersion}}</div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="gf-form-inline" data-ng-if="ctrl.options.isGraph">
-                <div class="gf-form">
-                    <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
-                </div>
-                <div class="gf-form gf-form--grow">
-                    <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.store.alias" spellcheck="false"
-                        placeholder="Naming pattern" ng-blur="ctrl.execute()">
-                </div>
-                <div class="gf-form ">
-                    <div class="gf-form-label">
-                        <i class="fa fa-question-circle" data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
-                            data-placement="bottom" data-original-title="" title=""></i>
-                    </div>
+    <div class="editor-part" data-ng-if="ctrl.options.isGraph">
+        <div class="gf-form-inline">
+            <div class="gf-form">
+                <label class="gf-form-label query-keyword width-7">ALIAS BY</label>
+            </div>
+            <div class="gf-form gf-form--grow">
+                <input type="text" class="gf-form-input ng-pristine ng-untouched ng-valid ng-empty" ng-model="ctrl.store.alias" spellcheck="false"
+                       placeholder="Naming pattern" ng-blur="ctrl.execute()">
+            </div>
+            <div class="gf-form ">
+                <div class="gf-form-label">
+                    <i class="fa fa-question-circle" data-bs-tooltip="'You can use \'$device\', \'$component\', \'$description\', or a tag facet name in \'Alias by\' field'"
+                       data-placement="bottom" data-original-title="" title=""></i>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <!--<div style="border: 1px solid red; margin: 20px 0">-->
-    <!--<pre>{{ ctrl.store }}</pre>-->
-    <!--</div>-->
-
-    <!--<div style="border: 1px solid red; margin: 20px 0">-->
-    <!--<pre> {{  ctrl.options | json}}</pre>-->
-    <!--</div>-->
-
-    <!--<test data-prop="ctrl.store.variable"></test>-->
 </query-editor-row>

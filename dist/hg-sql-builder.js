@@ -220,6 +220,8 @@ System.register([], function (_export, _context) {
 
         var WITH_BRACKETS = [SQLBuilder.OPERATORS.IN, SQLBuilder.OPERATORS.NOT_IN];
 
+        var REGEXP = [SQLBuilder.OPERATORS.REGEXP, SQLBuilder.OPERATORS.NOT_REGEXP];
+
         if (!angular.isArray(where) && angular.isObject(where)) {
           where = [operand, where];
         }
@@ -272,6 +274,8 @@ System.register([], function (_export, _context) {
                     return;
                   } else if (WITH_BRACKETS.indexOf(operator) !== -1) {
                     value = '(\'' + value.join('\', \'') + '\')';
+                  } else if (REGEXP.indexOf(operator) !== -1) {
+                    value = '\'' + value.join('|') + '\'';
                   } else {
                     value = '\'' + value + '\'';
                   }
@@ -311,6 +315,7 @@ System.register([], function (_export, _context) {
         NOT_IN: 'NOT IN',
         EQ: '=',
         NOT_EQ: '<>',
+        NOT_EQ_2: '!=',
         REGEXP: 'REGEXP',
         NOT_REGEXP: 'NOT REGEXP',
         IS_NULL: 'ISNULL',

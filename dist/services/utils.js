@@ -3,7 +3,13 @@
 System.register(['lodash', '../datemath'], function (_export, _context) {
     "use strict";
 
-    var _, dateMath;
+    var _, dateMath, _createClass, Timer;
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
 
     return {
         setters: [function (_lodash) {
@@ -12,6 +18,71 @@ System.register(['lodash', '../datemath'], function (_export, _context) {
             dateMath = _datemath;
         }],
         execute: function () {
+            _createClass = function () {
+                function defineProperties(target, props) {
+                    for (var i = 0; i < props.length; i++) {
+                        var descriptor = props[i];
+                        descriptor.enumerable = descriptor.enumerable || false;
+                        descriptor.configurable = true;
+                        if ("value" in descriptor) descriptor.writable = true;
+                        Object.defineProperty(target, descriptor.key, descriptor);
+                    }
+                }
+
+                return function (Constructor, protoProps, staticProps) {
+                    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+                    if (staticProps) defineProperties(Constructor, staticProps);
+                    return Constructor;
+                };
+            }();
+
+            Timer = function () {
+                function Timer() {
+                    _classCallCheck(this, Timer);
+
+                    this._run = false;
+                    this._nextTask = null;
+                    this._currentTask = null;
+                }
+
+                /**
+                 * @param {Function} task 
+                 */
+
+
+                _createClass(Timer, [{
+                    key: 'sheduleTask',
+                    value: function sheduleTask(task) {
+                        if (this._run === false) {
+                            this._run = true;
+                            this._currentTask = task;
+                            task();
+                        } else {
+                            this._nextTask = task;
+                        }
+                    }
+                }, {
+                    key: 'stop',
+                    value: function stop() {
+                        this._taskEnd();
+                    }
+                }, {
+                    key: '_taskEnd',
+                    value: function _taskEnd() {
+                        if (this._nextTask) {
+                            this._nextTask();
+                            this._currentTask = this._nextTask;
+                            this._nextTask = null;
+                        } else {
+                            this._currentTask = null;
+                            this._run = false;
+                        }
+                    }
+                }]);
+
+                return Timer;
+            }();
+
             _export('default', {
                 getTime: function getTime(date, roundUp) {
                     if (_.isString(date)) {
@@ -64,6 +135,14 @@ System.register(['lodash', '../datemath'], function (_export, _context) {
                     }
 
                     return columnName;
+                },
+
+                getScheduler: function getScheduler() {
+                    if (!this._timer) {
+                        this._timer = new Timer();
+                    }
+
+                    return this._timer;
                 }
             });
         }

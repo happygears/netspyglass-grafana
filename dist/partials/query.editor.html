@@ -61,10 +61,27 @@
                             data-available-remove="ctrl.options.isTable" 
                             data-on-column-remove="ctrl.onColumnRemove($column)" 
                             data-on-column-changed="ctrl.onColumnChanged($column, $prevColumnState)"
-                            class="gf-form gf-form--column-editor">
+                            class="gf-form gf-form--column-editor"
+                            data-ng-class="{'one-per-line': ctrl.store.isSeparatedColumns && ctrl.options.isTable}">
                         </hg-columns-menu>
 
                         <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
+
+                        <a class="gf-form-label"
+                           data-ng-show="ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-click="ctrl.toggleColumnsView()"
+                           data-placement="top"
+                           data-bs-tooltip="'Switch to align columns by default'">
+                            <i class="fa fa-th"></i>
+                        </a>
+
+                        <a class="gf-form-label"
+                           data-ng-show="!ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-click="ctrl.toggleColumnsView()"
+                           data-placement="top"
+                           data-bs-tooltip="'Switch to align columns one per line'">
+                            <i class="fa fa-th-list"></i>
+                        </a>
 
                         <div class="gf-form gf-form--grow">
                             <div class="gf-form-label gf-form-label--grow">
@@ -113,14 +130,10 @@
                 </div>
 
                 <div class="gf-form" data-ng-if="ctrl.store.orderBy.colName === 'column'">
-                    <gf-form-dropdown
-                            data-model="ctrl.store.orderBy.colValue"
-                            data-lookup-text="true"
-                            data-label-mode="true"
-                            data-get-options="ctrl.getOrderByColumns()"
-                            data-on-change="ctrl.onChangeOrderByValue()"
-                            data-hg-escape-regexp>
-                    </gf-form-dropdown>
+                    <hg-dropdown
+                            data-label="{{ ctrl.store.orderBy.colValue }}"
+                            data-on-value-changed="ctrl.onChangeOrderByValue($value)"
+                            data-get-options="ctrl.getOrderByColumns()"></hg-dropdown>
                 </div>
 
                 <div class="gf-form" data-ng-if="ctrl.store.orderBy.column && ctrl.store.orderBy.colName !== ctrl.prompts.orderBy">
@@ -146,16 +159,10 @@
                     </gf-form-dropdown>
                 </div>
                 <div class="gf-form" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type != ctrl.prompts.groupByType">
-                    <gf-form-dropdown 
-                        data-model="ctrl.store.groupBy.value" 
-                        data-lookup-text="true" 
-                        data-allow-custom="true" 
-                        data-label-mode="true"
-                        data-get-options="ctrl.getGroupByVariables()"
-                        data-on-change="ctrl.execute()"
-                        data-hg-escape-regexp
-                        >
-                    </gf-form-dropdown>
+                    <hg-dropdown
+                            data-label="{{ ctrl.store.groupBy.value }}"
+                            data-on-value-changed="ctrl.onChangeGroupByValue($value)"
+                            data-get-options="ctrl.getGroupByVariables()"></hg-dropdown>
 
                     <a class="gf-form-label" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
                 </div>

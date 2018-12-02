@@ -1,4 +1,4 @@
-<a class="gf-form-label dropdown-menu-trigger"
+<a class="dropdown-menu-trigger btn btn-secondary gf-form-btn"
    data-has-alias={{!!$ctrl.column.alias}}
    data-gf-dropdown="$ctrl.menuItems"><i class="fa fa-ellipsis-h"></i></a>
 
@@ -26,8 +26,8 @@
 
     <span data-ng-if="$ctrl.column.alias" class="gf-form-label col-container__item query-keyword">AS</span>
 
-    <form novalidate name="column_form">
-        <input name="alias" data-ng-if="$ctrl.column.alias" 
+    <form class="col-container__item" novalidate name="column_form" data-ng-if="$ctrl.column.alias">
+        <input name="alias"
             data-ng-model-options="{allowInvalid: true, updateOn: 'blur'}"
             data-ng-model="$ctrl.column.alias"
             data-ng-pattern="$ctrl.aliasPattern"

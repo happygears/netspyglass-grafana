@@ -85,7 +85,7 @@ export class NetSpyGlassDatasource {
         const processTarget = (target) => {
             aliases[target.refId] = target.alias;
 
-            if (target.orderBy.column.name === 'column') {
+            if (target.orderBy && target.orderBy.column.name === 'column') {
                 target.orderBy.column.value = target.orderBy.colValue;
             }
 
@@ -228,7 +228,7 @@ export class NetSpyGlassDatasource {
         return this.$q.all([
             this.getCategories(),
             this.getFacets(variable)
-        ]).then(function (data) {
+        ]).then((data) => {
             const [categories, tags] = data;
             let columns = [];
 
@@ -238,21 +238,7 @@ export class NetSpyGlassDatasource {
             });
 
             columns.push({text: '---------', separator: true});
-            columns.push({
-                text: 'predefined columns',
-                submenu: [
-                    {text: 'address', value: 'address'},
-                    {text: 'boxDescr', value: 'boxDescr'},
-                    {text: 'combinedRoles', value: 'combinedRoles'},
-                    {text: 'combinedNsgRoles', value: 'combinedNsgRoles'},
-                    {text: 'component', value: 'component'},
-                    {text: 'device', value: 'device'},
-                    {text: 'description', value: 'description'},
-                    {text: 'discoveryTime', value: 'discoveryTime'},
-                    {text: 'metric', value: 'metric'},
-                    {text: 'time', value: 'time'}
-                ]
-            });
+            columns.push(this.getPredefinedColumns());
 
             columns.push({text: '---------', separator: true});
 
@@ -264,6 +250,24 @@ export class NetSpyGlassDatasource {
 
             return columns;
         });
+    }
+
+    getPredefinedColumns() {
+        return {
+            text: 'predefined columns',
+            submenu: [
+                {text: 'address', value: 'address'},
+                {text: 'boxDescr', value: 'boxDescr'},
+                {text: 'combinedRoles', value: 'combinedRoles'},
+                {text: 'combinedNsgRoles', value: 'combinedNsgRoles'},
+                {text: 'component', value: 'component'},
+                {text: 'device', value: 'device'},
+                {text: 'description', value: 'description'},
+                {text: 'discoveryTime', value: 'discoveryTime'},
+                {text: 'metric', value: 'metric'},
+                {text: 'time', value: 'time'}
+            ]
+        };
     }
 
     /**
@@ -340,4 +344,25 @@ export class NetSpyGlassDatasource {
             })
             .catch(() => ([]));
     };
+
+    /**
+     *
+     */
+    getCombinedList(variable) {
+        return this.getFacets(variable)
+            .then((tags) => {
+                const list = [];
+
+                list.push({
+                    text: 'tags',
+                    submenu: tags.map((tag) => ({text: tag, value: tag}))
+                });
+
+                list.push({text: '---------', separator: true});
+
+                list.push(this.getPredefinedColumns());
+
+                return list;
+            });
+    }
 }

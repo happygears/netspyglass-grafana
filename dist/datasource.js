@@ -150,6 +150,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         };
 
                         var processTarget = function processTarget(target) {
+                            var maxDataPoints = options.maxDataPoints && target.format === 'time_series' ? options.maxDataPoints : undefined;
+
                             aliases[target.refId] = target.alias;
 
                             if (target.orderBy && target.orderBy.column.name === 'column') {
@@ -160,7 +162,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             sql = _this.templateSrv.replace(sql, options.scopedVars, _this._formatValue);
 
-                            return _this.api.generateTarget(sql, target.format, target.refId);
+                            return _this.api.generateTarget(sql, target.format, target.refId, maxDataPoints);
                         };
 
                         var sqlTargets = targets.map(function (target) {

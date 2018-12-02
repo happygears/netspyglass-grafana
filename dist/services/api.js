@@ -538,11 +538,13 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                     value: function generateTarget(nsgql) {
                         var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'json';
                         var id = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'A';
+                        var maxDataPoints = arguments[3];
 
                         return {
                             nsgql: nsgql,
                             format: format,
-                            id: id
+                            id: id,
+                            maxDataPoints: maxDataPoints
                         };
                     }
                 }, {

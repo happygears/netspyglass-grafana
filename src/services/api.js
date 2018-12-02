@@ -440,12 +440,14 @@ class NSGQLApi {
      * @param {string} nsgql
      * @param {string} format
      * @param {string} id
+     * @param {number} maxDataPoints
      */
-    generateTarget(nsgql, format = 'json', id = 'A') {
+    generateTarget(nsgql, format = 'json', id = 'A', maxDataPoints) {
         return {
             nsgql,
             format,
-            id
+            id,
+            maxDataPoints
         };
     }
 

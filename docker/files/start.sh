@@ -28,4 +28,7 @@ cp -r ${HAPPYGEARS_DIR}/grafana/provisioning/*  ${GRAFANA_PROVISIONING_DIR}/ || 
 
 ls -laR ${GRAFANA_PROVISIONING_DIR}/
 
+/post-start-setup.sh &
+
 /run.sh
+

@@ -132,10 +132,10 @@ describe('APIQuery', function() {
                 }
             ];
 
-            const sql = 'select * from cpuUtil where device = $DEVICE';
+            const sql = `select * from cpuUtil where device = $DEVICE`;
             expect(ctx.query.replaceVariables(sql))
                 .to
-                .equals('select * from cpuUtil where device = \'cty1-bb01\'');
+                .equals(`select * from cpuUtil where device = cty1-bb01`);
         });
 
         it('should replace multiple variables', function () {
@@ -148,15 +148,15 @@ describe('APIQuery', function() {
                 {name: 'DEVICE3', current: {value: 'cty1-bb03'}},
             ];
 
-            const sql = `select * from cpuUtil where device = $DEVICE1 or device = $DEVICE2 or device = $DEVICE3`;
-            const expectSql = `select * from cpuUtil where device = 'cty1-bb01' or device = 'cty1-bb02' or device = 'cty1-bb03'`;
+            const sql = `select * from cpuUtil where device = $DEVICE1 or device = '$DEVICE2' or device = '$DEVICE3'`;
+            const expectSql = `select * from cpuUtil where device = cty1-bb01 or device = 'cty1-bb02' or device = 'cty1-bb03'`;
 
             expect(ctx.query.replaceVariables(sql))
                 .to
                 .equals(expectSql);
         });
 
-        it('should correct replace multivalue variable', function () {
+        it('should correct replace multivalue variable (without quotes)', function () {
 
             mock.isAllValue = function() { 
                 return true; 
@@ -177,6 +177,34 @@ describe('APIQuery', function() {
             ];
 
             const sql = `select * from cpuUtil where device IN ($DEVICES)`;
+            const expectSql = `select * from cpuUtil where device IN (cty1-bb01, cty1-bb02, cty1-bb03)`;
+
+            expect(ctx.query.replaceVariables(sql))
+                .to
+                .equals(expectSql);
+        });
+
+        it('should correct replace multivalue variable (with quotes)', function () {
+
+            mock.isAllValue = function() {
+                return true;
+            };
+
+            mock.getAllValue = function () {
+                return ['cty1-bb01', 'cty1-bb02', 'cty1-bb03'];
+            };
+
+            ctx.query.templateSrv.variables = [
+                {
+                    name: 'DEVICES',
+                    options: ['cty1-bb01', 'cty1-bb02', 'cty1-bb03'],
+                    current: {
+                        value: ''
+                    }
+                }
+            ];
+
+            const sql = `select * from cpuUtil where device IN ('$DEVICES')`;
             const expectSql = `select * from cpuUtil where device IN ('cty1-bb01', 'cty1-bb02', 'cty1-bb03')`;
 
             expect(ctx.query.replaceVariables(sql))
@@ -203,8 +231,8 @@ describe('APIQuery', function() {
                 }
             ];
 
-            const sql = `select * from cpuUtil where device REGEXP $DEVICES`;
-            const expectSql = `select * from cpuUtil where device REGEXP 'foo|bar'`;
+            const sql = `select * from cpuUtil where device REGEXP $DEVICES OR device REGEXP '$DEVICES'`;
+            const expectSql = `select * from cpuUtil where device REGEXP foo|bar OR device REGEXP 'foo|bar'`;
 
             expect(ctx.query.replaceVariables(sql))
                 .to

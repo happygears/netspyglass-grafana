@@ -285,10 +285,6 @@ class SQLQuery {
                 let quote = sql.substr(result.index - 1, 1);
                 let hasQuotes = /['"]{1}/.test(quote);
 
-                if (!hasQuotes) {
-                    quote = `'`;
-                }
-
                 if (!_.isArray(variable)) {
                     variable = [variable];
                 }
@@ -296,11 +292,7 @@ class SQLQuery {
                 if (isRegExp.test(sql.substr(0, result.index))) {
                     variable = variable.join('|');
                 } else {
-                    variable = variable.join(`${quote}, ${quote}`);
-                }
-
-                if (!hasQuotes) {
-                    variable = `${quote}${variable}${quote}`;
+                    variable = hasQuotes ? variable.join(`${quote}, ${quote}`) : variable.join(`, `);
                 }
 
                 sql = sql.replace(name, variable);

@@ -22,9 +22,13 @@ PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
 mkdir -p ${GRAFANA_PROVISIONING_DIR}
 ls -laR ${GRAFANA_PROVISIONING_DIR}
 
-chown -R grafana.grafana ${GRAFANA_PROVISIONING_DIR}
-cp -r ${HAPPYGEARS_DIR}/grafana/provisioning/*  ${GRAFANA_PROVISIONING_DIR}/
+chown -R grafana.grafana ${GRAFANA_PROVISIONING_DIR} || true   # if it is read-only because it is mounted as docker config
+
+cp -r ${HAPPYGEARS_DIR}/grafana/provisioning/*  ${GRAFANA_PROVISIONING_DIR}/ || true
 
 ls -laR ${GRAFANA_PROVISIONING_DIR}/
 
+/post-start-setup.sh &
+
 /run.sh
+

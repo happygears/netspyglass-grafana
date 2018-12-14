@@ -36,11 +36,14 @@ RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
 # it begins to monitor the directory and loads dashboards when they appear in it.
 
 COPY docker/files/start.sh                       /
-COPY docker/files/provisioning/dashboards        $HAPPYGEARS_DIR/grafana/provisioning/dashboards/
-COPY docker/files/provisioning/datasources       $HAPPYGEARS_DIR/grafana/provisioning/datasources/
+COPY docker/files/post-start-setup.sh            /
+#COPY docker/files/provisioning/dashboards        $HAPPYGEARS_DIR/grafana/provisioning/dashboards/
+#COPY docker/files/provisioning/datasources       $HAPPYGEARS_DIR/grafana/provisioning/datasources/
 
 RUN  chmod +x /start.sh
+RUN  chmod +x /post-start-setup.sh
 RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR
+RUN  mkdir -p                       $HAPPYGEARS_DIR/grafana/provisioning/
 RUN  chown -R grafana.grafana       $HAPPYGEARS_DIR/grafana/provisioning/
 
 VOLUME ["$GRAFANA_VOLUME_DIR"]

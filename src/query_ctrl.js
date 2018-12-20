@@ -210,6 +210,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 segments.push(uiSegmentSrv.newKey(tag.key));
                 segments.push(uiSegmentSrv.newOperator(tag.operator));
                 segments.push(uiSegmentSrv.newKeyValue(tag.value));
+
+                if (tag.operator === 'ISNULL' || tag.operator === 'NOTNULL') {
+                    segments[segments.length - 1].cssClass = 'query-segment-key query-segment-key--hidden';
+                }
             }
         }
 

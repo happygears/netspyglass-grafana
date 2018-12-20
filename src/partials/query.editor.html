@@ -106,8 +106,11 @@
 
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-inline gf-form--grow">
-                        <div class="gf-form" data-ng-repeat="segment in ctrl.options.segments">
-                            <metric-segment data-segment="segment" data-get-options="ctrl.getTagsOrValues(segment, $index)" data-on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
+                        <div class="gf-form"
+                             data-ng-repeat="segment in ctrl.options.segments">
+                            <metric-segment data-segment="segment"
+                                            data-get-options="ctrl.getTagsOrValues(segment, $index)"
+                                            data-on-change="ctrl.tagSegmentUpdated(segment, $index)"></metric-segment>
                         </div>
 
                         <div class="gf-form gf-form--grow">

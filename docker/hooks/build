@@ -24,7 +24,7 @@ test -f ${DOCKERFILE_PATH} || {
 # IMAGE_NAME already has the tag but we need to override it
 #
 
-grafana_version=$(cat ${DOCKERFILE_PATH} | awk -F: '/FROM grafana/grafana/ { print $1; }')
+grafana_version=$(cat ${DOCKERFILE_PATH} | awk -F: '/FROM grafana\/grafana/ { print $2; }')
 plugin_version=$(cat dist/plugin.json | python -c 'import sys, json; print json.load(sys.stdin)["info"]["version"]')
 
 TAG=${grafana_version}-nsg-ds-${plugin_version}

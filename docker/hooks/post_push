@@ -7,6 +7,10 @@
 # are just two out of this set
 
 echo "------ post_push hook script -------------------------------------------"
+pwd
+test -f ${DOCKERFILE_PATH} || {
+    cd ..
+}
 
 DOCKERFILE_PATH=${DOCKERFILE_PATH:?"Variable DOCKERFILE_PATH must be defined"}
 DOCKER_REPO=${DOCKER_REPO:?"Variable DOCKER_REPO must be defined"}

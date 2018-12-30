@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# This is docker build hook script
+# see https://docs.docker.com/docker-hub/builds/advanced/
+#
+# Docker sets several env. variables when it calls this script. DOCKERFILE_PATH and IMAGE_NAME
+# are just two out of this set
+
+ls -la
+
+DOCKERFILE_PATH=${DOCKERFILE_PATH:?"Variable DOCKERFILE_PATH must be defined"}
+IMAGE_NAME=${IMAGE_NAME:?"Variable IMAGE_NAME must be defined"}
+
+test -f ${DOCKERFILE_PATH} || {
+    cd ..
+}
+
+# docker tag for this image consists of two parts: (grafana_version)-nsg-ds-(data_source_version)
+#
+# grafana version is the same as the version of the base image our image is derived from.
+# It comes from Dockerfile.
+# NSG data source plugin version can be found in dist/plugin.json , key info.version
+#
+# IMAGE_NAME already has the tag but we need to override it
+#
+
+grafana_version=$(cat ${DOCKERFILE_PATH} | awk -F: '/FROM grafana/grafana/ { print $1; }')
+plugin_version=$(cat dist/plugin.json | python -c 'import sys, json; print json.load(sys.stdin)["info"]["version"]')
+
+TAG=${grafana_version}-nsg-ds-${plugin_version}
+
+echo "Grafana version: $grafana_version , NSG data source plugin version: $plugin_version"
+echo
+
+# note: applies two tags
+#
+docker build -f ${DOCKERFILE_PATH} -t ${IMAGE_NAME} -t happygears/grafana:${TAG} .

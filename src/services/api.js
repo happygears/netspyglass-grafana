@@ -220,7 +220,7 @@ class SQLQuery {
             ? GrafanaVariables.timeFilter
             : { time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]};
 
-        if (options.adHoc && options.adHoc.length) {
+        if (options.adHoc && options.adHoc.length && !target.disableAdHoc) {
             adHoc = useTemplates 
                 ? GrafanaVariables.adHocFilter 
                 : this.generateWhereFromTags(options.adHoc, options.scopedVars);

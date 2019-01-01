@@ -314,12 +314,16 @@ class SQLQuery {
         }
 
         if (query && query.indexOf(GrafanaVariables.adHocFilter) > 0) {
-            query = _.replace(query, GrafanaVariables.adHocFilter, `( ${adhocWhere} )`);
+            const adhocString = adhocWhere ? `( ${adhocWhere} )` : '';
+
+            query = _.replace(query, GrafanaVariables.adHocFilter, adhocString);
         }
 
         if (query && query.indexOf(GrafanaVariables.interval) > 0) {
             query = _.replace(query, GrafanaVariables.interval, interval);
         }
+
+        query = this.removeExtraConditionStatements(query);
 
         return query;
     }
@@ -349,6 +353,12 @@ class SQLQuery {
 
             return el;
         })
+    }
+
+    removeExtraConditionStatements(query) {
+        return query
+            .replace(/(and)\s+and/ig, '$1')
+            .replace(/(or)\s+or/ig, '$1');
     }
 }
 

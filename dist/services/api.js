@@ -401,12 +401,16 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         }
 
                         if (query && query.indexOf(GrafanaVariables.adHocFilter) > 0) {
-                            query = _.replace(query, GrafanaVariables.adHocFilter, '( ' + adhocWhere + ' )');
+                            var adhocString = adhocWhere ? '( ' + adhocWhere + ' )' : '';
+
+                            query = _.replace(query, GrafanaVariables.adHocFilter, adhocString);
                         }
 
                         if (query && query.indexOf(GrafanaVariables.interval) > 0) {
                             query = _.replace(query, GrafanaVariables.interval, interval);
                         }
+
+                        query = this.removeExtraConditionStatements(query);
 
                         return query;
                     }
@@ -440,6 +444,11 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
 
                             return el;
                         });
+                    }
+                }, {
+                    key: 'removeExtraConditionStatements',
+                    value: function removeExtraConditionStatements(query) {
+                        return query.replace(/(and)\s+and/ig, '$1').replace(/(or)\s+or/ig, '$1');
                     }
                 }]);
 

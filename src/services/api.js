@@ -110,7 +110,7 @@ class SQLQuery {
      * @returns {Array} array of targets with format {nsgql: 'select ..', format: 'list'}
      */
     getTagValuesForAdHoc(tagFacet) {
-        const queries = [
+        return [
             sqlBuilder.factory({
                 select: [tagFacet],
                 distinct: true,
@@ -131,8 +131,6 @@ class SQLQuery {
                 orderBy: [tagFacet]
             }).compile(),
         ];
-
-        return queries.map((query) => ({nsgql: query, format: NSGQLApi.FORMAT_LIST}));
     }
 
     getTemplateValue (str, scopedVars) {

@@ -331,7 +331,10 @@ export class NetSpyGlassDatasource {
      * @returns {Promise}
      */
     getTagValues(options) {
-        return this.api.queryData(this.sqlQuery.getTagValuesForAdHoc(options.key))
+        const queries = this.sqlQuery.getTagValuesForAdHoc(options.key)
+            .map(query => (this.api.generateTarget(query, NSGQLApi.FORMAT_LIST)));
+
+        return this.api.queryData(queries)
             .then((list) => {
                 return list
                     .filter((item, pos, self) => self.indexOf(item) === pos)

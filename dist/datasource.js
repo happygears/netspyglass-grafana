@@ -365,7 +365,13 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getTagValues',
                     value: function getTagValues(options) {
-                        return this.api.queryData(this.sqlQuery.getTagValuesForAdHoc(options.key)).then(function (list) {
+                        var _this4 = this;
+
+                        var queries = this.sqlQuery.getTagValuesForAdHoc(options.key).map(function (query) {
+                            return _this4.api.generateTarget(query, NSGQLApi.FORMAT_LIST);
+                        });
+
+                        return this.api.queryData(queries).then(function (list) {
                             return list.filter(function (item, pos, self) {
                                 return self.indexOf(item) === pos;
                             }).map(function (item) {
@@ -382,7 +388,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getCombinedList',
                     value: function getCombinedList(variable) {
-                        var _this4 = this;
+                        var _this5 = this;
 
                         return this.getFacets(variable).then(function (tags) {
                             var list = [];
@@ -396,7 +402,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             list.push({ text: '---------', separator: true });
 
-                            list.push(_this4.getPredefinedColumns());
+                            list.push(_this5.getPredefinedColumns());
 
                             return list;
                         });

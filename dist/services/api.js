@@ -198,7 +198,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                 }, {
                     key: 'getTagValuesForAdHoc',
                     value: function getTagValuesForAdHoc(tagFacet) {
-                        var queries = [sqlBuilder.factory({
+                        return [sqlBuilder.factory({
                             select: [tagFacet],
                             distinct: true,
                             from: 'devices',
@@ -211,10 +211,6 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                             where: _defineProperty({}, tagFacet, [sqlBuilder.OP.NOT_NULL]),
                             orderBy: [tagFacet]
                         }).compile()];
-
-                        return queries.map(function (query) {
-                            return { nsgql: query, format: NSGQLApi.FORMAT_LIST };
-                        });
                     }
                 }, {
                     key: 'getTemplateValue',

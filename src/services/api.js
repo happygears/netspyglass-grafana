@@ -356,7 +356,9 @@ class SQLQuery {
     removeExtraConditionStatements(query) {
         return query
             .replace(/(and)\s+and/ig, '$1')
-            .replace(/(or)\s+or/ig, '$1');
+            .replace(/(or)\s+or/ig, '$1')
+            .replace(/((and|or)[\s]+)(group|order|limit)/ig, ' $3')
+            .replace(/(where)[\s]+(and|or)/ig, '$1 ');
     }
 }
 

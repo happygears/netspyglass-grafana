@@ -19,6 +19,11 @@ PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
     cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
 
+/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install grafana-piechart-panel
+/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install blackmirror1-singlestat-math-panel
+/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install blackmirror1-statusbygroup-panel
+/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install natel-plotly-panel
+
 mkdir -p ${GRAFANA_PROVISIONING_DIR}
 ls -laR ${GRAFANA_PROVISIONING_DIR}
 

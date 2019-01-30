@@ -14,11 +14,6 @@ FROM grafana/grafana:5.4.3
 
 ENV HAPPYGEARS_DIR="/happygears"
 
-RUN grafana-cli plugins install grafana-piechart-panel
-RUN grafana-cli plugins install blackmirror1-singlestat-math-panel
-RUN grafana-cli plugins install blackmirror1-statusbygroup-panel
-RUN grafana-cli plugins install natel-plotly-panel
-
 USER root
 RUN apt-get update && apt-get install -qq -y jq
 
@@ -35,6 +30,11 @@ COPY dist dist/
 RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
     cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
+
+RUN grafana-cli --pluginsDir $GRAFANA_PLUGINS_DIR plugins install grafana-piechart-panel
+RUN grafana-cli --pluginsDir $GRAFANA_PLUGINS_DIR plugins install blackmirror1-singlestat-math-panel
+RUN grafana-cli --pluginsDir $GRAFANA_PLUGINS_DIR plugins install blackmirror1-statusbygroup-panel
+RUN grafana-cli --pluginsDir $GRAFANA_PLUGINS_DIR plugins install natel-plotly-panel
 
 # provisioning files (both datasource and dashboards) must exist before Grafana starts
 # but actual dashboards can be added later. Once Grafana sees dashboards provisioning file,

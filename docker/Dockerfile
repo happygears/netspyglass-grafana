@@ -10,9 +10,14 @@
 #
 # https://hub.docker.com/r/grafana/grafana/tags/
 
-FROM grafana/grafana:5.4.2
+FROM grafana/grafana:5.4.3
 
 ENV HAPPYGEARS_DIR="/happygears"
+
+RUN grafana-cli plugins install grafana-piechart-panel
+RUN grafana-cli plugins install blackmirror1-singlestat-math-panel
+RUN grafana-cli plugins install blackmirror1-statusbygroup-panel
+RUN grafana-cli plugins install natel-plotly-panel
 
 USER root
 RUN apt-get update && apt-get install -qq -y jq

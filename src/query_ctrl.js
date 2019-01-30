@@ -54,7 +54,8 @@ const targetDefaults = {
         type: QueryPrompts.groupByType,
         value: QueryPrompts.groupBy
     },
-    isSeparatedColumns: false
+    isSeparatedColumns: false,
+    disableAdHoc: false
 };
 
 //http://angular-dragdrop.github.io/angular-dragdrop/

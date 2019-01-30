@@ -198,7 +198,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                 }, {
                     key: 'getTagValuesForAdHoc',
                     value: function getTagValuesForAdHoc(tagFacet) {
-                        var queries = [sqlBuilder.factory({
+                        return [sqlBuilder.factory({
                             select: [tagFacet],
                             distinct: true,
                             from: 'devices',
@@ -211,10 +211,6 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                             where: _defineProperty({}, tagFacet, [sqlBuilder.OP.NOT_NULL]),
                             orderBy: [tagFacet]
                         }).compile()];
-
-                        return queries.map(function (query) {
-                            return { nsgql: query, format: NSGQLApi.FORMAT_LIST };
-                        });
                     }
                 }, {
                     key: 'getTemplateValue',
@@ -304,7 +300,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         var query = sqlBuilder.factory();
                         var timeVar = useTemplates ? GrafanaVariables.timeFilter : { time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to] };
 
-                        if (options.adHoc && options.adHoc.length) {
+                        if (options.adHoc && options.adHoc.length && !target.disableAdHoc) {
                             adHoc = useTemplates ? GrafanaVariables.adHocFilter : this.generateWhereFromTags(options.adHoc, options.scopedVars);
                         }
 
@@ -401,12 +397,16 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         }
 
                         if (query && query.indexOf(GrafanaVariables.adHocFilter) > 0) {
-                            query = _.replace(query, GrafanaVariables.adHocFilter, '( ' + adhocWhere + ' )');
+                            var adhocString = adhocWhere ? '( ' + adhocWhere + ' )' : '';
+
+                            query = _.replace(query, GrafanaVariables.adHocFilter, adhocString);
                         }
 
                         if (query && query.indexOf(GrafanaVariables.interval) > 0) {
                             query = _.replace(query, GrafanaVariables.interval, interval);
                         }
+
+                        query = this.removeExtraConditionStatements(query);
 
                         return query;
                     }
@@ -440,6 +440,11 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
 
                             return el;
                         });
+                    }
+                }, {
+                    key: 'removeExtraConditionStatements',
+                    value: function removeExtraConditionStatements(query) {
+                        return query.replace(/(and)\s+and/ig, '$1').replace(/(or)\s+or/ig, '$1').replace(/((and|or)[\s]+)(group|order|limit)/ig, ' $3').replace(/(where)[\s]+(and|or)/ig, '$1 ');
                     }
                 }]);
 

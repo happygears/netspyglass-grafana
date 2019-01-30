@@ -102,8 +102,8 @@ describe('APIQuery', function() {
             const result = ctx.query.getTagValuesForAdHoc('Link');
             expect(result).to.be.an('array');
             expect(result.length).to.equals(2);
-            expect(result[0].nsgql).to.equals('SELECT DISTINCT Link FROM devices WHERE Link NOTNULL ORDER BY Link');
-            expect(result[1].nsgql).to.equals('SELECT DISTINCT Link FROM interfaces WHERE Link NOTNULL ORDER BY Link');
+            expect(result[0]).to.equals('SELECT DISTINCT Link FROM devices WHERE Link NOTNULL ORDER BY Link');
+            expect(result[1]).to.equals('SELECT DISTINCT Link FROM interfaces WHERE Link NOTNULL ORDER BY Link');
         });
     });
 

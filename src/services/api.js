@@ -110,7 +110,7 @@ class SQLQuery {
      * @returns {Array} array of targets with format {nsgql: 'select ..', format: 'list'}
      */
     getTagValuesForAdHoc(tagFacet) {
-        const queries = [
+        return [
             sqlBuilder.factory({
                 select: [tagFacet],
                 distinct: true,
@@ -131,8 +131,6 @@ class SQLQuery {
                 orderBy: [tagFacet]
             }).compile(),
         ];
-
-        return queries.map((query) => ({nsgql: query, format: NSGQLApi.FORMAT_LIST}));
     }
 
     getTemplateValue (str, scopedVars) {
@@ -220,7 +218,7 @@ class SQLQuery {
             ? GrafanaVariables.timeFilter
             : { time: [sqlBuilder.OP.BETWEEN, options.timeRange.from, options.timeRange.to]};
 
-        if (options.adHoc && options.adHoc.length) {
+        if (options.adHoc && options.adHoc.length && !target.disableAdHoc) {
             adHoc = useTemplates 
                 ? GrafanaVariables.adHocFilter 
                 : this.generateWhereFromTags(options.adHoc, options.scopedVars);
@@ -314,12 +312,16 @@ class SQLQuery {
         }
 
         if (query && query.indexOf(GrafanaVariables.adHocFilter) > 0) {
-            query = _.replace(query, GrafanaVariables.adHocFilter, `( ${adhocWhere} )`);
+            const adhocString = adhocWhere ? `( ${adhocWhere} )` : '';
+
+            query = _.replace(query, GrafanaVariables.adHocFilter, adhocString);
         }
 
         if (query && query.indexOf(GrafanaVariables.interval) > 0) {
             query = _.replace(query, GrafanaVariables.interval, interval);
         }
+
+        query = this.removeExtraConditionStatements(query);
 
         return query;
     }
@@ -349,6 +351,14 @@ class SQLQuery {
 
             return el;
         })
+    }
+
+    removeExtraConditionStatements(query) {
+        return query
+            .replace(/(and)\s+and/ig, '$1')
+            .replace(/(or)\s+or/ig, '$1')
+            .replace(/((and|or)[\s]+)(group|order|limit)/ig, ' $3')
+            .replace(/(where)[\s]+(and|or)/ig, '$1 ');
     }
 }
 

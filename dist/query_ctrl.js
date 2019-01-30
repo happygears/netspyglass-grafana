@@ -88,7 +88,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     type: QueryPrompts.groupByType,
                     value: QueryPrompts.groupBy
                 },
-                isSeparatedColumns: false
+                isSeparatedColumns: false,
+                disableAdHoc: false
             };
 
             _export('NetSpyGlassQueryCtrl', NetSpyGlassQueryCtrl = function (_QueryCtrl) {

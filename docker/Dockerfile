@@ -10,7 +10,7 @@
 #
 # https://hub.docker.com/r/grafana/grafana/tags/
 
-FROM grafana/grafana:5.4.2
+FROM grafana/grafana:5.4.3
 
 ENV HAPPYGEARS_DIR="/happygears"
 
@@ -23,22 +23,36 @@ ENV GRAFANA_VOLUME_DIR="/opt/grafana"
 ENV GRAFANA_LOGS_DIR="$GRAFANA_VOLUME_DIR/logs"
 ENV GRAFANA_PLUGINS_DIR="$GRAFANA_VOLUME_DIR/plugins/"
 
-RUN  mkdir -p $GRAFANA_LOGS_DIR && chown -R grafana.grafana $GRAFANA_VOLUME_DIR
+RUN  mkdir -p $GRAFANA_LOGS_DIR
 
+# install all plugins in /happygears/plugins, to be copied to /opt/grafana/plugins by the startup script.
+# This way, the container won't make a call to Grafana plugins repository every time it starts.
+
+RUN mkdir -p $HAPPYGEARS_DIR/plugins
+
+# copy netspyglass plugin code to a temporary location in the image
 COPY dist dist/
 
+# copy netspyglass plugin to its final location in the image. The difference is that directory name
+# conforms to Grafana plugin naming convention
+
 RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
-    mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
-    cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
+    mkdir -p $HAPPYGEARS_DIR/plugins/${PLUGIN_ID} && \
+    cp -r dist/* $HAPPYGEARS_DIR/plugins/${PLUGIN_ID} && \
+    rm -rf dist
+
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-worldmap-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-piechart-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-singlestat-math-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-statusbygroup-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install natel-plotly-panel
 
 # provisioning files (both datasource and dashboards) must exist before Grafana starts
 # but actual dashboards can be added later. Once Grafana sees dashboards provisioning file,
 # it begins to monitor the directory and loads dashboards when they appear in it.
 
-COPY docker/files/start.sh                       /
-COPY docker/files/post-start-setup.sh            /
-#COPY docker/files/provisioning/dashboards        $HAPPYGEARS_DIR/grafana/provisioning/dashboards/
-#COPY docker/files/provisioning/datasources       $HAPPYGEARS_DIR/grafana/provisioning/datasources/
+COPY docker/files/start.sh            /
+COPY docker/files/post-start-setup.sh /
 
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh

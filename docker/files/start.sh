@@ -18,10 +18,9 @@ id -a
 
 mkdir -p ${GRAFANA_PLUGINS_DIR}
 
-cp -r ${SRC_PLUGINS_DIR}/* ${GRAFANA_PLUGINS_DIR}
+# copy plugins that come with the image to Grafana plugins directory to install and upgrade them
 
-NSG_PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json)
-mv ${GRAFANA_PLUGINS_DIR}/netspyglass ${GRAFANA_PLUGINS_DIR}/${NSG_PLUGIN_ID}
+cp -r ${SRC_PLUGINS_DIR}/* ${GRAFANA_PLUGINS_DIR}
 
 ls -lad ${GRAFANA_PLUGINS_DIR}
 

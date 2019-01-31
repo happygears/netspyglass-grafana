@@ -28,12 +28,18 @@ RUN  mkdir -p $GRAFANA_LOGS_DIR
 # install all plugins in /happygears/plugins, to be copied to /opt/grafana/plugins by the startup script.
 # This way, the container won't make a call to Grafana plugins repository every time it starts.
 
-RUN  mkdir $HAPPYGEARS_DIR/plugins
-COPY dist  $HAPPYGEARS_DIR/plugins/netspyglass/
+RUN mkdir -p $HAPPYGEARS_DIR/plugins
 
-#RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
-#    mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
-#    cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
+# copy netspyglass plugin code to a temporary location in the image
+COPY dist dist/
+
+# copy netspyglass plugin to its final location in the image. The difference is that directory name
+# conforms to Grafana plugin naming convention
+
+RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
+    mkdir -p $HAPPYGEARS_DIR/plugins/${PLUGIN_ID} && \
+    cp -r dist/* $HAPPYGEARS_DIR/plugins/${PLUGIN_ID} && \
+    rm -rf dist
 
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-worldmap-panel
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-piechart-panel

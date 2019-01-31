@@ -89,7 +89,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: QueryPrompts.groupBy
                 },
                 isSeparatedColumns: false,
-                disableAdHoc: false
+                disableAdHoc: false,
+                format: 'time_series'
             };
 
             _export('NetSpyGlassQueryCtrl', NetSpyGlassQueryCtrl = function (_QueryCtrl) {
@@ -186,9 +187,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             defaults = this.setGraphDefaults(defaults);
                         }
 
+                        defaults.format = this.options.isTable ? 'table' : 'time_series';
+
                         _.defaults(this.store, defaults);
 
-                        this.store.format = this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap ? 'time_series' : 'table';
                         this.store.isTablePanel = this.options.isTable;
 
                         if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
@@ -746,6 +748,17 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     key: 'toggleColumnsView',
                     value: function toggleColumnsView() {
                         this.store.isSeparatedColumns = !this.store.isSeparatedColumns;
+                    }
+                }, {
+                    key: 'getFormatOptions',
+                    value: function getFormatOptions() {
+                        return this.$injector.get('$q').resolve([{
+                            text: 'time series',
+                            value: 'time_series'
+                        }, {
+                            text: 'table',
+                            value: 'table'
+                        }]);
                     }
                 }]);
 

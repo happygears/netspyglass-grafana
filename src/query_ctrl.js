@@ -55,7 +55,8 @@ const targetDefaults = {
         value: QueryPrompts.groupBy
     },
     isSeparatedColumns: false,
-    disableAdHoc: false
+    disableAdHoc: false,
+    format: 'time_series'
 };
 
 //http://angular-dragdrop.github.io/angular-dragdrop/
@@ -140,12 +141,13 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             defaults = this.setGraphDefaults(defaults);
         }
 
+        defaults.format = this.options.isTable ? 'table' : 'time_series';
+
         _.defaults(
             this.store,
             defaults
         );
 
-        this.store.format = (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) ? 'time_series' : 'table';
         this.store.isTablePanel = this.options.isTable;
 
         if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
@@ -688,6 +690,19 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     toggleColumnsView() {
         this.store.isSeparatedColumns = !this.store.isSeparatedColumns;
     }
+
+    getFormatOptions() {
+        return this.$injector.get('$q').resolve([
+            {
+                text: 'time series',
+                value: 'time_series'
+            },
+            {
+                text: 'table',
+                value: 'table'
+            }
+        ]);
+    };
 }
 
 NetSpyGlassQueryCtrl.templateUrl = 'partials/query.editor.html';

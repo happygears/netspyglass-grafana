@@ -8,26 +8,28 @@ GRAFANA_HOME_DIR="/opt/grafana"
 GRAFANA_PLUGINS_DIR="$GRAFANA_HOME_DIR/plugins/"
 GRAFANA_PROVISIONING_DIR="$GRAFANA_HOME_DIR/provisioning"
 
+SRC_PLUGINS_DIR="${HAPPYGEARS_DIR}/plugins/"
+
 cd ${HAPPYGEARS_DIR}
 
 set -x
-set -e
 
 id -a
 
-PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
-    mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
-    cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
+mkdir -p ${GRAFANA_PLUGINS_DIR}
 
-/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install grafana-worldmap-panel
-/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install grafana-piechart-panel
-/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install blackmirror1-singlestat-math-panel
-/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install blackmirror1-statusbygroup-panel
-/usr/share/grafana/bin/grafana-cli --pluginsDir ${GRAFANA_PLUGINS_DIR} plugins install natel-plotly-panel
+cp -r ${SRC_PLUGINS_DIR}/* ${GRAFANA_PLUGINS_DIR}
+
+NSG_PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json)
+mv ${GRAFANA_PLUGINS_DIR}/netspyglass ${GRAFANA_PLUGINS_DIR}/${NSG_PLUGIN_ID}
+
+ls -lad ${GRAFANA_PLUGINS_DIR}
 
 mkdir -p ${GRAFANA_PROVISIONING_DIR}
+
 ls -laR ${GRAFANA_PROVISIONING_DIR}
 
+chown -R grafana.grafana ${GRAFANA_PLUGINS_DIR}      || true   # if it is read-only because it is mounted as docker config
 chown -R grafana.grafana ${GRAFANA_PROVISIONING_DIR} || true   # if it is read-only because it is mounted as docker config
 
 cp -r ${HAPPYGEARS_DIR}/grafana/provisioning/*  ${GRAFANA_PROVISIONING_DIR}/ || true

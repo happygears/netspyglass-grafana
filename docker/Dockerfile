@@ -23,22 +23,30 @@ ENV GRAFANA_VOLUME_DIR="/opt/grafana"
 ENV GRAFANA_LOGS_DIR="$GRAFANA_VOLUME_DIR/logs"
 ENV GRAFANA_PLUGINS_DIR="$GRAFANA_VOLUME_DIR/plugins/"
 
-RUN  mkdir -p $GRAFANA_LOGS_DIR && chown -R grafana.grafana $GRAFANA_VOLUME_DIR
+RUN  mkdir -p $GRAFANA_LOGS_DIR
 
-COPY dist dist/
+# install all plugins in /happygears/plugins, to be copied to /opt/grafana/plugins by the startup script.
+# This way, the container won't make a call to Grafana plugins repository every time it starts.
 
-RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
-    mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
-    cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
+RUN  mkdir $HAPPYGEARS_DIR/plugins
+COPY dist  $HAPPYGEARS_DIR/plugins/netspyglass/
+
+#RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
+#    mkdir -p ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID} && \
+#    cp -r dist/* ${GRAFANA_PLUGINS_DIR}/${PLUGIN_ID}/
+
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-worldmap-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-piechart-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-singlestat-math-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-statusbygroup-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install natel-plotly-panel
 
 # provisioning files (both datasource and dashboards) must exist before Grafana starts
 # but actual dashboards can be added later. Once Grafana sees dashboards provisioning file,
 # it begins to monitor the directory and loads dashboards when they appear in it.
 
-COPY docker/files/start.sh                       /
-COPY docker/files/post-start-setup.sh            /
-#COPY docker/files/provisioning/dashboards        $HAPPYGEARS_DIR/grafana/provisioning/dashboards/
-#COPY docker/files/provisioning/datasources       $HAPPYGEARS_DIR/grafana/provisioning/datasources/
+COPY docker/files/start.sh            /
+COPY docker/files/post-start-setup.sh /
 
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh

@@ -150,7 +150,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
         this.store.isTablePanel = this.options.isTable;
 
-        if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
+        if (this.store.format === 'time_series') {
             if (!_.find(this.store.columns, {
                     name: 'time'
                 })) {
@@ -703,6 +703,31 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             }
         ]);
     };
+
+    onChangeFormat() {
+        if (this.store.format === 'time_series') {
+            if (!_.find(this.store.columns, {
+                    name: 'time'
+                })) {
+                this.store.columns.push({
+                    name: 'time',
+                    visible: false
+                });
+            }
+        } else {
+            if (_.find(this.store.columns, {
+                    name: 'time',
+                    visible: false
+                })) {
+                _.remove(this.store.columns, {
+                    name: 'time',
+                    visible: false
+                });
+            }
+        }
+
+        this.execute();
+    }
 }
 
 NetSpyGlassQueryCtrl.templateUrl = 'partials/query.editor.html';

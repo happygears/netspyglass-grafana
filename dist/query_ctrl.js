@@ -193,7 +193,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         this.store.isTablePanel = this.options.isTable;
 
-                        if (this.options.isGraph || this.options.isSinglestat || this.options.isHeatmap) {
+                        if (this.store.format === 'time_series') {
                             if (!_.find(this.store.columns, {
                                 name: 'time'
                             })) {
@@ -759,6 +759,32 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             text: 'table',
                             value: 'table'
                         }]);
+                    }
+                }, {
+                    key: 'onChangeFormat',
+                    value: function onChangeFormat() {
+                        if (this.store.format === 'time_series') {
+                            if (!_.find(this.store.columns, {
+                                name: 'time'
+                            })) {
+                                this.store.columns.push({
+                                    name: 'time',
+                                    visible: false
+                                });
+                            }
+                        } else {
+                            if (_.find(this.store.columns, {
+                                name: 'time',
+                                visible: false
+                            })) {
+                                _.remove(this.store.columns, {
+                                    name: 'time',
+                                    visible: false
+                                });
+                            }
+                        }
+
+                        this.execute();
                     }
                 }]);
 

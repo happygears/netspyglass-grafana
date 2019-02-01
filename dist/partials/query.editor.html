@@ -15,15 +15,15 @@
                       data-ng-blur="ctrl.execute()"
                       spellcheck='false' placeholder="SELECT tag FROM tagFacet WHERE id=1"></textarea>
         </div>
-        <div class="gf-form-inline">
-            <div class="gf-form gf-form--grow">
-                <div class="gf-form-label gf-form-label--grow"></div>
-            </div>
+        <!--<div class="gf-form-inline">-->
+            <!--<div class="gf-form gf-form&#45;&#45;grow">-->
+                <!--<div class="gf-form-label gf-form-label&#45;&#45;grow"></div>-->
+            <!--</div>-->
 
-            <div class="gf-form">
-                <div class="gf-form-label gf-form-label--secondary">Plugin version: {{ctrl.pluginVersion}}</div>
-            </div>
-        </div>
+            <!--<div class="gf-form">-->
+                <!--<div class="gf-form-label gf-form-label&#45;&#45;secondary">Plugin version: {{ctrl.pluginVersion}}</div>-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 
     <div class="editor-part editor-part--filter" data-ng-if="!ctrl.store.rawQuery">
@@ -215,7 +215,7 @@
         </div>
     </div>
 
-    <div class="editor-part">
+    <div class="editor-part" data-ng-show="ctrl.store.variable != ctrl.prompts.variable || ctrl.store.rawQuery">
         <div class="gf-form-inline">
             <div class="gf-form">
                 <label class="gf-form-label query-keyword width-7">FORMAT AS</label>
@@ -224,12 +224,16 @@
             <div class="gf-form">
                 <gf-form-dropdown model="ctrl.store.format" data-label-mode="true"
                                   data-get-options="ctrl.getFormatOptions()"
-                                  data-on-change="ctrl.execute()">
+                                  data-on-change="ctrl.onChangeFormat()">
                 </gf-form-dropdown>
             </div>
 
             <div class="gf-form gf-form--grow">
                 <div class="gf-form-label gf-form-label--grow"></div>
+            </div>
+
+            <div class="gf-form" data-ng-if="ctrl.store.rawQuery">
+                <div class="gf-form-label gf-form-label--secondary">Plugin version: {{ctrl.pluginVersion}}</div>
             </div>
         </div>
 
@@ -249,7 +253,7 @@
             </div>
         </div>
 
-        <div class="gf-form-inline">
+        <div class="gf-form-inline" data-ng-show="!ctrl.store.rawQuery">
             <gf-form-switch class="gf-form"
                             label="DISABLE ADHOC FILTER" label-class="width-12 query-keyword"
                             checked="ctrl.store.disableAdHoc" on-change="ctrl.execute()">

@@ -315,7 +315,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             this.store.orderBy.column.value = this.store.orderBy.colValue;
                         }
 
-                        if (this.options.isGraph) {
+                        if (this.store.format === 'time_series') {
                             this.execute();
                         } else {
                             this.setPanelSortFromOrderBy();
@@ -630,7 +630,22 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function getOrderByOptions() {
                         var list = [];
 
-                        if (this.options.isGraph) {
+                        if (this.store.format === 'table') {
+                            this.store.columns.forEach(function (column) {
+                                if (column.name == QueryPrompts.column) return;
+
+                                list.push({
+                                    text: column.alias || utils.compileColumnName(column),
+                                    value: {
+                                        name: utils.compileColumnName(column),
+                                        value: utils.compileColumnAlias(column),
+                                        alias: column.alias
+                                    }
+                                });
+                            });
+                        }
+
+                        if (this.store.format === 'time_series') {
                             list.push({
                                 text: 'metric',
                                 value: {
@@ -644,19 +659,6 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     name: 'column',
                                     value: 'column'
                                 }
-                            });
-                        } else if (this.options.isTable) {
-                            this.store.columns.forEach(function (column) {
-                                if (column.name == QueryPrompts.column) return;
-
-                                list.push({
-                                    text: column.alias || utils.compileColumnName(column),
-                                    value: {
-                                        name: utils.compileColumnName(column),
-                                        value: utils.compileColumnAlias(column),
-                                        alias: column.alias
-                                    }
-                                });
                             });
                         }
 

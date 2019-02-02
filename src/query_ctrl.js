@@ -248,7 +248,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.store.orderBy.column.value = this.store.orderBy.colValue;
         }
 
-        if (this.options.isGraph) {
+        if (this.store.format === 'time_series') {
             this.execute();
         } else {
             this.setPanelSortFromOrderBy();
@@ -559,7 +559,22 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     getOrderByOptions() {
         let list = [];
 
-        if (this.options.isGraph) {
+        if (this.store.format === 'table') {
+            this.store.columns.forEach((column) => {
+                if (column.name == QueryPrompts.column) return;
+
+                list.push({
+                    text: column.alias || utils.compileColumnName(column),
+                    value: {
+                        name: utils.compileColumnName(column),
+                        value: utils.compileColumnAlias(column),
+                        alias: column.alias
+                    }
+                })
+            });
+        }
+
+        if (this.store.format === 'time_series') {
             list.push({
                 text: 'metric',
                 value: {
@@ -573,19 +588,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     name: 'column',
                     value: 'column',
                 }
-            });
-        } else if (this.options.isTable) {
-            this.store.columns.forEach((column) => {
-                if (column.name == QueryPrompts.column) return;
-
-                list.push({
-                    text: column.alias || utils.compileColumnName(column),
-                    value: {
-                        name: utils.compileColumnName(column),
-                        value: utils.compileColumnAlias(column),
-                        alias: column.alias
-                    }
-                })
             });
         }
 

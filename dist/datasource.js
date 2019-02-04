@@ -209,6 +209,10 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                                     return item.description;
                             }
 
+                            if (item[group]) {
+                                return item[group];
+                            }
+
                             if (!item.tags || !item.tags[group]) {
                                 return match;
                             } else {

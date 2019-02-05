@@ -44,7 +44,7 @@ RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-worldmap-panel
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-piechart-panel
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-singlestat-math-panel
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-statusbygroup-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install vonage-status-panel
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install natel-plotly-panel
 
 # provisioning files (both datasource and dashboards) must exist before Grafana starts

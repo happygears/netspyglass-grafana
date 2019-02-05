@@ -315,7 +315,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         }
 
                         query.select(columns.map(function (column) {
-                            return _this2.processColumn(column, target.isTablePanel);
+                            return _this2.processColumn(column, target.isMultiColumnMode);
                         }));
                         query.from(target.variable);
                         query.where([sqlBuilder.OP.AND, this.generateWhereFromTags(target.tags, options.scopedVars), adHoc, timeVar]);

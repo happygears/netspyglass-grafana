@@ -13,12 +13,12 @@
 
     <hg-dropdown
         class="col-container__item"
-        data-ng-if="$ctrl.isTable"
+        data-ng-if="$ctrl.isMultiColumn"
         data-label="{{ $ctrl.column.name }}"
         data-on-value-changed="$ctrl.onColumnSelect($value)"
         data-get-options="$ctrl.getColumnsList()"></hg-dropdown>
 
-    <div class="gf-form-label col-container__item" data-ng-if="!$ctrl.isTable">{{ $ctrl.column.name }}</div>
+    <div class="gf-form-label col-container__item" data-ng-if="!$ctrl.isMultiColumn">{{ $ctrl.column.name }}</div>
 
     <div class="gf-form-label col-container__item" data-ng-if="$ctrl.column.appliedFunctions.length">
         <span class="select-col__func select-col__func--close">{{ ' ) '.repeat($ctrl.column.appliedFunctions.length) }}</span>

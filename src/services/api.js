@@ -232,7 +232,7 @@ class SQLQuery {
             return false;
         }
 
-        query.select(columns.map(column => this.processColumn(column,target.isTablePanel)));
+        query.select(columns.map(column => this.processColumn(column,target.isMultiColumnMode)));
         query.from(target.variable);
         query.where([
             sqlBuilder.OP.AND,

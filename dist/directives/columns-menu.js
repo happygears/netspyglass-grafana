@@ -21,7 +21,7 @@ System.register(['lodash'], function (_export, _context) {
             bindToController: true,
             scope: {
                 availableRemove: '=',
-                isTable: '=',
+                isMultiColumn: '=',
                 column: '=',
                 columnsList: '<',
                 onColumnRemove: '&',

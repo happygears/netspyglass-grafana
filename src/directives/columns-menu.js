@@ -135,7 +135,7 @@ export default function ColumnsMenuDirective($timeout) {
         bindToController: true,
         scope: {
             availableRemove: '=',
-            isTable: '=',
+            isMultiColumn: '=',
             column: '=',
             columnsList: '<',
             onColumnRemove: '&',

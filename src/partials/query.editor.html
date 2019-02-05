@@ -65,19 +65,19 @@
                             data-columns-list="ctrl.options.columns" 
                             data-column="column" 
                             data-ng-repeat="column in ctrl.store.columns | filter:{visible: true}"
-                            data-ng-if="ctrl.store.columns.length && (ctrl.options.isTable && ctrl.options.columns.length || !ctrl.options.isTable)"
-                            data-is-table="ctrl.options.isTable" 
-                            data-available-remove="ctrl.options.isTable" 
+                            data-ng-if="ctrl.store.columns.length && (ctrl.options.isMultiColumnMode && ctrl.options.columns.length || !ctrl.options.isMultiColumnMode)"
+                            data-is-multi-column="ctrl.options.isMultiColumnMode"
+                            data-available-remove="ctrl.options.isMultiColumnMode"
                             data-on-column-remove="ctrl.onColumnRemove($column)" 
                             data-on-column-changed="ctrl.onColumnChanged($column, $prevColumnState)"
                             class="gf-form gf-form--column-editor"
-                            data-ng-class="{'one-per-line': ctrl.store.isSeparatedColumns && ctrl.options.isTable}">
+                            data-ng-class="{'one-per-line': ctrl.store.isSeparatedColumns && ctrl.options.isMultiColumnMode}">
                         </hg-columns-menu>
 
-                        <a ng-if="ctrl.options.isTable" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
+                        <a ng-if="ctrl.options.isMultiColumnMode" class="gf-form-label" ng-click="ctrl.onColumnAdd()"><i class="fa fa-plus "></i></a>
 
                         <a class="gf-form-label"
-                           data-ng-show="ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-show="ctrl.store.isSeparatedColumns && ctrl.options.isMultiColumnMode"
                            data-ng-click="ctrl.toggleColumnsView()"
                            data-placement="top"
                            data-bs-tooltip="'Switch to align columns by default'">
@@ -85,7 +85,7 @@
                         </a>
 
                         <a class="gf-form-label"
-                           data-ng-show="!ctrl.store.isSeparatedColumns && ctrl.options.isTable"
+                           data-ng-show="!ctrl.store.isSeparatedColumns && ctrl.options.isMultiColumnMode"
                            data-ng-click="ctrl.toggleColumnsView()"
                            data-placement="top"
                            data-bs-tooltip="'Switch to align columns one per line'">
@@ -94,11 +94,11 @@
 
                         <div class="gf-form gf-form--grow">
                             <div class="gf-form-label gf-form-label--grow">
-                                <i data-ng-if="ctrl.options.isTable"
+                                <i data-ng-if="ctrl.options.isMultiColumnMode"
                                    class="fa fa-question-circle"
                                    data-placement="top"
                                    data-bs-tooltip="'Click `+` to add column. Drag-n-drop columns to reorder. Click menu to add functions and column alias.'"></i>
-                                <i data-ng-if="!ctrl.options.isTable"
+                                <i data-ng-if="!ctrl.options.isMultiColumnMode"
                                    class="fa fa-question-circle"
                                    data-placement="top"
                                    data-bs-tooltip="'Click menu to add functions and column alias.'"></i>

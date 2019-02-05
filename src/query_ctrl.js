@@ -82,6 +82,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             isTable: this.panel.type === 'table',
             isSinglestat: this.panel.type === 'singlestat',
             isHeatmap: this.panel.type === 'heatmap',
+            isMultiColumnMode: true,
             categories: [],
             segments: [],
             removeSegment: uiSegmentSrv.newSegment({
@@ -148,7 +149,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             defaults
         );
 
-        this.store.isTablePanel = this.options.isTable;
+        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
 
         if (this.store.format === 'time_series') {
             if (!_.find(this.store.columns, {
@@ -309,7 +310,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onColumnChanged($column, $prevColumnState) {
-        if (this.isTable && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+        if (this.isMultiColumnMode && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
 
             this.store.orderBy.column = {
                 name: utils.compileColumnName($column),
@@ -352,7 +353,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     loadColumns() {
         if (this.store.variable && 
             this.store.variable !== QueryPrompts.column && 
-            this.options.isTable) {
+            this.options.isMultiColumnMode) {
             
             let found = -1;
             _.each(this.options.categories, (category) => {
@@ -559,7 +560,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     getOrderByOptions() {
         let list = [];
 
-        if (this.store.format === 'table') {
+        if (this.options.isMultiColumnMode) {
             this.store.columns.forEach((column) => {
                 if (column.name == QueryPrompts.column) return;
 
@@ -574,7 +575,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             });
         }
 
-        if (this.store.format === 'time_series') {
+        if (!this.options.isMultiColumnMode) {
             list.push({
                 text: 'metric',
                 value: {

@@ -118,6 +118,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         isTable: _this.panel.type === 'table',
                         isSinglestat: _this.panel.type === 'singlestat',
                         isHeatmap: _this.panel.type === 'heatmap',
+                        isMultiColumnMode: true,
                         categories: [],
                         segments: [],
                         removeSegment: uiSegmentSrv.newSegment({
@@ -191,7 +192,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         _.defaults(this.store, defaults);
 
-                        this.store.isTablePanel = this.options.isTable;
+                        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
 
                         if (this.store.format === 'time_series') {
                             if (!_.find(this.store.columns, {
@@ -384,7 +385,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onColumnChanged',
                     value: function onColumnChanged($column, $prevColumnState) {
-                        if (this.isTable && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
+                        if (this.isMultiColumnMode && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
 
                             this.store.orderBy.column = {
                                 name: utils.compileColumnName($column),
@@ -427,7 +428,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function loadColumns() {
                         var _this6 = this;
 
-                        if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isTable) {
+                        if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isMultiColumnMode) {
 
                             var found = -1;
                             _.each(this.options.categories, function (category) {
@@ -630,7 +631,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function getOrderByOptions() {
                         var list = [];
 
-                        if (this.store.format === 'table') {
+                        if (this.options.isMultiColumnMode) {
                             this.store.columns.forEach(function (column) {
                                 if (column.name == QueryPrompts.column) return;
 
@@ -645,7 +646,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             });
                         }
 
-                        if (this.store.format === 'time_series') {
+                        if (!this.options.isMultiColumnMode) {
                             list.push({
                                 text: 'metric',
                                 value: {

@@ -240,7 +240,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                         data.forEach(function (item) {
                             var alias = aliases[item.id.toUpperCase()];
-                            if (!item || !item.datapoints || !item.target || !alias) return;
+                            if (!item || !alias) return;
 
                             item.target = _this2.getSeriesName(item, alias);
                         });

@@ -177,7 +177,7 @@ export class NetSpyGlassDatasource {
     _processingGraphAliases(data, aliases) {
         data.forEach(item => {
             const alias = aliases[item.id.toUpperCase()];
-            if (!item || !item.datapoints || !item.target || !alias) return;
+            if (!item || !alias) return;
 
             item.target = this.getSeriesName(item, alias);
         });

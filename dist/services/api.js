@@ -444,7 +444,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                 }, {
                     key: 'removeExtraConditionStatements',
                     value: function removeExtraConditionStatements(query) {
-                        return query.replace(/\s+(and)\s+and\s+/ig, '$1').replace(/\s+(or)\s+or\s+/ig, '$1').replace(/\s+((and|or)[\s]+)(group|order|limit)\s+/ig, ' $3').replace(/\s+(where)[\s]+(and|or)\s+/ig, '$1 ');
+                        return query.replace(/\s+(and)\s+and\s+/ig, ' $1 ').replace(/\s+(or)\s+or\s+/ig, ' $1 ').replace(/\s+((and|or)[\s]+)(group|order|limit)\s+/ig, ' $3 ').replace(/\s+(where)[\s]+(and|or)\s+/ig, ' $1 ');
                     }
                 }]);
 

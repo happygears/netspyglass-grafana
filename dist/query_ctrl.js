@@ -5,6 +5,18 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
     var QueryCtrl, QueryPrompts, GrafanaVariables, utils, _createClass, orderBySortTypes, targetDefaults, NetSpyGlassQueryCtrl;
 
+    function _toConsumableArray(arr) {
+        if (Array.isArray(arr)) {
+            for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+                arr2[i] = arr[i];
+            }
+
+            return arr2;
+        } else {
+            return Array.from(arr);
+        }
+    }
+
     function _classCallCheck(instance, Constructor) {
         if (!(instance instanceof Constructor)) {
             throw new TypeError("Cannot call a class as a function");
@@ -298,7 +310,15 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         var _this5 = this;
 
                         return this.datasource.getCategories().then(function (categories) {
+                            var predefined = [{
+                                text: 'Tables',
+                                submenu: [{ text: 'devices', value: 'devices' }, { text: 'alerts', value: 'alerts' }]
+                            }, { text: '---------', separator: true }];
+
+                            categories = [].concat(predefined, _toConsumableArray(categories));
+
                             _this5.options.categories = categories;
+
                             return categories;
                         });
                     }

@@ -1,11 +1,13 @@
 {
   "name": "grafana-netspyglass",
   "private": true,
-  "version": "2.0.33",
+  "version": "2.0.34",
   "description": "",
   "scripts": {
     "build": "grunt",
-    "test": "grunt build test"
+    "test": "grunt build test",
+    "preprod": "NODE_ENV=production grunt build",
+    "prod": "NODE_ENV=production grunt"
   },
   "repository": {
     "type": "git",

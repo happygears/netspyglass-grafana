@@ -230,7 +230,21 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         return this.datasource
             .getCategories()
             .then((categories) => {
+                const predefined = [
+                    {
+                        text: 'Tables',
+                        submenu: [
+                            {text: 'devices', value: 'devices' },
+                            {text: 'alerts', value: 'alerts' }
+                        ]
+                    },
+                    {text: '---------', separator: true}
+                ];
+
+                categories = [...predefined, ...categories];
+
                 this.options.categories = categories;
+
                 return categories;
             });
     }

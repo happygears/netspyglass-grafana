@@ -151,19 +151,35 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
         this.store.isMultiColumnMode = this.options.isMultiColumnMode;
 
+        this.setDefaultColumns();
+
+        if (this.options.isSinglestat) {
+            this.store.limit = 1;
+        }
+    }
+
+    setDefaultColumns() {
+        if (!_.find(this.store.columns, {name: 'metric'})) {
+            this.store.columns.push({
+                name: 'metric',
+                visible: true
+            });
+        }
+
         if (this.store.format === 'time_series') {
-            if (!_.find(this.store.columns, {
-                    name: 'time'
-                })) {
+            if (!_.find(this.store.columns, {name: 'time'})) {
                 this.store.columns.push({
                     name: 'time',
                     visible: false
                 });
             }
-        }
-
-        if (this.options.isSinglestat) {
-            this.store.limit = 1;
+        } else {
+            if (_.find(this.store.columns, {name: 'time'})) {
+                _.remove(this.store.columns, {
+                    name: 'time',
+                    visible: false
+                });
+            }
         }
     }
 
@@ -254,6 +270,25 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      */
     onSelectCategory($variable) {
         this.store.variable = $variable;
+
+        if ($variable === 'devices' || $variable === 'alerts') {
+            if (_.find(this.store.columns, {name: 'time'})) {
+                _.remove(this.store.columns, {
+                    name: 'time',
+                    visible: false
+                });
+            }
+
+            if (_.find(this.store.columns, {name: 'metric'})) {
+                _.remove(this.store.columns, {
+                    name: 'metric',
+                    visible: true
+                });
+            }
+        } else {
+            this.setDefaultColumns();
+        }
+
         this.loadColumns();
         this.execute();
     }
@@ -722,26 +757,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     };
 
     onChangeFormat() {
-        if (this.store.format === 'time_series') {
-            if (!_.find(this.store.columns, {
-                    name: 'time'
-                })) {
-                this.store.columns.push({
-                    name: 'time',
-                    visible: false
-                });
-            }
-        } else {
-            if (_.find(this.store.columns, {
-                    name: 'time',
-                    visible: false
-                })) {
-                _.remove(this.store.columns, {
-                    name: 'time',
-                    visible: false
-                });
-            }
-        }
+        this.setDefaultColumns();
 
         this.execute();
     }

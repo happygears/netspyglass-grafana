@@ -372,16 +372,24 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             this.store.orderBy.column.value = this.store.orderBy.colValue;
                         }
 
-                        if (this.store.format === 'time_series') {
-                            this.execute();
-                        } else {
+                        if (this.options.isTable) {
                             this.setPanelSortFromOrderBy();
+                        } else {
+                            this.execute();
                         }
                     }
                 }, {
                     key: 'onChangeOrderBy',
                     value: function onChangeOrderBy($value) {
-                        this.store.orderBy.column = $value;
+                        if (typeof $value === 'string') {
+                            this.store.orderBy.column = {
+                                name: $value,
+                                value: $value
+                            };
+                        } else {
+                            this.store.orderBy.column = $value;
+                        }
+
                         this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
                         this._updateOrderBy();
                     }
@@ -687,7 +695,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function getOrderByOptions() {
                         var list = [];
 
-                        if (this.options.isMultiColumnMode) {
+                        if (this.options.isTable) {
                             this.store.columns.forEach(function (column) {
                                 if (column.name == QueryPrompts.column) return;
 
@@ -700,23 +708,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     }
                                 });
                             });
-                        }
-
-                        if (!this.options.isMultiColumnMode) {
-                            list.push({
-                                text: 'metric',
-                                value: {
-                                    name: 'metric',
-                                    value: 'metric'
-                                }
-                            });
-                            list.push({
-                                text: 'column',
-                                value: {
-                                    name: 'column',
-                                    value: 'column'
-                                }
-                            });
+                        } else {
+                            return this.datasource.getCombinedList(this.store.variable);
                         }
 
                         return this.$injector.get('$q').resolve(list);

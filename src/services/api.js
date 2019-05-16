@@ -279,6 +279,12 @@ class SQLQuery {
 
             let variable = this.getTemplateValue(name, scopedVars);
 
+            // We do not want replace variables with value that store in Grafana private variables
+            // Corner case #NET-2824
+            if (/^\$_/.test(variable)) {
+                continue;
+            }
+
             if (variable) {
                 let quote = sql.substr(result.index - 1, 1);
                 let hasQuotes = /['"]{1}/.test(quote);

@@ -170,7 +170,7 @@
                     <gf-form-dropdown model="ctrl.store.groupBy.type" data-label-mode="true" data-get-options="ctrl.getGroupByTypes()">
                     </gf-form-dropdown>
                 </div>
-                <div class="gf-form" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type != ctrl.prompts.groupByType">
+                <div class="gf-form" data-ng-if="ctrl.store.groupBy.type == 'column'">
                     <hg-dropdown
                             data-label="{{ ctrl.store.groupBy.value }}"
                             data-on-value-changed="ctrl.onChangeGroupByValue($value)"
@@ -178,6 +178,19 @@
 
                     <a class="gf-form-label" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
                 </div>
+                <div class="gf-form" data-ng-if="ctrl.store.groupBy.type == 'time'">
+                    <gf-form-dropdown
+                            model="ctrl.store.groupBy.value"
+                            data-lookup-text="true"
+                            data-allow-custom="true"
+                            data-label-mode="true"
+                            data-get-options="ctrl.getGroupByVariables()"
+                            data-on-change="ctrl.execute()">
+                    </gf-form-dropdown>
+
+                    <a class="gf-form-label" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>
+                </div>
+
                 <div class="gf-form gf-form--grow">
                     <div class="gf-form-label gf-form-label--grow">
                         <i class="fa fa-question-circle"

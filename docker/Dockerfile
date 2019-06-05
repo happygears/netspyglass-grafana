@@ -10,7 +10,8 @@
 #
 # https://hub.docker.com/r/grafana/grafana/tags/
 
-FROM grafana/grafana:6.2.2
+# see NET-2892
+FROM grafana/grafana:6.1.6
 
 ENV HAPPYGEARS_DIR="/happygears"
 

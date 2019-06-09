@@ -10,7 +10,8 @@
 #
 # https://hub.docker.com/r/grafana/grafana/tags/
 
-FROM grafana/grafana:5.4.3
+# see NET-2892
+FROM grafana/grafana:6.1.6
 
 ENV HAPPYGEARS_DIR="/happygears"
 
@@ -46,6 +47,8 @@ RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-pi
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-singlestat-math-panel
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install vonage-status-panel
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install natel-plotly-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install mtanda-histogram-panel
+RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install farski-blendstat-panel
 
 # provisioning files (both datasource and dashboards) must exist before Grafana starts
 # but actual dashboards can be added later. Once Grafana sees dashboards provisioning file,

@@ -35,7 +35,9 @@ const menuItems = [
             {text: 'tsavg', href: '#tsavg'},
             {text: 'tsmedian', href: '#tsmedian'},
             {text: 'tspercentile95', href: '#tspercentile95'},
-            {text: 'tslinear', href: '#tslinear'}
+            {text: 'tslinear', href: '#tslinear'},
+            {text: 'sma', href: '#sma'},
+            {text: 'cumulative_sum', href: '#cumulative_sum'},
         ]
     }
 ];

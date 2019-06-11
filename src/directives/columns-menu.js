@@ -38,6 +38,7 @@ const menuItems = [
             {text: 'tslinear', href: '#tslinear'},
             {text: 'sma', href: '#sma'},
             {text: 'cumulative_sum', href: '#cumulative_sum'},
+            {text: 'loess', href: '#loess'},
         ]
     }
 ];

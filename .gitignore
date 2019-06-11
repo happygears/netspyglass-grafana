@@ -17,4 +17,3 @@ grafana
 
 # generated tar archive
 *.tar
-/package-lock.json

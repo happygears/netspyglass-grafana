@@ -110,8 +110,14 @@ query field.
 
 # Development
 
-1. clone this git repository
-2. go to the cloned folder
-3. run npm install 
-4. 
+1. Clone this git repository
+    `git clone git@github.com:happygears/netspyglass-grafana.git`
+2. Go to the cloned folder `cd netspyglass-grafana`
+3. Run `npm install`
+4. For building project select one of the following command:
+ - `grunt watch` # execute this command during development. It will rebuild project on every file change detection.
+ - `npm run build`# make a development build
+ - `npm run build-prod` # make a production build with tests and version bump
 
+If you haven't **npm** and **nodejs** packages please download **nodejs** from 
+given [link](https://nodejs.org/uk). This package also includes npm.

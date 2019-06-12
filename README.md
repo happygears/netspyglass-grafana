@@ -71,7 +71,7 @@ Data Source configuration:
 
 ## Minimal supported version of Grafana is 4.4.0
 
-(C) 2017 Happy Gears, Inc  www.happygears.net
+(C) 2019 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
@@ -106,4 +106,12 @@ data for graphs with fixed time intervals or time intervals in the past,
 such as "yesterday" or "day before yesterday"
 2. made it possible to use dashboard template variables in "ALIAS BY"
 query field.
+
+
+# Development
+
+1. clone this git repository
+2. go to the cloned folder
+3. run npm install 
+4. 
 

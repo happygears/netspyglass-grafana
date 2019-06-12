@@ -4,10 +4,9 @@
   "version": "2.0.43",
   "description": "",
   "scripts": {
-    "build": "grunt",
-    "test": "grunt build test",
-    "preprod": "NODE_ENV=production grunt build",
-    "prod": "NODE_ENV=production grunt"
+    "build": "grunt build",
+    "build-prod": "NODE_ENV=production grunt build",
+    "test": "grunt build test"
   },
   "repository": {
     "type": "git",

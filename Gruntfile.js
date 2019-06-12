@@ -122,7 +122,7 @@ module.exports = function(grunt) {
         updateConfigs: [],
         commit: false,
         createTag: false,
-        push: false,
+        push: false
       }
     },
 
@@ -131,12 +131,12 @@ module.exports = function(grunt) {
         options: {
           questions: [
             {
-              config:  'bump.increment',
+              config:  'bump.options.versionType',
               type:    'list',
               message: 'Bump version from ' + currentVersion + ' to:',
               choices: [
                 {
-                  value: 'build',
+                  value: 'prerelease',
                   name:  'Build:  '+ (currentVersion + '-?') + ' Unstable, betas, and release candidates.'
                 },
                 {
@@ -158,11 +158,11 @@ module.exports = function(grunt) {
               ]
             },
             {
-              config:   'bump.version',
+              config:   'bump.options.setVersion',
               type:     'input',
-              message:  'What specific version would you like',
+              message:  'What specific version would you like: ',
               when:     function (answers) {
-                  return answers['bump.increment'] === 'custom';
+                return answers['bump.options.versionType'] === 'custom';
               },
               validate: function (value) {
                   var valid = semver.valid(value);
@@ -175,11 +175,15 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('build', ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel:dist']);
+  var buildTasks = ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel:dist'];
 
+  if (!IS_DEV) {
+    buildTasks.unshift('bumpVersion');
+    buildTasks.push('test');
+  }
+
+  grunt.registerTask('build', buildTasks);
   grunt.registerTask('test', ['babel:distTestNoSystemJs', 'babel:distTestsSpecsNoSystemJs', 'mochaTest']);
-
   grunt.registerTask('bumpVersion', ['prompt:bump', 'bump']);
-
-  grunt.registerTask('default', IS_DEV ? ['build'] : ['bumpVersion', 'build', 'test']);
+  grunt.registerTask('default', 'build');
 };

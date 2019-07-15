@@ -270,8 +270,10 @@ export class NetSpyGlassDatasource {
                 {text: 'device', value: 'device'},
                 {text: 'description', value: 'description'},
                 {text: 'discoveryTime', value: 'discoveryTime'},
+                {text: 'freshness', value: 'freshness'},
                 {text: 'metric', value: 'metric'},
-                {text: 'time', value: 'time'}
+                {text: 'time', value: 'time'},
+                {text: 'stale', value: 'stale'},
             ]
         };
     }

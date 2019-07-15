@@ -71,12 +71,15 @@ Data Source configuration:
 
 ## Minimal supported version of Grafana is 4.4.0
 
-(C) 2017 Happy Gears, Inc  www.happygears.net
+(C) 2019 Happy Gears, Inc  www.happygears.net
 
 Grafana plugin for NetSpyGlass is licensed under the Apache 2.0 License
 
 # Change Log
 
+### v2.0.x
+
+improvements to the query builder dialog, support for new NsgQL functions
 
 ### v2.0.0
 ## Tested with Grafana 4.4.0 - this is the minimal required version
@@ -106,4 +109,17 @@ data for graphs with fixed time intervals or time intervals in the past,
 such as "yesterday" or "day before yesterday"
 2. made it possible to use dashboard template variables in "ALIAS BY"
 query field.
+
+
+# Development
+
+1.  download and install **nodejs** from [link](https://nodejs.org/uk). This package also includes npm.
+2. Clone this git repository
+    `git clone git@github.com:happygears/netspyglass-grafana.git`
+3. Go to the cloned folder `cd netspyglass-grafana`
+4. Run `npm install`
+5. Use one of the following commands:
+ - `grunt watch`        # execute this command during development. It will rebuild project on every file change detection.
+ - `npm run build`      # make a development build
+ - `npm run build-prod` # make a production build with tests and version bump
 

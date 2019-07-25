@@ -477,7 +477,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                 case 'plus-button':
                     promise = this.datasource
                         .getFacets(this.store.variable)
-                        .then((facets) => ['component', 'device'].concat(facets));
+                        .then((facets) => {
+                            return [...['component', 'device'], ...facets].filter(Boolean);
+                        });
                     break;
 
                 case 'value':

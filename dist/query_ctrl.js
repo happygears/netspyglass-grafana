@@ -557,7 +557,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                 case 'key':
                                 case 'plus-button':
                                     promise = this.datasource.getFacets(this.store.variable).then(function (facets) {
-                                        return ['component', 'device'].concat(facets);
+                                        return ['component', 'device'].concat(_toConsumableArray(facets)).filter(Boolean);
                                     });
                                     break;
 

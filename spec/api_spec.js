@@ -77,8 +77,8 @@ describe('APIQuery', function() {
 
     describe('Test facets', function () {
         it('Should return sql for query facets for given variable', function() {
-            expect(ctx.query.facets('variable1')).to.equals('SELECT DISTINCT tagFacet FROM variable1 ORDER BY tagFacet');
-            expect(ctx.query.facets('variable2')).to.equals('SELECT DISTINCT tagFacet FROM variable2 ORDER BY tagFacet');
+            expect(ctx.query.facets('variable1')).to.equals('SELECT DISTINCT tagFacet FROM variable1 WHERE tagFacet NOTNULL ORDER BY tagFacet');
+            expect(ctx.query.facets('variable2')).to.equals('SELECT DISTINCT tagFacet FROM variable2 WHERE tagFacet NOTNULL ORDER BY tagFacet');
         });
     });
 

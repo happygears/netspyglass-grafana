@@ -163,7 +163,10 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                             select: ['tagFacet'],
                             distinct: true,
                             from: from,
-                            orderBy: ['tagFacet']
+                            orderBy: ['tagFacet'],
+                            where: ['AND', {
+                                tagFacet: [sqlBuilder.OP.NOT_NULL]
+                            }]
                         }).compile();
                     }
                 }, {

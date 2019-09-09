@@ -32,10 +32,7 @@ const orderBySortTypes = ['ASC', 'DESC'];
 
 const targetDefaults = {
     type: 'nsgql',
-    columns: [{
-        name: 'metric',
-        visible: true
-    }],
+    columns: [],
     variable: QueryPrompts.variable,
     orderBy: {
         column: {
@@ -137,11 +134,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.store = this.target._nsgTarget;
         this.store.refId = this.target.refId || 'A';
 
-        //if new target created in graph panel
-        if (!this.store.columns && this.options.isGraph) {
-            defaults = this.setGraphDefaults(defaults);
-        }
-
         defaults.format = this.options.isTable ? 'table' : 'time_series';
 
         _.defaults(
@@ -149,46 +141,66 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             defaults
         );
 
-        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
+        if (this.store.variable &&
+            this.store.variable !== QueryPrompts.variable) {
+            this.setPanelDefaults();
+        }
 
-        this.setDefaultColumns();
+        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
 
         if (this.options.isSinglestat) {
             this.store.limit = 1;
         }
     }
 
-    setDefaultColumns() {
+    setPanelDefaults(category) {
+        if (this.options.isGraph && this.isCategorySupportGraph(category)) {
+            this.setGraphDefaults();
+        } else {
+            this.resetGraphDefaults();
+        }
+    }
+
+    isCategorySupportGraph(value) {
+        return value !== 'devices' && value !== 'alerts';
+    }
+
+    setGraphDefaults() {
         if (!_.find(this.store.columns, {name: 'metric'})) {
             this.store.columns.push({
+                name: 'metric',
+                visible: true,
+                appliedFunctions: [{name: 'tsavg'}]
+            });
+        }
+        if (!_.find(this.store.columns, {name: 'time'})) {
+            this.store.columns.push({
+                name: 'time',
+                visible: false
+            });
+        }
+
+        this.store.groupBy.type = 'time';
+        this.store.groupBy.value = '$_interval';
+    }
+
+    resetGraphDefaults() {
+        if (_.find(this.store.columns, {name: 'metric'})) {
+            _.remove(this.store.columns, {
                 name: 'metric',
                 visible: true
             });
         }
 
-        if (this.store.format === 'time_series') {
-            if (!_.find(this.store.columns, {name: 'time'})) {
-                this.store.columns.push({
-                    name: 'time',
-                    visible: false
-                });
-            }
-        } else {
-            if (_.find(this.store.columns, {name: 'time'})) {
-                _.remove(this.store.columns, {
-                    name: 'time',
-                    visible: false
-                });
-            }
+        if (_.find(this.store.columns, {name: 'time'})) {
+            _.remove(this.store.columns, {
+                name: 'time',
+                visible: false
+            });
         }
-    }
 
-    setGraphDefaults(params) {
-        params.groupBy.type = 'time';
-        params.groupBy.value = '$_interval';
-        params.columns[0].appliedFunctions = [{name: 'tsavg'}];
-
-        return params;
+        this.store.groupBy.type = QueryPrompts.groupByType;
+        this.store.groupBy.value = QueryPrompts.groupBy;
     }
 
     setPanelSortFromOrderBy() {
@@ -271,24 +283,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     onSelectCategory($variable) {
         this.store.variable = $variable;
 
-        if ($variable === 'devices' || $variable === 'alerts') {
-            if (_.find(this.store.columns, {name: 'time'})) {
-                _.remove(this.store.columns, {
-                    name: 'time',
-                    visible: false
-                });
-            }
-
-            if (_.find(this.store.columns, {name: 'metric'})) {
-                _.remove(this.store.columns, {
-                    name: 'metric',
-                    visible: true
-                });
-            }
-        } else {
-            this.setDefaultColumns();
-        }
-
+        this.setPanelDefaults($variable);
         this.loadColumns();
         this.execute();
     }
@@ -752,7 +747,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     };
 
     onChangeFormat() {
-        this.setDefaultColumns();
+        this.setPanelDefaults();
 
         this.execute();
     }

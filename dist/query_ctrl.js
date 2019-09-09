@@ -78,10 +78,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
             orderBySortTypes = ['ASC', 'DESC'];
             targetDefaults = {
                 type: 'nsgql',
-                columns: [{
-                    name: 'metric',
-                    visible: true
-                }],
+                columns: [],
                 variable: QueryPrompts.variable,
                 orderBy: {
                     column: {
@@ -195,57 +192,73 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         this.store = this.target._nsgTarget;
                         this.store.refId = this.target.refId || 'A';
 
-                        //if new target created in graph panel
-                        if (!this.store.columns && this.options.isGraph) {
-                            defaults = this.setGraphDefaults(defaults);
-                        }
-
                         defaults.format = this.options.isTable ? 'table' : 'time_series';
 
                         _.defaults(this.store, defaults);
 
-                        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
+                        if (this.store.variable && this.store.variable !== QueryPrompts.variable) {
+                            this.setPanelDefaults();
+                        }
 
-                        this.setDefaultColumns();
+                        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
 
                         if (this.options.isSinglestat) {
                             this.store.limit = 1;
                         }
                     }
                 }, {
-                    key: 'setDefaultColumns',
-                    value: function setDefaultColumns() {
+                    key: 'setPanelDefaults',
+                    value: function setPanelDefaults(category) {
+                        if (this.options.isGraph && this.isCategorySupportGraph(category)) {
+                            this.setGraphDefaults();
+                        } else {
+                            this.resetGraphDefaults();
+                        }
+                    }
+                }, {
+                    key: 'isCategorySupportGraph',
+                    value: function isCategorySupportGraph(value) {
+                        return value !== 'devices' && value !== 'alerts';
+                    }
+                }, {
+                    key: 'setGraphDefaults',
+                    value: function setGraphDefaults() {
                         if (!_.find(this.store.columns, { name: 'metric' })) {
                             this.store.columns.push({
+                                name: 'metric',
+                                visible: true,
+                                appliedFunctions: [{ name: 'tsavg' }]
+                            });
+                        }
+                        if (!_.find(this.store.columns, { name: 'time' })) {
+                            this.store.columns.push({
+                                name: 'time',
+                                visible: false
+                            });
+                        }
+
+                        this.store.groupBy.type = 'time';
+                        this.store.groupBy.value = '$_interval';
+                    }
+                }, {
+                    key: 'resetGraphDefaults',
+                    value: function resetGraphDefaults() {
+                        if (_.find(this.store.columns, { name: 'metric' })) {
+                            _.remove(this.store.columns, {
                                 name: 'metric',
                                 visible: true
                             });
                         }
 
-                        if (this.store.format === 'time_series') {
-                            if (!_.find(this.store.columns, { name: 'time' })) {
-                                this.store.columns.push({
-                                    name: 'time',
-                                    visible: false
-                                });
-                            }
-                        } else {
-                            if (_.find(this.store.columns, { name: 'time' })) {
-                                _.remove(this.store.columns, {
-                                    name: 'time',
-                                    visible: false
-                                });
-                            }
+                        if (_.find(this.store.columns, { name: 'time' })) {
+                            _.remove(this.store.columns, {
+                                name: 'time',
+                                visible: false
+                            });
                         }
-                    }
-                }, {
-                    key: 'setGraphDefaults',
-                    value: function setGraphDefaults(params) {
-                        params.groupBy.type = 'time';
-                        params.groupBy.value = '$_interval';
-                        params.columns[0].appliedFunctions = [{ name: 'tsavg' }];
 
-                        return params;
+                        this.store.groupBy.type = QueryPrompts.groupByType;
+                        this.store.groupBy.value = QueryPrompts.groupBy;
                     }
                 }, {
                     key: 'setPanelSortFromOrderBy',
@@ -344,24 +357,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function onSelectCategory($variable) {
                         this.store.variable = $variable;
 
-                        if ($variable === 'devices' || $variable === 'alerts') {
-                            if (_.find(this.store.columns, { name: 'time' })) {
-                                _.remove(this.store.columns, {
-                                    name: 'time',
-                                    visible: false
-                                });
-                            }
-
-                            if (_.find(this.store.columns, { name: 'metric' })) {
-                                _.remove(this.store.columns, {
-                                    name: 'metric',
-                                    visible: true
-                                });
-                            }
-                        } else {
-                            this.setDefaultColumns();
-                        }
-
+                        this.setPanelDefaults($variable);
                         this.loadColumns();
                         this.execute();
                     }
@@ -815,7 +811,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onChangeFormat',
                     value: function onChangeFormat() {
-                        this.setDefaultColumns();
+                        this.setPanelDefaults();
 
                         this.execute();
                     }

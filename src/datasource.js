@@ -272,6 +272,7 @@ export class NetSpyGlassDatasource {
                 {text: 'discoveryTime', value: 'discoveryTime'},
                 {text: 'freshness', value: 'freshness'},
                 {text: 'metric', value: 'metric'},
+                {text: 'name', value: 'name'},
                 {text: 'time', value: 'time'},
                 {text: 'stale', value: 'stale'},
             ]

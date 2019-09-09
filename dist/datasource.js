@@ -320,7 +320,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     value: function getPredefinedColumns() {
                         return {
                             text: 'predefined columns',
-                            submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'combinedRoles', value: 'combinedRoles' }, { text: 'combinedNsgRoles', value: 'combinedNsgRoles' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'freshness', value: 'freshness' }, { text: 'metric', value: 'metric' }, { text: 'time', value: 'time' }, { text: 'stale', value: 'stale' }]
+                            submenu: [{ text: 'address', value: 'address' }, { text: 'boxDescr', value: 'boxDescr' }, { text: 'combinedRoles', value: 'combinedRoles' }, { text: 'combinedNsgRoles', value: 'combinedNsgRoles' }, { text: 'component', value: 'component' }, { text: 'device', value: 'device' }, { text: 'description', value: 'description' }, { text: 'discoveryTime', value: 'discoveryTime' }, { text: 'freshness', value: 'freshness' }, { text: 'metric', value: 'metric' }, { text: 'name', value: 'name' }, { text: 'time', value: 'time' }, { text: 'stale', value: 'stale' }]
                         };
                     }
                 }, {

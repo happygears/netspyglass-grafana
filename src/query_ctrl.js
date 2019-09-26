@@ -185,18 +185,18 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     resetGraphDefaults() {
-        if (_.find(this.store.columns, {name: 'metric'})) {
-            _.remove(this.store.columns, {
-                name: 'metric',
-                visible: true
-            });
-        }
-
-        if (_.find(this.store.columns, {name: 'time'})) {
+        if (_.find(this.store.columns, {name: 'time', visible: false})) {
             _.remove(this.store.columns, {
                 name: 'time',
                 visible: false
             });
+
+            if (_.find(this.store.columns, {name: 'metric'})) {
+                _.remove(this.store.columns, {
+                    name: 'metric',
+                    visible: true
+                });
+            }
         }
 
         this.store.groupBy.type = QueryPrompts.groupByType;

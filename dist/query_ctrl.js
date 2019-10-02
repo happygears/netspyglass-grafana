@@ -211,7 +211,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function setPanelDefaults(category) {
                         if (this.options.isGraph && this.isCategorySupportGraph(category)) {
                             this.setGraphDefaults();
-                        } else {
+                        } else if (!this.options.isGraph) {
                             this.resetGraphDefaults();
                         }
                     }
@@ -237,8 +237,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             });
                         }
 
-                        this.store.groupBy.type = 'time';
-                        this.store.groupBy.value = '$_interval';
+                        var groupBy = this.store.groupBy;
+
+                        if (!groupBy || groupBy.value === QueryPrompts.groupBy && groupBy.type === QueryPrompts.groupByType) {
+                            this.store.groupBy = {};
+                            this.store.groupBy.type = 'time';
+                            this.store.groupBy.value = '$_interval';
+                        }
                     }
                 }, {
                     key: 'resetGraphDefaults',
@@ -257,8 +262,9 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             }
                         }
 
-                        this.store.groupBy.type = QueryPrompts.groupByType;
-                        this.store.groupBy.value = QueryPrompts.groupBy;
+                        // Maybe incorrect behavior
+                        // this.store.groupBy.type = QueryPrompts.groupByType;
+                        // this.store.groupBy.value = QueryPrompts.groupBy;
                     }
                 }, {
                     key: 'setPanelSortFromOrderBy',
@@ -812,7 +818,6 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     key: 'onChangeFormat',
                     value: function onChangeFormat() {
                         this.setPanelDefaults();
-
                         this.execute();
                     }
                 }]);

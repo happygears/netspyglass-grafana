@@ -1,7 +1,7 @@
 {
   "name": "grafana-netspyglass",
   "private": true,
-  "version": "2.0.48",
+  "version": "2.0.49",
   "description": "",
   "scripts": {
     "build": "grunt build",
@@ -36,7 +36,7 @@
     "grunt-bump": "^0.8.0",
     "grunt-prompt": "^1.3.3",
     "jsdom": "~11.1.0",
-    "lodash": "~4.17.4",
+    "lodash": "^4.17.15",
     "mocha": "^6.1.4",
     "moment": "^2.19.1",
     "prunk": "~1.3.0",

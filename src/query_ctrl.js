@@ -24,7 +24,6 @@ import {
 import utils from './services/utils';
 
 
-
 /**
  * @typedef {{ type: string, cssClass: string }} ISegment
  */
@@ -156,7 +155,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     setPanelDefaults(category) {
         if (this.options.isGraph && this.isCategorySupportGraph(category)) {
             this.setGraphDefaults();
-        } else {
+        } else if (!this.options.isGraph) {
             this.resetGraphDefaults();
         }
     }
@@ -180,8 +179,15 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             });
         }
 
-        this.store.groupBy.type = 'time';
-        this.store.groupBy.value = '$_interval';
+        const groupBy = this.store.groupBy;
+
+        console.log(groupBy);
+
+        if (!groupBy || (groupBy.value === QueryPrompts.groupBy && groupBy.type === QueryPrompts.groupByType)) {
+            this.store.groupBy = {};
+            this.store.groupBy.type = 'time';
+            this.store.groupBy.value = '$_interval';
+        }
     }
 
     resetGraphDefaults() {
@@ -199,8 +205,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             }
         }
 
-        this.store.groupBy.type = QueryPrompts.groupByType;
-        this.store.groupBy.value = QueryPrompts.groupBy;
+        // Maybe incorrect behavior
+        // this.store.groupBy.type = QueryPrompts.groupByType;
+        // this.store.groupBy.value = QueryPrompts.groupBy;
     }
 
     setPanelSortFromOrderBy() {
@@ -262,8 +269,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     {
                         text: 'Tables',
                         submenu: [
-                            {text: 'devices', value: 'devices' },
-                            {text: 'alerts', value: 'alerts' }
+                            {text: 'devices', value: 'devices'},
+                            {text: 'alerts', value: 'alerts'}
                         ]
                     },
                     {text: '---------', separator: true}
@@ -403,10 +410,10 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
      * @returns {Promise|boolean}
      */
     loadColumns() {
-        if (this.store.variable && 
-            this.store.variable !== QueryPrompts.column && 
+        if (this.store.variable &&
+            this.store.variable !== QueryPrompts.column &&
             this.options.isMultiColumnMode) {
-            
+
             let found = -1;
             _.each(this.options.categories, (category) => {
                 found = _.findIndex(category.submenu, {
@@ -640,9 +647,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         return this.$injector
             .get('$q')
             .resolve([{
-                    text: orderBySortTypes[0],
-                    value: orderBySortTypes[0]
-                },
+                text: orderBySortTypes[0],
+                value: orderBySortTypes[0]
+            },
                 {
                     text: orderBySortTypes[1],
                     value: orderBySortTypes[1]
@@ -656,9 +663,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     getLimitOptions() {
         return this.$injector.get('$q').resolve([{
-                text: 'None',
-                'value': ''
-            },
+            text: 'None',
+            'value': ''
+        },
             {
                 text: '1',
                 'value': 1
@@ -684,9 +691,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     getGroupByTypes() {
         return this.$injector.get('$q').resolve([{
-                text: 'time',
-                value: 'time'
-            },
+            text: 'time',
+            value: 'time'
+        },
             {
                 text: 'column',
                 value: 'column'
@@ -698,9 +705,9 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         switch (this.store.groupBy.type) {
             case 'time':
                 return this.$injector.get('$q').resolve([{
-                        text: GrafanaVariables.interval,
-                        value: GrafanaVariables.interval
-                    },
+                    text: GrafanaVariables.interval,
+                    value: GrafanaVariables.interval
+                },
                     {
                         text: '1s',
                         value: '1s'
@@ -748,7 +755,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
     onChangeFormat() {
         this.setPanelDefaults();
-
         this.execute();
     }
 }

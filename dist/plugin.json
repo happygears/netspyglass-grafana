@@ -27,8 +27,8 @@
       "small": "img/nsg-logo-md.png",
       "large": "img/nsg-logo-md.png"
     },
-    "version": "2.0.48",
-    "updated": "2017-10-30"
+    "version": "2.0.49",
+    "updated": "2019-10-01"
   },
 
   "dependencies": {

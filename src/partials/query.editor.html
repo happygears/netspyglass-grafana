@@ -185,7 +185,7 @@
                             data-allow-custom="true"
                             data-label-mode="true"
                             data-get-options="ctrl.getGroupByVariables()"
-                            data-on-change="ctrl.execute()">
+                            data-on-change="ctrl.onChangeGroupByValue()">
                     </gf-form-dropdown>
 
                     <a class="gf-form-label" data-ng-if="ctrl.store.groupBy.type && ctrl.store.groupBy.type !== ctrl.prompts.groupByType" data-ng-click="ctrl.onClearGroupBy()"><i class="fa fa-close"></i></a>

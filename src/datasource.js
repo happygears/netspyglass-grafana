@@ -172,6 +172,7 @@ export class NetSpyGlassDatasource {
 
     /**
      * @param data
+     * @param aliases
      * @returns {*}
      */
     _processingGraphAliases(data, aliases) {

@@ -181,12 +181,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
 
         const groupBy = this.store.groupBy;
 
-        console.log(groupBy);
-
-        if (!groupBy || (groupBy.value === QueryPrompts.groupBy && groupBy.type === QueryPrompts.groupByType)) {
-            this.store.groupBy = {};
-            this.store.groupBy.type = 'time';
-            this.store.groupBy.value = '$_interval';
+        if (!groupBy || (groupBy.value === QueryPrompts.groupBy
+            && groupBy.type === QueryPrompts.groupByType
+            && !groupBy.touched)) {
+                this.store.groupBy = {};
+                this.store.groupBy.type = 'time';
+                this.store.groupBy.value = '$_interval';
         }
     }
 
@@ -296,7 +296,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     _updateOrderBy() {
-        if (this.store.orderBy.column.name == 'column') {
+        if (this.store.orderBy.column.name === 'column') {
             this.store.orderBy.column.value = this.store.orderBy.colValue;
         }
 
@@ -338,13 +338,18 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onChangeGroupByValue($value) {
-        this.store.groupBy.value = $value;
+        if ($value) {
+            this.store.groupBy.value = $value;
+        }
+
+        this.store.groupBy.touched = true;
         this.execute();
     }
 
     onClearGroupBy() {
         this.store.groupBy.type = QueryPrompts.groupByType;
         this.store.groupBy.value = QueryPrompts.groupBy;
+        this.store.groupBy.touched = true;
         this.execute();
     }
 

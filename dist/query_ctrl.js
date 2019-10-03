@@ -239,7 +239,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         var groupBy = this.store.groupBy;
 
-                        if (!groupBy || groupBy.value === QueryPrompts.groupBy && groupBy.type === QueryPrompts.groupByType) {
+                        if (!groupBy || groupBy.value === QueryPrompts.groupBy && groupBy.type === QueryPrompts.groupByType && !groupBy.touched) {
                             this.store.groupBy = {};
                             this.store.groupBy.type = 'time';
                             this.store.groupBy.value = '$_interval';
@@ -370,7 +370,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: '_updateOrderBy',
                     value: function _updateOrderBy() {
-                        if (this.store.orderBy.column.name == 'column') {
+                        if (this.store.orderBy.column.name === 'column') {
                             this.store.orderBy.column.value = this.store.orderBy.colValue;
                         }
 
@@ -417,7 +417,11 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onChangeGroupByValue',
                     value: function onChangeGroupByValue($value) {
-                        this.store.groupBy.value = $value;
+                        if ($value) {
+                            this.store.groupBy.value = $value;
+                        }
+
+                        this.store.groupBy.touched = true;
                         this.execute();
                     }
                 }, {
@@ -425,6 +429,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     value: function onClearGroupBy() {
                         this.store.groupBy.type = QueryPrompts.groupByType;
                         this.store.groupBy.value = QueryPrompts.groupBy;
+                        this.store.groupBy.touched = true;
                         this.execute();
                     }
                 }, {

@@ -117,6 +117,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                     this.templateSrv = templateSrv;
                     this.sqlQuery = new SQLQuery(templateSrv);
                     this._formatValue = this._formatValue.bind(this);
+
+                    this.name = instanceSettings.name;
                 }
 
                 /**

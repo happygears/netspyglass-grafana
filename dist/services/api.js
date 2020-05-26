@@ -564,15 +564,20 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                                 'Content-Type': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest' },
                             method: method,
-                            data: data,
                             url: this.options.baseUrl + resource
                         };
+
+                        if (method.toUpperCase() !== 'GET') {
+                            options.data = data;
+                        }
 
                         if (this.options.token) {
                             if (this.options.useTokenInHeader) {
                                 options.headers['X-NSG-Auth-API-Token'] = this.options.token;
                             } else {
-                                var query = '?' + this.$backend.$http.defaults.paramSerializer({ access_token: this.options.token });
+                                var query = '?access_token=' + encodeURIComponent(this.options.token);
+                                // this.$backend.$http.
+                                //     defaults.paramSerializer({access_token: this.options.token});
                                 options.url += query;
                             }
                         }

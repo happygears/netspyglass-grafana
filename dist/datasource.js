@@ -184,6 +184,14 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                         return this.api.queryData(sqlTargets).then(function (data) {
                             return _this._processingGraphAliases(data, aliases);
+                        })
+                        // needs to remove tags from data because start from v7 tags are rendered as part of the legend
+                        .then(function (data) {
+                            return data.map(function (el) {
+                                delete el.tags;
+
+                                return el;
+                            });
                         }).then(function (list) {
                             return { data: list };
                         });

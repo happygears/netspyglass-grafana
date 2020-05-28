@@ -119,6 +119,14 @@ export class NetSpyGlassDatasource {
 
         return this.api.queryData(sqlTargets)
             .then(data => this._processingGraphAliases(data, aliases))
+            // needs to remove tags from data because start from v7 tags are rendered as part of the legend
+            .then(data => {
+                return data.map(el => {
+                    delete el.tags;
+
+                    return el;
+                });
+            })
             .then(list => ({data: list}));
     }
 

@@ -1,7 +1,7 @@
 {
   "name": "grafana-netspyglass",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "",
   "scripts": {
     "build": "grunt build",

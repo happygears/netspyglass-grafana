@@ -50,6 +50,9 @@ export default function DropdownDirective() {
         },
         link: function ($scope, $element, $attrs, ctrl) {
             const $body = angular.element('body');
+            const $timeout = ctrl.$injector.get('$timeout');
+
+            ctrl.list = [];
 
             $element
                 .find('.pointer')
@@ -57,13 +60,20 @@ export default function DropdownDirective() {
                     // e.stopPropagation();
                     e.preventDefault();
 
+                    if (!ctrl.list.length) {
+                        ctrl.loading = true;
+                    }
+
                     if (!ctrl.isOpened) {
                         setTimeout(function() {
                             $body.on('click', onBodyClick);
                         }, 0);
 
                         ctrl.getSelectOptions().then((data) => {
-                            ctrl.list = data;
+                            $timeout(() => {
+                                ctrl.loading = false;
+                                ctrl.list = data;
+                            });
                         });
                     }
 

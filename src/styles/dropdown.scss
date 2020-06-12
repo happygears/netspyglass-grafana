@@ -47,6 +47,11 @@ hg-dropdown {
       display: none !important;
     }
   }
+
+  li.dropdown--loader {
+    padding: 5px;
+    text-align: center;
+  }
 }
 
 

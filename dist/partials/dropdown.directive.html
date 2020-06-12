@@ -3,6 +3,9 @@
 </a>
 
 <ul class="dropdown-menu dropdown-menu--custom" data-ng-if="$ctrl.isOpened">
+    <li data-ng-if="$ctrl.loading" class="dropdown--loader">
+        <i class="fa fa-spinner fa-spin"></i>
+    </li>
     <li data-ng-repeat="item in $ctrl.list"
         data-ng-class="{'dropdown-submenu': item.submenu.length, 'dropdown--separator': item.separator}">
 

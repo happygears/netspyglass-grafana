@@ -213,3 +213,7 @@ hg-dropdown {
   overflow: hidden; }
   .dropdown-menu--custom li.dropdown--separator a {
     display: none !important; }
+
+.dropdown-menu--custom li.dropdown--loader {
+  padding: 5px;
+  text-align: center; }

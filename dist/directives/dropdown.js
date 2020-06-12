@@ -26,10 +26,17 @@ System.register([], function (_export, _context) {
             },
             link: function link($scope, $element, $attrs, ctrl) {
                 var $body = angular.element('body');
+                var $timeout = ctrl.$injector.get('$timeout');
+
+                ctrl.list = [];
 
                 $element.find('.pointer').on('click', function (e) {
                     // e.stopPropagation();
                     e.preventDefault();
+
+                    if (!ctrl.list.length) {
+                        ctrl.loading = true;
+                    }
 
                     if (!ctrl.isOpened) {
                         setTimeout(function () {
@@ -37,7 +44,10 @@ System.register([], function (_export, _context) {
                         }, 0);
 
                         ctrl.getSelectOptions().then(function (data) {
-                            ctrl.list = data;
+                            $timeout(function () {
+                                ctrl.loading = false;
+                                ctrl.list = data;
+                            });
                         });
                     }
 

@@ -30,7 +30,7 @@
     "grunt-sass": "~2.0.0"
   },
   "devDependencies": {
-    "angular": "~1.6.1",
+    "angular": "~1.8.0",
     "angular-mocks": "~1.6.1",
     "chai": "~3.5.0",
     "grunt-bump": "^0.8.0",

@@ -1,0 +1,5726 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": 17,
+  "iteration": 1553287963910,
+  "links": [
+    {
+      "icon": "cloud",
+      "tags": [],
+      "title": "NetSpyGlass",
+      "tooltip": "Back to NetSpyGlass",
+      "type": "link",
+      "url": "/v2"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "title": "www.netspyglass.com",
+      "type": "link",
+      "url": "http://www.netspyglass.com"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 50,
+      "panels": [],
+      "title": "NetSpyGlass",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "NetSpyGlass-v2",
+      "format": "none",
+      "gauge": {
+        "maxValue": 6000,
+        "minValue": 0,
+        "show": true,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 0,
+        "y": 1
+      },
+      "id": 72,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tslast"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 1,
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "physicalDevices"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": "5000,5500,5700",
+      "title": "Devices",
+      "type": "singlestat",
+      "valueFontSize": "100%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "columns": [],
+      "datasource": "NetSpyGlass-v2",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 5,
+        "y": 1
+      },
+      "id": 76,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "count_device",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "NsgRegion",
+                "visible": true
+              },
+              {
+                "alias": "",
+                "appliedFunctions": [
+                  {
+                    "name": "count"
+                  }
+                ],
+                "name": "device",
+                "visible": true
+              }
+            ],
+            "format": "table",
+            "groupBy": {
+              "type": "column",
+              "value": "NsgRegion"
+            },
+            "isTablePanel": true,
+            "limit": 100,
+            "nsgqlString": "SELECT device,NsgRegion FROM processUptime WHERE (NsgRole = 'agent') AND $_timeFilter LIMIT 100, 0",
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "agent"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "processUptime"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "agents",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "datasource": "NetSpyGlass-v2",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 10,
+        "y": 1
+      },
+      "id": 78,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": null,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "count",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "combinedNsgRoles",
+                "visible": true
+              },
+              {
+                "alias": "count",
+                "appliedFunctions": [
+                  {
+                    "name": "count"
+                  }
+                ],
+                "name": "device",
+                "visible": true
+              }
+            ],
+            "format": "table",
+            "groupBy": {
+              "type": "column",
+              "value": "combinedNsgRoles"
+            },
+            "isTablePanel": true,
+            "limit": 100,
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "Role",
+                "operator": "=",
+                "value": "NetSpyGlassServer"
+              },
+              {
+                "condition": "AND",
+                "key": "NsgRole",
+                "operator": "!=",
+                "value": "agent"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "processUptime"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Servers",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": true,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "NetSpyGlass-v2",
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 16,
+        "y": 1
+      },
+      "id": 23,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "#0a50a1",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tslast"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isTablePanel": false,
+            "limit": 1,
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "manager"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "timeSinceLastDiscovery"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": "86401,432000",
+      "title": "Time since last discovery",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "columns": [],
+      "datasource": "NetSpyGlass-v2",
+      "editable": true,
+      "error": false,
+      "fontSize": "90%",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 7
+      },
+      "id": 17,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": " uptime",
+          "colorMode": "value",
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "pattern": "/.*metric/",
+          "thresholds": [
+            "3600",
+            "86400"
+          ],
+          "type": "number",
+          "unit": "s"
+        }
+      ],
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "device",
+                "visible": true
+              },
+              {
+                "alias": "version",
+                "appliedFunctions": [],
+                "name": "SoftwareRev",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tslast"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              }
+            ],
+            "format": "table",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isTablePanel": true,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT device,SoftwareRev as `version`,tslast(metric) as `tslast_metric` FROM processUptime WHERE (NsgRole = 'aggregator') AND $_timeFilter ORDER BY `device` DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "processUptime"
+          },
+          "aggregator": " -- ",
+          "alias": "",
+          "category": "Monitor",
+          "columns": "device,metric,nsgVersion",
+          "component": "select component",
+          "device": "select device",
+          "format": "table",
+          "formatDisplay": "Table",
+          "group": "select group",
+          "limit": "100",
+          "refId": "A",
+          "selector": " -- ",
+          "sortByEl": "descending",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "processUptime"
+        }
+      ],
+      "title": "Process Uptime",
+      "transform": "table",
+      "transparent": false,
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 8,
+        "y": 7
+      },
+      "id": 82,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "name": "column",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "processUptime"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Server Uptime",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "decimals": 0,
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 12,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pointradius": 1,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/.*-nsg.*/",
+          "fill": 0
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "monitoredDevices"
+          },
+          "aggregator": " -- ",
+          "alias": "$device ($NsgRegion)",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "select device",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "limit": "100",
+          "refId": "A",
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "numDevices"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "total",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "sum"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "monitoredDevices"
+          },
+          "aggregator": " -- ",
+          "alias": "$device ($NsgRegion)",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "select device",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "limit": "100",
+          "refId": "B",
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "numDevices"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Number of monitored devices",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "editable": true,
+      "error": false,
+      "fill": 0,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 2,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pointradius": 1,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/.*lagServerAllReceived/",
+          "dashLength": 4,
+          "dashes": true,
+          "spaceLength": 3
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device - $component: total",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "D",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "lagTotal"
+          },
+          "aggregator": " -- ",
+          "alias": "$device",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "select device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "deviceName"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "limit": "100",
+          "measurement": "freeTime",
+          "query": "SELECT mean(\"value\") FROM \"freeTime\" WHERE \"Role.NetSpyGlassServer\" = '1' AND $timeFilter GROUP BY time(1h), \"deviceName\" fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "selector": " -- ",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "Role.NetSpyGlassServer",
+              "operator": "=",
+              "value": "1"
+            }
+          ],
+          "variable": "freeTime"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 60
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Agent and Server Lag",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 33,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 1,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device - $component: size",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "manager"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "metadataSize"
+          },
+          "refId": "A"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "$device - $component: misses",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$region"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "metadataMissCount"
+          },
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "monitoring variables metadata",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "decimals": 2,
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 15,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pointradius": 1,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/.*-nsg-.*/",
+          "fill": 0
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "numVars"
+          },
+          "aggregator": " -- ",
+          "alias": "$device ($NsgRegion)",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "select device",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "limit": "100",
+          "refId": "A",
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "numVars"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "total",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "sum"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "numVars"
+          },
+          "aggregator": " -- ",
+          "alias": "$device ($NsgRegion)",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "select device",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "limit": "100",
+          "refId": "B",
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "numVars"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Number of variables",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 91,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 28
+          },
+          "id": 18,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "pythonErrorsRate"
+              },
+              "aggregator": " -- ",
+              "alias": "$device",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "limit": "100",
+              "refId": "A",
+              "selector": " -- ",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRegion",
+                  "tagOperation": "==",
+                  "tagWord": "$region"
+                },
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "$role"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "variable": "pythonErrorsRate"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Python Hook Errors",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Python",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 89,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 29
+          },
+          "id": 92,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 2,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device - $variable",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "disableAdHoc": false,
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "alias": "",
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "B",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "nsgqlQueryRate"
+              },
+              "aggregator": " -- ",
+              "alias": "5xx",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "limit": "100",
+              "refId": "B",
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "primary"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "variable": "webServerResponses5xxRate"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Rate of NSGQL queries",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "reqps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "decimals": 3,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 29
+          },
+          "id": 27,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 2,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device - $variable",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "disableAdHoc": false,
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "alias": "",
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "B",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "maxNsgqlOutstandingQueries"
+              },
+              "aggregator": " -- ",
+              "alias": "5xx",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "limit": "100",
+              "refId": "B",
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "primary"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "variable": "webServerResponses5xxRate"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Outstanding NSGQL queries",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 35
+          },
+          "id": 80,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "disableAdHoc": false,
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": 100,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "nsgqlIndexUpdateQueue"
+              },
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "NsgQL Indexer Queue",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 35
+          },
+          "id": 94,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "disableAdHoc": false,
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": 100,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "nsgqlDynamicSchemaUpdateQueue"
+              },
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "NsgQL Schema Updater Queue",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "NsgQL",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 86,
+      "panels": [],
+      "title": "Alerts",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "decimals": 2,
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 31
+      },
+      "id": 19,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "numAlerts",
+          "yaxis": 1
+        },
+        {
+          "alias": "numActiveAlerts",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device - conf.alerts",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "numAlerts"
+          },
+          "aggregator": " -- ",
+          "alias": "$variable",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "nsg-alert_sjc12a-rd14-5a",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "limit": "100",
+          "refId": "A",
+          "selector": " -- ",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "numActiveAlerts"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "total",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "sum"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "numAlerts"
+          },
+          "aggregator": " -- ",
+          "alias": "$variable",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "nsg-alert_sjc12a-rd14-5a",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "limit": "100",
+          "refId": "B",
+          "selector": " -- ",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "numActiveAlerts"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Evaluated Alerts",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "decimals": 2,
+      "editable": true,
+      "error": false,
+      "fill": 1,
+      "grid": {},
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 31
+      },
+      "id": 87,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 2,
+      "links": [],
+      "nullPointMode": "connected",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "numAlerts",
+          "yaxis": 1
+        },
+        {
+          "alias": "numActiveAlerts",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device - active alerts",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "numActiveAlerts"
+          },
+          "aggregator": " -- ",
+          "alias": "$variable",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "device": "nsg-alert_sjc12a-rd14-5a",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "limit": "100",
+          "refId": "B",
+          "selector": " -- ",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "numAlerts"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Active Alerts",
+      "tooltip": {
+        "msResolution": false,
+        "shared": true,
+        "sort": 0,
+        "value_type": "cumulative"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": 0,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 38
+      },
+      "id": 96,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "numInsensitiveAlerts"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Insensitive Alerts (per cycle)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 38
+      },
+      "id": 97,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "numBackfillCalls"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "TSDB Backfill Calls (per cycle)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "description": "Interval of time between beginning of the cycle and the time when alert computation finishes",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 45
+      },
+      "id": 84,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "lagAlerts"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Alerts Lag",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "description": "Time it takes to compute all alerts, per server",
+      "fill": 1,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 45
+      },
+      "id": 93,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$NsgRole"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "computeTimeAlerts"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Alerts Compute Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 52
+      },
+      "id": 67,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 42
+          },
+          "id": 16,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device - requests",
+                "columns": [
+                  {
+                    "appliedFunctions": [
+                      {
+                        "name": "tsavg"
+                      }
+                    ],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "time",
+                  "value": "$_interval"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "alias": "",
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "webServerRequestsRate"
+              },
+              "aggregator": " -- ",
+              "alias": "5xx",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "limit": "100",
+              "refId": "A",
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "primary"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "variable": "webServerResponses5xxRate"
+            },
+            {
+              "_nsgTarget": {
+                "alias": "$device - 5xx",
+                "columns": [
+                  {
+                    "appliedFunctions": [
+                      {
+                        "name": "tsavg"
+                      }
+                    ],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "time",
+                  "value": "$_interval"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "alias": "",
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "D",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "webServerResponses5xxRate"
+              },
+              "refId": "D"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "UI Web Server Responses (resp/sec)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 12,
+            "y": 42
+          },
+          "id": 68,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device - web sessions",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "alias": "",
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "webServerSessions"
+              },
+              "aggregator": " -- ",
+              "alias": "5xx",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "limit": "100",
+              "refId": "A",
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "primary"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "variable": "webServerResponses5xxRate"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "UI Web Server Sessions",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Jetty",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 53
+      },
+      "id": 52,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 33
+          },
+          "id": 9,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device - $variable",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "loading": false,
+                "orderBy": {
+                  "colName": "select value",
+                  "colValue": "select value",
+                  "column": {
+                    "alias": "",
+                    "name": "",
+                    "value": ""
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "c3p0NumConnections"
+              },
+              "aggregator": " -- ",
+              "alias": "$device ($NsgRole)",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "dsType": "influxdb",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "limit": "100",
+              "measurement": "cpuUsage",
+              "query": "SELECT last(\"value\") FROM \"cpuUsage\" WHERE $timeFilter GROUP BY time($interval) fill(null)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRegion",
+                  "tagOperation": "==",
+                  "tagWord": "$region"
+                },
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "$role"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "tags": [
+                {
+                  "key": "NsgRole",
+                  "operator": "=",
+                  "value": "$NsgRole"
+                }
+              ],
+              "variable": "cpuUsage"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Database",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "Database",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 54
+      },
+      "id": 56,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 33
+          },
+          "id": 20,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "B",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "cpuUsage"
+              },
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "System (cpu)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percent",
+              "label": "",
+              "logBase": 1,
+              "max": "100",
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "percent",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 1,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 33
+          },
+          "id": 21,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": 100,
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "systemMemFreePercent"
+              },
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Available system memory",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "percent",
+              "label": "",
+              "logBase": 1,
+              "max": "100",
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "percent",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 1,
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 39
+          },
+          "id": 22,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "openFdCount"
+              },
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Process (opened file descriptors)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 1,
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 12,
+            "y": 39
+          },
+          "id": 24,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "procMem"
+              },
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Process (process memory)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "System",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 55
+      },
+      "id": 60,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "decimals": 2,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "id": 3,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "jvmMemUsed"
+              },
+              "aggregator": " -- ",
+              "alias": "$device ($NsgRole)",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "dsType": "influxdb",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "deviceName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "limit": "100",
+              "measurement": "jvmMemTotal",
+              "query": "SELECT last(\"value\") FROM \"jvmMemTotal\" WHERE \"Role.NetSpyGlassServer\" = '1' AND $timeFilter GROUP BY time($interval), \"deviceName\" fill(null)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRegion",
+                  "tagOperation": "==",
+                  "tagWord": "$region"
+                },
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "$role"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "tags": [
+                {
+                  "key": "Role.NetSpyGlassServer",
+                  "operator": "=",
+                  "value": "1"
+                }
+              ],
+              "variable": "jvmMemUsed"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "JVM used memory",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "logBase": 1,
+              "max": null,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 12,
+            "y": 6
+          },
+          "id": 4,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "alias": "",
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "jvmMemFree"
+              },
+              "aggregator": " -- ",
+              "alias": "$device ($NsgRole)",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "dsType": "influxdb",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "deviceName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "limit": "100",
+              "measurement": "jvmMemFree",
+              "query": "SELECT last(\"value\") FROM \"jvmMemFree\" WHERE \"Role.NetSpyGlassServer\" = '1' AND $timeFilter GROUP BY time($interval), \"deviceName\" fill(null)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRegion",
+                  "tagOperation": "==",
+                  "tagWord": "$region"
+                },
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "$role"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "tags": [
+                {
+                  "key": "Role.NetSpyGlassServer",
+                  "operator": "=",
+                  "value": "1"
+                }
+              ],
+              "variable": "jvmMemFree"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "JVM Free Memory",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 11
+          },
+          "id": 11,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "GCTimeRate",
+              "yaxis": 1
+            },
+            {
+              "alias": "GCCountRate",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "GCCountRate"
+              },
+              "aggregator": " -- ",
+              "alias": "$device ($NsgRole)",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "dsType": "influxdb",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "deviceName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "limit": "100",
+              "measurement": "GCCountRate",
+              "query": "SELECT last(\"value\") FROM \"GCCountRate\" WHERE $timeFilter GROUP BY time($interval), \"deviceName\" fill(null)",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRegion",
+                  "tagOperation": "==",
+                  "tagWord": "$region"
+                },
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "$role"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "tags": [
+                {
+                  "key": "NsgRole",
+                  "operator": "=",
+                  "value": "$NsgRole"
+                }
+              ],
+              "variable": "GCCountRate"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "GC Count rate",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {},
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 12,
+            "y": 11
+          },
+          "id": 10,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "GCTimeRate",
+              "yaxis": 1
+            },
+            {
+              "alias": "GCCountRate",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "loading": false,
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "column"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "B",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "GCTimeRate"
+              },
+              "aggregator": " -- ",
+              "alias": "$device ($NsgRole)",
+              "category": "Monitor",
+              "columns": "time,variable,device,component,metric",
+              "component": "select component",
+              "device": "select device",
+              "dsType": "influxdb",
+              "format": "time_series",
+              "formatDisplay": "Time Series",
+              "group": "select group",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "deviceName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "limit": "100",
+              "measurement": "GCTimeRate",
+              "query": "SELECT last(\"value\") FROM \"GCTimeRate\" WHERE $timeFilter GROUP BY time($interval), \"deviceName\" fill(null)",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "last"
+                  }
+                ]
+              ],
+              "selector": "choose selector",
+              "sortByEl": "none",
+              "tagData": [
+                {
+                  "tagFacet": "NsgRegion",
+                  "tagOperation": "==",
+                  "tagWord": "$region"
+                },
+                {
+                  "tagFacet": "NsgRole",
+                  "tagOperation": "==",
+                  "tagWord": "$role"
+                }
+              ],
+              "tagFacet": "---",
+              "tagOperation": "==",
+              "tagWord": "---",
+              "tags": [
+                {
+                  "key": "NsgRole",
+                  "operator": "=",
+                  "value": "$NsgRole"
+                }
+              ],
+              "variable": "GCTimeRate"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "GC Time rate",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": "GCTime",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "JVM",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 56
+      },
+      "id": 62,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 40
+          },
+          "id": 39,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device - consumer",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "orderBy": {
+                  "colName": "select value",
+                  "colValue": "select value",
+                  "column": {
+                    "alias": "",
+                    "name": "",
+                    "value": ""
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "kafkaConsumerRecordsConsumedRate"
+              },
+              "hide": false,
+              "refId": "A"
+            },
+            {
+              "_nsgTarget": {
+                "alias": "$device - producer",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "orderBy": {
+                  "colName": "select value",
+                  "colValue": "select value",
+                  "column": {
+                    "alias": "",
+                    "name": "",
+                    "value": ""
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "B",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "kafkaProducersRecordSendRate"
+              },
+              "hide": false,
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "records consumer/producer rate",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "rec/sec",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 1,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 40
+          },
+          "id": 42,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device - avg",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "orderBy": {
+                  "colName": "select value",
+                  "colValue": "select value",
+                  "column": {
+                    "alias": "",
+                    "name": "",
+                    "value": ""
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "kafkaProducersRecordSizeAvg"
+              },
+              "hide": false,
+              "refId": "A"
+            },
+            {
+              "_nsgTarget": {
+                "alias": "$device - max",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": 100,
+                "orderBy": {
+                  "colName": "select value",
+                  "colValue": "select value",
+                  "column": {
+                    "alias": "",
+                    "name": "",
+                    "value": ""
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "B",
+                "tags": [
+                  {
+                    "key": "NsgRole",
+                    "operator": "=",
+                    "value": "$NsgRole"
+                  }
+                ],
+                "type": "nsgql",
+                "variable": "kafkaProducersRecordSizeMax"
+              },
+              "hide": false,
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "records size (avg/max)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "Kafka",
+      "type": "row"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "self-monitoring",
+    "nsgv2.2"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": "*",
+        "current": {
+          "selected": true,
+          "text": "monitor",
+          "value": "monitor"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": false,
+        "name": "NsgRole",
+        "options": [
+          {
+            "selected": false,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "aggregator",
+            "value": "aggregator"
+          },
+          {
+            "selected": false,
+            "text": "agent",
+            "value": "agent"
+          },
+          {
+            "selected": true,
+            "text": "monitor",
+            "value": "monitor"
+          },
+          {
+            "selected": false,
+            "text": "manager",
+            "value": "manager"
+          }
+        ],
+        "query": "aggregator,agent,monitor,manager",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": "*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "NetSpyGlass-v2",
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": false,
+        "name": "region",
+        "options": [],
+        "query": "SELECT DISTINCT NsgRegion FROM numVars ORDER BY NsgRegion",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "now": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "utc",
+  "title": "NSG Self-Monitoring",
+  "uid": "OueYlhmmz",
+  "version": 6
+}

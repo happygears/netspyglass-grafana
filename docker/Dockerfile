@@ -12,7 +12,7 @@
 
 # see NET-2892
 #     NET-3994
-FROM grafana/grafana:7.1.5-ubuntu
+FROM grafana/grafana:7.3.6-ubuntu
 
 ENV HAPPYGEARS_DIR="/happygears"
 
@@ -24,8 +24,10 @@ WORKDIR $HAPPYGEARS_DIR
 ENV GRAFANA_VOLUME_DIR="/opt/grafana"
 ENV GRAFANA_LOGS_DIR="$GRAFANA_VOLUME_DIR/logs"
 ENV GRAFANA_PLUGINS_DIR="$GRAFANA_VOLUME_DIR/plugins/"
+ENV GRAFANA_PROVISIONING_DIR="$GRAFANA_VOLUME_DIR/provisioning"
+ENV SRC_PLUGINS_DIR="${HAPPYGEARS_DIR}/plugins/"
 
-RUN  mkdir -p $GRAFANA_LOGS_DIR
+RUN mkdir -p $GRAFANA_LOGS_DIR
 
 # install all plugins in /happygears/plugins, to be copied to /opt/grafana/plugins by the startup script.
 # This way, the container won't make a call to Grafana plugins repository every time it starts.
@@ -61,8 +63,19 @@ COPY docker/files/post-start-setup.sh /
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
 RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR
-RUN  mkdir -p                       $HAPPYGEARS_DIR/grafana/provisioning/
-RUN  chown -R grafana.grafana       $HAPPYGEARS_DIR/grafana/provisioning/
+
+# RUN  mkdir -p                       $HAPPYGEARS_DIR/grafana/provisioning/
+# RUN  chown -R grafana.grafana       $HAPPYGEARS_DIR/grafana/provisioning/
+
+# data source file gets copied into /opt/grafana/provisioning/datasources by the startup script
+# that uses env. variables to substitute macros
+RUN  mkdir -p                                        $SRC_PLUGINS_DIR
+COPY docker/files/provisioning/datasources/grafana-datasources.yaml $SRC_PLUGINS_DIR
+
+RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR
+COPY docker/files/provisioning/dashboards/customer   $GRAFANA_PROVISIONING_DIR/customer
+COPY docker/files/provisioning/dashboards/happygears $GRAFANA_PROVISIONING_DIR/happygears
+RUN  chown -R grafana.grafana                        $GRAFANA_PROVISIONING_DIR
 
 VOLUME ["$GRAFANA_VOLUME_DIR"]
 

@@ -1,0 +1,693 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": 41,
+  "iteration": 1552930304742,
+  "links": [
+    {
+      "icon": "cloud",
+      "tags": [],
+      "title": "NetSpyGlass",
+      "tooltip": "Back to NetSpyGlass",
+      "type": "link",
+      "url": "/v2"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "title": "www.netspyglass.com",
+      "type": "link",
+      "url": "http://www.netspyglass.com"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 54,
+      "panels": [],
+      "title": "TSDB",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 29,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/.*-nsg-.*/",
+          "fill": 0
+        },
+        {
+          "alias": "total",
+          "color": "rgba(255, 255, 255, 0.24)"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT metric,time FROM tsDbVarCount WHERE (component = 'influxdb_cluster') AND $_timeFilter ORDER BY `device` DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 1,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "component",
+                "operator": "=",
+                "value": "influxdb_cluster"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "tsDbVarCount"
+          },
+          "refId": "A"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "total",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "sum"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT sum(metric) as `sum_metric`,time FROM tsDbVarCount WHERE (component = 'influxdb_cluster') AND $_timeFilter ORDER BY `device` DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 1,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "component",
+                "operator": "=",
+                "value": "influxdb_cluster"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "tsDbVarCount"
+          },
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "variable count",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 36,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT metric,time FROM tsDbErrors WHERE (component = 'influxdb_cluster') AND $_timeFilter ORDER BY `device` DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "alias": "",
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 1,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "component",
+                "operator": "=",
+                "value": "influxdb_cluster"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "tsDbErrors"
+          },
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "errors",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "id": 30,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "tsDbSaveLag",
+          "yaxis": 1
+        },
+        {
+          "alias": "/^.*queue.*$/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT metric,time FROM tsDbSaveLag WHERE (component = 'influxdb_cluster') AND $_timeFilter ORDER BY device DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 1,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "component",
+                "operator": "=",
+                "value": "influxdb_cluster"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "tsDbSaveLag"
+          },
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "TSDB save lag",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "decimals": 0,
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "id": 98,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT metric,time FROM tsDbSaverQueueSize WHERE (component = 'influxdb_cluster') AND $_timeFilter ORDER BY device DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 1,
+            "refId": "C",
+            "tags": [
+              {
+                "key": "component",
+                "operator": "=",
+                "value": "influxdb_cluster"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "tsDbSaverQueueSize"
+          },
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "TSDB Saver Queue Size",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [
+    "self-monitoring",
+    "nsgv2.2"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-12h",
+    "to": "now"
+  },
+  "timepicker": {
+    "now": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "utc",
+  "title": "InfluxDb",
+  "uid": "OueYlhmmzx",
+  "version": 1
+}

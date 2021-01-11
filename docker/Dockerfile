@@ -60,6 +60,12 @@ RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install farski-ble
 COPY docker/files/start.sh            /
 COPY docker/files/post-start-setup.sh /
 
+RUN cat /etc/passwd
+RUN ls -la /
+RUN ls -la /usr/lib/
+RUN ls -la /var/lib/
+RUN ls -la /opt/
+
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
 RUN  mkdir -p                       $GRAFANA_VOLUME_DIR

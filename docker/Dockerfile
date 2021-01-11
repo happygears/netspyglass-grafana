@@ -71,10 +71,12 @@ RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
 
 RUN  mkdir -p                                        $GRAFANA_DASHBOARDS_DIR
-COPY docker/files/dashboards/*                       ${GRAFANA_DASHBOARDS_DIR}/
+COPY docker/files/dashboards/customer                ${GRAFANA_DASHBOARDS_DIR}/
+COPY docker/files/dashboards/happygears              ${GRAFANA_DASHBOARDS_DIR}/
 
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/dashboards
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/datasources
+
 COPY docker/files/provisioning/dashboards/dashboards.yaml ${GRAFANA_PROVISIONING_DIR}/dashboards/
 
 # data source file gets copied into /opt/grafana/provisioning/datasources by the startup script

@@ -71,8 +71,8 @@ RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
 
 RUN  mkdir -p                                        $GRAFANA_DASHBOARDS_DIR
-COPY docker/files/dashboards/customer                ${GRAFANA_DASHBOARDS_DIR}/
-COPY docker/files/dashboards/happygears              ${GRAFANA_DASHBOARDS_DIR}/
+COPY docker/files/dashboards/customer                ${GRAFANA_DASHBOARDS_DIR}
+COPY docker/files/dashboards/happygears              ${GRAFANA_DASHBOARDS_DIR}
 
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/dashboards
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/datasources

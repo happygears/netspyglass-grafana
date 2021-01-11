@@ -70,17 +70,17 @@ RUN ls -la /opt/
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
 
-# data source file gets copied into /opt/grafana/provisioning/datasources by the startup script
-# that uses env. variables to substitute macros
-RUN  mkdir -p                                        $SRC_PLUGINS_DIR
-COPY docker/files/provisioning/datasources/grafana-datasources.yaml $SRC_PLUGINS_DIR
-
 RUN  mkdir -p                                        $GRAFANA_DASHBOARDS_DIR
 COPY docker/files/dashboards/*                       ${GRAFANA_DASHBOARDS_DIR}/
 
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/dashboards
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/datasources
-COPY docker/files/provisioning/dashboards/dashboards.yml  ${GRAFANA_PROVISIONING_DIR}/dashboards/
+COPY docker/files/provisioning/dashboards/dashboards.yaml ${GRAFANA_PROVISIONING_DIR}/dashboards/
+
+# data source file gets copied into /opt/grafana/provisioning/datasources by the startup script
+# that uses env. variables to substitute macros
+RUN  mkdir -p                                        $SRC_PLUGINS_DIR
+COPY docker/files/provisioning/datasources/grafana-datasources.yaml $SRC_PLUGINS_DIR
 
 RUN  chown -R grafana                                $GRAFANA_VOLUME_DIR
 

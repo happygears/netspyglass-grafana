@@ -76,7 +76,7 @@ RUN  mkdir -p                                        $SRC_PLUGINS_DIR
 COPY docker/files/provisioning/datasources/grafana-datasources.yaml $SRC_PLUGINS_DIR
 
 RUN  mkdir -p                                        $GRAFANA_DASHBOARDS_DIR
-COPY docker/files/dashboards/*                       $GRAFANA_DASHBOARDS_DIR
+COPY docker/files/dashboards/*                       ${GRAFANA_DASHBOARDS_DIR}/
 
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/dashboards
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/datasources

@@ -25,7 +25,7 @@ echo "### Generate Grafana datasources.yaml from template ..."
 perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${SRC_PLUGINS_DIR}/grafana-datasources.yaml > ${GRAFANA_DATASOURCES_DIR}/datasources.yaml
 
 cp -r ${SRC_PLUGINS_DIR}/* ${GRAFANA_PLUGINS_DIR}
-chown -R grafana.grafana ${GRAFANA_PLUGINS_DIR}      || true   # if it is read-only because it is mounted as docker config
+chown -R grafana ${GRAFANA_PLUGINS_DIR}      || true   # if it is read-only because it is mounted as docker config
 
 #ls -lad ${GRAFANA_PLUGINS_DIR}
 #

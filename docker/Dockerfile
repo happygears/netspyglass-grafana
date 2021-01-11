@@ -68,8 +68,8 @@ RUN ls -la /opt/
 
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
-RUN  mkdir -p                       $GRAFANA_VOLUME_DIR
-RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR
+RUN  mkdir -p                                       $GRAFANA_VOLUME_DIR
+RUN  chown -R grafana                               $GRAFANA_VOLUME_DIR
 
 # RUN  mkdir -p                       $HAPPYGEARS_DIR/grafana/provisioning/
 # RUN  chown -R grafana.grafana       $HAPPYGEARS_DIR/grafana/provisioning/
@@ -82,7 +82,7 @@ COPY docker/files/provisioning/datasources/grafana-datasources.yaml $SRC_PLUGINS
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR
 COPY docker/files/provisioning/dashboards/customer   $GRAFANA_PROVISIONING_DIR/customer
 COPY docker/files/provisioning/dashboards/happygears $GRAFANA_PROVISIONING_DIR/happygears
-RUN  chown -R grafana.grafana                        $GRAFANA_PROVISIONING_DIR
+RUN  chown -R grafana                                $GRAFANA_PROVISIONING_DIR
 
 VOLUME ["$GRAFANA_VOLUME_DIR"]
 

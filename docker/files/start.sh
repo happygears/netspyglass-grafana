@@ -17,6 +17,7 @@ set -x
 id -a
 
 mkdir -p ${GRAFANA_PLUGINS_DIR}
+mkdir -p ${GRAFANA_DATASOURCES_DIR}
 
 # copy plugins that come with the image to Grafana plugins directory to install and upgrade them
 

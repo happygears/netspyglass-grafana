@@ -25,6 +25,7 @@ ENV GRAFANA_VOLUME_DIR="/opt/grafana"
 ENV GRAFANA_LOGS_DIR="$GRAFANA_VOLUME_DIR/logs"
 ENV GRAFANA_PLUGINS_DIR="$GRAFANA_VOLUME_DIR/plugins/"
 ENV GRAFANA_PROVISIONING_DIR="$GRAFANA_VOLUME_DIR/provisioning"
+ENV GRAFANA_DASHBOARDS_DIR="$GRAFANA_VOLUME_DIR/dashboards"
 ENV SRC_PLUGINS_DIR="${HAPPYGEARS_DIR}/plugins/"
 
 RUN mkdir -p $GRAFANA_LOGS_DIR
@@ -68,21 +69,20 @@ RUN ls -la /opt/
 
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
-RUN  mkdir -p                                       $GRAFANA_VOLUME_DIR
-RUN  chown -R grafana                               $GRAFANA_VOLUME_DIR
-
-# RUN  mkdir -p                       $HAPPYGEARS_DIR/grafana/provisioning/
-# RUN  chown -R grafana.grafana       $HAPPYGEARS_DIR/grafana/provisioning/
 
 # data source file gets copied into /opt/grafana/provisioning/datasources by the startup script
 # that uses env. variables to substitute macros
 RUN  mkdir -p                                        $SRC_PLUGINS_DIR
 COPY docker/files/provisioning/datasources/grafana-datasources.yaml $SRC_PLUGINS_DIR
 
-RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR
-COPY docker/files/provisioning/dashboards/customer   $GRAFANA_PROVISIONING_DIR/customer
-COPY docker/files/provisioning/dashboards/happygears $GRAFANA_PROVISIONING_DIR/happygears
-RUN  chown -R grafana                                $GRAFANA_PROVISIONING_DIR
+RUN  mkdir -p                                        $GRAFANA_DASHBOARDS_DIR
+COPY docker/files/dashboards/*                       $GRAFANA_DASHBOARDS_DIR
+
+RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/dashboards
+RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/datasources
+COPY docker/files/provisioning/dashboards/dashboards.yml  ${GRAFANA_PROVISIONING_DIR}/dashboards/
+
+RUN  chown -R grafana                                $GRAFANA_VOLUME_DIR
 
 VOLUME ["$GRAFANA_VOLUME_DIR"]
 

@@ -62,6 +62,7 @@ COPY docker/files/post-start-setup.sh /
 
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
+RUN  mkdir -p                       $GRAFANA_VOLUME_DIR
 RUN  chown -R grafana.grafana       $GRAFANA_VOLUME_DIR
 
 # RUN  mkdir -p                       $HAPPYGEARS_DIR/grafana/provisioning/

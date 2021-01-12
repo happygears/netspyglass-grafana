@@ -21,7 +21,7 @@ mkdir -p ${GRAFANA_PLUGINS_DIR}
 mkdir -p ${GRAFANA_DATASOURCES_DIR}
 
 echo "### generate Grafana datasources.yaml from template ..."
-perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${SRC_PLUGINS_DIR}/grafana-datasources.yaml > ${GRAFANA_DATASOURCES_DIR}/datasources.yaml
+perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${HAPPYGEARS_DIR}/datasources/grafana-datasources.yaml > ${GRAFANA_DATASOURCES_DIR}/datasources.yaml
 
 echo "### copy dashboards.yaml ..."
 cp ${HAPPYGEARS_DIR}/dashboards/dashboards.yaml  $GRAFANA_PROVISIONING_DIR/dashboards/dashboards.yaml

@@ -26,7 +26,6 @@ ENV GRAFANA_LOGS_DIR="$GRAFANA_VOLUME_DIR/logs"
 ENV GRAFANA_PLUGINS_DIR="$GRAFANA_VOLUME_DIR/plugins/"
 ENV GRAFANA_PROVISIONING_DIR="$GRAFANA_VOLUME_DIR/provisioning"
 ENV GRAFANA_DASHBOARDS_DIR="$GRAFANA_VOLUME_DIR/dashboards"
-ENV SRC_PLUGINS_DIR="${HAPPYGEARS_DIR}/plugins/"
 
 RUN mkdir -p $GRAFANA_LOGS_DIR
 
@@ -81,8 +80,12 @@ COPY docker/files/provisioning/dashboards/dashboards.yaml ${GRAFANA_PROVISIONING
 
 # data source file gets copied into /opt/grafana/provisioning/datasources by the startup script
 # that uses env. variables to substitute macros
-RUN  mkdir -p                                        $SRC_PLUGINS_DIR
-COPY docker/files/provisioning/datasources/grafana-datasources.yaml $SRC_PLUGINS_DIR
+RUN  mkdir -p                                                       ${HAPPYGEARS_DIR}/datasources/
+COPY docker/files/provisioning/datasources/grafana-datasources.yaml ${HAPPYGEARS_DIR}/datasources/
+
+# this file should be installed after we create organization
+RUN  mkdir -p                                                       ${HAPPYGEARS_DIR}/dashboards/
+COPY docker/files/provisioning/dashboards/dashboards.yaml           ${HAPPYGEARS_DIR}/dashboards/
 
 RUN  chown -R grafana                                $GRAFANA_VOLUME_DIR
 

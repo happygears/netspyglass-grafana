@@ -2,6 +2,9 @@
 
 BASIC_AUTH="${GF_SECURITY_ADMIN_USER}:${GF_SECURITY_ADMIN_PASSWORD}"
 
+GRAFANA_HOME_DIR="/opt/grafana"
+GRAFANA_PROVISIONING_DIR="$GRAFANA_HOME_DIR/provisioning"
+
 # wait for Grafana to come up and begin to respond to API queries. It may take longer
 # when it starts for the first time because it needs to initialize the database
 
@@ -22,5 +25,11 @@ echo "### Creating organization 'Happy Gears'"
 
 curl -X POST -H 'Content-Type: application/json' --data '{"name":"Happy Gears"}' -u ${BASIC_AUTH} http://localhost:3000/api/orgs
 
+# at this point, two organizations should exist and we can proceed to upload
+# dashbords and datasources files that use them
+
 echo "### Generate Grafana datasources.yaml from template ..."
-perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${SRC_PLUGINS_DIR}/grafana-datasources.yaml > ${GRAFANA_DATASOURCES_DIR}/datasources.yaml
+perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${HAPPYGEARS_DIR}/datasources/grafana-datasources.yaml > $GRAFANA_PROVISIONING_DIR/datasources/datasources.yaml
+
+cp ${HAPPYGEARS_DIR}/dashboards/dashboards.yaml  $GRAFANA_PROVISIONING_DIR/dashboards/dashboards.yaml
+

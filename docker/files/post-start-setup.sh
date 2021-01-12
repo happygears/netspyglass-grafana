@@ -4,6 +4,7 @@ BASIC_AUTH="${GF_SECURITY_ADMIN_USER}:${GF_SECURITY_ADMIN_PASSWORD}"
 
 GRAFANA_HOME_DIR="/opt/grafana"
 GRAFANA_PROVISIONING_DIR="$GRAFANA_HOME_DIR/provisioning"
+FIRST_START_FILE="$GRAFANA_HOME_DIR/.first_start"
 
 # wait for Grafana to come up and begin to respond to API queries. It may take longer
 # when it starts for the first time because it needs to initialize the database
@@ -28,9 +29,10 @@ response=$(curl -s -X POST -H 'Content-Type: application/json' --data '{"name":"
 echo "### response: $response"
 
 test -f $FIRST_START_FILE && {
+  echo "### This is our first attempt to start grafana, killing container to force exit"
   # this is the first start, since we have created organization already, just kill the container and let
   # docker restart it
-  kill 1
+  pkill grafana-server
   exit
 }
 

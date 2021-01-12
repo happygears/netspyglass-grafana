@@ -12,7 +12,7 @@ SRC_PLUGINS_DIR="${HAPPYGEARS_DIR}/plugins/"
 
 cd ${HAPPYGEARS_DIR}
 
-set -x
+# set -x
 
 id -a
 

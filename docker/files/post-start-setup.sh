@@ -9,7 +9,7 @@ GRAFANA_PROVISIONING_DIR="$GRAFANA_HOME_DIR/provisioning"
 # when it starts for the first time because it needs to initialize the database
 
 while :; do
-    curl -u ${BASIC_AUTH} http://localhost:3000/api/orgs && break
+    curl -s -u ${BASIC_AUTH} http://localhost:3000/api/orgs && break
     sleep 5
 done
 
@@ -23,7 +23,7 @@ done
 
 echo "### Creating organization 'Happy Gears'"
 
-curl -X POST -H 'Content-Type: application/json' --data '{"name":"Happy Gears"}' -u ${BASIC_AUTH} http://localhost:3000/api/orgs
+curl -s -X POST -H 'Content-Type: application/json' --data '{"name":"Happy Gears"}' -u ${BASIC_AUTH} http://localhost:3000/api/orgs
 
 # at this point, two organizations should exist and we can proceed to upload
 # dashbords and datasources files that use them

@@ -60,34 +60,26 @@ RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install farski-ble
 COPY docker/files/start.sh            /
 COPY docker/files/post-start-setup.sh /
 
-RUN cat /etc/passwd
-RUN ls -la /
-RUN ls -la /usr/lib/
-RUN ls -la /var/lib/
-RUN ls -la /opt/
-
 RUN  chmod +x /start.sh
 RUN  chmod +x /post-start-setup.sh
 
 RUN  mkdir -p                                        $GRAFANA_DASHBOARDS_DIR
-COPY docker/files/dashboards/customer                ${GRAFANA_DASHBOARDS_DIR}/customer
-COPY docker/files/dashboards/happygears              ${GRAFANA_DASHBOARDS_DIR}/happygears
+COPY docker/files/dashboards/customer                $GRAFANA_DASHBOARDS_DIR/customer
+COPY docker/files/dashboards/happygears              $GRAFANA_DASHBOARDS_DIR/happygears
 
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/dashboards
 RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/datasources
 
-COPY docker/files/provisioning/dashboards/dashboards.yaml ${GRAFANA_PROVISIONING_DIR}/dashboards/
-
 # data source file gets copied into /opt/grafana/provisioning/datasources by the startup script
 # that uses env. variables to substitute macros
-RUN  mkdir -p                                                       ${HAPPYGEARS_DIR}/datasources/
-COPY docker/files/provisioning/datasources/grafana-datasources.yaml ${HAPPYGEARS_DIR}/datasources/
+RUN  mkdir -p                                                       $HAPPYGEARS_DIR/datasources/
+COPY docker/files/provisioning/datasources/grafana-datasources.yaml $HAPPYGEARS_DIR/datasources/
 
 # this file should be installed after we create organization
-RUN  mkdir -p                                                       ${HAPPYGEARS_DIR}/dashboards/
-COPY docker/files/provisioning/dashboards/dashboards.yaml           ${HAPPYGEARS_DIR}/dashboards/
+RUN  mkdir -p                                                       $HAPPYGEARS_DIR/dashboards/
+COPY docker/files/provisioning/dashboards/dashboards.yaml           $HAPPYGEARS_DIR/dashboards/
 
-RUN  chown -R grafana                                $GRAFANA_VOLUME_DIR
+RUN  chown -R grafana $GRAFANA_VOLUME_DIR
 
 VOLUME ["$GRAFANA_VOLUME_DIR"]
 

@@ -25,7 +25,9 @@ mkdir -p ${GRAFANA_DATASOURCES_DIR}
 cp -r ${SRC_PLUGINS_DIR}/* ${GRAFANA_PLUGINS_DIR}
 chown -R grafana ${GRAFANA_PLUGINS_DIR}      || true   # if it is read-only because it is mounted as docker config
 
+echo "============ grafana provisioning directory before post-start:"
 ls -laR ${GRAFANA_PROVISIONING_DIR}/
+echo "============"
 
 /post-start-setup.sh &
 

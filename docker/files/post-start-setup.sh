@@ -18,7 +18,9 @@ done
 # assigned to this organization by id
 #
 
-echo "Creating organization 'Happy Gears'"
+echo "### Creating organization 'Happy Gears'"
 
 curl -X POST -H 'Content-Type: application/json' --data '{"name":"Happy Gears"}' -u ${BASIC_AUTH} http://localhost:3000/api/orgs
 
+echo "### Generate Grafana datasources.yaml from template ..."
+perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${SRC_PLUGINS_DIR}/grafana-datasources.yaml > ${GRAFANA_DATASOURCES_DIR}/datasources.yaml

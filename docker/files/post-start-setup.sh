@@ -27,14 +27,21 @@ response=$(curl -s -X POST -H 'Content-Type: application/json' --data '{"name":"
 
 echo "### response: $response"
 
-# at this point, two organizations should exist and we can proceed to upload
-# dashbords and datasources files that use them
+test -f $FIRST_START_FILE && {
+  # this is the first start, since we have created organization already, just kill the container and let
+  # docker restart it
+  kill 1
+  exit
+}
 
-echo "### Generate Grafana datasources.yaml from template ..."
-perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${HAPPYGEARS_DIR}/datasources/grafana-datasources.yaml > $GRAFANA_PROVISIONING_DIR/datasources/datasources.yaml
-
-echo "### Copy dashboards.yaml ..."
-cp ${HAPPYGEARS_DIR}/dashboards/dashboards.yaml  $GRAFANA_PROVISIONING_DIR/dashboards/dashboards.yaml
+## at this point, two organizations should exist and we can proceed to upload
+## dashbords and datasources files that use them
+#
+#echo "### Generate Grafana datasources.yaml from template ..."
+#perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${HAPPYGEARS_DIR}/datasources/grafana-datasources.yaml > $GRAFANA_PROVISIONING_DIR/datasources/datasources.yaml
+#
+#echo "### Copy dashboards.yaml ..."
+#cp ${HAPPYGEARS_DIR}/dashboards/dashboards.yaml  $GRAFANA_PROVISIONING_DIR/dashboards/dashboards.yaml
 
 echo "### post-startup script is done "
 

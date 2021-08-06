@@ -202,6 +202,15 @@ class SQLQuery {
                     });
                 }   
             }
+
+            if (
+                tag.value === QueryPrompts.whereValue &&
+                ["NOTNULL", "ISNULL"].indexOf(tag.operator) > -1
+            ) {
+                result.push({
+                    [tag.key]: [tag.operator],
+                });
+            }
         });
 
         if (result.length) {

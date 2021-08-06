@@ -281,6 +281,10 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                                     result.push(_defineProperty({}, tag.key, [tag.operator, tag.value]));
                                 }
                             }
+
+                            if (tag.value === QueryPrompts.whereValue && ["NOTNULL", "ISNULL"].indexOf(tag.operator) > -1) {
+                                result.push(_defineProperty({}, tag.key, [tag.operator]));
+                            }
                         });
 
                         if (result.length) {

@@ -122,11 +122,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     _this.prompts = QueryPrompts;
                     _this.uiSegmentSrv = uiSegmentSrv;
 
-                    _this.options = {
-                        isGraph: _this.panel.type === 'graph',
-                        isTable: _this.panel.type === 'table',
-                        isSinglestat: _this.panel.type === 'singlestat',
-                        isHeatmap: _this.panel.type === 'heatmap',
+                    var optionsPluginParams = {
                         isMultiColumnMode: true,
                         categories: [],
                         segments: [],
@@ -134,8 +130,16 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             fake: true,
                             value: _this.prompts.removeTag
                         }),
-                        rawQueryString: ''
+                        rawQueryString: ""
                     };
+
+                    if (_this.options) {
+                        _this.options = Object.assign(_this.options, optionsPluginParams);
+                    } else {
+                        _this.options = Object.assign({}, optionsPluginParams);
+                    }
+
+                    _this.setOptionsBasedOnPanelType(_this.panel.type);
 
                     _this.pluginVersion = _this.datasource.meta.info.version;
                     return _this;
@@ -164,24 +168,39 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         this.scheduler = utils.getScheduler();
 
-                        this.panelCtrl.events.emitter.on('data-error', function (errors) {
+                        this.panelCtrl.events.emitter.on("data-error", function (errors) {
                             _this3.errors = _.cloneDeep(errors);
                             _this3.scheduler.stop();
                         });
 
-                        this.panelCtrl.events.emitter.on('render', function () {
+                        this.panelCtrl.events.emitter.on("render", function () {
                             _this3.scheduler.stop();
                         });
 
-                        if (this.options.isTable) {
-                            this.setPanelSortFromOrderBy();
-                            this.$scope.$watch('ctrl.panel.sort', function (newVal, oldVal) {
-                                if (newVal.col !== oldVal.col || newVal.desc !== oldVal.desc) {
-                                    _this3.setOrderByFromPanelSort(newVal);
-                                    _this3.execute();
-                                }
-                            }, true);
-                        }
+                        this.$scope.$watch("ctrl.panel.type", function (newVal, oldVal) {
+                            _this3.setOptionsBasedOnPanelType(newVal);
+                            _this3.setStoreBasedOnPanelType();
+                        });
+
+                        this.$scope.$watch("ctrl.panel.options.sortBy", // {displayName: string, desc: boolean}[]
+                        function (newVal, oldVal) {
+                            if (newVal && newVal.filter(function (el) {
+                                return el.displayName;
+                            }).length) {
+                                _this3.setOrderByFromPanelSort(newVal);
+                                _this3.execute();
+                            } else {
+                                _this3.onClearOrderBy();
+                            }
+                        }, true);
+                    }
+                }, {
+                    key: 'setOptionsBasedOnPanelType',
+                    value: function setOptionsBasedOnPanelType(type) {
+                        this.options.isGraph = type === "graph";
+                        this.options.isTable = type === "table";
+                        this.options.isSinglestat = type === "singlestat";
+                        this.options.isHeatmap = type === "heatmap";
                     }
                 }, {
                     key: 'initTarget',
@@ -190,17 +209,23 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         this.target._nsgTarget = this.target._nsgTarget || {};
                         this.store = this.target._nsgTarget;
-                        this.store.refId = this.target.refId || 'A';
+                        this.store.refId = this.target.refId || "A";
 
-                        defaults.format = this.options.isTable ? 'table' : 'time_series';
+                        defaults.format = this.options.isTable ? "table" : "time_series";
 
                         _.defaults(this.store, defaults);
+
+                        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
+                        this.setStoreBasedOnPanelType();
+                    }
+                }, {
+                    key: 'setStoreBasedOnPanelType',
+                    value: function setStoreBasedOnPanelType() {
+                        this.store.format = this.options.isTable ? "table" : "time_series";
 
                         if (this.store.variable && this.store.variable !== QueryPrompts.variable) {
                             this.setPanelDefaults();
                         }
-
-                        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
 
                         if (this.options.isSinglestat) {
                             this.store.limit = 1;
@@ -218,21 +243,21 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'isCategorySupportGraph',
                     value: function isCategorySupportGraph(value) {
-                        return value !== 'devices' && value !== 'alerts';
+                        return value !== "devices" && value !== "alerts";
                     }
                 }, {
                     key: 'setGraphDefaults',
                     value: function setGraphDefaults() {
-                        if (!_.find(this.store.columns, { name: 'metric' })) {
+                        if (!_.find(this.store.columns, { name: "metric" })) {
                             this.store.columns.push({
-                                name: 'metric',
+                                name: "metric",
                                 visible: true,
-                                appliedFunctions: [{ name: 'tsavg' }]
+                                appliedFunctions: [{ name: "tsavg" }]
                             });
                         }
-                        if (!_.find(this.store.columns, { name: 'time' })) {
+                        if (!_.find(this.store.columns, { name: "time" })) {
                             this.store.columns.push({
-                                name: 'time',
+                                name: "time",
                                 visible: false
                             });
                         }
@@ -241,22 +266,22 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                         if (!groupBy || groupBy.value === QueryPrompts.groupBy && groupBy.type === QueryPrompts.groupByType && !groupBy.touched) {
                             this.store.groupBy = {};
-                            this.store.groupBy.type = 'time';
-                            this.store.groupBy.value = '$_interval';
+                            this.store.groupBy.type = "time";
+                            this.store.groupBy.value = "$_interval";
                         }
                     }
                 }, {
                     key: 'resetGraphDefaults',
                     value: function resetGraphDefaults() {
-                        if (_.find(this.store.columns, { name: 'time', visible: false })) {
+                        if (_.find(this.store.columns, { name: "time", visible: false })) {
                             _.remove(this.store.columns, {
-                                name: 'time',
+                                name: "time",
                                 visible: false
                             });
 
-                            if (_.find(this.store.columns, { name: 'metric' })) {
+                            if (_.find(this.store.columns, { name: "metric" })) {
                                 _.remove(this.store.columns, {
-                                    name: 'metric',
+                                    name: "metric",
                                     visible: true
                                 });
                             }
@@ -269,26 +294,32 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'setPanelSortFromOrderBy',
                     value: function setPanelSortFromOrderBy() {
-                        var _this4 = this;
+                        if (!this.panel.options) this.panel.option = {};
 
-                        var index = _.findIndex(this.store.columns, function (column) {
-                            return utils.compileColumnName(column) === _this4.store.orderBy.column.name;
-                        });
-
-                        this.panel.sort.col = index > -1 ? index : null;
-                        this.panel.sort.desc = this.store.orderBy.sort == orderBySortTypes[1];
+                        this.panel.options.sortBy = [{
+                            displayName: this.store.orderBy.column.name || null,
+                            desc: this.store.orderBy.sort == orderBySortTypes[1]
+                        }];
                     }
                 }, {
                     key: 'setOrderByFromPanelSort',
-                    value: function setOrderByFromPanelSort(value) {
-                        if (value.col !== null) {
+                    value: function setOrderByFromPanelSort(sortBy) {
+                        var _sortBy$ = sortBy[0],
+                            displayName = _sortBy$.displayName,
+                            desc = _sortBy$.desc;
+
+
+                        if (displayName !== null) {
+                            var column = this.store.columns.find(function (el) {
+                                return el.name === displayName;
+                            });
                             this.store.orderBy.column = {
-                                name: utils.compileColumnName(this.store.columns[value.col]),
-                                value: utils.compileColumnAlias(this.store.columns[value.col]),
-                                alias: this.store.columns[value.col].alias
+                                name: utils.compileColumnName(column),
+                                value: utils.compileColumnAlias(column),
+                                alias: column.alias
                             };
                             this.store.orderBy.colName = this.store.orderBy.column.alias || this.store.orderBy.column.name;
-                            this.store.orderBy.sort = value.desc ? orderBySortTypes[1] : orderBySortTypes[0];
+                            this.store.orderBy.sort = desc ? orderBySortTypes[1] : orderBySortTypes[0];
                         } else {
                             this.onClearOrderBy();
                         }
@@ -316,8 +347,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     segments.push(uiSegmentSrv.newOperator(tag.operator));
                                     segments.push(uiSegmentSrv.newKeyValue(tag.value));
 
-                                    if (tag.operator === 'ISNULL' || tag.operator === 'NOTNULL') {
-                                        segments[segments.length - 1].cssClass = 'query-segment-key query-segment-key--hidden';
+                                    if (tag.operator === "ISNULL" || tag.operator === "NOTNULL") {
+                                        segments[segments.length - 1].cssClass = "query-segment-key query-segment-key--hidden";
                                     }
                                 }
                             } catch (err) {
@@ -343,17 +374,17 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getCategories',
                     value: function getCategories() {
-                        var _this5 = this;
+                        var _this4 = this;
 
                         return this.datasource.getCategories().then(function (categories) {
                             var predefined = [{
-                                text: 'Tables',
-                                submenu: [{ text: 'devices', value: 'devices' }, { text: 'alerts', value: 'alerts' }]
-                            }, { text: '---------', separator: true }];
+                                text: "Tables",
+                                submenu: [{ text: "devices", value: "devices" }, { text: "alerts", value: "alerts" }]
+                            }, { text: "---------", separator: true }];
 
                             categories = [].concat(predefined, _toConsumableArray(categories));
 
-                            _this5.options.categories = categories;
+                            _this4.options.categories = categories;
 
                             return categories;
                         });
@@ -370,7 +401,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: '_updateOrderBy',
                     value: function _updateOrderBy() {
-                        if (this.store.orderBy.column.name === 'column') {
+                        if (this.store.orderBy.column.name === "column") {
                             this.store.orderBy.column.value = this.store.orderBy.colValue;
                         }
 
@@ -383,7 +414,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onChangeOrderBy',
                     value: function onChangeOrderBy($value) {
-                        if (typeof $value === 'string') {
+                        if (typeof $value === "string") {
                             this.store.orderBy.column = {
                                 name: $value,
                                 value: $value
@@ -457,7 +488,6 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     key: 'onColumnChanged',
                     value: function onColumnChanged($column, $prevColumnState) {
                         if (this.isMultiColumnMode && this.store.orderBy.column.name === utils.compileColumnName($prevColumnState)) {
-
                             this.store.orderBy.column = {
                                 name: utils.compileColumnName($column),
                                 value: utils.compileColumnAlias($column),
@@ -497,14 +527,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'loadColumns',
                     value: function loadColumns() {
-                        var _this6 = this;
+                        var _this5 = this;
 
                         if (this.store.variable && this.store.variable !== QueryPrompts.column && this.options.isMultiColumnMode) {
-
                             var found = -1;
                             _.each(this.options.categories, function (category) {
                                 found = _.findIndex(category.submenu, {
-                                    value: _this6.store.variable
+                                    value: _this5.store.variable
                                 });
                                 if (~found) {
                                     return false;
@@ -513,7 +542,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
 
                             if (~found) {
                                 return this.datasource.getColumns(this.store.variable).then(function (columns) {
-                                    _this6.options.columns = columns;
+                                    _this5.options.columns = columns;
                                 });
                             }
                         }
@@ -523,7 +552,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'toggleEditorMode',
                     value: function toggleEditorMode() {
-                        var _this7 = this;
+                        var _this6 = this;
 
                         if (!this.store.rawQuery) {
                             var query = this.datasource.getSQLString(this.store);
@@ -536,13 +565,13 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         }
 
                         if (this.options.rawQueryString != this.store.nsgqlString) {
-                            this.$rootScope.appEvent('confirm-modal', {
-                                title: 'Confirm',
-                                text: 'Are your sure? Your changes will be lost.',
+                            this.$rootScope.appEvent("confirm-modal", {
+                                title: "Confirm",
+                                text: "Are your sure? Your changes will be lost.",
                                 yesText: "Yes",
                                 icon: "fa-trash",
                                 onConfirm: function onConfirm() {
-                                    _this7.store.rawQuery = 0;
+                                    _this6.store.rawQuery = 0;
                                 }
                             });
                         } else {
@@ -552,23 +581,23 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getTagsOrValues',
                     value: function getTagsOrValues(segment, index) {
-                        var _this8 = this;
+                        var _this7 = this;
 
-                        var $q = this.$injector.get('$q');
+                        var $q = this.$injector.get("$q");
                         var uiSegmentSrv = this.uiSegmentSrv;
                         var segments = this.options.segments;
                         var promise = $q.resolve([]);
 
                         if (this.store.variable) {
                             switch (segment.type) {
-                                case 'key':
-                                case 'plus-button':
+                                case "key":
+                                case "plus-button":
                                     promise = this.datasource.getFacets(this.store.variable).then(function (facets) {
-                                        return ['component', 'device'].concat(_toConsumableArray(facets)).filter(Boolean);
+                                        return ["component", "device"].concat(_toConsumableArray(facets)).filter(Boolean);
                                     });
                                     break;
 
-                                case 'value':
+                                case "value":
                                     promise = this.datasource.getSuggestions({
                                         type: segments[index - 2].value,
                                         variable: this.store.variable,
@@ -577,12 +606,12 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                     });
                                     break;
 
-                                case 'condition':
-                                    return $q.resolve([this.uiSegmentSrv.newCondition('AND'), this.uiSegmentSrv.newCondition('OR')]);
+                                case "condition":
+                                    return $q.resolve([this.uiSegmentSrv.newCondition("AND"), this.uiSegmentSrv.newCondition("OR")]);
                                     break;
 
-                                case 'operator':
-                                    return $q.resolve(this.uiSegmentSrv.newOperators(['=', '!=', '<>', '<', '>', 'REGEXP', 'NOT REGEXP', 'ISNULL', 'NOTNULL']));
+                                case "operator":
+                                    return $q.resolve(this.uiSegmentSrv.newOperators(["=", "!=", "<>", "<", ">", "REGEXP", "NOT REGEXP", "ISNULL", "NOTNULL"]));
                                     break;
                             }
                         }
@@ -594,8 +623,8 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                 });
                             });
                         }).then(function (results) {
-                            if (segment.type === 'key') {
-                                results.splice(0, 0, angular.copy(_this8.options.removeSegment));
+                            if (segment.type === "key") {
+                                results.splice(0, 0, angular.copy(_this7.options.removeSegment));
                             }
                             return results;
                         });
@@ -622,31 +651,32 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                                 segments.push(segmentSrv.newPlusButton());
                             } else if (segments.length > 2) {
                                 segments.splice(Math.max(index - 1, 0), 1);
-                                if (segments[segments.length - 1].type !== 'plus-button') {
+                                if (segments[segments.length - 1].type !== "plus-button") {
                                     segments.push(segmentSrv.newPlusButton());
                                 }
                             }
                         } else {
-                            if (segment.type === 'plus-button') {
+                            if (segment.type === "plus-button") {
                                 if (index > 2) {
-                                    segments.splice(index, 0, segmentSrv.newCondition('AND'));
+                                    segments.splice(index, 0, segmentSrv.newCondition("AND"));
                                 }
 
-                                segments.push(segmentSrv.newOperator('='));
-                                segments.push(segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
-                                segment.type = 'key';
-                                segment.cssClass = 'query-segment-key';
+                                segments.push(segmentSrv.newOperator("="));
+                                segments.push(segmentSrv.newFake(this.prompts.whereValue, "value", "query-segment-value"));
+                                segment.type = "key";
+                                segment.cssClass = "query-segment-key";
                             }
 
-                            if (segment.type === 'key' && segments[index + 2].type === 'value') {
-                                segments.splice(index + 2, 1, segmentSrv.newFake(this.prompts.whereValue, 'value', 'query-segment-value'));
+                            if (segment.type === "key" && segments[index + 2].type === "value") {
+                                segments.splice(index + 2, 1, segmentSrv.newFake(this.prompts.whereValue, "value", "query-segment-value"));
                             }
 
-                            if (segment.type === 'operator') {
-                                if (segment.value === 'ISNULL' || segment.value === 'NOTNULL') {
-                                    segments[index + 1].cssClass = 'query-segment-key query-segment-key--hidden';
+                            if (segment.type === "operator") {
+                                if (segment.value === "ISNULL" || segment.value === "NOTNULL") {
+                                    segments[index + 1].cssClass = "query-segment-key query-segment-key--hidden";
+                                    segments.push(segmentSrv.newPlusButton());
                                 } else {
-                                    segments[index + 1].cssClass = 'query-segment-key';
+                                    segments[index + 1].cssClass = "query-segment-key";
                                 }
                             }
 
@@ -660,35 +690,35 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'rebuildTargetTagConditions',
                     value: function rebuildTargetTagConditions() {
-                        var _this9 = this;
+                        var _this8 = this;
 
                         var segments = this.options.segments;
                         var tags = [];
                         var tagIndex = 0;
-                        var tagOperator = '';
+                        var tagOperator = "";
 
                         segments.forEach(function (segment, index) {
                             switch (segment.type) {
-                                case 'key':
+                                case "key":
                                     if (tags.length === 0) {
                                         tags.push({});
                                     }
                                     tags[tagIndex].key = segment.value;
                                     break;
-                                case 'value':
+                                case "value":
                                     if (tagOperator = tags[tagIndex].operator) {
-                                        segments[index - 1] = _this9.uiSegmentSrv.newOperator(tagOperator);
+                                        segments[index - 1] = _this8.uiSegmentSrv.newOperator(tagOperator);
                                         tags[tagIndex].operator = tagOperator;
                                     }
                                     tags[tagIndex].value = segment.value;
                                     break;
-                                case 'condition':
+                                case "condition":
                                     tags.push({
                                         condition: segment.value
                                     });
                                     tagIndex += 1;
                                     break;
-                                case 'operator':
+                                case "operator":
                                     tags[tagIndex].operator = segment.value;
                                     break;
                             }
@@ -719,12 +749,12 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             return this.datasource.getCombinedList(this.store.variable);
                         }
 
-                        return this.$injector.get('$q').resolve(list);
+                        return this.$injector.get("$q").resolve(list);
                     }
                 }, {
                     key: 'getOrderBySortOptions',
                     value: function getOrderBySortOptions() {
-                        return this.$injector.get('$q').resolve([{
+                        return this.$injector.get("$q").resolve([{
                             text: orderBySortTypes[0],
                             value: orderBySortTypes[0]
                         }, {
@@ -740,60 +770,60 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getLimitOptions',
                     value: function getLimitOptions() {
-                        return this.$injector.get('$q').resolve([{
-                            text: 'None',
-                            'value': ''
+                        return this.$injector.get("$q").resolve([{
+                            text: "None",
+                            value: ""
                         }, {
-                            text: '1',
-                            'value': 1
+                            text: "1",
+                            value: 1
                         }, {
-                            text: '5',
-                            'value': 5
+                            text: "5",
+                            value: 5
                         }, {
-                            text: '10',
-                            'value': 10
+                            text: "10",
+                            value: 10
                         }, {
-                            text: '50',
-                            'value': 50
+                            text: "50",
+                            value: 50
                         }, {
-                            text: '100',
-                            'value': 100
+                            text: "100",
+                            value: 100
                         }]);
                     }
                 }, {
                     key: 'getGroupByTypes',
                     value: function getGroupByTypes() {
-                        return this.$injector.get('$q').resolve([{
-                            text: 'time',
-                            value: 'time'
+                        return this.$injector.get("$q").resolve([{
+                            text: "time",
+                            value: "time"
                         }, {
-                            text: 'column',
-                            value: 'column'
+                            text: "column",
+                            value: "column"
                         }]);
                     }
                 }, {
                     key: 'getGroupByVariables',
                     value: function getGroupByVariables() {
                         switch (this.store.groupBy.type) {
-                            case 'time':
-                                return this.$injector.get('$q').resolve([{
+                            case "time":
+                                return this.$injector.get("$q").resolve([{
                                     text: GrafanaVariables.interval,
                                     value: GrafanaVariables.interval
                                 }, {
-                                    text: '1s',
-                                    value: '1s'
+                                    text: "1s",
+                                    value: "1s"
                                 }, {
-                                    text: '1m',
-                                    value: '1m'
+                                    text: "1m",
+                                    value: "1m"
                                 }, {
-                                    text: '1h',
-                                    value: '1h'
+                                    text: "1h",
+                                    value: "1h"
                                 }, {
-                                    text: '1d',
-                                    value: '1d'
+                                    text: "1d",
+                                    value: "1d"
                                 }]);
                                 break;
-                            case 'column':
+                            case "column":
                                 return this.datasource.getCombinedList(this.store.variable);
                                 break;
                         }
@@ -801,7 +831,7 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getCollapsedText',
                     value: function getCollapsedText() {
-                        return 'This target is collapsed. Click to the row for open it.';
+                        return "This target is collapsed. Click to the row for open it.";
                     }
                 }, {
                     key: 'toggleColumnsView',
@@ -811,12 +841,12 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'getFormatOptions',
                     value: function getFormatOptions() {
-                        return this.$injector.get('$q').resolve([{
-                            text: 'time series',
-                            value: 'time_series'
+                        return this.$injector.get("$q").resolve([{
+                            text: "time series",
+                            value: "time_series"
                         }, {
-                            text: 'table',
-                            value: 'table'
+                            text: "table",
+                            value: "table"
                         }]);
                     }
                 }, {

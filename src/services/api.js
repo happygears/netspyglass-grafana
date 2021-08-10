@@ -175,6 +175,25 @@ class SQLQuery {
             }
         };
 
+        // remove adHoc variables from where, because they are applied globally
+        const adHocVariables = (this.templateSrv.variables || [])
+            .filter((el) => el.type === "adhoc")
+            .map((el) => el.name);
+        if (adHocVariables.length) {
+            tags = tags.filter(
+                (tag) => {
+                    const key = tag.key.replace(/^\$/, "");
+                    const value = tag.value.replace(/^\$/, "");
+                    
+                    return (
+                        adHocVariables.indexOf(key) === -1 &&
+                        adHocVariables.indexOf(value) === -1
+                    );
+                }
+                    
+            );
+        }
+
         tags.forEach((tag) => {
             if (tag.value && tag.value[0] === '$') {
                 tag.value = this.getTemplateValue(tag.value, scopedVars);

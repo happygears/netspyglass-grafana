@@ -258,6 +258,21 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                             }
                         };
 
+                        // remove adHoc variables from where, because they are applied globally
+                        var adHocVariables = (this.templateSrv.variables || []).filter(function (el) {
+                            return el.type === "adhoc";
+                        }).map(function (el) {
+                            return el.name;
+                        });
+                        if (adHocVariables.length) {
+                            tags = tags.filter(function (tag) {
+                                var key = tag.key.replace(/^\$/, "");
+                                var value = tag.value.replace(/^\$/, "");
+
+                                return adHocVariables.indexOf(key) === -1 && adHocVariables.indexOf(value) === -1;
+                            });
+                        }
+
                         tags.forEach(function (tag) {
                             if (tag.value && tag.value[0] === '$') {
                                 tag.value = _this.getTemplateValue(tag.value, scopedVars);

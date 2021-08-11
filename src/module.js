@@ -17,6 +17,8 @@
 import angular from 'angular';
 import _ from 'lodash';
 
+import { uiDraggable, uiOnDrop } from "./external/draganddrop";
+
 import {NetSpyGlassDatasource} from './datasource';
 import {NetSpyGlassQueryCtrl} from './query_ctrl';
 import ColumnsMenuDirective from './directives/columns-menu';
@@ -34,27 +36,29 @@ GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
 class GenericAnnotationsQueryCtrl {}
 GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
 
-angular.module('grafana.directives')
-    .directive('hgColumnsMenu', ColumnsMenuDirective)
-    .directive('hgDropdown', DropdownDirective)
-    .directive('hgEscapeRegexp', function() {
+angular
+    .module("grafana.directives")
+    .directive("hgColumnsMenu", ColumnsMenuDirective)
+    .directive("hgDropdown", DropdownDirective)
+    .directive("hgEscapeRegexp", function () {
         return {
-            restrict: 'A',
+            restrict: "A",
             priority: 1001,
-            link: function($scope, $element) {
-                const typeahead = $element
-                    .find('input')
-                    .data('typeahead');
+            link: function ($scope, $element) {
+                const typeahead = $element.find("input").data("typeahead");
 
                 const originalMatcher = typeahead.matcher;
 
-                typeahead.matcher = function(item) {
-                    const self = {query: _.escapeRegExp(this.query)};
+                typeahead.matcher = function (item) {
+                    const self = { query: _.escapeRegExp(this.query) };
                     return originalMatcher.call(self, item);
                 };
-            }
+            },
         };
-    });
+    })
+    //draganddrop
+    .directive("uiDraggable", ["$parse", "$rootScope", uiDraggable])
+    .directive("uiOnDrop", ["$parse", "$rootScope", uiOnDrop]);
 
 loadPluginCss({
     dark: `plugins/${NSG_PLUGIN_ID}/styles/theme.dark.css`,

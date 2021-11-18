@@ -316,7 +316,6 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
 
                         var useTemplates = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-
                         var adHoc = null;
                         var columns = _.isArray(target.columns) ? target.columns : [];
                         var query = sqlBuilder.factory();
@@ -619,7 +618,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
 
                         if (errorsList.length) {
                             errorsList.forEach(function (error) {
-                                errors[error.id.toUpperCase()] = error.error;
+                                errors[(error.id || "").toUpperCase()] = error.error;
                             });
 
                             throw {

@@ -72,6 +72,8 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
 
+        console.log($scope);
+
         var optionsPluginParams = {
             isMultiColumnMode: true,
             categories: [],
@@ -89,7 +91,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.options = Object.assign({}, optionsPluginParams);
         }
 
-        this.setOptionsBasedOnPanelType(this.panel.type);
+        // this.setOptionsBasedOnPanelType(this.panel.type);
 
         this.pluginVersion = this.datasource.meta.info.version;
     }
@@ -104,8 +106,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     init() {
         this.initTarget();
         this.options.segments = this.restoreTags();
-        this.getCategories()
-            .then(() => this.loadColumns());
+        this.getCategories().then(() => this.loadColumns());
 
         this.scheduler = utils.getScheduler();
 
@@ -118,10 +119,18 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.scheduler.stop();
         });
 
-        this.$scope.$watch("ctrl.panel.type", (newVal, oldVal) => {
-            this.setOptionsBasedOnPanelType(newVal);
-            this.setStoreBasedOnPanelType();
-        });
+        this.$scope.$watch(
+            () => this.panelCtrl,
+            (newVal) => {
+                console.log("panelCtrl", newVal);
+            }
+        );
+
+        // this.$scope.$watch("ctrl.panel.type", (newVal, oldVal) => {
+        //     console.log("ctrl.panel.type", newVal, this.panel);
+        //     // this.setOptionsBasedOnPanelType(newVal);
+        //     // this.setStoreBasedOnPanelType();
+        // });
 
         this.$scope.$watch(
             "ctrl.panel.options.sortBy", // {displayName: string, desc: boolean}[]
@@ -137,21 +146,26 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         );
     }
 
-    setOptionsBasedOnPanelType(type) {
-        this.options.isGraph = type === "graph";
-        this.options.isTable = type === "table";
-        this.options.isSinglestat = type === "singlestat";
-        this.options.isHeatmap = type === "heatmap";
-    }
+    // setOptionsBasedOnPanelType(type) {
+    //     this.options.isGraph = type === "graph";
+    //     this.options.isTable = type === "table";
+    //     this.options.isSinglestat = type === "singlestat";
+    //     this.options.isHeatmap = type === "heatmap";
+
+    //     // fallback
+    //     if (!type) {
+    //         this.options.isGraph = true;
+    //     }
+    // }
 
     initTarget() {
         let defaults = _.merge({}, targetDefaults);
 
+        console.log("initTarget this.target", this.target);
+
         this.target._nsgTarget = this.target._nsgTarget || {};
         this.store = this.target._nsgTarget;
         this.store.refId = this.target.refId || "A";
-
-        defaults.format = this.options.isTable ? "table" : "time_series";
 
         _.defaults(this.store, defaults);
 
@@ -160,79 +174,77 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     setStoreBasedOnPanelType() {
-        this.store.format = this.options.isTable ? "table" : "time_series";
-
         if (
             this.store.variable &&
             this.store.variable !== QueryPrompts.variable
         ) {
             this.setPanelDefaults();
+
+            this.updateLegacyMetricColumn();
         }
 
-        if (this.options.isSinglestat) {
-            this.store.limit = 1;
-        }
+        // if (this.options.isSinglestat) {
+        //     this.store.limit = 1;
+        // }
     }
 
-    setPanelDefaults(category) {
-        if (this.options.isGraph && this.isCategorySupportGraph(category)) {
-            this.setGraphDefaults();
-        } else if (!this.options.isGraph) {
-            this.resetGraphDefaults();
-        }
-    }
+    // setPanelDefaults(category) {
+    //     this.setPanelDefaults();
+    // }
 
     isCategorySupportGraph(value) {
         return value !== "devices" && value !== "alerts";
     }
 
-    setGraphDefaults() {
-        if (!_.find(this.store.columns, { name: "metric" })) {
-            this.store.columns.push({
-                name: "metric",
-                visible: true,
-                appliedFunctions: [{ name: "tsavg" }],
-            });
-        }
-        if (!_.find(this.store.columns, { name: "time" })) {
-            this.store.columns.push({
-                name: "time",
-                visible: false,
-            });
-        }
+    setPanelDefaults() {
+        console.log("set panel defaults", this.store);
 
-        const groupBy = this.store.groupBy;
-
-        if (
-            !groupBy ||
-            (groupBy.value === QueryPrompts.groupBy &&
-                groupBy.type === QueryPrompts.groupByType &&
-                !groupBy.touched)
-        ) {
-            this.store.groupBy = {};
-            this.store.groupBy.type = "time";
-            this.store.groupBy.value = "$_interval";
-        }
-    }
-
-    resetGraphDefaults() {
-        if (_.find(this.store.columns, { name: "time", visible: false })) {
-            _.remove(this.store.columns, {
-                name: "time",
-                visible: false,
-            });
-
-            if (_.find(this.store.columns, { name: "metric" })) {
-                _.remove(this.store.columns, {
-                    name: "metric",
+        if (this.store.format === "time_series") {
+            if (!_.find(this.store.columns, { name: "time" })) {
+                this.store.columns.push({
+                    name: "time",
                     visible: true,
                 });
             }
-        }
+            if (!_.find(this.store.columns, { name: "metric" })) {
+                this.store.columns.push({
+                    name: "metric",
+                    visible: true,
+                    appliedFunctions: [{ name: "tsavg" }],
+                });
+            }
 
-        // Maybe incorrect behavior
-        // this.store.groupBy.type = QueryPrompts.groupByType;
-        // this.store.groupBy.value = QueryPrompts.groupBy;
+            const groupBy = this.store.groupBy;
+
+            if (
+                !groupBy ||
+                (groupBy.value === QueryPrompts.groupBy &&
+                    groupBy.type === QueryPrompts.groupByType &&
+                    !groupBy.touched)
+            ) {
+                this.store.groupBy = {};
+                this.store.groupBy.type = "time";
+                this.store.groupBy.value = "$_interval";
+            }
+        }
+    }
+
+    // if query has groupBy time, metric value should have ts function applyed
+    updateLegacyMetricColumn() {
+        if (
+            this.store.format === "time_series" &&
+            this.store.groupBy &&
+            this.store.groupBy.type === "time"
+        ) {
+            const columnWithSimpleMetric = this.store.columns.find(
+                (column) => column.name === "metric" && !column.appliedFunctions.length
+            );
+            if (columnWithSimpleMetric) {
+                columnWithSimpleMetric.appliedFunctions.push({
+                    name: "tsavg",
+                });
+            }
+        }
     }
 
     setPanelSortFromOrderBy() {
@@ -247,12 +259,18 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     setOrderByFromPanelSort(sortBy) {
+        // console.log("setOrderByFromPanelSort", sortBy);
         const { displayName, desc } = sortBy[0];
+
+        // console.log(displayName, this.store.columns);
 
         if (displayName !== null) {
             const column = this.store.columns.find(
-                (el) => el.name === displayName
+                (el) => {
+                    return utils.compileColumnName(el) === displayName;
+                }
             );
+            // console.log(column);
             this.store.orderBy.column = {
                 name: utils.compileColumnName(column),
                 value: utils.compileColumnAlias(column),
@@ -335,7 +353,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.store.orderBy.column.value = this.store.orderBy.colValue;
         }
 
-        if (this.options.isTable) {
+        if (this.store.format === "table") {
             this.setPanelSortFromOrderBy();
         } else {
             this.execute();
@@ -343,6 +361,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onChangeOrderBy($value) {
+        console.log($value);
         if (typeof $value === "string") {
             this.store.orderBy.column = {
                 name: $value,
@@ -714,7 +733,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     getOrderByOptions() {
         let list = [];
 
-        if (this.options.isTable) {
+        if (this.store.format === "table") {
             this.store.columns.forEach((column) => {
                 if (column.name == QueryPrompts.column) return;
 

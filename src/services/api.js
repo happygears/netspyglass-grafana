@@ -241,7 +241,6 @@ class SQLQuery {
     }
 
     generateSQLQuery(target, options, useTemplates = false) {
-        
         let adHoc = null;
         let columns = _.isArray(target.columns) ? target.columns : [];
         const query = sqlBuilder.factory();
@@ -542,7 +541,7 @@ class NSGQLApi {
 
         if (errorsList.length) {
             errorsList.forEach((error) => {
-                errors[(error.id).toUpperCase()] = error.error;
+                errors[(error.id || "").toUpperCase()] = error.error;
             });
 
             throw {

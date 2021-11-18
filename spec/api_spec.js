@@ -40,7 +40,7 @@ describe('APIQuery', function() {
         });
 
         it('Should generate alias when alias is specified', function() {
-            expect(ctx.query.processColumn({name: 'foo_bar', 'alias': 'baz'})).to.equals('foo_bar as `baz`');
+            expect(ctx.query.processColumn({name: 'foo_bar', 'alias': 'baz'})).to.equals('foo_bar as baz');
         });
 
         it('Should wrap column to given functions', function() {
@@ -55,8 +55,8 @@ describe('APIQuery', function() {
             const column = {name: 'foo_bar', appliedFunctions: [{name: 'max'}], alias: 'baz'};
             const column2 = {name: 'foo_bar', appliedFunctions: [{name: 'avg'}, {name: 'max'}], alias: 'baz'};
 
-            expect(ctx.query.processColumn(column)).to.equals('max(foo_bar) as `baz`');
-            expect(ctx.query.processColumn(column2)).to.equals('avg(max(foo_bar)) as `baz`');
+            expect(ctx.query.processColumn(column)).to.equals('max(foo_bar) as baz');
+            expect(ctx.query.processColumn(column2)).to.equals('avg(max(foo_bar)) as baz');
         });
 
 
@@ -64,8 +64,8 @@ describe('APIQuery', function() {
             const column = {name: 'foo_bar', appliedFunctions: [{name: 'max'}]};
             const column2 = {name: 'foo_bar', appliedFunctions: [{name: 'avg'}, {name: 'max'}]};
 
-            expect(ctx.query.processColumn(column, true)).to.equals('max(foo_bar) as `max_foo_bar`');
-            expect(ctx.query.processColumn(column2, true)).to.equals('avg(max(foo_bar)) as `avg_max_foo_bar`');
+            expect(ctx.query.processColumn(column, true)).to.equals('max(foo_bar) as max_foo_bar');
+            expect(ctx.query.processColumn(column2, true)).to.equals('avg(max(foo_bar)) as avg_max_foo_bar');
         });
     });
 

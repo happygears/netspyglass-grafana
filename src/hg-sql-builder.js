@@ -235,7 +235,7 @@ SQLBuilder.buildWhere = function (where) {
 };
 
 SQLBuilder.escape = function (str) {
-  return '`' + str + '`';
+  return "'" + str + "'";
 };
 
 SQLBuilder.OPERATORS = {

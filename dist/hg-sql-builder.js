@@ -305,7 +305,7 @@ System.register([], function (_export, _context) {
       };
 
       SQLBuilder.escape = function (str) {
-        return '`' + str + '`';
+        return "'" + str + "'";
       };
 
       SQLBuilder.OPERATORS = {

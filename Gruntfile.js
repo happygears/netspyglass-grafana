@@ -39,6 +39,12 @@ module.exports = function(grunt) {
         expand: true,
         src: [ 'plugin.json', 'README.md', 'img/*' ],
         dest: destPath
+      },
+      externals: {
+        cwd: 'src',
+        expand: true,
+        src: ['**/external/*'],
+        dest: 'dist'
       }
     },
 
@@ -175,11 +181,11 @@ module.exports = function(grunt) {
     }
   });
 
-  var buildTasks = ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'babel:dist'];
+  var buildTasks = ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'copy:externals', 'babel:dist'];
 
   if (!IS_DEV) {
-    buildTasks.unshift('bumpVersion');
-    buildTasks.push('test');
+    // buildTasks.unshift('bumpVersion');
+    // buildTasks.push('test');
   }
 
   grunt.registerTask('build', buildTasks);

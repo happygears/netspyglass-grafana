@@ -72,8 +72,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         this.prompts = QueryPrompts;
         this.uiSegmentSrv = uiSegmentSrv;
 
-        console.log($scope);
-
         var optionsPluginParams = {
             isMultiColumnMode: true,
             categories: [],
@@ -119,12 +117,12 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
             this.scheduler.stop();
         });
 
-        this.$scope.$watch(
-            () => this.panelCtrl,
-            (newVal) => {
-                console.log("panelCtrl", newVal);
-            }
-        );
+        // this.$scope.$watch(
+        //     () => this.panelCtrl,
+        //     (newVal) => {
+        //         console.log("panelCtrl", newVal);
+        //     }
+        // );
 
         // this.$scope.$watch("ctrl.panel.type", (newVal, oldVal) => {
         //     console.log("ctrl.panel.type", newVal, this.panel);
@@ -132,18 +130,19 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
         //     // this.setStoreBasedOnPanelType();
         // });
 
-        this.$scope.$watch(
-            "ctrl.panel.options.sortBy", // {displayName: string, desc: boolean}[]
-            (newVal, oldVal) => {
-                if (newVal && newVal.filter((el) => el.displayName).length) {
-                    this.setOrderByFromPanelSort(newVal);
-                    this.execute();
-                } else {
-                    this.onClearOrderBy();
-                }
-            },
-            true
-        );
+        // this.$scope.$watch(
+        //     "ctrl.panel.options.sortBy", // {displayName: string, desc: boolean}[]
+        //     (newVal, oldVal) => {
+        //         console.log(newVal);
+        //         if (newVal && newVal.filter((el) => el.displayName).length) {
+        //             this.setOrderByFromPanelSort(newVal);
+        //             this.execute();
+        //         } else {
+        //             this.onClearOrderBy();
+        //         }
+        //     },
+        //     true
+        // );
     }
 
     // setOptionsBasedOnPanelType(type) {
@@ -161,7 +160,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     initTarget() {
         let defaults = _.merge({}, targetDefaults);
 
-        console.log("initTarget this.target", this.target);
+        // console.log("initTarget this.target", this.target);
 
         this.target._nsgTarget = this.target._nsgTarget || {};
         this.store = this.target._nsgTarget;
@@ -197,8 +196,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     setPanelDefaults() {
-        console.log("set panel defaults", this.store);
-
         if (this.store.format === "time_series") {
             if (!_.find(this.store.columns, { name: "time" })) {
                 this.store.columns.push({
@@ -259,10 +256,7 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     setOrderByFromPanelSort(sortBy) {
-        // console.log("setOrderByFromPanelSort", sortBy);
         const { displayName, desc } = sortBy[0];
-
-        // console.log(displayName, this.store.columns);
 
         if (displayName !== null) {
             const column = this.store.columns.find(
@@ -270,7 +264,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
                     return utils.compileColumnName(el) === displayName;
                 }
             );
-            // console.log(column);
             this.store.orderBy.column = {
                 name: utils.compileColumnName(column),
                 value: utils.compileColumnAlias(column),
@@ -361,7 +354,6 @@ export class NetSpyGlassQueryCtrl extends QueryCtrl {
     }
 
     onChangeOrderBy($value) {
-        console.log($value);
         if (typeof $value === "string") {
             this.store.orderBy.column = {
                 name: $value,

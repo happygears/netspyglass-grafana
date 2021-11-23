@@ -122,8 +122,6 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                     _this.prompts = QueryPrompts;
                     _this.uiSegmentSrv = uiSegmentSrv;
 
-                    console.log($scope);
-
                     var optionsPluginParams = {
                         isMultiColumnMode: true,
                         categories: [],
@@ -179,11 +177,12 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             _this3.scheduler.stop();
                         });
 
-                        this.$scope.$watch(function () {
-                            return _this3.panelCtrl;
-                        }, function (newVal) {
-                            console.log("panelCtrl", newVal);
-                        });
+                        // this.$scope.$watch(
+                        //     () => this.panelCtrl,
+                        //     (newVal) => {
+                        //         console.log("panelCtrl", newVal);
+                        //     }
+                        // );
 
                         // this.$scope.$watch("ctrl.panel.type", (newVal, oldVal) => {
                         //     console.log("ctrl.panel.type", newVal, this.panel);
@@ -191,24 +190,26 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                         //     // this.setStoreBasedOnPanelType();
                         // });
 
-                        this.$scope.$watch("ctrl.panel.options.sortBy", // {displayName: string, desc: boolean}[]
-                        function (newVal, oldVal) {
-                            if (newVal && newVal.filter(function (el) {
-                                return el.displayName;
-                            }).length) {
-                                _this3.setOrderByFromPanelSort(newVal);
-                                _this3.execute();
-                            } else {
-                                _this3.onClearOrderBy();
-                            }
-                        }, true);
+                        // this.$scope.$watch(
+                        //     "ctrl.panel.options.sortBy", // {displayName: string, desc: boolean}[]
+                        //     (newVal, oldVal) => {
+                        //         console.log(newVal);
+                        //         if (newVal && newVal.filter((el) => el.displayName).length) {
+                        //             this.setOrderByFromPanelSort(newVal);
+                        //             this.execute();
+                        //         } else {
+                        //             this.onClearOrderBy();
+                        //         }
+                        //     },
+                        //     true
+                        // );
                     }
                 }, {
                     key: 'initTarget',
                     value: function initTarget() {
                         var defaults = _.merge({}, targetDefaults);
 
-                        console.log("initTarget this.target", this.target);
+                        // console.log("initTarget this.target", this.target);
 
                         this.target._nsgTarget = this.target._nsgTarget || {};
                         this.store = this.target._nsgTarget;
@@ -240,8 +241,6 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'setPanelDefaults',
                     value: function setPanelDefaults() {
-                        console.log("set panel defaults", this.store);
-
                         if (this.store.format === "time_series") {
                             if (!_.find(this.store.columns, { name: "time" })) {
                                 this.store.columns.push({
@@ -298,13 +297,10 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                             desc = _sortBy$.desc;
 
 
-                        // console.log(displayName, this.store.columns);
-
                         if (displayName !== null) {
                             var column = this.store.columns.find(function (el) {
                                 return utils.compileColumnName(el) === displayName;
                             });
-                            // console.log(column);
                             this.store.orderBy.column = {
                                 name: utils.compileColumnName(column),
                                 value: utils.compileColumnAlias(column),
@@ -406,7 +402,6 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
                 }, {
                     key: 'onChangeOrderBy',
                     value: function onChangeOrderBy($value) {
-                        console.log($value);
                         if (typeof $value === "string") {
                             this.store.orderBy.column = {
                                 name: $value,

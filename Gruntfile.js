@@ -4,7 +4,7 @@ module.exports = function(grunt) {
   const path = require('path');
   const semver = require('semver');
   const pluginData = require(path.join(__dirname, 'plugin.json'));
-  const destPath = IS_DEV ? 'dist_dev' : 'dist';
+  const destPath = 'dist';
   const currentVersion = pluginData.info.version;
 
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -184,8 +184,8 @@ module.exports = function(grunt) {
   var buildTasks = ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'copy:externals', 'babel:dist'];
 
   if (!IS_DEV) {
-    // buildTasks.unshift('bumpVersion');
-    // buildTasks.push('test');
+    buildTasks.unshift('bumpVersion');
+    buildTasks.push('test');
   }
 
   grunt.registerTask('build', buildTasks);

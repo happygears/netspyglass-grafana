@@ -134,7 +134,13 @@ System.register(['lodash'], function (_export, _context) {
                     this.$injector = $injector;
                     this.$scope = $scope;
                     this.menuItems = _.clone(menuItems);
-                    this.aliasPattern = /^[-a-zA-Z0-9_~!@#\$%\^&*\(\)_ \'\"]*$/;
+
+                    // NET-5988
+                    // UI used to support all these characters
+                    // /^[-a-zA-Z0-9_~!@#\$%\^&*\(\)_ \'\"]*$/;
+                    // after switching to ellastic we should remove quotes so also some special symbols are prohibited
+                    // all symbols that don't match with new pattern will be replaced with _ [Look at SQLBuilder.escape]
+                    this.aliasPattern = /^[a-zA-Z0-9_]*$/;
                 }
 
                 _createClass(ColumnsMenuController, [{

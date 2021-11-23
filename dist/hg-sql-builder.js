@@ -305,7 +305,10 @@ System.register([], function (_export, _context) {
       };
 
       SQLBuilder.escape = function (str) {
-        return "'" + str + "'";
+        console.log(str);
+        // NET-5988
+        // ... all symbols that don't match with the allowed pattern will be replaced with _
+        return str.replace(/[^a-zA-Z0-9_]/g, "_");
       };
 
       SQLBuilder.OPERATORS = {

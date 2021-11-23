@@ -235,7 +235,6 @@ SQLBuilder.buildWhere = function (where) {
 };
 
 SQLBuilder.escape = function (str) {
-  console.log(str);
   // NET-5988
   // ... all symbols that don't match with the allowed pattern will be replaced with _
   return str.replace(/[^a-zA-Z0-9_]/g, "_");

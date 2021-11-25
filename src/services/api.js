@@ -68,6 +68,14 @@ class SQLQuery {
     }
 
     /**
+     * @param table {string}
+     * @returns {*}
+     */
+    columns(table){
+        return 'SELECT * FROM ' + table + ' LIMIT 0';
+    }
+
+    /**
      * @param {string} type
      * @param {string} from
      * @param {array} tags
@@ -558,6 +566,7 @@ class NSGQLApi {
 
 NSGQLApi.FORMAT_JSON = 'json';
 NSGQLApi.FORMAT_LIST = 'list';
+NSGQLApi.FORMAT_TABLE = 'table';
 
 export {
     SQLQuery,

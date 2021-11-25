@@ -293,14 +293,28 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         });
                     }
                 }, {
+                    key: 'getTableColumns',
+                    value: function getTableColumns(variable) {
+                        var query = this.sqlQuery.columns(variable);
+                        return this.api.queryData(query, NSGQLApi.FORMAT_TABLE).then(function (data) {
+                            return {
+                                text: "columns",
+                                submenu: data[0].columns.map(function (column) {
+                                    return { text: column.text, value: column.text };
+                                })
+                            };
+                        }).catch(function () {
+                            return [];
+                        });
+                    }
+                }, {
                     key: 'getColumns',
                     value: function getColumns(variable) {
-                        var _this3 = this;
-
-                        return this.$q.all([this.getCategories(), this.getFacets(variable)]).then(function (data) {
-                            var _data = _slicedToArray(data, 2),
+                        return this.$q.all([this.getCategories(), this.getFacets(variable), this.getTableColumns(variable)]).then(function (data) {
+                            var _data = _slicedToArray(data, 3),
                                 categories = _data[0],
-                                tags = _data[1];
+                                tags = _data[1],
+                                cols = _data[2];
 
                             var columns = [];
 
@@ -312,7 +326,8 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                             });
 
                             columns.push({ text: '---------', separator: true });
-                            columns.push(_this3.getPredefinedColumns());
+                            // columns.push(this.getPredefinedColumns());
+                            columns.push(cols);
 
                             columns.push({ text: '---------', separator: true });
 
@@ -379,10 +394,10 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getTagValues',
                     value: function getTagValues(options) {
-                        var _this4 = this;
+                        var _this3 = this;
 
                         var queries = this.sqlQuery.getTagValuesForAdHoc(options.key).map(function (query) {
-                            return _this4.api.generateTarget(query, NSGQLApi.FORMAT_LIST);
+                            return _this3.api.generateTarget(query, NSGQLApi.FORMAT_LIST);
                         });
 
                         return this.api.queryData(queries).then(function (list) {
@@ -402,7 +417,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                 }, {
                     key: 'getCombinedList',
                     value: function getCombinedList(variable) {
-                        var _this5 = this;
+                        var _this4 = this;
 
                         return this.getFacets(variable).then(function (tags) {
                             var list = [];
@@ -416,7 +431,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             list.push({ text: '---------', separator: true });
 
-                            list.push(_this5.getPredefinedColumns());
+                            list.push(_this4.getPredefinedColumns());
 
                             return list;
                         });
@@ -430,3 +445,4 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
         }
     };
 });
+//# sourceMappingURL=datasource.js.map

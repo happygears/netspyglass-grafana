@@ -854,3 +854,4 @@ System.register(['app/plugins/sdk', './dictionary', './services/utils'], functio
         }
     };
 });
+//# sourceMappingURL=query_ctrl.js.map

@@ -103,3 +103,4 @@ System.register(['angular', 'lodash', './external/draganddrop', './datasource', 
         }
     };
 });
+//# sourceMappingURL=module.js.map

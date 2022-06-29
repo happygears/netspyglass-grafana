@@ -261,9 +261,9 @@ export class NetSpyGlassDatasource {
         return this.$q.all([
             this.getCategories(),
             this.getFacets(variable),
-            this.getTableColumns(variable)
+            // this.getTableColumns(variable)
         ]).then((data) => {
-            const [categories, tags, cols] = data;
+            const [categories, tags] = data;  // c0ls
             let columns = [];
 
             columns.push({
@@ -272,8 +272,8 @@ export class NetSpyGlassDatasource {
             });
 
             columns.push({text: '---------', separator: true});
-            // columns.push(this.getPredefinedColumns());
-            columns.push(cols)
+            columns.push(this.getPredefinedColumns());
+            // columns.push(cols)
 
             columns.push({text: '---------', separator: true});
 

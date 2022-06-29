@@ -14,454 +14,378 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
-import * as dateMath from './datemath';
+import _ from 'lodash';
+import {NSGQLApi, SQLQuery} from './services/api';
+import utils from './services/utils';
 
+const QueryTableNames = {
+    DEVICES: 'devices'
+};
+
+/**
+ * @typedef {{accessToken: string, networkId: number}} PluginOptions
+ * @typedef {{url: string, jsonData: PluginOptions}} PluginSettings
+ * @typedef {{}} QueryTarget
+ * @typedef {{rangeRaw: {from: string, to: string} targets: QueryTarget[]}} QueryOptions
+ */
+ 
 export class NetSpyGlassDatasource {
-
-    static mapToTextValue(result) {
-        return _.map(result.data, (d, i) => {
-            return {text: d, value: i};
-        });
-    }
-
-    static mapToTextText(result) {
-        return _.map(result.data, (d, i) => {
-            return {text: d, value: d};
-        });
-    }
-
     /**
-     * we get tag matches from the dialog in the form
-     *
-     * [{"tagFacet":"Explicit","tagWord":"core","tagOperation":"=="}, {"tagFacet":"Vendor","tagWord":"Cisco","tagOperation":"<>"}]
-     *
-     * transform this to
-     *
-     * "Explicit.core, !Vendor.Cisco"
-     *
+     * @param {PluginSettings} instanceSettings
+     * @param $q
+     * @param backendSrv
+     * @param templateSrv
      */
-    static transformTagMatch(tagMatches) {
-        var tags = [];
-        var idx;
-        for (idx = 0; idx < tagMatches.length; idx++) {
-            var tm = tagMatches[idx];
-            var tt = ((tm.tagOperation === '<>') ? '!' : '') + tm.tagFacet + ((tm.tagWord !== '') ? ('.' + tm.tagWord) : '');
-            tags.push(tt);
-        }
-        return tags.join(',');
-    }
-
     constructor(instanceSettings, $q, backendSrv, templateSrv) {
-        this.type = instanceSettings.type;
-        this.url = instanceSettings.url;
-        this.name = instanceSettings.name;
+        const {networkId, accessToken, useToken, addTokenToHeader} = instanceSettings.jsonData;
+        const {url} = instanceSettings;
+
+        /** @type INSGQLApiOptions */
+        const options = {
+            baseUrl: `${url}/v2`,
+            token: useToken  && accessToken ? accessToken: false,
+            useTokenInHeader: addTokenToHeader,
+            basicAuth: instanceSettings.basicAuth,
+            withCredentials: instanceSettings.withCredentials,
+            endpoints: {
+                data: `/query/net/${networkId}/data`,
+                test: `/ping/net/${networkId}/test`
+            }
+        };
+
+        this.api = new NSGQLApi(backendSrv, $q, options);
         this.$q = $q;
-        this.backendSrv = backendSrv;
         this.templateSrv = templateSrv;
-        this.networkId = instanceSettings.jsonData.networkId || 1;
-        this.accessToken = (instanceSettings.jsonData.useToken !== false && instanceSettings.jsonData.accessToken !== undefined && instanceSettings.jsonData.accessToken !== '') ? '?access_token=' + instanceSettings.jsonData.accessToken : '';
-        this.endpointsBase = '/v2/query/net/' + this.networkId;
-        this.endpoints = {};
-        this.endpoints.category = this.endpointsBase + '/categories/' + this.accessToken;
-        this.endpoints.variable = this.endpointsBase + '/variables/';
-        this.endpoints.query = this.endpointsBase + '/data/' + this.accessToken;
-        this.endpoints.test = '/v2/ping/net/' + this.networkId + "/test/" + this.accessToken;
+        this.sqlQuery = new SQLQuery(templateSrv);
+        this._formatValue = this._formatValue.bind(this);
 
-        this.blankDropDownElement = '---';
-
-        this.blankValues = {};
-        this.blankValues.alias = '';
-        this.blankValues.variable = 'select variable';
-        this.blankValues.device = 'select device';
-        this.blankValues.component = 'select component';
-        this.blankValues.description = '';
-        this.blankValues.sortByEl = 'select sorting';
-        this.blankValues.selector = ' -- ';
-        this.blankValues.aggregator = ' -- ';
-        this.blankValues.limit = 'select limit';
-        this.blankValues.group = 'select group';
-        this.blankValues.tagFacet = this.blankDropDownElement;
-        this.blankValues.tagWord = this.blankDropDownElement;
-        this.blankValues.interval = 'select interval';
-        this.blankValues.tagData = [];
-        this.blankValues.tags = '';
-        this.blankValues.format = '';
-        this.blankValues.columns = '';
-        this.blankValues.unique = '';
-        this.blankValues.refId = '';
-
-        this.clearString = '-- clear selection --';
+        this.name = instanceSettings.name;
     }
 
     /**
-     * makes actual API call to NetSpyGlass server
-     *
-     * @param endpoint   API call endpoint
-     * @param method     GET or POST
-     * @param query      query object
-     * @returns {*}
-     * @private
-     */
-    _apiCall(endpoint, method, query) {
-        return this.backendSrv.datasourceRequest({
-            url: this.url + endpoint,
-            data: query,
-            method: method,
-            headers: {'Content-Type': 'application/json'}
-        });
-    }
-
-    /**
-     * this function is called when plugin builds a graph
-     *
-     * @param options   an object built from the data entered in the query dialog
-     * @returns {*}
+     * @description This function is called when plugin builds a graph
+     * @param options {QueryOptions} an object built from the data entered in the query dialog
+     * @returns {Promise}
      */
     query(options) {
-        var self = this;
-        // build query object (this replaces dashboard template vars)
-        var query = this.buildQueryFromQueryDialogData(options);
-        var aliases = {};
-        for (var idx = 0; idx < options.targets.length; idx++) {
-            var targetDlg = options.targets[idx];
-            aliases[targetDlg.refId] = targetDlg.alias;
-        }
-        for (var i = 0; i < query.targets.length; i++) {
-            var target = query.targets[i];
-            // UI passes only sort order ("ascending","descending" or "none"). Prepend it with default column name
-            target.sortByEl = (target.sortByEl !== 'none') ? 'metric:' + target.sortByEl : target.sortByEl;
-        }
-        var queryAsStr = JSON.stringify(query);
-        queryAsStr = this.templateSrv.replace(queryAsStr, options.scopedVars);
-        var response = this._apiCall(this.endpoints.query, 'POST', queryAsStr);
-        // then: function(a,b,c)
-        return response.then( response => {
-            var data = response.data;
-            if (!data) return response;
+        const {targets, rangeRaw} = options;
+        const timeRange = {
+            from: utils.getTime(rangeRaw.from, false),
+            to: utils.getTime(rangeRaw.to, true),
+        };
+        const aliases = {};
+        const adhocFilters = this.sqlQuery.correctAdhoc(this.templateSrv.getAdhocFilters(this.name));
 
-            // data is an Array of these:
-            //
-            // component:  "eth0"
-            // datapoints: Array[121]
-            // device:     "synas1"
-            // target:     "ifInRate:synas1:eth0"
-            // variable:   "ifInRate"
+        //this variable is used for building "raw" query in the getSQLString method
+        this.queryOptions = {
+            timeRange, 
+            interval: options.interval, 
+            adHoc: adhocFilters,
+            scopedVars: options.scopedVars
+        };
 
-            for (idx = 0; idx < data.length; idx++) {
-                var series = data[idx];
-                if (!series || !series.datapoints || !series.target) continue;
-                var alias = aliases[series.id];
-                if (alias) series.target = self.getSeriesName(series, alias);
+        const processTarget = (target) => {
+            let maxDataPoints = options.maxDataPoints && target.format === 'time_series' ? options.maxDataPoints : undefined;
+
+            aliases[target.refId] = target.alias;
+
+            if (target.orderBy && target.orderBy.column.name === 'column') {
+                target.orderBy.column.value = target.orderBy.colValue;
             }
 
-            return response;
-        });
+            let sql = target.rawQuery
+                ? this.sqlQuery.generateSQLQueryFromString(target, this.queryOptions)
+                : this.sqlQuery.generateSQLQuery(target, this.queryOptions);
+
+            sql = this.templateSrv.replace(sql, options.scopedVars, this._formatValue);
+
+            return this.api.generateTarget(sql, target.format, target.refId, maxDataPoints);
+        };
+
+        const sqlTargets = targets
+            .map((target) => {
+                const nsgTarget = _.cloneDeep(target._nsgTarget) || {};
+                nsgTarget.refId = target.refId;
+                nsgTarget.hide = target.hide;
+                return nsgTarget;
+            })
+            .filter((target) => target.hide !== true)
+            .map(processTarget)
+            .filter((target) => target.nsgql !== false);
+
+        if (sqlTargets.length === 0) {
+            return this.$q.resolve({data: []});
+        }
+
+        return this.api.queryData(sqlTargets)
+            .then(data => this._processingGraphAliases(data, aliases))
+            // needs to remove tags from data because start from v7 tags are rendered as part of the legend
+            .then(data => {
+                return data.map(el => {
+                    delete el.tags;
+
+                    return el;
+                });
+            })
+            .then(list => ({data: list}));
     }
 
     /**
      * this is where ALIAS BY substitution happens
      */
-    getSeriesName(series, alias) {
-        // NSGDB-82: we want to be able to use template vars as aliases
-        var aliasWithVarsReplaced = this.templateSrv.replace(alias);
+    getSeriesName(item, alias) {
+        const regex = /\$(\w+)|\[\[([\s\S]+?)]]/g;
 
-        var regex = /\$(\w+)|\[\[([\s\S]+?)]]/g;
-        return aliasWithVarsReplaced.replace(regex, function(match, g1, g2) {
-            var group = g1 || g2;
+        alias = this.templateSrv.replace(alias);
 
-            if (group === 'm' || group === 'measurement' || group === 'variable') { return series.variable; }
-            if (group === 'device') return series.device;
-            if (group === 'component') return series.component;
-            if (group === 'description') return series.description;
+        return alias.replace(regex, function (match, g1, g2) {
+            const group = g1 || g2;
 
-            // if variable has no tags, we can't substitute tag words
-            if (!series.tags) { return match; }
+            switch (group) {
+                case 'm':
+                case 'measurement':
+                case 'variable':
+                    return item.variable;
+                case 'device':
+                    return item.device;
+                case 'component':
+                    return item.component;
+                case 'description':
+                    return item.description;
+            }
 
-            // see if it is tag facet
-            var tag = series.tags[group];
-            if (typeof tag === 'undefined') return match;
-            return tag;
+            if (item[group]) {
+                return item[group];
+            }
+
+            if (!item.tags || !item.tags[group]) {
+                return match;
+            } else {
+                return item.tags[group];
+            }
         });
+
     };
 
-    // Required
-    // Used for testing datasource in datasource configuration page
-    testDatasource() {
-        var endpoint = this.endpoints.test;
-        return this.backendSrv.datasourceRequest({
-            url: this.url + endpoint,
-            method: 'GET'
-        }).then(response => {
-            if (response.status === 200) {
-                return {status: "success", message: "Data source is working", title: "Success"};
+    _formatValue(value) {
+        if (_.isArray(value)) {
+            if (value.length === 1) {
+                value = value[0];
+            } else {
+                return `${value.join("', '")}`;
             }
-        });
+        }
+
+        return this.templateSrv.formatValue(value);
     }
 
-    annotationQuery(options) {
-        var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
-        var annotationQuery = {
-            range: options.range,
-            annotation: {
-                name: options.annotation.name,
-                datasource: options.annotation.datasource,
-                enable: options.annotation.enable,
-                iconColor: options.annotation.iconColor,
-                query: query
-            },
-            rangeRaw: options.rangeRaw
-        };
-        return this.backendSrv.datasourceRequest({
-            url: this.url + '/annotations' + this.accessToken,
-            method: 'POST',
-            data: annotationQuery
-        }).then(result => {
-            return result.data;
+
+    /**
+     * @param data
+     * @param aliases
+     * @returns {*}
+     */
+    _processingGraphAliases(data, aliases) {
+        data.forEach(item => {
+            const alias = aliases[item.id.toUpperCase()];
+            if (!item || !alias) return;
+
+            item.target = this.getSeriesName(item, alias);
         });
+
+        return data;
     }
 
     /**
-     * generic query. Grafana calls this function when it needs to get list of values for a dashboard
-     * template variable.
-     *
-     * User enters query in JSON Format, e.g.
-     *
-     * {"variable":"cpuUtil","columns":"device"}
-     *
-     * User is responsible for setting value of the "columns" to what they want to receive back. This can be
-     * "device", "component" or tag facet
-     *
-     * This function forces request type=table even if user specified something else.
-     *
-     * Server returns data in the following format:
-     *
-     * [ {
-     *   "columns" : [ { "text" : "device" } ],
-     *   "rows" : [ [ "synas1" ], [ "ex2200" ] ],
-     *   "type" : "table"
-     * } ]
-     *
-     * "rows" is a list of lists because normally this query can return multiple columns.
-     * For the purpose of dashboard template we use only the first column if request specified multiple.
-     *
-     * @param query     query object as text string
-     * @returns {Promise.<TResult>}
+     * @returns {Promise}
+     */
+    testDatasource() {
+        return this.api.ping();
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    getCategories() {
+        const query = this.sqlQuery.categories();
+        return this.api
+            .queryData(query, NSGQLApi.FORMAT_JSON)
+            .then((data) => {
+                let categories = _.groupBy(data[0].rows, 'category'),
+                    result = [];
+
+                for (let category in categories) {
+                    result.push({
+                        text: category,
+                        submenu: categories[category].map((category) => ({text: category.name, value: category.name}))
+                    });
+                }
+
+                return result;
+            })
+            .catch(() => ([]));
+    }
+
+    /**
+     * @param {string} variable
+     * @returns {Promise}
+     */
+    getFacets(variable) {
+        const query = this.sqlQuery.facets(variable);
+        return this.api
+            .queryData(query, NSGQLApi.FORMAT_LIST)
+            .catch(() => ([]));
+    }
+
+    /**
+     * @param {string} variable
+     * @returns {Promise}
+     */
+    getColumns(variable) {
+        return this.$q.all([
+            this.getCategories(),
+            this.getFacets(variable)
+        ]).then((data) => {
+            const [categories, tags] = data;
+            let columns = [];
+
+            columns.push({
+                text: 'tags',
+                submenu: tags.map((tag) => ({text: tag, value: tag}))
+            });
+
+            columns.push({text: '---------', separator: true});
+            columns.push(this.getPredefinedColumns());
+
+            columns.push({text: '---------', separator: true});
+
+            // columns = _.concat(columns, categories);
+            columns.push({
+                text: 'variables',
+                submenu: categories
+            });
+
+            return columns;
+        });
+    }
+
+    getPredefinedColumns() {
+        return {
+            text: 'predefined columns',
+            submenu: [
+                {text: 'address', value: 'address'},
+                {text: 'boxDescr', value: 'boxDescr'},
+                {text: 'combinedRoles', value: 'combinedRoles'},
+                {text: 'combinedNsgRoles', value: 'combinedNsgRoles'},
+                {text: 'component', value: 'component'},
+                {text: 'device', value: 'device'},
+                {text: 'description', value: 'description'},
+                {text: 'discoveryTime', value: 'discoveryTime'},
+                {text: 'freshness', value: 'freshness'},
+                {text: 'metric', value: 'metric'},
+                {text: 'name', value: 'name'},
+                {text: 'time', value: 'time'},
+                {text: 'stale', value: 'stale'},
+            ]
+        };
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    getSuggestions(data) {
+        let query;
+
+        query = this.sqlQuery.suggestion(
+            data.type, 
+            data.variable, 
+            data.tags,
+            data.scopedVars
+        );
+        
+        query = this.templateSrv.replace(query, data.scopedVars);
+
+        return this.api
+            .queryData(query, NSGQLApi.FORMAT_LIST)
+            .catch(() => []);
+    }
+
+    /**
+     * @returns {String}
+     */
+    getSQLString(target) {
+        return this.sqlQuery.generateSQLQuery(target, this.queryOptions, true);
+    }
+
+    /**
+     * @param query
+     * @returns {Promise}
      */
     metricFindQuery(query) {
-        var interpolated;
-        try {
-            interpolated = this.templateSrv.replace(query, query.scopedVars);
-        } catch (err) {
-            return this.$q.reject(err);
-        }
-        var data = this.buildQueryFromText(interpolated);
-        var target = data.targets[0];
-        target.format = 'list';
-        return this._apiCall(this.endpoints.query, 'POST', JSON.stringify(data)).then(NetSpyGlassDatasource.mapToTextText);
-    }
+        query = this.sqlQuery.replaceVariables(query);
+        query = this.templateSrv.replace(query, null, this._formatValue);
 
-    findCategoriesQuery() {
-        return this._apiCall(this.endpoints.category, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
-    }
-
-    findVariablesQuery(options) {
-        var endpoint = this.endpoints.variable + options.category + this.accessToken;
-        return this._apiCall(endpoint, 'POST', '').then(NetSpyGlassDatasource.mapToTextValue);
-    }
-
-    findDevices(options) {
-        var data = this.buildQuery(options);
-        var target = data.targets[0];
-        target.device = '';  // erase to ignore current selection in the dialog
-        target.component = '';
-        target.columns = 'device';
-        target.unique = 'device';
-        target.sortByEl = 'device:ascending';
-        target.format = 'list';
-        target.limit = -1;
-        var query = JSON.stringify(data);
-        query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
-    }
-
-    findComponents(options) {
-        var data = this.buildQuery(options);
-        var target = data.targets[0];
-        target.component = '';  // erase to ignore current selection in the dialog
-        target.columns = 'component';
-        target.unique = 'component';
-        target.sortByEl = 'component:ascending';
-        target.format = 'list';
-        target.limit = -1;
-        var query = JSON.stringify(data);
-        query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
-    }
-
-    findTagFacets(options, index) {
-        var clonedOptions = jQuery.extend(true, {}, options);
-        clonedOptions.tagData[index].tagFacet = '';
-        clonedOptions.tagData[index].tagWord = '';
-        var data = this.buildQuery(clonedOptions);
-        var target = data.targets[0];
-        target.columns = 'tagFacet';
-        target.unique = 'tagFacet';
-        target.sortByEl = 'tagFacet:ascending';
-        target.format = 'list';
-        target.limit = -1;
-        var query = JSON.stringify(data);
-        query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
-    }
-
-    findTagWordsQuery(options, index) {
-        var clonedOptions = jQuery.extend(true, {}, options);
-        var facet = clonedOptions.tagData[index].tagFacet;
-        clonedOptions.tagData[index].tagWord = '';
-        var data = this.buildQuery(clonedOptions);
-        var target = data.targets[0];
-        target.columns = facet;
-        target.unique = facet;
-        target.sortByEl = facet + ':ascending';
-        target.format = 'list';
-        target.limit = -1;
-        var query = JSON.stringify(data);
-        query = this.templateSrv.replace(query, options.scopedVars);
-        return this._apiCall(this.endpoints.query, 'POST', query).then(NetSpyGlassDatasource.mapToTextText);
+        return this.api
+            .queryData(query, NSGQLApi.FORMAT_LIST).then(data => {
+                return data.map(el => ({text: el}));
+            })
+            .catch(() => ([]));
     }
 
     /**
-     * when building graphing query, this function is called with JS object that has at least
-     * attribute 'targets'
+     * Use to get tagFacets names for AdHoc Filter
+     * @returns {Promise}
+     */
+    getTagKeys() {
+        return this.api.queryData(this.sqlQuery.getTagKeysForAdHoc(), NSGQLApi.FORMAT_LIST)
+            .then((list) => list.map((item) => ({text: item})))
+            .catch(() => ([]));
+    };
+
+    /**
+     * Use to get tags names for AdHoc Filter
+     * @param {object} options
+     * @param {string} options.key - tagFacet name
+     * @returns {Promise}
+     */
+    getTagValues(options) {
+        const queries = this.sqlQuery.getTagValuesForAdHoc(options.key)
+            .map(query => (this.api.generateTarget(query, NSGQLApi.FORMAT_LIST)));
+
+        return this.api.queryData(queries)
+            .then((list) => {
+                return list
+                    .filter((item, pos, self) => self.indexOf(item) === pos)
+                    .map((item) => {
+                        if (item.error) {
+                            console.log(item.error);
+                            return;
+                        }
+                        return {text: item}
+                    })
+                    .filter(Boolean);
+            })
+            .catch(() => ([]));
+    };
+
+    /**
      *
-     * This must include all fields we support in queries, both constructed from the query dialog
-     * (where each field corresponds to the input element in the dialog) and from the input field in
-     * the dashboard templates where user enters query as json.
-     *
-     * field "description" is allowed in dashboard template query but does not have corresponding
-     * input field in the query dialog at this time.
      */
-    templateSrvParameters(queryObject) {
-        queryObject.targets = _.map(queryObject.targets, target => {
-            var updatedTarget = jQuery.extend(true, {}, target);
-            updatedTarget.category = this.replaceTemplateVars(updatedTarget.category);
-            updatedTarget.device = this.replaceTemplateVars(updatedTarget.device);
-            updatedTarget.component = this.replaceTemplateVars(updatedTarget.component);
-            updatedTarget.description = this.replaceTemplateVars(updatedTarget.description);
-            updatedTarget.limit = (updatedTarget.limit === '') ? -1 : updatedTarget.limit;
-            // target.alias = this.replaceTemplateVars(target.alias);
-            return updatedTarget;
-        });
-        return queryObject;
-    }
+    getCombinedList(variable) {
+        return this.getFacets(variable)
+            .then((tags) => {
+                const list = [];
 
-    replaceTemplateVars(field) {
-        if (typeof field === 'undefined') return field;
-        var replaced = this.templateSrv.replace(field);
-        // if templateSrc could not replace macro with a value, replace it with an empty string
-        if (field.startsWith('$') && replaced.startsWith('$')) replaced = '';
-        return replaced;
-    }
+                list.push({
+                    text: 'tags',
+                    submenu: tags.map((tag) => ({text: tag, value: tag}))
+                });
 
-    removeBlanks(item) {
-        var temp = {};
-        for (var key in item) {
-            if (!(key in this.blankValues)) {
-                continue;
-            }
-            if (typeof item[key] == 'undefined' || item[key] == this.clearString || item[key] == this.blankValues[key]) {
-                continue;
-            }
-            if (key == 'tagFacet' || key == 'tagWord') {
-                continue;
-            }
-            if (key == 'tagData') {
-                temp[key] = item[key].filter(t => !this.isBlankTagMatch(t));
-            } else {
-                temp[key] = item[key];
-            }
-        }
-        return temp;
-    }
+                list.push({text: '---------', separator: true});
 
-    isBlankTagMatch(tm) {
-        if (tm.tagFacet === "" || tm.tagFacet === this.blankDropDownElement) return true;
-        return !!(tm.tagWord === "" || tm.tagWord === this.blankDropDownElement);
-    }
+                list.push(this.getPredefinedColumns());
 
-    /**
-     * build query object from an object that represents single query target. This
-     * is called to get items for drop-down lists in the graph or table panel query dialog.
-     */
-    buildQuery(options) {
-        var queryObject = {
-            targets: [ options ]
-        };
-        return this.buildQueryFromQueryDialogData(queryObject);
-    }
-
-    /**
-     * this function is called when we need to build query object from
-     * query entered as text string (e.g. in dashboard template dialog)
-     */
-    buildQueryFromText(options) {
-        var queryObject = {
-            targets: [ JSON.parse(options) ]
-        };
-        return this.buildQueryFromQueryDialogData(queryObject);
-    }
-
-    /**
-     * build query object from query dialog that can have multiple targets. This
-     * is used when plugin builds query for the graph or table panel
-     */
-    buildQueryFromQueryDialogData(query) {
-        this.templateSrvParameters(query);
-        // if we have any "$word" left in the query, those are leftover template
-        // variables that did not get expanded because they have no value
-        query.targets = query.targets.filter(t => !t.hide);
-        var queryObject = {
-            targets: []
-        };
-        var index;
-        for (index = query.targets.length - 1; index >= 0; --index) {
-            var target = this.removeBlanks(query.targets[index]);
-            if (typeof target.tagData !== 'undefined') {
-                target.tags = NetSpyGlassDatasource.transformTagMatch(target.tagData);
-            }
-            delete target.tagData;
-            delete target.alias;
-            target.id = target.refId;
-            delete target.refId;
-            queryObject.targets.push(target);
-        }
-        if (typeof query.rangeRaw != 'undefined') {
-            // queryObject.from = this.getTimeFilter(query.rangeRaw.from);
-            // queryObject.until = this.getTimeFilter(query.rangeRaw.to);
-            queryObject.from = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.from, false);
-            queryObject.until = NetSpyGlassDatasource.getTimeForApiCall(query.rangeRaw.to, true);
-            queryObject.groupByTime = query.interval;
-        }
-        // queryObject.scopedVars = '$variable';
-        return queryObject;
-    }
-
-    static getTimeForApiCall(date, roundUp) {
-        if (_.isString(date)) {
-            if (date === 'now') {
-                return 'now';
-            }
-
-            var parts = /^now-(\d+)([dhmsM])$/.exec(date);
-            if (parts) {
-                return date;
-                // var amount = parseInt(parts[1]);
-                // var unit = parts[2];
-                // return 'now-' + amount + unit;
-            }
-            date = dateMath.parse(date, roundUp);
-        }
-        return (date.valueOf() / 1000).toFixed(0) + 's';
+                return list;
+            });
     }
 }

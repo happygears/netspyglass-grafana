@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
+import angular from 'angular';
+import _ from 'lodash';
+
+import { uiDraggable, uiOnDrop } from "./external/draganddrop";
+
 import {NetSpyGlassDatasource} from './datasource';
-import {NetSpyGlassDatasourceQueryCtrl} from './query_ctrl';
+import {NetSpyGlassQueryCtrl} from './query_ctrl';
+import ColumnsMenuDirective from './directives/columns-menu';
+import DropdownDirective from './directives/dropdown';
+import {loadPluginCss} from 'app/plugins/sdk';
+
+ColumnsMenuDirective.templateUrl = 'partials_foo/config.html'
 
 class GenericConfigCtrl {}
 GenericConfigCtrl.templateUrl = 'partials/config.html';
@@ -24,11 +34,40 @@ class GenericQueryOptionsCtrl {}
 GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
 
 class GenericAnnotationsQueryCtrl {}
-GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
+GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
+
+angular
+    .module("grafana.directives")
+    .directive("hgColumnsMenu", ColumnsMenuDirective)
+    .directive("hgDropdown", DropdownDirective)
+    .directive("hgEscapeRegexp", function () {
+        return {
+            restrict: "A",
+            priority: 1001,
+            link: function ($scope, $element) {
+                const typeahead = $element.find("input").data("typeahead");
+
+                const originalMatcher = typeahead.matcher;
+
+                typeahead.matcher = function (item) {
+                    const self = { query: _.escapeRegExp(this.query) };
+                    return originalMatcher.call(self, item);
+                };
+            },
+        };
+    })
+    //draganddrop
+    .directive("uiDraggable", ["$parse", "$rootScope", uiDraggable])
+    .directive("uiOnDrop", ["$parse", "$rootScope", uiOnDrop]);
+
+loadPluginCss({
+    dark: `plugins/${NSG_PLUGIN_ID}/styles/theme.dark.css`,
+    light: `plugins/${NSG_PLUGIN_ID}/styles/theme.light.css`
+});
 
 export {
     NetSpyGlassDatasource as Datasource,
-    NetSpyGlassDatasourceQueryCtrl as QueryCtrl,
+    NetSpyGlassQueryCtrl as QueryCtrl,
     GenericConfigCtrl as ConfigCtrl,
     GenericQueryOptionsCtrl as QueryOptionsCtrl,
     GenericAnnotationsQueryCtrl as AnnotationsQueryCtrl

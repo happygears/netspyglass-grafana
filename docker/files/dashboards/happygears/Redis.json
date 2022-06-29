@@ -1,0 +1,2399 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "limit": 100,
+        "matchAny": true,
+        "name": "Annotations & Alerts",
+        "showIn": 0,
+        "tags": [
+          "restart",
+          "other"
+        ],
+        "type": "tags"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "iteration": 1555861135389,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 45,
+      "panels": [],
+      "title": "General",
+      "type": "row"
+    },
+    {
+      "columns": [],
+      "datasource": "NetSpyGlass-v2",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 32,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 1,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "uptime",
+          "thresholds": [],
+          "type": "number",
+          "unit": "s"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "redisConnectedSlaves",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "device",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [],
+                "name": "RedisRole",
+                "visible": true
+              },
+              {
+                "alias": "uptime",
+                "appliedFunctions": [
+                  {
+                    "name": "tslast"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [],
+                "name": "redisConnectedSlaves",
+                "visible": true
+              }
+            ],
+            "format": "table",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": true,
+            "limit": 100,
+            "nsgqlString": "SELECT device,RedisRole,tscurrent(metric) as `uptime`,redisConnectedSlaves FROM redisServerUptime  ORDER BY `RedisRole` ASC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "RedisRole",
+              "colValue": "select value",
+              "column": {
+                "name": "RedisRole",
+                "value": "RedisRole"
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 1,
+            "refId": "A",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "redisServerUptime"
+          },
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "title": "Server Uptime",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 43,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "redisDataSaveRate"
+          },
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Data Save Rate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "vars/sec",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 37,
+      "panels": [],
+      "title": "Input/Output Data Rate",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 35,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/^((?!redis).)*$/",
+          "color": "rgb(255, 255, 255)",
+          "lines": true,
+          "linewidth": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "nsgqlString": "SELECT $aggregation(metric),time FROM redisInputByteRate WHERE $_timeFilter ORDER BY `device` ASC",
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "name": "column",
+                "value": "device"
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "redisInputByteRate"
+          },
+          "hide": false,
+          "refId": "A"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "$aggregation",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "nsgqlString": "SELECT $aggregation(metric),time FROM redisInputByteRate WHERE $_timeFilter ORDER BY `device` ASC",
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "name": "column",
+                "value": "device"
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 1,
+            "refId": "B",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "redisInputByteRate"
+          },
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Input Data Rate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 38,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "sideWidth": 300,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 1,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/^((?!redis).)*$/",
+          "color": "rgb(255, 247, 247)",
+          "lines": true,
+          "linewidth": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "name": "column",
+                "value": "device"
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "redisOutputByteRate"
+          },
+          "hide": false,
+          "refId": "A"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "$aggregation",
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "format": "time_series",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "nsgqlString": "SELECT $aggregation(metric),time FROM redisOutputByteRate WHERE $_timeFilter ORDER BY `device` ASC",
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "name": "column",
+                "value": "device"
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 1,
+            "refId": "B",
+            "tags": [],
+            "type": "nsgql",
+            "variable": "redisOutputByteRate"
+          },
+          "hide": false,
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Output Data Rate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 18,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 16
+          },
+          "id": 2,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisConnectedClients"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "redis client connections",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 16
+          },
+          "id": 39,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisRejectedConnections"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Rejected connections",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Client Connections",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 27,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 17
+          },
+          "id": 25,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisAofCurrentSize"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "AOF Current Size",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 17
+          },
+          "id": 33,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisAofCurrentSize"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "AOF Current Size",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 23
+          },
+          "id": 30,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisChangesSinceLastSave"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RGB Changes Since Last Save",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 23
+          },
+          "id": 34,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisLastBgsaveTimeSec"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RGB Last Save Time",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Persistence",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 22,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 24
+          },
+          "id": 12,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisUsedCpuSysRate"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "redis sys_cpu",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "sec/sec",
+              "logBase": 1,
+              "max": "1",
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 24
+          },
+          "id": 10,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisUsedCpuUserRate"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "redis user_cpu",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "sec/sec",
+              "logBase": 1,
+              "max": "1",
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "CPU",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 20,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 19
+          },
+          "id": 8,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisDbSize"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "dbSize",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 19
+          },
+          "id": 4,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisUsedMemory"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "redis server memory",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Database And Memory",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 29,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "id": 6,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "ASC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisCommandsRate"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "commands",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "cmds/sec",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Commands",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 24,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 0,
+            "y": 21
+          },
+          "id": 14,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "disableAdHoc": false,
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isMultiColumnMode": true,
+                "isSeparatedColumns": false,
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisErrorsRate"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "redis errors",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "err/sec",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "NetSpyGlass-v2",
+          "fill": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 12,
+            "x": 12,
+            "y": 21
+          },
+          "id": 16,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 300,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 1,
+          "points": true,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "_nsgTarget": {
+                "alias": "$device",
+                "columns": [
+                  {
+                    "appliedFunctions": [],
+                    "name": "metric",
+                    "visible": true
+                  },
+                  {
+                    "name": "time",
+                    "visible": false
+                  }
+                ],
+                "format": "time_series",
+                "groupBy": {
+                  "type": "select type",
+                  "value": "select value"
+                },
+                "isTablePanel": false,
+                "limit": "",
+                "nsgqlString": "SELECT metric,time FROM kafkaProducersRecordSizeAvg WHERE (NsgRole = 'aggregator') AND $_timeFilter LIMIT 100, 0",
+                "orderBy": {
+                  "colName": "column",
+                  "colValue": "device",
+                  "column": {
+                    "name": "column",
+                    "value": "device"
+                  },
+                  "sort": "DESC"
+                },
+                "rawQuery": 0,
+                "refId": "A",
+                "tags": [],
+                "type": "nsgql",
+                "variable": "redisOOMErrorsRate"
+              },
+              "hide": false,
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "redis OOM errors seen by NSG server",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "err/sec",
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Errors",
+      "type": "row"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 16,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "tags": [],
+          "text": "avg",
+          "value": "avg"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "aggregation",
+        "options": [
+          {
+            "selected": true,
+            "text": "avg",
+            "value": "avg"
+          },
+          {
+            "selected": false,
+            "text": "sum",
+            "value": "sum"
+          },
+          {
+            "selected": false,
+            "text": "min",
+            "value": "min"
+          },
+          {
+            "selected": false,
+            "text": "max",
+            "value": "max"
+          },
+          {
+            "selected": false,
+            "text": "nop",
+            "value": "nop"
+          }
+        ],
+        "query": "avg, sum, min, max, nop",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "utc",
+  "title": "Redis",
+  "uid": "RUyPIYPmz",
+  "version": 16
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016.  Happy Gears, Inc
+ * Copyright (c) 2017.  Happy Gears, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,240 +14,853 @@
  * limitations under the License.
  */
 
-import {QueryCtrl} from 'app/plugins/sdk';
-import './css/query-editor.css!'
+import {
+    QueryCtrl
+} from 'app/plugins/sdk';
+import {
+    QueryPrompts,
+    GrafanaVariables
+} from './dictionary';
+import utils from './services/utils';
 
-export class NetSpyGlassDatasourceQueryCtrl extends QueryCtrl {
 
-    constructor($scope, $injector, uiSegmentSrv) {
-        super($scope, $injector);
+/**
+ * @typedef {{ type: string, cssClass: string }} ISegment
+ */
+const orderBySortTypes = ['ASC', 'DESC'];
 
-        this.prompts = {
-            'category': 'select category',
-            'variable': 'select variable',
-            'device': 'select device',
-            'component': 'select component'
+const targetDefaults = {
+    type: 'nsgql',
+    columns: [],
+    variable: QueryPrompts.variable,
+    orderBy: {
+        column: {
+            name: '',
+            value: '',
+            alias: ''
+        },
+        sort: orderBySortTypes[0],
+        colName: QueryPrompts.orderBy,
+        colValue: QueryPrompts.orderBy,
+    },
+    rawQuery: 0,
+    limit: 100,
+    tags: [],
+    groupBy: {
+        type: QueryPrompts.groupByType,
+        value: QueryPrompts.groupBy
+    },
+    isSeparatedColumns: false,
+    disableAdHoc: false,
+    format: 'time_series'
+};
+
+//http://angular-dragdrop.github.io/angular-dragdrop/
+
+export class NetSpyGlassQueryCtrl extends QueryCtrl {
+    /**
+     * @var {NetSpyGlassDatasource} datasource
+     * @property refresh
+     * @property panelCtrl
+     */
+
+    constructor($scope, $injector, $rootScope, uiSegmentSrv) {
+        super(...arguments);
+        this.$scope = $scope;
+        this.$rootScope = $rootScope;
+        this.$injector = $injector;
+        this.prompts = QueryPrompts;
+        this.uiSegmentSrv = uiSegmentSrv;
+
+        var optionsPluginParams = {
+            isMultiColumnMode: true,
+            categories: [],
+            segments: [],
+            removeSegment: uiSegmentSrv.newSegment({
+                fake: true,
+                value: this.prompts.removeTag,
+            }),
+            rawQueryString: "",
         };
 
-        this.scope = $scope;
-        this.injector = $injector;
-        this.uiSegmentSrv = uiSegmentSrv;
-        this.clearSelection = '-- clear selection --';
-        this.blankDropDownElement = '---';
-        this.target.category = this.target.category || this.prompts['category'];
-        this.target.variable = this.target.variable || this.prompts['variable'];
-        this.target.device = this.target.device || this.prompts['device'];
-        this.target.component = this.target.component || this.prompts['component'];
-        this.target.sortByEl = this.target.sortByEl || 'none';
-        this.target.selector = this.target.selector || ' -- ';
-        this.target.aggregator = this.target.aggregator || ' -- ';
-        this.target.limit = this.target.limit || '100';
-        this.target.group = this.target.group || 'select group';
-        this.target.tagFacet = this.target.tagFacet || this.blankDropDownElement;
-        this.target.tagOperation = this.target.tagOperation || '==';
-        this.target.tagWord = this.target.tagWord || this.blankDropDownElement;
-        this.target.tagData = this.target.tagData || [];
+        if (this.options) {
+            this.options = Object.assign(this.options, optionsPluginParams);
+        } else {
+            this.options = Object.assign({}, optionsPluginParams);
+        }
 
-        this.target.format = this.target.format || 'time_series';
-        this.target.formatDisplay = this.target.formatDisplay || 'Time Series';
+        // this.setOptionsBasedOnPanelType(this.panel.type);
 
-        this.target.columns = this.target.columns || 'time,variable,device,component,metric';
-        this.target.alias = this.target.alias || '';
+        this.pluginVersion = this.datasource.meta.info.version;
     }
 
-    isCategorySelected() {
-        return this.target.category !== this.prompts['category'] && this.target.category !== this.clearSelection;
+    execute() {
+        this.scheduler.sheduleTask(() => {
+            this.errors = {};
+            this.panelCtrl.refresh();
+        });
     }
 
-    isVariableSelected() {
-        return this.target.variable !== this.prompts['variable'] && this.target.variable !== this.clearSelection;
+    init() {
+        this.initTarget();
+        this.options.segments = this.restoreTags();
+        this.getCategories().then(() => this.loadColumns());
+
+        this.scheduler = utils.getScheduler();
+
+        this.panelCtrl.events.emitter.on("data-error", (errors) => {
+            this.errors = _.cloneDeep(errors);
+            this.scheduler.stop();
+        });
+
+        this.panelCtrl.events.emitter.on("render", () => {
+            this.scheduler.stop();
+        });
+
+        // this.$scope.$watch(
+        //     () => this.panelCtrl,
+        //     (newVal) => {
+        //         console.log("panelCtrl", newVal);
+        //     }
+        // );
+
+        // this.$scope.$watch("ctrl.panel.type", (newVal, oldVal) => {
+        //     console.log("ctrl.panel.type", newVal, this.panel);
+        //     // this.setOptionsBasedOnPanelType(newVal);
+        //     // this.setStoreBasedOnPanelType();
+        // });
+
+        // this.$scope.$watch(
+        //     "ctrl.panel.options.sortBy", // {displayName: string, desc: boolean}[]
+        //     (newVal, oldVal) => {
+        //         console.log(newVal);
+        //         if (newVal && newVal.filter((el) => el.displayName).length) {
+        //             this.setOrderByFromPanelSort(newVal);
+        //             this.execute();
+        //         } else {
+        //             this.onClearOrderBy();
+        //         }
+        //     },
+        //     true
+        // );
+    }
+
+    // setOptionsBasedOnPanelType(type) {
+    //     this.options.isGraph = type === "graph";
+    //     this.options.isTable = type === "table";
+    //     this.options.isSinglestat = type === "singlestat";
+    //     this.options.isHeatmap = type === "heatmap";
+
+    //     // fallback
+    //     if (!type) {
+    //         this.options.isGraph = true;
+    //     }
+    // }
+
+    initTarget() {
+        let defaults = _.merge({}, targetDefaults);
+
+        // console.log("initTarget this.target", this.target);
+
+        this.target._nsgTarget = this.target._nsgTarget || {};
+        this.store = this.target._nsgTarget;
+        this.store.refId = this.target.refId || "A";
+
+        _.defaults(this.store, defaults);
+
+        this.store.isMultiColumnMode = this.options.isMultiColumnMode;
+        this.setStoreBasedOnPanelType();
+    }
+
+    setStoreBasedOnPanelType() {
+        if (
+            this.store.variable &&
+            this.store.variable !== QueryPrompts.variable
+        ) {
+            this.setPanelDefaults();
+
+            this.updateLegacyMetricColumn();
+        }
+
+        // if (this.options.isSinglestat) {
+        //     this.store.limit = 1;
+        // }
+    }
+
+    // setPanelDefaults(category) {
+    //     this.setPanelDefaults();
+    // }
+
+    isCategorySupportGraph(value) {
+        return value !== "devices" && value !== "alerts";
+    }
+
+    setPanelDefaults() {
+        if (this.store.format === "time_series") {
+            if (!_.find(this.store.columns, { name: "time" })) {
+                this.store.columns.push({
+                    name: "time",
+                    visible: true,
+                });
+            }
+            if (!_.find(this.store.columns, { name: "metric" })) {
+                this.store.columns.push({
+                    name: "metric",
+                    visible: true,
+                    appliedFunctions: [{ name: "tsavg" }],
+                });
+            }
+
+            const groupBy = this.store.groupBy;
+
+            if (
+                !groupBy ||
+                (groupBy.value === QueryPrompts.groupBy &&
+                    groupBy.type === QueryPrompts.groupByType &&
+                    !groupBy.touched)
+            ) {
+                this.store.groupBy = {};
+                this.store.groupBy.type = "time";
+                this.store.groupBy.value = "$_interval";
+            }
+        }
+    }
+
+    // if query has groupBy time, metric value should have ts function applyed
+    updateLegacyMetricColumn() {
+        if (
+            this.store.format === "time_series" &&
+            this.store.groupBy &&
+            this.store.groupBy.type === "time"
+        ) {
+            const columnWithSimpleMetric = this.store.columns.find(
+                (column) => column.name === "metric" && !column.appliedFunctions.length
+            );
+            if (columnWithSimpleMetric) {
+                columnWithSimpleMetric.appliedFunctions.push({
+                    name: "tsavg",
+                });
+            }
+        }
+    }
+
+    setPanelSortFromOrderBy() {
+        if (!this.panel.options) this.panel.option = {};
+
+        this.panel.options.sortBy = [
+            {
+                displayName: this.store.orderBy.column.name || null,
+                desc: this.store.orderBy.sort == orderBySortTypes[1],
+            },
+        ];
+    }
+
+    setOrderByFromPanelSort(sortBy) {
+        const { displayName, desc } = sortBy[0];
+
+        if (displayName !== null) {
+            const column = this.store.columns.find(
+                (el) => {
+                    return utils.compileColumnName(el) === displayName;
+                }
+            );
+            this.store.orderBy.column = {
+                name: utils.compileColumnName(column),
+                value: utils.compileColumnAlias(column),
+                alias: column.alias,
+            };
+            this.store.orderBy.colName =
+                this.store.orderBy.column.alias ||
+                this.store.orderBy.column.name;
+            this.store.orderBy.sort = desc
+                ? orderBySortTypes[1]
+                : orderBySortTypes[0];
+        } else {
+            this.onClearOrderBy();
+        }
     }
 
     /**
-     * add new tag matching rule that consists of tag facet, operation ('==' or '<>') and tag word.
-     * Unfortunately if input fields for the tag facet and word are blank, the height of the corresponding
-     * visible element is reduced (element <a> is visible and its height is 0 when it has no contents, so
-     * all we see is the margin around it). To work around that I put "-" in these fields. It is unobtrusive
-     * enough and looks like some sort of a prompt, but it is a hack nonetheless.
-     * FIXME: find a way to fix height of the visible element without adding any contents.
+     * @returns {array}
      */
-    tagDataAdd() {
-        this.target.tagData[this.target.tagData.length] = {
-            tagFacet : this.blankDropDownElement,
-            tagWord : this.blankDropDownElement,
-            tagOperation : '=='
-        };
-        this.refresh();
-    }
+    restoreTags() {
+        const uiSegmentSrv = this.uiSegmentSrv;
+        let segments = [];
 
-    tagDataRemove(index) {
-        this.target.tagData.splice(index,1);
-        this.refresh();
+        if (this.store.tags.length) {
+            for (let tag of this.store.tags) {
+                if (tag.condition) {
+                    segments.push(uiSegmentSrv.newCondition(tag.condition));
+                }
+
+                segments.push(uiSegmentSrv.newKey(tag.key));
+                segments.push(uiSegmentSrv.newOperator(tag.operator));
+                segments.push(uiSegmentSrv.newKeyValue(tag.value));
+
+                if (tag.operator === "ISNULL" || tag.operator === "NOTNULL") {
+                    segments[segments.length - 1].cssClass =
+                        "query-segment-key query-segment-key--hidden";
+                }
+            }
+        }
+
+        segments.push(uiSegmentSrv.newPlusButton());
+
+        return segments;
     }
 
     getCategories() {
-        return this.datasource.findCategoriesQuery(this.target)
-            .then(this.transformToSegments(this.target.category, this.prompts['category']));
-        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+        return this.datasource.getCategories().then((categories) => {
+            const predefined = [
+                {
+                    text: "Tables",
+                    submenu: [
+                        { text: "devices", value: "devices" },
+                        { text: "alerts", value: "alerts" },
+                    ],
+                },
+                { text: "---------", separator: true },
+            ];
+
+            categories = [...predefined, ...categories];
+
+            this.options.categories = categories;
+
+            return categories;
+        });
     }
 
-    transformToSegments(currentValue, prompt) {
-        console.log('transformToSegments called:  currentValue=' + currentValue + ' prompt=' + prompt);
-        return (results) => {
-            var segments = _.map(results, segment => {
-                return this.uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
-            });
-            // segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
+    /**
+     * @param {string} $variable
+     */
+    onSelectCategory($variable) {
+        this.store.variable = $variable;
 
-            // there is no need to add "clear selection" item if current value is already equal to prompt
-            if (currentValue !== prompt) {
-                segments.unshift(this.uiSegmentSrv.newSegment({ fake: true, value: this.clearSelection, html: prompt}));
+        this.setPanelDefaults($variable);
+        this.loadColumns();
+        this.execute();
+    }
+
+    _updateOrderBy() {
+        if (this.store.orderBy.column.name === "column") {
+            this.store.orderBy.column.value = this.store.orderBy.colValue;
+        }
+
+        if (this.store.format === "table") {
+            this.setPanelSortFromOrderBy();
+        } else {
+            this.execute();
+        }
+    }
+
+    onChangeOrderBy($value) {
+        if (typeof $value === "string") {
+            this.store.orderBy.column = {
+                name: $value,
+                value: $value,
+            };
+        } else {
+            this.store.orderBy.column = $value;
+        }
+
+        this.store.orderBy.colName =
+            this.store.orderBy.column.alias || this.store.orderBy.column.name;
+        this._updateOrderBy();
+    }
+
+    onChangeOrderByValue($value) {
+        this.store.orderBy.colValue = $value;
+        this._updateOrderBy();
+    }
+
+    onChangeOrderBySort() {
+        this._updateOrderBy();
+    }
+
+    onClearOrderBy() {
+        this.store.orderBy.column = {};
+        this.store.orderBy.colName = this.prompts.orderBy;
+        this.store.orderBy.colValue = this.prompts.orderBy;
+        this._updateOrderBy();
+    }
+
+    onChangeGroupByValue($value) {
+        if ($value) {
+            this.store.groupBy.value = $value;
+        }
+
+        this.store.groupBy.touched = true;
+        this.execute();
+    }
+
+    onClearGroupBy() {
+        this.store.groupBy.type = QueryPrompts.groupByType;
+        this.store.groupBy.value = QueryPrompts.groupBy;
+        this.store.groupBy.touched = true;
+        this.execute();
+    }
+
+    onColumnRemove($column) {
+        const index = this.store.columns.indexOf($column);
+
+        if (index !== -1) {
+            this.store.columns[index].willRemove = true;
+            this.store.columns.splice(index, 1);
+
+            if (
+                this.store.orderBy.column.name ===
+                utils.compileColumnName($column)
+            ) {
+                this.onClearOrderBy();
             }
-            return segments;
-        };
+
+            this.execute();
+            return {
+                index,
+            };
+        }
+
+        return false;
     }
 
-    testRemove() {
-        this.target.variable = this.prompts['variable'];
-        this.getVariables();
-        this.refresh();
+    onColumnChanged($column, $prevColumnState) {
+        if (
+            this.isMultiColumnMode &&
+            this.store.orderBy.column.name ===
+                utils.compileColumnName($prevColumnState)
+        ) {
+            this.store.orderBy.column = {
+                name: utils.compileColumnName($column),
+                value: utils.compileColumnAlias($column),
+                alias: $column.alias,
+            };
+
+            this.store.orderBy.colName =
+                this.store.orderBy.column.alias ||
+                this.store.orderBy.column.name;
+        }
+
+        this.execute();
     }
 
-    getVariables() {
-        return this.datasource.findVariablesQuery(this.target)
-            .then(this.transformToSegments(this.target.variable, this.prompts['variable']));
-        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+    onColumnAdd() {
+        this.store.columns.push({
+            visible: true,
+            name: this.prompts.column,
+        });
     }
 
-    getDevices() {
-        return this.datasource.findDevices(this.target)
-            .then(this.transformToSegments(this.target.device, this.prompts['device']));
-        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
+    onDrop($event, $data, column) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        let dstIndex = this.store.columns.indexOf(column);
+        let srcIndex = $data;
+
+        if (srcIndex >= 0 && dstIndex >= 0 && srcIndex !== dstIndex) {
+            const srcColumn = angular.copy(this.store.columns[srcIndex]);
+            this.store.columns.splice(srcIndex, 1);
+            this.store.columns.splice(dstIndex, 0, srcColumn);
+            this.setPanelSortFromOrderBy();
+            this.execute();
+        }
     }
 
-    getComponents() {
-        return this.datasource.findComponents(this.target)
-            .then(this.transformToSegments(this.target.component, this.prompts['component']));
-        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-    }
+    /**
+     * @returns {Promise|boolean}
+     */
+    loadColumns() {
+        if (
+            this.store.variable &&
+            this.store.variable !== QueryPrompts.column &&
+            this.options.isMultiColumnMode
+        ) {
+            let found = -1;
+            _.each(this.options.categories, (category) => {
+                found = _.findIndex(category.submenu, {
+                    value: this.store.variable,
+                });
+                if (~found) {
+                    return false;
+                }
+            });
 
-    getTagsFacet(index) {
-        return this.datasource.findTagFacets(this.target, index)
-            .then(this.transformToSegments(this.target.tagFacet, this.target.tagFacet));  // do not add "-- clear selection --" item
-        // Options have to be transformed by uiSegmentSrv to be usable by metric-segment-model directive
-    }
+            if (~found) {
+                return this.datasource
+                    .getColumns(this.store.variable)
+                    .then((columns) => {
+                        this.options.columns = columns;
+                    });
+            }
+        }
 
-    getTagsWord(index) {
-        return this.datasource.findTagWordsQuery(this.target, index)
-            .then(this.transformToSegments(this.target.tagWord, this.target.tagWord));  // do not add "-- clear selection --" item
+        return false;
     }
 
     toggleEditorMode() {
-        this.target.rawQuery = !this.target.rawQuery;
-    }
+        if (!this.store.rawQuery) {
+            const query = this.datasource.getSQLString(this.store);
 
-    onChangeInternalCategory() {
-        if (this.target.category == this.clearSelection) {
-            this.target.category = this.prompts['category'];
+            this.options.rawQueryString = query;
+            this.store.nsgqlString = query;
+
+            this.store.rawQuery = 1;
+            return;
         }
-        // user has changed category, we should erase variable and other selections because they are
-        // not valid anymore
-        this.target.variable = this.prompts['variable'];
-        this.target.device = this.prompts['device'];
-        this.target.component = this.prompts['component'];
-        this.target.tagData = [];
-        // TODO: clear variable name when category changes. Only variable name field in the same target should change,
-        // variable name fields in other targets should not change
-        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-        // angular.element('#variable-field').children().children('a').html(this.target.variable);
-        // call refresh to force graph reload (which should turn blank since we dont have enough data
-        // to build valid query)
-        this.refresh();
-    }
 
-    onChangeInternalVariable() {
-        console.log('Variable has changed to ' + this.target.variable);
-        this.refresh();
-    }
-
-    onChangeInternalDevice() {
-        if(this.target.device == this.clearSelection) {
-            this.target.device = this.prompts['device'];
+        if (this.options.rawQueryString != this.store.nsgqlString) {
+            this.$rootScope.appEvent("confirm-modal", {
+                title: "Confirm",
+                text: "Are your sure? Your changes will be lost.",
+                yesText: "Yes",
+                icon: "fa-trash",
+                onConfirm: () => {
+                    this.store.rawQuery = 0;
+                },
+            });
+        } else {
+            this.store.rawQuery = 0;
         }
-        this.refresh();
     }
-    onChangeInternalComponent() {
-        if(this.target.component == this.clearSelection) {
-            this.target.component = this.prompts['component'];
+
+    /**
+     * @param {ISegment} segment
+     * @param {number} index
+     * @returns {Promise}
+     */
+    getTagsOrValues(segment, index) {
+        const $q = this.$injector.get("$q");
+        const uiSegmentSrv = this.uiSegmentSrv;
+        const segments = this.options.segments;
+        let promise = $q.resolve([]);
+
+        if (this.store.variable) {
+            switch (segment.type) {
+                case "key":
+                case "plus-button":
+                    promise = this.datasource
+                        .getFacets(this.store.variable)
+                        .then((facets) => {
+                            return [
+                                ...["component", "device"],
+                                ...facets,
+                            ].filter(Boolean);
+                        });
+                    break;
+
+                case "value":
+                    promise = this.datasource.getSuggestions({
+                        type: segments[index - 2].value,
+                        variable: this.store.variable,
+                        // tags: this._filterPreviousWhereTags(index),
+                        scopedVars: this.panel.scopedVars,
+                    });
+                    break;
+
+                case "condition":
+                    return $q.resolve([
+                        this.uiSegmentSrv.newCondition("AND"),
+                        this.uiSegmentSrv.newCondition("OR"),
+                    ]);
+                    break;
+
+                case "operator":
+                    return $q.resolve(
+                        this.uiSegmentSrv.newOperators([
+                            "=",
+                            "!=",
+                            "<>",
+                            "<",
+                            ">",
+                            "REGEXP",
+                            "NOT REGEXP",
+                            "ISNULL",
+                            "NOTNULL",
+                        ])
+                    );
+                    break;
+            }
         }
-        this.refresh();
-    }
-    
-    onChangeInternalTagFacet(index) {
-        // clear tag word when user changes tag facet. The dialog enters state where tag facet is selected
-        // but tag word is not. This state is invalid and should be transient, it does not make sense
-        // to call this.refresh() because query is yet incomplete
-        this.target.tagData[index].tagWord = this.blankDropDownElement;
-        // TODO: clear field "tag word" when "tag facet" changes. Only associated tag word should change,
-        // tag word fields in another tag matches in the same target or other targets should not change.
-        // FIXME: this does not look right, there must be a way to update element in the browser without manipulating it directly in DOM
-        // angular.element('#tag-word-'+index).children().children("a.tag-word").html(this.target.tagData[index].tagWord);
-        this.refresh();
-    }
 
-    //noinspection JSUnusedLocalSymbols
-    onChangeInternalTagWord(index) {
-        this.refresh();
-    }
-
-    tagOperation(index, operation) {
-        this.target.tagData[index].tagOperation = operation;
-        this.refresh();
+        return promise
+            .then((list) =>
+                list.map((item) =>
+                    uiSegmentSrv.newSegment({
+                        value: `${item}`,
+                    })
+                )
+            )
+            .then((results) => {
+                if (segment.type === "key") {
+                    results.splice(
+                        0,
+                        0,
+                        angular.copy(this.options.removeSegment)
+                    );
+                }
+                return results;
+            });
     }
 
-    setSortByEl(sortOrder) {
-        this.target.sortByEl = sortOrder;
-        this.refresh();
+    /**
+     * @param {Number} currentIndex - index of current Segment
+     * @returns {Array} - returns array of tag objects that placed before current tag triplet
+     */
+    _filterPreviousWhereTags(currentIndex) {
+        return this.store.tags.filter(
+            (el, index) => index < currentIndex / 3 - 1
+        );
     }
 
-    setSelector(element) {
-        this.target.selector = element;
-        this.refresh();
+    /**
+     * @param {ISegment} segment
+     * @param {number} index
+     */
+    tagSegmentUpdated(segment, index) {
+        const segmentSrv = this.uiSegmentSrv;
+        const segments = this.options.segments;
+        segments[index] = segment;
+
+        // handle remove tag condition
+
+        if (segment.value === this.options.removeSegment.value) {
+            segments.splice(index, 3);
+            if (segments.length === 0) {
+                segments.push(segmentSrv.newPlusButton());
+            } else if (segments.length > 2) {
+                segments.splice(Math.max(index - 1, 0), 1);
+                if (segments[segments.length - 1].type !== "plus-button") {
+                    segments.push(segmentSrv.newPlusButton());
+                }
+            }
+        } else {
+            if (segment.type === "plus-button") {
+                if (index > 2) {
+                    segments.splice(index, 0, segmentSrv.newCondition("AND"));
+                }
+
+                segments.push(segmentSrv.newOperator("="));
+                segments.push(
+                    segmentSrv.newFake(
+                        this.prompts.whereValue,
+                        "value",
+                        "query-segment-value"
+                    )
+                );
+                segment.type = "key";
+                segment.cssClass = "query-segment-key";
+            }
+
+            if (
+                segment.type === "key" &&
+                segments[index + 2].type === "value"
+            ) {
+                segments.splice(
+                    index + 2,
+                    1,
+                    segmentSrv.newFake(
+                        this.prompts.whereValue,
+                        "value",
+                        "query-segment-value"
+                    )
+                );
+            }
+
+            if (segment.type === "operator") {
+                if (segment.value === "ISNULL" || segment.value === "NOTNULL") {
+                    segments[index + 1].cssClass =
+                        "query-segment-key query-segment-key--hidden";
+                    segments.push(segmentSrv.newPlusButton());
+                } else {
+                    segments[index + 1].cssClass = "query-segment-key";
+                }
+            }
+
+            if (index + 1 === segments.length) {
+                segments.push(segmentSrv.newPlusButton());
+            }
+        }
+
+        this.rebuildTargetTagConditions();
     }
 
-    setAggregator(element) {
-        this.target.aggregator = element;
-        this.refresh();
+    rebuildTargetTagConditions() {
+        const segments = this.options.segments;
+        const tags = [];
+        let tagIndex = 0;
+        let tagOperator = "";
+
+        segments.forEach((segment, index) => {
+            switch (segment.type) {
+                case "key":
+                    if (tags.length === 0) {
+                        tags.push({});
+                    }
+                    tags[tagIndex].key = segment.value;
+                    break;
+                case "value":
+                    if ((tagOperator = tags[tagIndex].operator)) {
+                        segments[index - 1] =
+                            this.uiSegmentSrv.newOperator(tagOperator);
+                        tags[tagIndex].operator = tagOperator;
+                    }
+                    tags[tagIndex].value = segment.value;
+                    break;
+                case "condition":
+                    tags.push({
+                        condition: segment.value,
+                    });
+                    tagIndex += 1;
+                    break;
+                case "operator":
+                    tags[tagIndex].operator = segment.value;
+                    break;
+            }
+        });
+
+        this.store.tags = tags;
+        this.execute();
     }
 
-    setAlias() {
-        this.refresh();
+    getOrderByOptions() {
+        let list = [];
+
+        if (this.store.format === "table") {
+            this.store.columns.forEach((column) => {
+                if (column.name == QueryPrompts.column) return;
+
+                list.push({
+                    text: column.alias || utils.compileColumnName(column),
+                    value: {
+                        name: utils.compileColumnName(column),
+                        value: utils.compileColumnAlias(column),
+                        alias: column.alias,
+                    },
+                });
+            });
+        } else {
+            return this.datasource.getCombinedList(this.store.variable);
+        }
+
+        return this.$injector.get("$q").resolve(list);
     }
 
-    setFormat(element, elementDisplayStr) {
-        this.target.format = element;
-        this.target.formatDisplay = elementDisplayStr;
-        this.refresh();
+    getOrderBySortOptions() {
+        return this.$injector.get("$q").resolve([
+            {
+                text: orderBySortTypes[0],
+                value: orderBySortTypes[0],
+            },
+            {
+                text: orderBySortTypes[1],
+                value: orderBySortTypes[1],
+            },
+        ]);
     }
 
-    setColumns() {
-        // console.log(this.target.columns);
-        this.refresh();
+    getOrderByColumns() {
+        return this.datasource.getCombinedList(this.store.variable);
     }
 
-    // setGroup() {
-    //     if (this.target.group == '') {
-    //         if(this.tempNew !== ''){
-    //             this.target.group = this.tempNew;
-    //         }
-    //         else {
-    //             this.target.group = 'select group';
-    //         }
-    //     }
-    //     this.refresh();
-    // }
+    getLimitOptions() {
+        return this.$injector.get("$q").resolve([
+            {
+                text: "None",
+                value: "",
+            },
+            {
+                text: "1",
+                value: 1,
+            },
+            {
+                text: "5",
+                value: 5,
+            },
+            {
+                text: "10",
+                value: 10,
+            },
+            {
+                text: "50",
+                value: 50,
+            },
+            {
+                text: "100",
+                value: 100,
+            },
+        ]);
+    }
 
+    getGroupByTypes() {
+        return this.$injector.get("$q").resolve([
+            {
+                text: "time",
+                value: "time",
+            },
+            {
+                text: "column",
+                value: "column",
+            },
+        ]);
+    }
+
+    getGroupByVariables() {
+        switch (this.store.groupBy.type) {
+            case "time":
+                return this.$injector.get("$q").resolve([
+                    {
+                        text: GrafanaVariables.interval,
+                        value: GrafanaVariables.interval,
+                    },
+                    {
+                        text: "1s",
+                        value: "1s",
+                    },
+                    {
+                        text: "1m",
+                        value: "1m",
+                    },
+                    {
+                        text: "1h",
+                        value: "1h",
+                    },
+                    {
+                        text: "1d",
+                        value: "1d",
+                    },
+                ]);
+                break;
+            case "column":
+                return this.datasource.getCombinedList(this.store.variable);
+                break;
+        }
+    }
+
+    getCollapsedText() {
+        return "This target is collapsed. Click to the row for open it.";
+    }
+
+    toggleColumnsView() {
+        this.store.isSeparatedColumns = !this.store.isSeparatedColumns;
+    }
+
+    getFormatOptions() {
+        return this.$injector.get("$q").resolve([
+            {
+                text: "time series",
+                value: "time_series",
+            },
+            {
+                text: "table",
+                value: "table",
+            },
+        ]);
+    }
+
+    onChangeFormat() {
+        this.setPanelDefaults();
+        this.execute();
+    }
 }
 
-NetSpyGlassDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
-
+NetSpyGlassQueryCtrl.templateUrl = 'partials/query.editor.html';

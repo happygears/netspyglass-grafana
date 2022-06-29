@@ -56,6 +56,9 @@ RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install natel-plot
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install mtanda-histogram-panel
 RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install farski-blendstat-panel
 
+# looks like Aure data source is bundled so there is no need to add it
+
+
 # provisioning files (both datasource and dashboards) must exist before Grafana starts
 # but actual dashboards can be added later. Once Grafana sees dashboards provisioning file,
 # it begins to monitor the directory and loads dashboards when they appear in it.

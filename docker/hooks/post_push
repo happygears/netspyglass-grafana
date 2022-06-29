@@ -28,7 +28,12 @@ IMAGE_NAME=${IMAGE_NAME:?"Variable IMAGE_NAME must be defined"}
 grafana_version=$(cat ${DOCKERFILE_PATH} | awk -F: '/FROM grafana\/grafana/ { print $2; }')
 plugin_version=$(cat dist/plugin.json | python -c 'import sys, json; print json.load(sys.stdin)["info"]["version"]')
 
-TAG=${grafana_version}-nsg-ds-${plugin_version}
+# If build is not from master branch prepend docker_tag to secondary tag name
+if "$SOURCE_BRANCH" = "master" ; then
+    TAG="${grafana_version}-nsg-ds-${plugin_version}"
+else
+    TAG="${DOCKER_TAG}-${grafana_version}-nsg-ds-${plugin_version}"
+fi
 
 echo "Grafana version: $grafana_version , NSG data source plugin version: $plugin_version"
 echo

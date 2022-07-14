@@ -293,15 +293,33 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
                         });
                     }
                 }, {
+                    key: 'getTableColumns',
+                    value: function getTableColumns(variable) {
+                        var query = this.sqlQuery.columns(variable);
+                        return this.api.queryData(query, NSGQLApi.FORMAT_TABLE).then(function (data) {
+                            return {
+                                text: "columns",
+                                submenu: data[0].columns.map(function (column) {
+                                    return { text: column.text, value: column.text };
+                                })
+                            };
+                        }).catch(function () {
+                            return [];
+                        });
+                    }
+                }, {
                     key: 'getColumns',
                     value: function getColumns(variable) {
                         var _this3 = this;
 
-                        return this.$q.all([this.getCategories(), this.getFacets(variable)]).then(function (data) {
+                        return this.$q.all([this.getCategories(), this.getFacets(variable)]
+                        // this.getTableColumns(variable)
+                        ).then(function (data) {
                             var _data = _slicedToArray(data, 2),
                                 categories = _data[0],
                                 tags = _data[1];
 
+                            // c0ls
                             var columns = [];
 
                             columns.push({
@@ -313,6 +331,7 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
 
                             columns.push({ text: '---------', separator: true });
                             columns.push(_this3.getPredefinedColumns());
+                            // columns.push(cols)
 
                             columns.push({ text: '---------', separator: true });
 
@@ -430,3 +449,4 @@ System.register(['lodash', './services/api', './services/utils'], function (_exp
         }
     };
 });
+//# sourceMappingURL=datasource.js.map

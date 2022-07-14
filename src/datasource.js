@@ -241,12 +241,29 @@ export class NetSpyGlassDatasource {
      * @param {string} variable
      * @returns {Promise}
      */
+    getTableColumns(variable){
+        const query = this.sqlQuery.columns(variable);
+        return this.api.queryData(query, NSGQLApi.FORMAT_TABLE)
+            .then((data) => {
+                return {
+                    text: "columns",
+                    submenu: data[0].columns.map((column) => ({text: column.text, value: column.text}))
+                }
+            })
+            .catch(() => [])
+    }
+
+    /**
+     * @param {string} variable
+     * @returns {Promise}
+     */
     getColumns(variable) {
         return this.$q.all([
             this.getCategories(),
-            this.getFacets(variable)
+            this.getFacets(variable),
+            // this.getTableColumns(variable)
         ]).then((data) => {
-            const [categories, tags] = data;
+            const [categories, tags] = data;  // c0ls
             let columns = [];
 
             columns.push({
@@ -256,6 +273,7 @@ export class NetSpyGlassDatasource {
 
             columns.push({text: '---------', separator: true});
             columns.push(this.getPredefinedColumns());
+            // columns.push(cols)
 
             columns.push({text: '---------', separator: true});
 

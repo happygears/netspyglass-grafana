@@ -170,6 +170,11 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
                         }).compile();
                     }
                 }, {
+                    key: 'columns',
+                    value: function columns(table) {
+                        return 'SELECT * FROM ' + table + ' LIMIT 0';
+                    }
+                }, {
                     key: 'suggestion',
                     value: function suggestion(type, from) {
                         var tags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -637,6 +642,7 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
 
             NSGQLApi.FORMAT_JSON = 'json';
             NSGQLApi.FORMAT_LIST = 'list';
+            NSGQLApi.FORMAT_TABLE = 'table';
 
             _export('SQLQuery', SQLQuery);
 
@@ -644,3 +650,4 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
         }
     };
 });
+//# sourceMappingURL=api.js.map

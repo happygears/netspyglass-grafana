@@ -3,28 +3,20 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
+        "datasource": "-- Grafana --",
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "fiscalYearStartMonth": 0,
+  "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1657835073012,
+  "id": null,
+  "iteration": 1523054596486,
   "links": [
     {
       "icon": "cloud",
@@ -42,13 +34,9 @@
       "url": "http://www.netspyglass.com"
     }
   ],
-  "liveNow": false,
   "panels": [
     {
-      "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "Ql69cZL7k"
-      },
+      "content": "# Graphs that match monitoring variables by tags\n\nThese graphs demonstrate how variables can be matched by tag to help make the graph future-proof. If a new peering to the same AS is added in the future, the line will appear in the corresponding graph automatically. \n\nThese graphs use NsgQL functions to calculate 95-th percentile and draw a line using linear regression",
       "gridPos": {
         "h": 4,
         "w": 24,
@@ -58,92 +46,17 @@
       "height": "100px",
       "id": 5,
       "links": [],
-      "options": {
-        "content": "# Graphs that match monitoring variables by tags\n\nThese graphs demonstrate how variables can be matched by tag to help make the graph future-proof. If a new peering to the same AS is added in the future, the line will appear in the corresponding graph automatically. \n\nThese graphs use NsgQL functions to calculate 95-th percentile and draw a line using linear regression",
-        "mode": "markdown"
-      },
-      "pluginVersion": "9.0.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
-          },
-          "refId": "A"
-        }
-      ],
+      "mode": "markdown",
+      "title": "",
       "type": "text"
     },
     {
-      "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "Ql69cZL7k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "bps"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "x95-th percentile"
-            },
-            "properties": [
-              {
-                "id": "custom.fillOpacity",
-                "value": 0
-              }
-            ]
-          }
-        ]
-      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 0,
       "gridPos": {
         "h": 10,
         "w": 12,
@@ -151,36 +64,40 @@
         "y": 4
       },
       "id": 1,
-      "links": [],
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max",
-            "min"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
       },
-      "pluginVersion": "9.0.2",
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "x95-th percentile",
+          "fill": 0
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
           "_nsgTarget": {
             "alias": "$device:$component (inbound) $AS",
             "columns": [
               {
-                "$$hashKey": "object:59",
-                "appliedFunctions": [
-                  {
-                    "$$hashKey": "object:148",
-                    "name": "tsavg"
-                  }
-                ],
+                "appliedFunctions": [],
                 "name": "metric",
                 "visible": true
               },
@@ -189,14 +106,11 @@
                 "visible": false
               }
             ],
-            "disableAdHoc": false,
             "format": "time_series",
             "groupBy": {
-              "type": "time",
-              "value": "$_interval"
+              "type": "select type",
+              "value": "select value"
             },
-            "isMultiColumnMode": true,
-            "isSeparatedColumns": false,
             "isTablePanel": false,
             "limit": 100,
             "loading": false,
@@ -226,10 +140,6 @@
             ],
             "type": "nsgql",
             "variable": "ifInRate"
-          },
-          "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
           },
           "refId": "A"
         },
@@ -238,15 +148,12 @@
             "alias": "$device:$component (in, 95%) $AS",
             "columns": [
               {
-                "$$hashKey": "object:103",
                 "alias": "",
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:157",
                     "name": "tslinear"
                   },
                   {
-                    "$$hashKey": "object:158",
                     "name": "tspercentile95"
                   }
                 ],
@@ -258,14 +165,11 @@
                 "visible": false
               }
             ],
-            "disableAdHoc": false,
             "format": "time_series",
             "groupBy": {
-              "type": "time",
-              "value": "$_interval"
+              "type": "select type",
+              "value": "select value"
             },
-            "isMultiColumnMode": true,
-            "isSeparatedColumns": false,
             "isTablePanel": false,
             "limit": 100,
             "loading": false,
@@ -297,86 +201,52 @@
             "type": "nsgql",
             "variable": "ifInRate"
           },
-          "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
-          },
           "refId": "B"
         }
       ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
       "title": "$AS (inbound, with 95-percentile)",
-      "type": "timeseries"
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ]
     },
     {
-      "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "Ql69cZL7k"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "bps"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "x95-th percentile"
-            },
-            "properties": [
-              {
-                "id": "custom.fillOpacity",
-                "value": 0
-              }
-            ]
-          }
-        ]
-      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "NetSpyGlass-v2",
+      "fill": 0,
       "gridPos": {
         "h": 10,
         "w": 12,
@@ -384,36 +254,40 @@
         "y": 4
       },
       "id": 2,
-      "links": [],
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max",
-            "min"
-          ],
-          "displayMode": "table",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
       },
-      "pluginVersion": "9.0.2",
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "x95-th percentile",
+          "fill": 0
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
           "_nsgTarget": {
             "alias": "$device:$component (outbound) $AS",
             "columns": [
               {
-                "$$hashKey": "object:331",
-                "appliedFunctions": [
-                  {
-                    "$$hashKey": "object:454",
-                    "name": "tsavg"
-                  }
-                ],
+                "appliedFunctions": [],
                 "name": "metric",
                 "visible": true
               },
@@ -422,14 +296,11 @@
                 "visible": false
               }
             ],
-            "disableAdHoc": false,
             "format": "time_series",
             "groupBy": {
-              "type": "time",
-              "value": "$_interval"
+              "type": "select type",
+              "value": "select value"
             },
-            "isMultiColumnMode": true,
-            "isSeparatedColumns": false,
             "isTablePanel": false,
             "limit": 100,
             "loading": false,
@@ -460,10 +331,6 @@
             "type": "nsgql",
             "variable": "ifOutRate"
           },
-          "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
-          },
           "refId": "A"
         },
         {
@@ -471,15 +338,12 @@
             "alias": "$device:$component (out, 95%) $AS",
             "columns": [
               {
-                "$$hashKey": "object:375",
                 "alias": "",
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:443",
                     "name": "tslinear"
                   },
                   {
-                    "$$hashKey": "object:444",
                     "name": "tspercentile95"
                   }
                 ],
@@ -491,14 +355,11 @@
                 "visible": false
               }
             ],
-            "disableAdHoc": false,
             "format": "time_series",
             "groupBy": {
-              "type": "time",
-              "value": "$_interval"
+              "type": "select type",
+              "value": "select value"
             },
-            "isMultiColumnMode": true,
-            "isSeparatedColumns": false,
             "isTablePanel": false,
             "limit": 100,
             "loading": false,
@@ -530,19 +391,48 @@
             "type": "nsgql",
             "variable": "ifOutRate"
           },
-          "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
-          },
           "refId": "B"
         }
       ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeShift": null,
       "title": "$AS (outbound, with 95-percentile)",
-      "type": "timeseries"
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "bps",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ]
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 36,
+  "schemaVersion": 16,
   "style": "dark",
   "tags": [
     "traffic",
@@ -551,27 +441,24 @@
   "templating": {
     "list": [
       {
+        "allValue": null,
         "current": {
-          "selected": false,
-          "text": "AS40526",
-          "value": "AS40526"
+          "text": "AS11404",
+          "value": "AS11404"
         },
-        "datasource": {
-          "type": "happygears-netspyglass-datasource-v2",
-          "uid": "Ql69cZL7k"
-        },
-        "definition": "",
+        "datasource": "NetSpyGlass-v2",
         "hide": 0,
         "includeAll": false,
+        "label": null,
         "multi": false,
         "name": "AS",
         "options": [],
         "query": "SELECT DISTINCT BGP4Peer FROM ifOperStatus",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
+        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -610,6 +497,5 @@
   "timezone": "",
   "title": "95-th percentile (Match by peer AS)",
   "uid": "Wq6L_hmmk",
-  "version": 1,
-  "weekStart": ""
+  "version": 6
 }

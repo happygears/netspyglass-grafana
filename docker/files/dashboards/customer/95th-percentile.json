@@ -46,8 +46,7 @@
   "panels": [
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "Ql69cZL7k"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "gridPos": {
         "h": 4,
@@ -66,8 +65,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "A"
         }
@@ -76,8 +74,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "Ql69cZL7k"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -228,8 +225,7 @@
             "variable": "ifInRate"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "A"
         },
@@ -298,8 +294,7 @@
             "variable": "ifInRate"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "B"
         }
@@ -309,8 +304,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "Ql69cZL7k"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -461,8 +455,7 @@
             "variable": "ifOutRate"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "A"
         },
@@ -531,8 +524,7 @@
             "variable": "ifOutRate"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "Ql69cZL7k"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "B"
         }
@@ -557,8 +549,7 @@
           "value": "AS40526"
         },
         "datasource": {
-          "type": "happygears-netspyglass-datasource-v2",
-          "uid": "Ql69cZL7k"
+          "type": "happygears-netspyglass-datasource-v2"
         },
         "definition": "",
         "hide": 0,

@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1657835073012,
+  "iteration": 1657841863923,
   "links": [
     {
       "icon": "cloud",
@@ -61,7 +61,7 @@
         "content": "# Graphs that match monitoring variables by tags\n\nThese graphs demonstrate how variables can be matched by tag to help make the graph future-proof. If a new peering to the same AS is added in the future, the line will appear in the corresponding graph automatically. \n\nThese graphs use NsgQL functions to calculate 95-th percentile and draw a line using linear regression",
         "mode": "markdown"
       },
-      "pluginVersion": "9.0.2",
+      "pluginVersion": "9.0.3",
       "targets": [
         {
           "datasource": {
@@ -86,7 +86,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 1,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -95,11 +95,11 @@
             },
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "pointSize": 5,
+            "pointSize": 2,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -325,11 +325,11 @@
             },
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "pointSize": 5,
+            "pointSize": 2,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -601,6 +601,6 @@
   "timezone": "",
   "title": "95-th percentile (Match by peer AS)",
   "uid": "Wq6L_hmmk",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }

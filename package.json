@@ -16,18 +16,18 @@
   "license": "Happy Gears EULA",
   "dependencies": {
     "babel-cli": "^6.26.0",
-    "babel-plugin-transform-define": "^1.3.0",
+    "babel-plugin-transform-define": "^1.3.2",
     "babel-plugin-transform-es2015-for-of": "^6.23.0",
     "babel-plugin-transform-es2015-modules-systemjs": "^6.24.1",
     "babel-preset-env": "^1.6.0",
-    "grunt": "~1.0.1",
+    "grunt": "^1.5.3",
     "grunt-babel": "^7.0.0",
     "grunt-cli": "~1.2.0",
     "grunt-contrib-clean": "~1.1.0",
     "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-mocha-test": "~0.13.3",
-    "grunt-sass": "~2.0.0"
+    "grunt-sass": "^3.1.0"
   },
   "devDependencies": {
     "angular": "~1.6.1",
@@ -35,10 +35,11 @@
     "chai": "~3.5.0",
     "grunt-bump": "^0.8.0",
     "grunt-prompt": "^1.3.3",
-    "jsdom": "~11.1.0",
-    "lodash": "^4.17.15",
-    "mocha": "^6.1.4",
-    "moment": "^2.19.1",
+    "jsdom": "^16.5.0",
+    "lodash": "^4.17.21",
+    "mocha": "^6.2.3",
+    "moment": "^2.29.4",
+    "node-sass": "^8.0.0",
     "prunk": "~1.3.0",
     "q": "~1.5.0"
   },

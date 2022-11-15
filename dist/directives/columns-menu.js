@@ -235,4 +235,3 @@ System.register(['lodash'], function (_export, _context) {
         }
     };
 });
-//# sourceMappingURL=columns-menu.js.map

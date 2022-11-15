@@ -650,4 +650,3 @@ System.register(['../hg-sql-builder', '../dictionary', './utils', 'angular', 'lo
         }
     };
 });
-//# sourceMappingURL=api.js.map

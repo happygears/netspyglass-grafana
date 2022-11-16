@@ -119,7 +119,9 @@ query field.
 3. Go to the cloned folder `cd netspyglass-grafana`
 4. Run `npm install`
 5. Use one of the following commands:
- - `grunt watch`        # execute this command during development. It will rebuild project on every file change detection.
- - `npm run build`      # make a development build
- - `npm run build-prod` # make a production build with tests and version bump
+ - `grunt watch`                # execute this command during development. It will rebuild project on every file change detection.
+ - `npm run build`              # make a development build
+ - `npm run build-prod`         # make a production build with tests and patch version
+ - `npm run build-prod:minor`   # make a production build with tests and bump minor version
+ - `npm run build-prod:major`   # make a production build with tests and bump major version
 

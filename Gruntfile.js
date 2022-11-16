@@ -131,94 +131,15 @@ module.exports = function(grunt) {
             }]
           }
       },
-
-      bump: {
-          options: {
-              files: ["package.json", "plugin.json"],
-              updateConfigs: [],
-              commit: false,
-              createTag: false,
-              push: false,
-          },
-      },
-
-      prompt: {
-          bump: {
-              options: {
-                  questions: [
-                      {
-                          config: "bump.options.versionType",
-                          type: "list",
-                          message:
-                              "Bump version from " + currentVersion + " to:",
-                          choices: [
-                              {
-                                  value: "prerelease",
-                                  name:
-                                      "Build:  " +
-                                      (currentVersion + "-?") +
-                                      " Unstable, betas, and release candidates.",
-                              },
-                              {
-                                  value: "patch",
-                                  name:
-                                      "Patch:  " +
-                                      semver.inc(currentVersion, "patch") +
-                                      " Backwards-compatible bug fixes.",
-                              },
-                              {
-                                  value: "minor",
-                                  name:
-                                      "Minor:  " +
-                                      semver.inc(currentVersion, "minor") +
-                                      " Add functionality in a backwards-compatible manner.",
-                              },
-                              {
-                                  value: "major",
-                                  name:
-                                      "Major:  " +
-                                      semver.inc(currentVersion, "major") +
-                                      " Incompatible API changes.",
-                              },
-                              {
-                                  value: "custom",
-                                  name: "Custom: ?.?.? Specify version...",
-                              },
-                          ],
-                      },
-                      {
-                          config: "bump.options.setVersion",
-                          type: "input",
-                          message: "What specific version would you like: ",
-                          when: function (answers) {
-                              return (
-                                  answers["bump.options.versionType"] ===
-                                  "custom"
-                              );
-                          },
-                          validate: function (value) {
-                              var valid = semver.valid(value);
-                              return (
-                                  !!valid ||
-                                  "Must be a valid semver, such as 1.2.3-rc1. See http://semver.org/ for more details."
-                              );
-                          },
-                      },
-                  ],
-              },
-          },
-      },
   });
 
   var buildTasks = ['clean', 'sass', 'copy:src_to_dist', 'copy:img_to_dist', 'copy:pluginDef', 'copy:externals', 'babel:dist'];
 
   if (!IS_DEV) {
-    // buildTasks.unshift('bumpVersion');
     buildTasks.push('test');
   }
 
   grunt.registerTask('build', buildTasks);
   grunt.registerTask('test', ['babel:distTestNoSystemJs', 'babel:distTestsSpecsNoSystemJs', 'mochaTest']);
-  grunt.registerTask('bumpVersion', ['prompt:bump', 'bump']);
   grunt.registerTask('default', 'build');
 };

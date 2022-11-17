@@ -3,10 +3,11 @@ module.exports = function(grunt) {
   const fs = require('fs');
   const path = require('path');
   const semver = require('semver');
-  const pluginData = require(path.join(__dirname, 'plugin.json'));
   const sass = require("node-sass");
   const destPath = 'dist';
-  const currentVersion = pluginData.info.version;
+  const packageData = require(path.join(__dirname, "package.json"));
+  const pluginData = require(path.join(__dirname, "plugin.json"));
+  const version = packageData.version;
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -14,10 +15,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-mocha-test');
-
-  grunt.loadNpmTasks('grunt-bump');
-  grunt.loadNpmTasks('grunt-prompt');
-
 
   grunt.initConfig({
       clean: [destPath],
@@ -142,4 +139,17 @@ module.exports = function(grunt) {
   grunt.registerTask('build', buildTasks);
   grunt.registerTask('test', ['babel:distTestNoSystemJs', 'babel:distTestsSpecsNoSystemJs', 'mochaTest']);
   grunt.registerTask('default', 'build');
+    
+  grunt.registerTask("fix-plugin-version", "", function () {
+      if (packageData && pluginData) {
+          pluginData.info.version = version;
+
+          fs.writeFileSync(
+              path.join(__dirname, "plugin.json"),
+              JSON.stringify(pluginData, null, 2)
+          );
+
+          console.log("plugin version: ", pluginData.info.version);
+      }
+  });
 };

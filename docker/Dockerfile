@@ -12,7 +12,10 @@
 
 # see NET-2892
 #     NET-3994
-FROM grafana/grafana:9.0.3-ubuntu
+#FROM grafana/grafana:9.0.2-ubuntu
+#FROM grafana/grafana:9.5.12-ubuntu
+FROM grafana/grafana:9.4.15-ubuntu
+#FROM grafana/grafana:10.1.4-ubuntu
 
 ENV HAPPYGEARS_DIR="/happygears"
 
@@ -27,8 +30,8 @@ ENV GRAFANA_PLUGINS_DIR="$GRAFANA_VOLUME_DIR/plugins/"
 ENV GRAFANA_PROVISIONING_DIR="$GRAFANA_VOLUME_DIR/provisioning"
 ENV GRAFANA_DASHBOARDS_DIR="$GRAFANA_VOLUME_DIR/dashboards"
 
-ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="happygears-netspyglass-datasource-v2"
-ENV GF_DEFAULT_APP_MODE="development"
+ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=happygears-netspyglass-datasource-v2
+ENV GF_DEFAULT_APP_MODE=development
 
 RUN mkdir -p $GRAFANA_LOGS_DIR
 

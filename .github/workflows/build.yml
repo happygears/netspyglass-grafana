@@ -1,0 +1,81 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  push:
+    branches: [ "**" ]
+    tags:
+      - '*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  CONTAINER_REGISTRY: ghcr.io
+  ARTIFACT_ID: grafana
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['18.x']
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Define NSG Version
+        id: nsg_version
+        uses: happygears/gt2v@v4
+
+      - name: Print NSG Version
+        run: |
+          echo "Build version :point_down:" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.nsg_version.outputs.long_version }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build
+        run: |
+          npm install
+          npm run build-prod
+
+      - name: Docker tag
+        id: docker_tag
+        run: echo "::set-output name=tag::$([ ${{ steps.nsg_version.outputs.is_release_branch }} = 'true' ] && echo release || echo ${{ steps.nsg_version.outputs.git_branch_safe }})"
+        shell: bash
+
+      - name: Cache docker layer
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.PACKAGE_WRITE_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push docker image
+        uses: docker/build-push-action@v6
+        with:
+          file: ./docker/Dockerfile
+          context: ${{ github.workspace }}
+          push: true
+          tags: |
+            ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/${{ env.ARTIFACT_ID }}:${{ steps.nsg_version.outputs.long_version  }}
+            ${{ env.CONTAINER_REGISTRY }}/${{ github.repository_owner }}/${{ env.ARTIFACT_ID }}:${{ steps.docker_tag.outputs.tag }}

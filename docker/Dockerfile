@@ -12,7 +12,7 @@
 
 # see NET-2892
 #     NET-3994
-FROM grafana/grafana:9.0.2-ubuntu
+FROM grafana/grafana:9.5.20-ubuntu
 
 ENV HAPPYGEARS_DIR="/happygears"
 

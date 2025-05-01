@@ -7,7 +7,7 @@ then
     exit 1
 fi
 
-DATASOURCE_ID=$(python -c 'import json; print json.load(open("plugin.json"))["id"]')
+DATASOURCE_ID=$(cat plugin.json | jq -r .id)
 
 echo "plugin id: $DATASOURCE_ID"
 

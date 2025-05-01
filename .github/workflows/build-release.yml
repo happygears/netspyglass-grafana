@@ -18,6 +18,8 @@ jobs:
     name: Upload Release Asset
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     strategy:
       matrix:

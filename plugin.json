@@ -1,6 +1,6 @@
 {
-  "name": "NetSpyGlass (v2)",
-  "id": "happygears-netspyglass-datasource-v2",
+  "name": "NetSpyGlass (v2) Staging",
+  "id": "happygears-netspyglass-datasource-v2-staging",
   "type": "datasource",
   "staticRoot": ".",
   "partials": {

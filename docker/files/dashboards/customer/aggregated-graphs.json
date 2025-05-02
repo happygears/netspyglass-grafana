@@ -28,7 +28,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 1,
           "legend": {
@@ -146,7 +146,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 3,
           "legend": {
@@ -275,7 +275,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 2,
           "legend": {
@@ -400,7 +400,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 4,
           "legend": {
@@ -523,7 +523,7 @@
   "schemaVersion": 14,
   "style": "dark",
   "tags": [
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": [
@@ -533,7 +533,7 @@
           "text": "AS1299",
           "value": "AS1299"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -557,7 +557,7 @@
           "text": "cty3-cc01",
           "value": "cty3-cc01"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,

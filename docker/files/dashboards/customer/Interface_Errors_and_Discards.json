@@ -20,17 +20,17 @@
     {
       "icon": "cloud",
       "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
+      "title": "Network AI",
+      "tooltip": "Back to  Network AI",
       "type": "link",
-      "url": "/v2"
+      "url": "/v3"
     },
     {
       "icon": "external link",
       "tags": [],
-      "title": "www.netspyglass.com",
+      "title": "www.zscaler.com",
       "type": "link",
-      "url": "http://www.netspyglass.com"
+      "url": "https://www.zscaler.com"
     }
   ],
   "panels": [
@@ -54,7 +54,7 @@
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -258,11 +258,11 @@
       "timeShift": null,
       "title": "Top 10 interfaces with input discards (last 1hr)",
       "transform": "table",
-      "type": "table"
+      "type": "table-old"
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -466,11 +466,11 @@
       "timeShift": null,
       "title": "Top 10 interfaces with output discards (last 1hr)",
       "transform": "table",
-      "type": "table"
+      "type": "table-old"
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -674,11 +674,11 @@
       "timeShift": null,
       "title": "Top 10 interfaces with input errors (last 1hr)",
       "transform": "table",
-      "type": "table"
+      "type": "table-old"
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -882,7 +882,7 @@
       "timeShift": null,
       "title": "Top 10 interfaces with output errors (last 1hr)",
       "transform": "table",
-      "type": "table"
+      "type": "table-old"
     }
   ],
   "refresh": "1h",
@@ -890,7 +890,7 @@
   "style": "dark",
   "tags": [
     "interfaces",
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": []

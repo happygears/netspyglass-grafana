@@ -31,17 +31,17 @@
     {
       "icon": "cloud",
       "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
+      "title": "Network AI",
+      "tooltip": "Back to  Network AI",
       "type": "link",
-      "url": "/v2"
+      "url": "/v3"
     },
     {
       "icon": "external link",
       "tags": [],
-      "title": "www.netspyglass.com",
+      "title": "www.zscaler.com",
       "type": "link",
-      "url": "http://www.netspyglass.com"
+      "url": "https://www.zscaler.com"
     }
   ],
   "refresh": "1m",
@@ -52,7 +52,7 @@
       "panels": [
         {
           "columns": [],
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fontSize": "100%",
@@ -204,11 +204,11 @@
           "title": "",
           "transform": "table",
           "transparent": true,
-          "type": "table"
+          "type": "table-old"
         },
         {
           "columns": [],
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fontSize": "100%",
@@ -380,7 +380,7 @@
           "title": "",
           "transform": "table",
           "transparent": true,
-          "type": "table"
+          "type": "table-old"
         }
       ],
       "repeat": "deviceName",
@@ -399,7 +399,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 1,
@@ -598,7 +598,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 1,
@@ -807,7 +807,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1004,7 +1004,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1213,7 +1213,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1410,7 +1410,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1615,7 +1615,7 @@
   "style": "dark",
   "tags": [
     "interfaces",
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": [
@@ -1626,7 +1626,7 @@
           "text": "dfw1-bb01",
           "value": "dfw1-bb01"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -1652,7 +1652,7 @@
           "text": "ae0",
           "value": "ae0"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,

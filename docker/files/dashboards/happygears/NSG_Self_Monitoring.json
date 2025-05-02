@@ -21,17 +21,17 @@
     {
       "icon": "cloud",
       "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
+      "title": "Network AI",
+      "tooltip": "Back to  Network AI",
       "type": "link",
-      "url": "/v2"
+      "url": "/v3"
     },
     {
       "icon": "external link",
       "tags": [],
-      "title": "www.netspyglass.com",
+      "title": "www.zscaler.com",
       "type": "link",
-      "url": "http://www.netspyglass.com"
+      "url": "https://www.zscaler.com"
     }
   ],
   "panels": [
@@ -45,7 +45,7 @@
       },
       "id": 50,
       "panels": [],
-      "title": "NetSpyGlass",
+      "title": "Network AI",
       "type": "row"
     },
     {
@@ -57,7 +57,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "format": "none",
       "gauge": {
         "maxValue": 6000,
@@ -167,7 +167,7 @@
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fontSize": "100%",
       "gridPos": {
         "h": 6,
@@ -277,11 +277,11 @@
       ],
       "title": "agents",
       "transform": "table",
-      "type": "table"
+      "type": "table-old"
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fontSize": "100%",
       "gridPos": {
         "h": 6,
@@ -392,7 +392,7 @@
       ],
       "title": "Servers",
       "transform": "table",
-      "type": "table"
+      "type": "table-old"
     },
     {
       "cacheTimeout": null,
@@ -403,7 +403,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "format": "s",
       "gauge": {
         "maxValue": 100,
@@ -518,7 +518,7 @@
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "editable": true,
       "error": false,
       "fontSize": "90%",
@@ -647,14 +647,14 @@
       "title": "Process Uptime",
       "transform": "table",
       "transparent": false,
-      "type": "table"
+      "type": "table-old"
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -783,7 +783,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "decimals": 0,
       "editable": true,
       "error": false,
@@ -1024,7 +1024,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "editable": true,
       "error": false,
       "fill": 0,
@@ -1248,7 +1248,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 0,
       "gridPos": {
         "h": 7,
@@ -1433,7 +1433,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "decimals": 2,
       "editable": true,
       "error": false,
@@ -1684,7 +1684,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1856,7 +1856,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "decimals": 3,
           "editable": true,
           "error": false,
@@ -2007,7 +2007,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "decimals": 3,
           "editable": true,
           "error": false,
@@ -2158,7 +2158,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 0,
           "gridPos": {
             "h": 6,
@@ -2279,7 +2279,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 0,
           "gridPos": {
             "h": 6,
@@ -2417,7 +2417,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "decimals": 2,
       "editable": true,
       "error": false,
@@ -2651,7 +2651,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "decimals": 2,
       "editable": true,
       "error": false,
@@ -2815,7 +2815,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -2937,7 +2937,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -3059,7 +3059,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "description": "Interval of time between beginning of the cycle and the time when alert computation finishes",
       "fill": 1,
       "gridPos": {
@@ -3191,7 +3191,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "description": "Time it takes to compute all alerts, per server",
       "fill": 1,
       "gridPos": {
@@ -3333,7 +3333,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -3541,7 +3541,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -3709,7 +3709,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 0,
@@ -3914,7 +3914,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "gridPos": {
             "h": 6,
@@ -4040,7 +4040,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "gridPos": {
             "h": 6,
@@ -4167,7 +4167,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "gridPos": {
             "h": 5,
@@ -4293,7 +4293,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "gridPos": {
             "h": 5,
@@ -4433,7 +4433,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "decimals": 2,
           "editable": true,
           "error": false,
@@ -4634,7 +4634,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 0,
@@ -4835,7 +4835,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 0,
@@ -5046,7 +5046,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "editable": true,
           "error": false,
           "fill": 0,
@@ -5273,7 +5273,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -5441,7 +5441,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "gridPos": {
             "h": 7,
@@ -5614,7 +5614,7 @@
   "style": "dark",
   "tags": [
     "self-monitoring",
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": [
@@ -5668,7 +5668,7 @@
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "definition": "",
         "hide": 0,
         "includeAll": true,

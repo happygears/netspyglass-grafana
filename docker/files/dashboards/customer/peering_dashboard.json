@@ -21,17 +21,17 @@
     {
       "icon": "cloud",
       "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
+      "title": "Network AI",
+      "tooltip": "Back to  Network AI",
       "type": "link",
-      "url": "/v2"
+      "url": "/v3"
     },
     {
       "icon": "external link",
       "tags": [],
-      "title": "www.netspyglass.com",
+      "title": "www.zscaler.com",
       "type": "link",
-      "url": "http://www.netspyglass.com"
+      "url": "https://www.zscaler.com"
     }
   ],
   "refresh": "1m",
@@ -45,7 +45,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 0,
           "id": 1,
           "legend": {
@@ -228,7 +228,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 0,
           "id": 2,
           "legend": {
@@ -420,7 +420,7 @@
       "panels": [
         {
           "columns": [],
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fontSize": "80%",
           "id": 3,
           "links": [],
@@ -532,14 +532,14 @@
           ],
           "title": "BGP peer connection state. (1=idle, 2=connect, 3=active, 4=opensent, 5=openconfirm, 6=established)",
           "transform": "table",
-          "type": "table"
+          "type": "table-old"
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 4,
           "legend": {
@@ -665,7 +665,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 5,
           "legend": {
@@ -779,7 +779,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 6,
           "legend": {
@@ -900,7 +900,7 @@
   "schemaVersion": 14,
   "style": "dark",
   "tags": [
-    "nsgv2.2",
+    "nsgv2.4",
     "traffic"
   ],
   "templating": {
@@ -911,7 +911,7 @@
           "text": "AS35788",
           "value": "AS35788"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,

@@ -12,7 +12,7 @@
 
 # see NET-2892
 #     NET-3994
-FROM grafana/grafana:9.0.2-ubuntu
+FROM grafana/grafana:11.5.2-ubuntu
 
 ENV HAPPYGEARS_DIR="/happygears"
 
@@ -21,11 +21,11 @@ RUN apt-get update && apt-get install -qq -y jq
 
 WORKDIR $HAPPYGEARS_DIR
 
-ENV GRAFANA_VOLUME_DIR="/opt/grafana"
+ENV GRAFANA_VOLUME_DIR="/var/lib/grafana"
 ENV GRAFANA_LOGS_DIR="$GRAFANA_VOLUME_DIR/logs"
 ENV GRAFANA_PLUGINS_DIR="$GRAFANA_VOLUME_DIR/plugins/"
-ENV GRAFANA_PROVISIONING_DIR="$GRAFANA_VOLUME_DIR/provisioning"
-ENV GRAFANA_DASHBOARDS_DIR="$GRAFANA_VOLUME_DIR/dashboards"
+ENV GRAFANA_PROVISIONING_DIR="/etc/grafana/provisioning"
+ENV GRAFANA_DASHBOARDS_DIR="$GRAFANA_PROVISIONING_DIR/dashboards"
 
 ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="happygears-netspyglass-datasource-v2"
 ENV GF_DEFAULT_APP_MODE="development"
@@ -79,11 +79,11 @@ RUN  mkdir -p                                        $GRAFANA_PROVISIONING_DIR/d
 # data source file gets copied into /opt/grafana/provisioning/datasources by the startup script
 # that uses env. variables to substitute macros
 RUN  mkdir -p                                                       $HAPPYGEARS_DIR/datasources/
-COPY docker/files/provisioning/datasources/grafana-datasources.yaml $HAPPYGEARS_DIR/datasources/
+COPY docker/files/provisioning/datasources/grafana-datasources.yml $HAPPYGEARS_DIR/datasources/
 
 # this file should be installed after we create organization
 RUN  mkdir -p                                                       $HAPPYGEARS_DIR/dashboards/
-COPY docker/files/provisioning/dashboards/dashboards.yaml           $HAPPYGEARS_DIR/dashboards/
+COPY docker/files/provisioning/dashboards/dashboards.yml           $HAPPYGEARS_DIR/dashboards/
 
 RUN  chown -R grafana $GRAFANA_VOLUME_DIR
 

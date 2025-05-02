@@ -7,7 +7,7 @@ then
     exit 1
 fi
 
-DATASOURCE_ID=$(cat plugin.json | jq -r .id)
+DATASOURCE_ID=$(cat dist/plugin.json | jq -r .id)
 
 echo "plugin id: $DATASOURCE_ID"
 

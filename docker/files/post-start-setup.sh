@@ -2,9 +2,8 @@
 
 BASIC_AUTH="${GF_SECURITY_ADMIN_USER}:${GF_SECURITY_ADMIN_PASSWORD}"
 
-GRAFANA_HOME_DIR="/opt/grafana"
-GRAFANA_PROVISIONING_DIR="$GRAFANA_HOME_DIR/provisioning"
-FIRST_START_FILE="$GRAFANA_HOME_DIR/.first_start"
+GRAFANA_PROVISIONING_DIR="/etc/grafana/provisioning"
+FIRST_START_FILE="/var/lib/grafana/.first_start"
 
 # wait for Grafana to come up and begin to respond to API queries. It may take longer
 # when it starts for the first time because it needs to initialize the database
@@ -39,11 +38,11 @@ test -f $FIRST_START_FILE && {
 ## at this point, two organizations should exist and we can proceed to upload
 ## dashbords and datasources files that use them
 #
-#echo "### Generate Grafana datasources.yaml from template ..."
-#perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${HAPPYGEARS_DIR}/datasources/grafana-datasources.yaml > $GRAFANA_PROVISIONING_DIR/datasources/datasources.yaml
+#echo "### Generate Grafana datasources.yml from template ..."
+#perl -pe 's{@(\w+)@}{$ENV{$1} // $&}ge' < ${HAPPYGEARS_DIR}/datasources/grafana-datasources.yml > $GRAFANA_PROVISIONING_DIR/datasources/datasources.yml
 #
-#echo "### Copy dashboards.yaml ..."
-#cp ${HAPPYGEARS_DIR}/dashboards/dashboards.yaml  $GRAFANA_PROVISIONING_DIR/dashboards/dashboards.yaml
+#echo "### Copy dashboards.yml ..."
+#cp ${HAPPYGEARS_DIR}/dashboards/dashboards.yml  $GRAFANA_PROVISIONING_DIR/dashboards/dashboards.yml
 
 echo "### post-startup script is done "
 

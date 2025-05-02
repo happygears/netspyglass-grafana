@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+  "name": "Zscaler Nsg Datasource",
+  "id": "happygears-netspyglass-datasource-v2",
+  "type": "datasource",
+  "metrics": true,
+  "annotations": false,
+  "state": "beta",
+  "routes": [
+    {
+      "path": "",
+      "headers": [{ "name": "X-NSG-Auth-API-Token", "content": "{{ .SecureJsonData.apiKey }}" }]
+    }
+  ],
+  "queryOptions": {
+    "maxDataPoints": true
+  },
+  "alerting": false,
+  "info": {
+    "description": "Zscaler Datasource for NetSpyGlass",
+    "author": {
+      "name": "Zscaler inc.",
+      "url": "http://www.zscaler.com"
+    },
+    "keywords": ["datasource"],
+    "links": [{ "name": "Zscaler inc.", "url": "http://www.zscaler.com" }],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=10.4.0",
+    "plugins": []
+  }
+}

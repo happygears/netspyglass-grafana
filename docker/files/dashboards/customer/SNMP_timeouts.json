@@ -34,7 +34,7 @@
     },
     {
       "columns": [],
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fontSize": "100%",
       "gridPos": {
         "h": 18,
@@ -149,14 +149,14 @@
       ],
       "title": "top 100 devices by SNMP timeouts",
       "transform": "table",
-      "type": "table"
+      "type": "table-old"
     }
   ],
   "schemaVersion": 16,
   "style": "dark",
   "tags": [
     "device",
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": []

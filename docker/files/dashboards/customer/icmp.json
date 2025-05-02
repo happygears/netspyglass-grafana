@@ -21,17 +21,17 @@
     {
       "icon": "cloud",
       "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
+      "title": "Network AI",
+      "tooltip": "Back to  Network AI",
       "type": "link",
-      "url": "/v2"
+      "url": "/v3"
     },
     {
       "icon": "external link",
       "tags": [],
-      "title": "www.netspyglass.com",
+      "title": "www.zscaler.com",
       "type": "link",
-      "url": "http://www.netspyglass.com"
+      "url": "https://www.zscaler.com"
     }
   ],
   "panels": [
@@ -40,7 +40,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 0,
       "gridPos": {
         "h": 7,
@@ -298,7 +298,7 @@
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": [
@@ -308,7 +308,7 @@
           "text": "br1-lhr1",
           "value": "br1-lhr1"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "definition": "",
         "hide": 0,
         "includeAll": false,

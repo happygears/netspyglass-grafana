@@ -1,0 +1,72 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Upload release asset
+
+# Controls when the action will run. 
+on:
+  push:
+    tags:
+      - '*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    name: Upload Release Asset
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        node-version: ['18.x']
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Define NSG Version
+        id: nsg_version
+        uses: happygears/gt2v@v4
+
+      - name: Print NSG Version
+        run: |
+          echo "Build version :point_down:" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.nsg_version.outputs.long_version }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build
+        id: build
+        run: |
+          ./tools/maketar.sh
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.nsg_version.outputs.long_version }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./netspyglass-datasource-v2.tar
+          asset_name: netspyglass-datasource-v2.tar
+          asset_content_type: application/x-tar

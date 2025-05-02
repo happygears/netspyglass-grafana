@@ -6,8 +6,6 @@ name: CI
 on:
   push:
     branches: [ "**" ]
-    tags:
-      - '*'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -47,6 +45,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Build
+        id: build
         run: |
           npm install
           npm run build-prod

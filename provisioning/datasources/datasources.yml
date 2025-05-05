@@ -1,14 +1,19 @@
 apiVersion: 1
 
 datasources:
-  - name: 'zscaler-nsg-datasource'
-    type: 'zscalerinc-zscalernsg-datasource'
+  - name: 'Zscaler NSG Datasource'
+    type: 'happygears-netspyglass-datasource-v2'
     access: proxy
-    isDefault: false
+    isDefault: true
     orgId: 1
-    version: 1
+    url: '${NSG_SERVICE_URL}'
     editable: true
+
     jsonData:
-      path: '/resources'
+      accessToken: ''
+      networkId: 1
+      tlsSkipVerify: true
+      useToken: true
+
     secureJsonData:
-      apiKey: 'api-key'
+      apiKey: '${NSG_API_TOKEN}'

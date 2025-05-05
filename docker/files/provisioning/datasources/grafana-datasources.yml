@@ -10,7 +10,7 @@ apiVersion: 1
 # whats available in the database
 datasources:
   # <string, required> name of the datasource. Required
-  - name: "NetSpyGlass-v2"
+  - name: "Zscaler NSG Datasource"
     # <string, required> datasource type. Required
     type: "happygears-netspyglass-datasource-v2"
     # <string, required> access mode. direct or proxy. Required
@@ -51,7 +51,7 @@ datasources:
 
   # Copy of this data source for org "Happy Gears"
   #
-  - name: "NetSpyGlass-v2"
+  - name: "Zscaler NSG Datasource"
     type: "happygears-netspyglass-datasource-v2"
     access: proxy
     orgId: 2

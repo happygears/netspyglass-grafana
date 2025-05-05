@@ -4,6 +4,12 @@ services:
       file: .config/docker-compose-base.yaml
       service: grafana
 
+    volumes:
+      - "./docker/files/dashboards/customer/:/opt/grafana/dashboards/"
+
+    environment:
+      - NSG_API_TOKEN=xxx
+      - NSG_SERVICE_URL=https://labqa01.netspyglass.com:13148/
 
 volumes:
   grafana-data:

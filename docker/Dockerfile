@@ -48,14 +48,8 @@ RUN PLUGIN_ID=$(jq -r '.["id"]' dist/plugin.json) && \
     cp -r dist/* $HAPPYGEARS_DIR/plugins/${PLUGIN_ID} && \
     rm -rf dist
 
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-worldmap-panel
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install grafana-piechart-panel
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install blackmirror1-singlestat-math-panel
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install vonage-status-panel
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install natel-plotly-panel
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install mtanda-histogram-panel
-RUN grafana-cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install farski-blendstat-panel
 
+RUN grafana cli --pluginsDir $HAPPYGEARS_DIR/plugins/ plugins install vonage-status-panel
 # looks like Aure data source is bundled so there is no need to add it
 
 

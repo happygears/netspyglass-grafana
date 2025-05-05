@@ -17,23 +17,6 @@
   "graphTooltip": 0,
   "id": null,
   "iteration": 1523056379398,
-  "links": [
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "Network AI",
-      "tooltip": "Back to  Network AI",
-      "type": "link",
-      "url": "/v3"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.zscaler.com",
-      "type": "link",
-      "url": "https://www.zscaler.com"
-    }
-  ],
   "panels": [
     {
       "content": "# Graphs that match monitoring variables by device and interface\n\nThese graphs use NsgQL functions to calculate 95-th percentile and draw a line using linear regression",
@@ -55,7 +38,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+      "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 0,
       "gridPos": {
         "h": 10,
@@ -245,7 +228,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+      "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 0,
       "gridPos": {
         "h": 10,
@@ -434,10 +417,7 @@
   "refresh": "1m",
   "schemaVersion": 16,
   "style": "dark",
-  "tags": [
-    "traffic",
-    "nsgv2.4"
-  ],
+  "tags": ["traffic", "nsgv2.4"],
   "templating": {
     "list": [
       {
@@ -447,7 +427,7 @@
           "text": "cty1-bb01",
           "value": "cty1-bb01"
         },
-       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+        "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -471,7 +451,7 @@
           "text": "ae0",
           "value": "ae0"
         },
-       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+        "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -495,29 +475,8 @@
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
   },
   "timezone": "",
   "title": "95-th percentile (Match device and interface)",

@@ -16,23 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 14,
-  "links": [
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "Network AI",
-      "tooltip": "Back to  Network AI",
-      "type": "link",
-      "url": "/v3"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.zscaler.com",
-      "type": "link",
-      "url": "https://www.zscaler.com"
-    }
-  ],
+
   "panels": [
     {
       "content": "# Top 10 interfaces by errors and discards",

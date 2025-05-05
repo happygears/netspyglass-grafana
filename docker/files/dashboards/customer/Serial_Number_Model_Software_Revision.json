@@ -17,23 +17,7 @@
   "graphTooltip": 0,
   "id": 7,
   "iteration": 1570133910030,
-  "links": [
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "Network AI",
-      "tooltip": "Back to  Network AI",
-      "type": "link",
-      "url": "/v3"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.zscaler.com",
-      "type": "link",
-      "url": "https://www.zscaler.com"
-    }
-  ],
+
   "panels": [
     {
       "columns": [],

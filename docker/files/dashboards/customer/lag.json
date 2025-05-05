@@ -3,25 +3,203 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
-
+  "id": 13,
+  "liveNow": false,
   "panels": [
     {
-      "columns": [],
-     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
-      "fontSize": "80%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "decimals": 2,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/capacity.*/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgba(245, 54, 54, 0.9)",
+                      "value": null
+                    },
+                    {
+                      "color": "rgba(237, 129, 40, 0.89)",
+                      "value": 50
+                    },
+                    {
+                      "color": "rgba(50, 172, 45, 0.97)",
+                      "value": 75
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "device"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": false,
+                    "title": "$__cell",
+                    "url": "/dashboard/db/device?var-device=$__cell"
+                  }
+                ]
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Utilization/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Link"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": false,
+                    "title": "Automatically assigned tag that describes device and interface on the other side of the link",
+                    "url": ""
+                  }
+                ]
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 19,
         "w": 24,
@@ -30,153 +208,74 @@
       },
       "id": 1,
       "links": [],
-      "options": {},
-      "pageSize": 20,
-      "scroll": false,
-      "showHeader": true,
-      "sort": {
-        "col": null,
-        "desc": false
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
       },
-      "styles": [
-        {
-          "alias": "Time",
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
-        },
-        {
-          "alias": "",
-          "colorMode": "cell",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "pattern": "/capacity.*/",
-          "thresholds": [
-            "50",
-            "75"
-          ],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "link": true,
-          "linkTooltip": "$__cell",
-          "linkUrl": "/dashboard/db/device?var-device=$__cell",
-          "pattern": "device",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "pattern": "/.*Utilization/",
-          "thresholds": [],
-          "type": "number",
-          "unit": "percentunit"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 2,
-          "link": true,
-          "linkTooltip": "Automatically assigned tag that describes device and interface on the other side of the link",
-          "pattern": "Link",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
-          "pattern": "/.*/",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        }
-      ],
+      "pluginVersion": "9.0.2",
       "targets": [
         {
           "_nsgTarget": {
             "columns": [
               {
+                "$$hashKey": "object:39",
                 "appliedFunctions": [],
                 "name": "device",
                 "visible": true
               },
               {
+                "$$hashKey": "object:40",
                 "alias": "interface",
                 "appliedFunctions": [],
                 "name": "component",
                 "visible": true
               },
               {
+                "$$hashKey": "object:41",
                 "appliedFunctions": [],
                 "name": "ifAlias",
                 "visible": true
               },
               {
+                "$$hashKey": "object:42",
                 "appliedFunctions": [],
                 "name": "Link",
                 "visible": true
               },
               {
+                "$$hashKey": "object:43",
                 "appliedFunctions": [],
                 "name": "ifOperStatus",
                 "visible": true
               },
               {
+                "$$hashKey": "object:44",
                 "appliedFunctions": [],
                 "name": "ifSpeed",
                 "visible": true
               },
               {
+                "$$hashKey": "object:45",
                 "appliedFunctions": [],
                 "name": "ifInUtilization",
                 "visible": true
               },
               {
+                "$$hashKey": "object:46",
                 "appliedFunctions": [],
                 "name": "ifOutUtilization",
                 "visible": true
               },
               {
-                "alias": "capacity(%)",
+                "$$hashKey": "object:47",
+                "alias": "capacity",
                 "appliedFunctions": [
                   {
+                    "$$hashKey": "object:108",
                     "name": "tslast"
                   }
                 ],
@@ -184,11 +283,14 @@
                 "visible": true
               }
             ],
+            "disableAdHoc": false,
             "format": "table",
             "groupBy": {
               "type": "select type",
               "value": "select value"
             },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
             "isTablePanel": true,
             "limit": 100,
             "loading": false,
@@ -207,20 +309,27 @@
             "type": "nsgql",
             "variable": "portAggregatorBandwidth"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "title": "Available capacity of aggregated links",
-      "transform": "table",
-      "type": "table-old"
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
-  "schemaVersion": 18,
+  "schemaVersion": 36,
   "style": "dark",
-  "tags": [
-    "interfaces",
-    "nsgv2.4"
-  ],
+  "tags": ["interfaces", "nsgv2.2"],
   "templating": {
     "list": []
   },
@@ -229,32 +338,12 @@
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
   },
   "timezone": "",
   "title": "LAG",
   "uid": "C2LGaOhZz",
-  "version": 2
+  "version": 7,
+  "weekStart": ""
 }

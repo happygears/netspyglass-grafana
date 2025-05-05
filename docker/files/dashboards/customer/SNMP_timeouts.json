@@ -247,7 +247,7 @@
   ],
   "schemaVersion": 36,
   "style": "dark",
-  "tags": ["device", "nsgv2.2"],
+  "tags": ["device", "nsgv2.4"],
   "templating": {
     "list": []
   },

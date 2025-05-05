@@ -1206,7 +1206,7 @@
   "preload": false,
   "refresh": "",
   "schemaVersion": 40,
-  "tags": [],
+  "tags": ["nsgv2.4"],
   "templating": {
     "list": [
       {

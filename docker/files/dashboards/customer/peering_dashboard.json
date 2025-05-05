@@ -1057,7 +1057,7 @@
   "refresh": "1m",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": ["nsgv2.2", "traffic"],
+  "tags": ["nsgv2.4", "traffic"],
   "templating": {
     "list": [
       {

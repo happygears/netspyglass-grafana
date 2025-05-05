@@ -329,7 +329,7 @@
   ],
   "schemaVersion": 36,
   "style": "dark",
-  "tags": ["interfaces", "nsgv2.2"],
+  "tags": ["interfaces", "nsgv2.4"],
   "templating": {
     "list": []
   },

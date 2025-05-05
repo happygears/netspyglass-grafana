@@ -3,23 +3,33 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
   "id": 14,
-
   "panels": [
     {
-      "content": "# Top 10 interfaces by errors and discards",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "editable": true,
       "error": false,
       "gridPos": {
@@ -30,15 +40,27 @@
       },
       "id": 5,
       "links": [],
-      "mode": "markdown",
-      "options": {},
-      "title": "",
+      "options": {
+        "content": "# Top 10 interfaces by errors and discards",
+        "mode": "markdown"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "A"
+        }
+      ],
       "transparent": true,
       "type": "text"
     },
     {
       "columns": [],
-     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+      "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -53,16 +75,10 @@
       "interval": "1h",
       "links": [
         {
-          "dashUri": "db/interface-panel",
-          "dashboard": "Interface Panel",
-          "includeVars": true,
-          "keepTime": true,
-          "params": "var-deviceName=$tag_deviceName",
           "title": "Interface Panel",
-          "type": "dashboard"
+          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-deviceName=$tag_deviceName"
         }
       ],
-      "options": {},
       "pageSize": 10,
       "scroll": false,
       "showHeader": true,
@@ -72,23 +88,20 @@
       },
       "styles": [
         {
+          "align": "auto",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "pattern": "Time",
           "type": "date"
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__value.text}&var-interface=${__data.fields[1]}",
           "pattern": "device",
           "thresholds": [],
           "type": "string",
@@ -96,33 +109,25 @@
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "component",
           "thresholds": [],
           "type": "string",
           "unit": "short"
         },
         {
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "/.*metric/",
           "thresholds": [],
           "type": "number",
@@ -184,6 +189,9 @@
           "category": "Interface",
           "columns": "device,component,description,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "select device",
           "dsType": "influxdb",
           "format": "table",
@@ -191,15 +199,11 @@
           "group": "select group",
           "groupBy": [
             {
-              "params": [
-                "$interval"
-              ],
+              "params": ["$interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -211,9 +215,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -239,14 +241,15 @@
         }
       ],
       "timeFrom": "1h",
-      "timeShift": null,
       "title": "Top 10 interfaces with input discards (last 1hr)",
       "transform": "table",
       "type": "table-old"
     },
     {
       "columns": [],
-     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+      "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -261,16 +264,10 @@
       "interval": "1h",
       "links": [
         {
-          "dashUri": "db/interface-panel",
-          "dashboard": "Interface Panel",
-          "includeVars": true,
-          "keepTime": true,
-          "params": "var-device=$tag_deviceName",
           "title": "Interface Panel",
-          "type": "dashboard"
+          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-device=$tag_deviceName"
         }
       ],
-      "options": {},
       "pageSize": 10,
       "scroll": false,
       "showHeader": true,
@@ -280,23 +277,20 @@
       },
       "styles": [
         {
+          "align": "auto",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "pattern": "Time",
           "type": "date"
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__value.text}&var-interface=${__data.fields[1]}",
           "pattern": "device",
           "thresholds": [],
           "type": "string",
@@ -304,33 +298,25 @@
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "component",
           "thresholds": [],
           "type": "string",
           "unit": "short"
         },
         {
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "/.*metric/",
           "thresholds": [],
           "type": "number",
@@ -392,6 +378,9 @@
           "category": "Interface",
           "columns": "device,component,description,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "select device",
           "dsType": "influxdb",
           "format": "table",
@@ -399,15 +388,11 @@
           "group": "select group",
           "groupBy": [
             {
-              "params": [
-                "$interval"
-              ],
+              "params": ["$interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -419,9 +404,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -447,14 +430,15 @@
         }
       ],
       "timeFrom": "1h",
-      "timeShift": null,
       "title": "Top 10 interfaces with output discards (last 1hr)",
       "transform": "table",
       "type": "table-old"
     },
     {
       "columns": [],
-     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+      "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -469,16 +453,10 @@
       "interval": "1h",
       "links": [
         {
-          "dashUri": "db/interface-panel",
-          "dashboard": "Interface Panel",
-          "includeVars": true,
-          "keepTime": true,
-          "params": "var-deviceName=$tag_deviceName",
           "title": "Interface Panel",
-          "type": "dashboard"
+          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-deviceName=$tag_deviceName"
         }
       ],
-      "options": {},
       "pageSize": 10,
       "scroll": false,
       "showHeader": true,
@@ -488,23 +466,20 @@
       },
       "styles": [
         {
+          "align": "auto",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "pattern": "Time",
           "type": "date"
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__value.text}&var-interface=${__data.fields[1]}",
           "pattern": "device",
           "thresholds": [],
           "type": "string",
@@ -512,33 +487,25 @@
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "component",
           "thresholds": [],
           "type": "string",
           "unit": "short"
         },
         {
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "/.*metric/",
           "thresholds": [],
           "type": "number",
@@ -600,6 +567,9 @@
           "category": "Interface",
           "columns": "device,component,description,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "select device",
           "dsType": "influxdb",
           "format": "table",
@@ -607,15 +577,11 @@
           "group": "select group",
           "groupBy": [
             {
-              "params": [
-                "$interval"
-              ],
+              "params": ["$interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -627,9 +593,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -655,14 +619,15 @@
         }
       ],
       "timeFrom": "1h",
-      "timeShift": null,
       "title": "Top 10 interfaces with input errors (last 1hr)",
       "transform": "table",
       "type": "table-old"
     },
     {
       "columns": [],
-     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
+      "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -677,16 +642,10 @@
       "interval": "1h",
       "links": [
         {
-          "dashUri": "db/interface-panel",
-          "dashboard": "Interface Panel",
-          "includeVars": true,
-          "keepTime": true,
-          "params": "var-deviceName=$tag_deviceName",
           "title": "Interface Panel",
-          "type": "dashboard"
+          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-deviceName=$tag_deviceName"
         }
       ],
-      "options": {},
       "pageSize": 10,
       "scroll": false,
       "showHeader": true,
@@ -696,23 +655,20 @@
       },
       "styles": [
         {
+          "align": "auto",
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "pattern": "Time",
           "type": "date"
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__value.text}&var-interface=${__data.fields[1]}",
           "pattern": "device",
           "thresholds": [],
           "type": "string",
@@ -720,33 +676,25 @@
         },
         {
           "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "component",
           "thresholds": [],
           "type": "string",
           "unit": "short"
         },
         {
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
+          "align": "auto",
+          "colors": ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
           "decimals": 2,
           "link": true,
           "linkTooltip": "click to open interface panel",
-          "linkUrl": "/dashboard/db/interface-panel?var-device=$__cell_0&var-interface=$__cell_1",
+          "linkUrl": "/d/DmnZ4abHz/interface-panel?var-device=${__data.fields[0]}&var-interface=${__data.fields[1]}",
           "pattern": "/.*metric/",
           "thresholds": [],
           "type": "number",
@@ -808,6 +756,9 @@
           "category": "Interface",
           "columns": "device,component,description,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "select device",
           "dsType": "influxdb",
           "format": "table",
@@ -815,15 +766,11 @@
           "group": "select group",
           "groupBy": [
             {
-              "params": [
-                "$interval"
-              ],
+              "params": ["$interval"],
               "type": "time"
             },
             {
-              "params": [
-                "null"
-              ],
+              "params": ["null"],
               "type": "fill"
             }
           ],
@@ -835,9 +782,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "field"
               },
               {
@@ -863,19 +808,15 @@
         }
       ],
       "timeFrom": "1h",
-      "timeShift": null,
       "title": "Top 10 interfaces with output errors (last 1hr)",
       "transform": "table",
       "type": "table-old"
     }
   ],
   "refresh": "1h",
-  "schemaVersion": 18,
+  "schemaVersion": 36,
   "style": "dark",
-  "tags": [
-    "interfaces",
-    "nsgv2.4"
-  ],
+  "tags": ["interfaces", "nsgv2.2"],
   "templating": {
     "list": []
   },
@@ -884,32 +825,12 @@
     "to": "now"
   },
   "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
   },
   "timezone": "browser",
   "title": "Interface Errors and Discards",
   "uid": "5QYM-OhZz",
-  "version": 1
+  "version": 9,
+  "weekStart": ""
 }

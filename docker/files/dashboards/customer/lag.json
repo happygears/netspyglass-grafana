@@ -140,8 +140,8 @@
                 "value": [
                   {
                     "targetBlank": false,
-                    "title": "$__cell",
-                    "url": "/dashboard/db/device?var-device=$__cell"
+                    "title": "${__value.text}",
+                    "url": "/d/BsYG-O2Zz/device?var-device=${__value.text}"
                   }
                 ]
               },

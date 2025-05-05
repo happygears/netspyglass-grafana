@@ -34,7 +34,7 @@
       "title": "Interfaces",
       "tooltip": "Open Interface Dashboard for this device",
       "type": "link",
-      "url": "/dashboard/db/interface-panel"
+      "url": "/d/DmnZ4abHz/interface-panel"
     },
     {
       "icon": "cloud",

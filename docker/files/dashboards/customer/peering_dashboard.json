@@ -34,8 +34,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P1F75065798FE4C6E"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fill": 0,
       "fillGradient": 0,
@@ -247,8 +246,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P1F75065798FE4C6E"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fill": 0,
       "fillGradient": 0,
@@ -456,8 +454,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P1F75065798FE4C6E"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -647,8 +644,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P1F75065798FE4C6E"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -785,8 +781,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P1F75065798FE4C6E"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -923,8 +918,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P1F75065798FE4C6E"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {

@@ -8,8 +8,8 @@ services:
       - "./docker/files/dashboards/customer/:/opt/grafana/dashboards/"
 
     environment:
-      - NSG_API_TOKEN=xxx
-      - NSG_SERVICE_URL=https://labqa01.netspyglass.com:13148/
+      - NSG_API_TOKEN=$NSG_API_TOKEN
+      - NSG_SERVICE_URL=$NSG_SERVICE_URL
 
 volumes:
   grafana-data:

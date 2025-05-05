@@ -59,8 +59,8 @@
     {
       "columns": [],
       "datasource": {
-            "type": "happygears-netspyglass-datasource-v2"
-          },
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -76,7 +76,7 @@
       "links": [
         {
           "title": "Interface Panel",
-          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-deviceName=$tag_deviceName"
+          "url": "/d/DmnZ4abHz/interface-panel"
         }
       ],
       "pageSize": 10,
@@ -248,8 +248,8 @@
     {
       "columns": [],
       "datasource": {
-            "type": "happygears-netspyglass-datasource-v2"
-          },
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -265,7 +265,7 @@
       "links": [
         {
           "title": "Interface Panel",
-          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-device=$tag_deviceName"
+          "url": "/d/DmnZ4abHz/interface-panel"
         }
       ],
       "pageSize": 10,
@@ -437,8 +437,8 @@
     {
       "columns": [],
       "datasource": {
-            "type": "happygears-netspyglass-datasource-v2"
-          },
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -454,7 +454,7 @@
       "links": [
         {
           "title": "Interface Panel",
-          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-deviceName=$tag_deviceName"
+          "url": "/d/DmnZ4abHz/interface-panel"
         }
       ],
       "pageSize": 10,
@@ -626,8 +626,8 @@
     {
       "columns": [],
       "datasource": {
-            "type": "happygears-netspyglass-datasource-v2"
-          },
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "editable": true,
       "error": false,
       "fontSize": "100%",
@@ -643,7 +643,7 @@
       "links": [
         {
           "title": "Interface Panel",
-          "url": "dashboard/db/interface-panel?$__url_time_range&$__all_variables&var-deviceName=$tag_deviceName"
+          "url": "/d/DmnZ4abHz/interface-panel"
         }
       ],
       "pageSize": 10,

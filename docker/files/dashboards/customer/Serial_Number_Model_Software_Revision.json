@@ -132,7 +132,12 @@
               },
               {
                 "id": "links",
-                "value": []
+                "value": [
+                  {
+                    "title": "Go to device ${__value.text}",
+                    "url": "/d/BsYG-O2Zz/device?var-device=${__value.text}"
+                  }
+                ]
               },
               {
                 "id": "custom.align"

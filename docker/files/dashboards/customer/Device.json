@@ -35,21 +35,6 @@
       "tooltip": "Open Interface Dashboard for this device",
       "type": "link",
       "url": "/d/DmnZ4abHz/interface-panel"
-    },
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "Network AI",
-      "tooltip": "Back to  Network AI",
-      "type": "link",
-      "url": "/v3"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.zscaler.com",
-      "type": "link",
-      "url": "https://www.zscaler.com"
     }
   ],
   "liveNow": false,

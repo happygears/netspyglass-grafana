@@ -15,6 +15,15 @@
                     "content": "{{ .SecureJsonData.apiKey }}"
                 }
             ]
+        },
+        {
+            "path": "/v2/",
+            "headers": [
+                {
+                    "name": "X-NSG-Auth-API-Token",
+                    "content": "{{ .SecureJsonData.apiKey }}"
+                }
+            ]
         }
     ],
     "queryOptions": {
@@ -41,7 +50,7 @@
             "large": "img/logo.svg"
         },
         "version": "2.4.0",
-        "updated": "2025-05-02"
+        "updated": "2025-05-06"
     },
     "dependencies": {
         "grafanaDependency": ">=10.4.0",

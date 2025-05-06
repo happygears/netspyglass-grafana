@@ -10,6 +10,10 @@
     {
       "path": "",
       "headers": [{ "name": "X-NSG-Auth-API-Token", "content": "{{ .SecureJsonData.apiKey }}" }]
+    },
+    {
+      "path": "/v2/",
+      "headers": [{ "name": "X-NSG-Auth-API-Token", "content": "{{ .SecureJsonData.apiKey }}" }]
     }
   ],
   "queryOptions": {

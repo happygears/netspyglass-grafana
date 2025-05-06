@@ -5673,10 +5673,7 @@
       }
     ]
   },
-  "time": {
-    "from": "now-1h",
-    "to": "now"
-  },
+
   "timepicker": {
     "now": true,
     "refresh_intervals": [

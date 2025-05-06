@@ -677,10 +677,7 @@
       }
     ]
   },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
-  },
+
   "timepicker": {
     "refresh_intervals": [
       "5s",

@@ -276,10 +276,7 @@
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
+
   "timepicker": {},
   "timezone": "",
   "title": "Serial Number,  Model, Software Revision",

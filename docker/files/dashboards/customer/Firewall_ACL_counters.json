@@ -171,10 +171,7 @@
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
+
   "timepicker": {
     "refresh_intervals": [
       "5s",

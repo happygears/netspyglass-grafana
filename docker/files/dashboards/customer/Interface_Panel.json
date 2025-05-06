@@ -172,29 +172,29 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:861",
+
                 "appliedFunctions": [],
                 "name": "device",
                 "visible": true
               },
               {
-                "$$hashKey": "object:862",
+
                 "appliedFunctions": [],
                 "name": "Model",
                 "visible": true
               },
               {
-                "$$hashKey": "object:863",
+
                 "appliedFunctions": [],
                 "name": "SerialNumber",
                 "visible": true
               },
               {
-                "$$hashKey": "object:864",
+
                 "alias": "uptime",
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:973",
+
                     "name": "tslast"
                   }
                 ],
@@ -202,7 +202,7 @@
                 "visible": true
               },
               {
-                "$$hashKey": "object:865",
+
                 "appliedFunctions": [],
                 "name": "Vendor",
                 "visible": true
@@ -425,31 +425,31 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:718",
+
                 "appliedFunctions": [],
                 "name": "component",
                 "visible": true
               },
               {
-                "$$hashKey": "object:719",
+
                 "appliedFunctions": [],
                 "name": "ifAdminStatus",
                 "visible": true
               },
               {
-                "$$hashKey": "object:720",
+
                 "appliedFunctions": [],
                 "name": "ifOperStatus",
                 "visible": true
               },
               {
-                "$$hashKey": "object:721",
+
                 "appliedFunctions": [],
                 "name": "Link",
                 "visible": true
               },
               {
-                "$$hashKey": "object:722",
+
                 "appliedFunctions": [],
                 "name": "ifAlias",
                 "visible": true
@@ -633,10 +633,10 @@
             "alias": "$device:$component",
             "columns": [
               {
-                "$$hashKey": "object:1001",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:1119",
+
                     "name": "tsavg"
                   }
                 ],
@@ -843,7 +843,7 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:1142",
+
                 "appliedFunctions": [
                   {
                     "name": "tsavg"
@@ -1075,7 +1075,7 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:1274",
+
                 "appliedFunctions": [
                   {
                     "name": "tsavg"
@@ -1283,7 +1283,7 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:1406",
+
                 "appliedFunctions": [
                   {
                     "name": "tsavg"
@@ -1515,10 +1515,10 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:1538",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:1848",
+
                     "name": "tsavg"
                   }
                 ],
@@ -1724,10 +1724,10 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:1670",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:1737",
+
                     "name": "tsavg"
                   }
                 ],
@@ -1914,10 +1914,6 @@
         "useTags": false
       }
     ]
-  },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
   },
   "timepicker": {
     "now": true,

@@ -83,10 +83,10 @@
             "alias": "$device : $component (in)",
             "columns": [
               {
-                "$$hashKey": "object:235",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:358",
+
                     "name": "tsavg"
                   }
                 ],
@@ -146,14 +146,14 @@
             "alias": "$device : $component (in, 95%)",
             "columns": [
               {
-                "$$hashKey": "object:279",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:347",
+
                     "name": "tslinear"
                   },
                   {
-                    "$$hashKey": "object:348",
+
                     "name": "tspercentile95"
                   }
                 ],
@@ -295,10 +295,10 @@
             "alias": "$device : $component (in)",
             "columns": [
               {
-                "$$hashKey": "object:506",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:618",
+
                     "name": "tsavg"
                   }
                 ],
@@ -358,14 +358,14 @@
             "alias": "$device : $component (in, 95%)",
             "columns": [
               {
-                "$$hashKey": "object:550",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:627",
+
                     "name": "tslinear"
                   },
                   {
-                    "$$hashKey": "object:628",
+
                     "name": "tspercentile95"
                   }
                 ],
@@ -569,23 +569,23 @@
           "_nsgTarget": {
             "columns": [
               {
-                "$$hashKey": "object:33",
+
                 "appliedFunctions": [],
                 "name": "device",
                 "visible": true
               },
               {
-                "$$hashKey": "object:34",
+
                 "appliedFunctions": [],
                 "name": "component",
                 "visible": true
               },
               {
-                "$$hashKey": "object:35",
+
                 "alias": "state",
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:74",
+
                     "name": "tslast"
                   }
                 ],
@@ -723,10 +723,10 @@
             "alias": "$device : $component",
             "columns": [
               {
-                "$$hashKey": "object:771",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:826",
+
                     "name": "tsavg"
                   }
                 ],
@@ -860,10 +860,10 @@
             "alias": "$device : $component",
             "columns": [
               {
-                "$$hashKey": "object:896",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:951",
+
                     "name": "tsavg"
                   }
                 ],
@@ -997,10 +997,10 @@
             "alias": "$device : $component",
             "columns": [
               {
-                "$$hashKey": "object:1021",
+
                 "appliedFunctions": [
                   {
-                    "$$hashKey": "object:1076",
+
                     "name": "tsavg"
                   }
                 ],
@@ -1083,10 +1083,6 @@
         "useTags": false
       }
     ]
-  },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],

@@ -9,10 +9,12 @@ ENV PLUGIN_ID="happygears-netspyglass-datasource-v2"
 ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="${PLUGIN_ID}"
 ENV GF_DEFAULT_APP_MODE="development"
 ENV GF_PLUGINS_PREINSTALL="vonage-status-panel"
-
+USER root
 # copy netspyglass plugin code in the image
 COPY dist $GF_PATHS_PLUGINS/${PLUGIN_ID}/
 COPY docker/files/start.sh /
+RUN  chmod +x /start.sh
+
 COPY docker/files/dashboards /${GF_PATHS_PROVISIONING}/dashboards/
 
 RUN  mkdir -p                                                       $GF_PATHS_PROVISIONING/datasources/
@@ -20,11 +22,11 @@ COPY docker/files/provisioning/datasources/grafana-datasources.yml  $GF_PATHS_PR
 
 RUN  mkdir -p                                                       $GF_PATHS_PROVISIONING/dashboards/
 COPY docker/files/provisioning/dashboards/dashboards.yml            $GF_PATHS_PROVISIONING/dashboards/
-
+RUN  chown -R grafana $GF_PATHS_DATA
 VOLUME ["$GF_PATHS_DATA"]
 
 EXPOSE 3000
 
 USER grafana
 
-ENTRYPOINT ["/run.sh"]
+ENTRYPOINT ["/start.sh"]

@@ -1,13 +1,6 @@
 # config file version
 apiVersion: 1
 
-## list of datasources that should be deleted from the database
-#deleteDatasources:
-#  - name: Graphite
-#    orgId: 1
-
-# list of datasources to insert/update depending
-# whats available in the database
 datasources:
   # <string, required> name of the datasource. Required
   - name: "Zscaler NSG Datasource"
@@ -18,7 +11,7 @@ datasources:
     # <int> org id. will default to orgId 1 if not specified
     orgId: 1
     # <string> url
-    url: "@NSG_SERVICE_URL@"
+    url: "${NSG_SERVICE_URL}"
     # <string> database password, if used
     password:
     # <string> database user, if used
@@ -37,41 +30,14 @@ datasources:
     isDefault: true
     # <map> fields that will be converted to json and stored in json_data
     jsonData:
-       accessToken: "@NSG_API_TOKEN@"
+       accessToken: "${NSG_API_TOKEN}"
        networkId: 1
        tlsSkipVerify: true
        useToken: true
 
-  #  # <string> json object of data that will be encrypted.
+    # <string> json object of data that will be encrypted.
     secureJsonData:
-      apiKey: "@NSG_API_TOKEN@"
-  #  version: 1
+      apiKey: "${NSG_API_TOKEN}"
+
     # <bool> allow users to edit datasources from the UI.
-    editable: false
-
-  # Copy of this data source for org "Happy Gears"
-  #
-  - name: "Zscaler NSG Datasource"
-    type: "happygears-netspyglass-datasource-v2"
-    access: proxy
-    orgId: 2
-    url: "@NSG_SERVICE_URL@"
-    password:
-    user:
-    database:
-    basicAuth: false
-    basicAuthUser:
-    basicAuthPassword:
-    withCredentials:
-    isDefault: false
-    jsonData:
-      accessToken: "@NSG_API_TOKEN@"
-      networkId: 1
-      tlsSkipVerify: true
-      useToken: true
-      addTokenToHeader: true
-
-    secureJsonData:
-      apiKey: "@NSG_API_TOKEN@"
-
     editable: false

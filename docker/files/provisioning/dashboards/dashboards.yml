@@ -8,13 +8,4 @@ providers:
     disableDeletion: false
     editable: false
     options:
-      path: /etc/grafana/provisioning/dashboards/customer
-
-  - name: 'Happy Gears'
-    orgId: 2
-    folder: ''
-    type: file
-    disableDeletion: false
-    editable: false
-    options:
-      path: /etc/grafana/provisioning/dashboards/happygears
+      path: ${GF_PATHS_PROVISIONING}/dashboards/

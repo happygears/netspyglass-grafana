@@ -31,8 +31,7 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P48288DDD875EBDB8"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "gridPos": {
         "h": 1,
@@ -45,8 +44,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "P48288DDD875EBDB8"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "A"
         }
@@ -56,8 +54,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P48288DDD875EBDB8"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -214,8 +211,7 @@
             "variable": "tsDbVarCount"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "P48288DDD875EBDB8"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "A"
         },
@@ -272,8 +268,7 @@
             "variable": "tsDbVarCount"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "P48288DDD875EBDB8"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "B"
         }
@@ -283,8 +278,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P48288DDD875EBDB8"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -413,8 +407,7 @@
             "variable": "tsDbErrors"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "P48288DDD875EBDB8"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "B"
         }
@@ -424,8 +417,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P48288DDD875EBDB8"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -567,8 +559,7 @@
             "variable": "tsDbSaveLag"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "P48288DDD875EBDB8"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "B"
         }
@@ -578,8 +569,7 @@
     },
     {
       "datasource": {
-        "type": "happygears-netspyglass-datasource-v2",
-        "uid": "P48288DDD875EBDB8"
+        "type": "happygears-netspyglass-datasource-v2"
       },
       "fieldConfig": {
         "defaults": {
@@ -708,8 +698,7 @@
             "variable": "tsDbSaverQueueSize"
           },
           "datasource": {
-            "type": "happygears-netspyglass-datasource-v2",
-            "uid": "P48288DDD875EBDB8"
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "C"
         }

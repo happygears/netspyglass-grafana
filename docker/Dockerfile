@@ -12,6 +12,7 @@ ENV GF_PLUGINS_PREINSTALL="vonage-status-panel"
 
 # copy netspyglass plugin code in the image
 COPY dist $GF_PATHS_PLUGINS/${PLUGIN_ID}/
+COPY docker/files/start.sh /
 COPY docker/files/dashboards /${GF_PATHS_PROVISIONING}/dashboards/
 
 RUN  mkdir -p                                                       $GF_PATHS_PROVISIONING/datasources/

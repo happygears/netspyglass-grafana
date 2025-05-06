@@ -11,17 +11,6 @@ export function getSharedStyles(theme: GrafanaTheme2) {
         marginRight: 0,
       },
     }),
-    inlineField2: css({
-      '& > label:first-of-type': {
-        color: theme.colors.primary.text,
-      },
-      '& > div': {
-        flex: 'auto',
-      },
-      '&:last-child': {
-        marginRight: 0,
-      },
-    }),
     inlineLabel: css({
       cursor: 'pointer',
       '&:active': {

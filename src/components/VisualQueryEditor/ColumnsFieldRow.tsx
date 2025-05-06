@@ -13,7 +13,7 @@ import {
 import { uniqueId } from 'lodash';
 import React, { FormEvent, useState } from 'react';
 import { CascaderSegment } from './CascaderSegment';
-import { getSharedStyles, noRightMargin } from './sharedStyles';
+import { noRightMargin } from './sharedStyles';
 import { QueryHints, TransformationFuncs } from 'dictionary';
 import { css, cx } from '@emotion/css';
 import { DropdownSegment, DropdownSegmentOption } from './DropdownSegment';
@@ -88,6 +88,24 @@ interface Props {
   value: ZSTargetColumn[];
 }
 
+function getLocalStyles(theme: GrafanaTheme2) {
+  return {
+    inlineFieldColumnsRow: css({
+      width: '100%',
+
+      '& > label:first-of-type': {
+        color: theme.colors.primary.text,
+      },
+      '& > div': {
+        flex: 'auto',
+      },
+      '&:last-child': {
+        marginRight: 0,
+      },
+    }),
+  };
+}
+
 function getSingleColumnStyles(theme: GrafanaTheme2) {
   return {
     spaceAround: css({
@@ -112,7 +130,7 @@ function getSingleColumnStyles(theme: GrafanaTheme2) {
 }
 
 export function ColumnsFieldRow({ value, onChange, options }: Props) {
-  const styles = useStyles2(getSharedStyles);
+  const localStyles = useStyles2(getLocalStyles);
   const theme = useTheme2();
   const [inline, setInline] = useState(true);
 
@@ -164,9 +182,7 @@ export function ColumnsFieldRow({ value, onChange, options }: Props) {
 
   return (
     <InlineFieldRow>
-      <InlineField label="SELECT" labelWidth={12} className={styles.inlineField2} grow={true}>
-        {/* <Stack direction={inline ? 'row' : 'column'} gap={0.5} alignItems={'flex-start'} width={'100%'} wrap={'wrap'}>
-        </Stack> */}
+      <InlineField label="SELECT" labelWidth={12} className={localStyles.inlineFieldColumnsRow} grow={true}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="droppable" direction={inline ? 'horizontal' : 'vertical'}>
             {(provided, snapshot) => (

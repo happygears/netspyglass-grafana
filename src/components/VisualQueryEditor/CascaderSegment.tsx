@@ -12,7 +12,7 @@ const wrapperClassname = css({
 // Fix gragana cascader element icon
 injectGlobal(`
   .rc-cascader-dropdown .rc-cascader-menu-item-expand::after {
-    mask: url(/public/img/icons/unicons/angle-right.svg) !important;
+    mask: url(public/img/icons/unicons/angle-right.svg) !important;
     background: currentcolor !important;
     width: 16px !important;
     height: 16px !important;

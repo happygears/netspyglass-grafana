@@ -7,8 +7,5 @@ import { ZSQuery, ZSDataSourceOptions } from './types';
 
 export const plugin = new DataSourcePlugin<DataSource, ZSQuery, ZSDataSourceOptions>(DataSource)
   .setConfigEditor(ConfigEditor)
-  .setQueryEditor(QueryEditor)
-  // .setQueryEditorHelp(QueryEditorHelp);
-
-
-  console.log(plugin.components);
+  .setQueryEditor(QueryEditor);
+// .setQueryEditorHelp(QueryEditorHelp);

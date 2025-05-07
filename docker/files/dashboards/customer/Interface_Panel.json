@@ -374,7 +374,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "ifAlias"
+              "options": "description"
             },
             "properties": [
               {
@@ -451,7 +451,7 @@
               {
 
                 "appliedFunctions": [],
-                "name": "ifAlias",
+                "name": "description",
                 "visible": true
               }
             ],
@@ -496,7 +496,7 @@
           "aggregator": " -- ",
           "alias": "",
           "category": "Interface",
-          "columns": "ifAdminStatus,ifOperStatus,ifAlias",
+          "columns": "ifAdminStatus,ifOperStatus,description",
           "component": "$component",
           "datasource": {
             "type": "happygears-netspyglass-datasource-v2"
@@ -1934,6 +1934,6 @@
   "timezone": "browser",
   "title": "Interface Panel",
   "uid": "DmnZ4abHz",
-  "version": 9,
+  "version": 10,
   "weekStart": ""
 }

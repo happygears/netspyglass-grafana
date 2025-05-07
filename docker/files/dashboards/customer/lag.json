@@ -237,7 +237,7 @@
               {
 
                 "appliedFunctions": [],
-                "name": "ifAlias",
+                "name": "description",
                 "visible": true
               },
               {
@@ -340,6 +340,6 @@
   "timezone": "",
   "title": "LAG",
   "uid": "C2LGaOhZz",
-  "version": 7,
+  "version": 8,
   "weekStart": ""
 }

@@ -1,17 +1,24 @@
 # config file version
 apiVersion: 1
 
+deleteDatasources:
+  - name: 'NetSpyGlass-v2'
+    orgId: 1
+
+  - name: 'NetSpyGlass(v2)'
+    orgId: 1
+
 datasources:
   # <string, required> name of the datasource. Required
-  - name: "Zscaler NSG Datasource"
+  - name: 'Zscaler NSG Datasource'
     # <string, required> datasource type. Required
-    type: "happygears-netspyglass-datasource-v2"
+    type: 'happygears-netspyglass-datasource-v2'
     # <string, required> access mode. direct or proxy. Required
     access: proxy
     # <int> org id. will default to orgId 1 if not specified
     orgId: 1
     # <string> url
-    url: "${NSG_SERVICE_URL}"
+    url: '${NSG_SERVICE_URL}'
     # <string> database password, if used
     password:
     # <string> database user, if used
@@ -30,14 +37,14 @@ datasources:
     isDefault: true
     # <map> fields that will be converted to json and stored in json_data
     jsonData:
-       accessToken: "${NSG_API_TOKEN}"
-       networkId: 1
-       tlsSkipVerify: true
-       useToken: true
+      accessToken: '${NSG_API_TOKEN}'
+      networkId: 1
+      tlsSkipVerify: true
+      useToken: true
 
     # <string> json object of data that will be encrypted.
     secureJsonData:
-      apiKey: "${NSG_API_TOKEN}"
+      apiKey: '${NSG_API_TOKEN}'
 
     # <bool> allow users to edit datasources from the UI.
     editable: false

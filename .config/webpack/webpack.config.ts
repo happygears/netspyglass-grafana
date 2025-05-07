@@ -74,6 +74,7 @@ const config = async (env): Promise<Configuration> => {
       /^@grafana\/ui/i,
       /^@grafana\/runtime/i,
       /^@grafana\/data/i,
+      /^\/public\/img\/icons/i,
 
       // Mark legacy SDK imports as external if their name starts with the "grafana/" prefix
       ({ request }, callback) => {
@@ -132,7 +133,19 @@ const config = async (env): Promise<Configuration> => {
         },
         {
           test: /\.css$/,
-          use: ['style-loader', 'css-loader'],
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                url: {
+                  filter: (url, resourcePath) => {
+                    return url.indexOf('/public/') === -1;
+                  },
+                },
+              },
+            },
+          ],
         },
         {
           test: /\.s[ac]ss$/,

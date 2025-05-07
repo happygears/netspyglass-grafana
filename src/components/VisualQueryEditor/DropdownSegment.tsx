@@ -1,6 +1,7 @@
 import { Dropdown, InlineLabel, Menu, useStyles2 } from '@grafana/ui';
 import React, { ComponentProps, useMemo } from 'react';
 import { getSharedStyles } from './sharedStyles';
+import { css } from '@emotion/css';
 
 export interface DropdownSegmentProps<T> extends React.PropsWithChildren {
   onSelect: (event: DropdownSegmentOption<T>) => void;
@@ -16,6 +17,14 @@ export interface DropdownSegmentOption<T> {
   value?: T;
   interactive?: boolean;
 }
+
+const localStyles = {
+  contentWrapper: css({
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }),
+};
 
 export function DropdownSegment<T extends string>({
   options,
@@ -34,10 +43,7 @@ export function DropdownSegment<T extends string>({
 
   return (
     <Dropdown overlay={<Menu>{menuItems}</Menu>} placement={placement || 'right-end'}>
-      <div
-        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-        onClickCapture={() => onLabelClick?.()}
-      >
+      <div className={localStyles.contentWrapper} onClickCapture={() => onLabelClick?.()}>
         {content}
       </div>
     </Dropdown>

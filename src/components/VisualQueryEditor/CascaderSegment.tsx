@@ -1,13 +1,26 @@
 import { Cascader, CascaderOption, InlineLabel, LoadingPlaceholder, useStyles2 } from '@grafana/ui';
 import React, { useState } from 'react';
 import { getSharedStyles, noRightMargin } from './sharedStyles';
-import { css, cx } from '@emotion/css';
+import { css, cx, injectGlobal } from '@emotion/css';
 
 const wrapperClassname = css({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
 });
+
+// Fix gragana cascader element icon
+injectGlobal(`
+  .rc-cascader-dropdown .rc-cascader-menu-item-expand::after {
+    mask: url(/public/img/icons/unicons/angle-right.svg) !important;
+    background: currentcolor !important;
+    width: 16px !important;
+    height: 16px !important;
+    top: 50% !important;
+    right: 6px;
+    transform: translateY(-50%) !important;
+  }
+`);
 
 export interface CascaderSegmentProps<T> extends React.PropsWithChildren {
   onSelect: (event: string) => void;

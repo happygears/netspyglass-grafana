@@ -25,7 +25,7 @@ export function WhereSection({ variable, value, options, datasource, onChange }:
       value.concat([
         {
           key: tag,
-          condition: value.length > 0 ? Operators.OR : '',
+          condition: value.length > 0 ? Operators.AND : '',
           operator: Operators.EQ,
           value: QueryPrompts.whereValue,
         },

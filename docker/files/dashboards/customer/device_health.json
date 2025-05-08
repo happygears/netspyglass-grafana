@@ -32,7 +32,6 @@
       "datasource": {
         "type": "happygears-netspyglass-datasource-v2"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -174,7 +173,7 @@
           }
         }
       ],
-      "type": "table-old"
+      "type": "table"
     },
     {
       "aliasColors": {},
@@ -1654,6 +1653,6 @@
   "timezone": "",
   "title": "Device Health",
   "uid": "vfeLl2iik",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

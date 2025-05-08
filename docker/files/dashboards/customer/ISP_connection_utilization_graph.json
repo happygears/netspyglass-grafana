@@ -3,287 +3,280 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "hideControls": false,
-  "id": null,
-  "links": [
+  "id": 4,
+  "iteration": 1746460231051,
+  "liveNow": false,
+  "panels": [
     {
-      "icon": "cloud",
-      "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
-      "type": "link",
-      "url": "/v2"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.netspyglass.com",
-      "type": "link",
-      "url": "http://www.netspyglass.com"
-    }
-  ],
-  "rows": [
-    {
-      "collapse": false,
-      "height": "250px",
-      "panels": [
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "transparent",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*\\(in\\)/"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": ["mean", "lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
         {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "NetSpyGlass-v2",
-          "fill": 1,
-          "id": 1,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "max": true,
-            "min": true,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "/.*\\(in\\)/",
-              "transform": "negative-Y"
-            }
-          ],
-          "spaceLength": 10,
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "_nsgTarget": {
-                "alias": "$device : $component : $Link (out)",
-                "columns": [
+          "_nsgTarget": {
+            "alias": "$device : $component : $Link (out)",
+            "columns": [
+              {
+
+                "appliedFunctions": [
                   {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
+
+                    "name": "tsavg"
                   }
                 ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": 100,
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "Link",
-                    "operator": "=",
-                    "value": "$External_Link"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifOutUtilization"
+                "name": "metric",
+                "visible": true
               },
-              "refId": "A"
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
             },
-            {
-              "_nsgTarget": {
-                "alias": "$device : $component : $Link (in)",
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
-                  }
-                ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": 100,
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "B",
-                "tags": [
-                  {
-                    "key": "Link",
-                    "operator": "=",
-                    "value": "$External_Link"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifInUtilization"
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
               },
-              "refId": "B"
-            }
-          ],
-          "thresholds": [
-            {
-              "colorMode": "critical",
-              "fill": false,
-              "line": true,
-              "op": "lt",
-              "value": 0
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Uplink utilization in/out, %",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "percentunit",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
+              "sort": "ASC"
             },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "Link",
+                "operator": "=",
+                "value": "$External_Link"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifOutUtilization"
+          },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "A"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "$device : $component : $Link (in)",
+            "columns": [
+              {
+
+                "appliedFunctions": [
+                  {
+
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "Link",
+                "operator": "=",
+                "value": "$External_Link"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifInUtilization"
+          },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "B"
         }
       ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "title": "Uplink utilization in/out, %",
+      "type": "timeseries"
     }
   ],
-  "schemaVersion": 14,
+  "schemaVersion": 36,
   "style": "dark",
-  "tags": [
-    "nsgv2.2"
-  ],
+  "tags": ["nsgv2.4"],
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "tags": [],
-          "text": "ASN-CXA-ALL-CCI-22773-RDC:",
-          "value": "ASN-CXA-ALL-CCI-22773-RDC:"
+          "isNone": true,
+          "selected": true,
+          "text": "None",
+          "value": ""
         },
-        "datasource": "NetSpyGlass-v2",
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
+        "definition": "",
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "External_Link",
         "options": [],
         "query": "SELECT DISTINCT Link FROM ifOperStatus WHERE Link NOTNULL AND BGP4Peer NOTNULL AND BGP4Peer != AS19679 AND BGP4Peer NOT REGEXP 'AS6....'",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       }
     ]
   },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
-  },
+
   "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
   },
   "timezone": "",
   "title": "ISP connection utilization graph",
-  "version": 6
+  "uid": "ngnZV-xHk",
+  "version": 9,
+  "weekStart": ""
 }

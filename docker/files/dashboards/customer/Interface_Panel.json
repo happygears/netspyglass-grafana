@@ -3,1633 +3,1875 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "hideControls": false,
-  "id": null,
-  "links": [
+  "id": 15,
+  "iteration": 1746460320171,
+  "liveNow": false,
+  "panels": [
     {
-      "icon": "dashboard",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [],
-      "title": "Device",
-      "tooltip": "Open Device Dashboard",
-      "type": "link",
-      "url": "/dashboard/db/device"
+      "collapsed": false,
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "panels": [],
+      "repeat": "deviceName",
+      "targets": [
+        {
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "New row",
+      "type": "row"
     },
     {
-      "icon": "cloud",
-      "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
-      "type": "link",
-      "url": "/v2"
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/uptime/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/device/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": false,
+                    "title": "",
+                    "url": "/d/BsYG-O2Zz/device?var-device=$device"
+                  }
+                ]
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 9,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.0.2",
+      "repeatIteration": 1474160391163,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+
+                "appliedFunctions": [],
+                "name": "device",
+                "visible": true
+              },
+              {
+
+                "appliedFunctions": [],
+                "name": "Model",
+                "visible": true
+              },
+              {
+
+                "appliedFunctions": [],
+                "name": "SerialNumber",
+                "visible": true
+              },
+              {
+
+                "alias": "uptime",
+                "appliedFunctions": [
+                  {
+
+                    "name": "tslast"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+
+                "appliedFunctions": [],
+                "name": "Vendor",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "table",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": true,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "sysUpTime"
+          },
+          "alias": "",
+          "category": "SNMP",
+          "columns": "sysUpTime,Vendor,Model,SerialNumber",
+          "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$device",
+          "format": "table",
+          "formatDisplay": "Table",
+          "group": "select group",
+          "limit": "1",
+          "refId": "A",
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "sysUpTime"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
     },
     {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.netspyglass.com",
-      "type": "link",
-      "url": "http://www.netspyglass.com"
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "component"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "interface"
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Link"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": false,
+                    "title": "Automatically assigned tag that describes device and interface on the other side of the link",
+                    "url": ""
+                  }
+                ]
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "description"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": false,
+                    "title": "Interface description downloaded from the device",
+                    "url": ""
+                  }
+                ]
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 8,
+      "links": [],
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "9.0.2",
+      "repeatIteration": 1474160391163,
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+
+                "appliedFunctions": [],
+                "name": "component",
+                "visible": true
+              },
+              {
+
+                "appliedFunctions": [],
+                "name": "ifAdminStatus",
+                "visible": true
+              },
+              {
+
+                "appliedFunctions": [],
+                "name": "ifOperStatus",
+                "visible": true
+              },
+              {
+
+                "appliedFunctions": [],
+                "name": "Link",
+                "visible": true
+              },
+              {
+
+                "appliedFunctions": [],
+                "name": "description",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "table",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": true,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$interface"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifOperStatus"
+          },
+          "aggregator": " -- ",
+          "alias": "",
+          "category": "Interface",
+          "columns": "ifAdminStatus,ifOperStatus,description",
+          "component": "$component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$deviceName",
+          "format": "table",
+          "formatDisplay": "Table",
+          "group": "select group",
+          "limit": "1",
+          "refId": "A",
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "ifOperStatus"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 11,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Row",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 1,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device:$component",
+            "columns": [
+              {
+
+                "appliedFunctions": [
+                  {
+
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$interface"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifInRate"
+          },
+          "aggregator": " -- ",
+          "alias": "$device / $component [$description]",
+          "category": "Interface",
+          "columns": "time,variable,device,component,metric",
+          "component": "/^$component$/",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["component"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": -1,
+          "measurement": "ifInRate",
+          "query": "SELECT last(\"value\") FROM \"ifInRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "resultFormatDisplay": "Time Series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "deviceName",
+              "operator": "=~",
+              "value": "/$deviceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "component",
+              "operator": "=~",
+              "value": "/$component$/"
+            }
+          ],
+          "targets": [],
+          "variable": "ifInRate"
+        }
+      ],
+      "title": "Inbound Traffic",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$interface"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifOutRate"
+          },
+          "alias": "$device / $component",
+          "category": "Interface",
+          "columns": "time,variable,device,component,metric",
+          "component": "/^$component$/",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["component"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": -1,
+          "measurement": "ifOutRate",
+          "query": "SELECT last(\"value\") FROM \"ifOutRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "resultFormatDisplay": "Time Series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "deviceName",
+              "operator": "=~",
+              "value": "/$deviceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "component",
+              "operator": "=~",
+              "value": "/$component$/"
+            }
+          ],
+          "targets": [],
+          "variable": "ifOutRate"
+        }
+      ],
+      "title": "Outbound Traffic",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 12,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "New row",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 3,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$interface"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifInErrorRate"
+          },
+          "alias": "$device / $component",
+          "category": "Interface",
+          "columns": "time,variable,device,component,metric",
+          "component": "/^$component$/",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["component"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": -1,
+          "measurement": "ifInErrorRate",
+          "query": "SELECT last(\"value\") FROM \"ifInErrorRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "resultFormatDisplay": "Time Series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "deviceName",
+              "operator": "=~",
+              "value": "/$deviceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "component",
+              "operator": "=~",
+              "value": "/$component$/"
+            }
+          ],
+          "targets": [],
+          "variable": "ifInErrorRate"
+        }
+      ],
+      "title": "Inbound Errors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 4,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$interface"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifOutErrorRate"
+          },
+          "alias": "$device / $component",
+          "category": "Interface",
+          "columns": "time,variable,device,component,metric",
+          "component": "/^$component$/",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["component"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": -1,
+          "measurement": "ifOutErrorRate",
+          "query": "SELECT last(\"value\") FROM \"ifOutErrorRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "resultFormatDisplay": "Time Series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "deviceName",
+              "operator": "=~",
+              "value": "/$deviceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "component",
+              "operator": "=~",
+              "value": "/$component$/"
+            }
+          ],
+          "targets": [],
+          "variable": "ifOutErrorRate"
+        }
+      ],
+      "title": "Outbound Errors",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 13,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "New row",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 5,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+
+                "appliedFunctions": [
+                  {
+
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$interface"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifInDiscardRate"
+          },
+          "alias": "$device / $component",
+          "category": "Interface",
+          "columns": "time,variable,device,component,metric",
+          "component": "/^$component$/",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["component"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": -1,
+          "measurement": "ifInDiscardRate",
+          "query": "SELECT last(\"value\") FROM \"ifInDiscardRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "resultFormatDisplay": "Time Series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "deviceName",
+              "operator": "=~",
+              "value": "/$deviceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "component",
+              "operator": "=~",
+              "value": "/$component$/"
+            }
+          ],
+          "targets": [],
+          "variable": "ifInDiscardRate"
+        }
+      ],
+      "title": "Inbound Discards",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 6,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+
+                "appliedFunctions": [
+                  {
+
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "column": {
+                "alias": "",
+                "name": "",
+                "value": ""
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "device",
+                "operator": "=",
+                "value": "$device"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "$interface"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "ifOutDiscardRate"
+          },
+          "alias": "$device / $component",
+          "category": "Interface",
+          "columns": "time,variable,device,component,metric",
+          "component": "/^$component$/",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "$device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["component"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": -1,
+          "measurement": "ifOutDiscardRate",
+          "query": "SELECT last(\"value\") FROM \"ifOutDiscardRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "resultFormatDisplay": "Time Series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "deviceName",
+              "operator": "=~",
+              "value": "/$deviceName$/"
+            },
+            {
+              "condition": "AND",
+              "key": "component",
+              "operator": "=~",
+              "value": "/$component$/"
+            }
+          ],
+          "targets": [],
+          "variable": "ifOutDiscardRate"
+        }
+      ],
+      "title": "Outbound Discards",
+      "type": "timeseries"
     }
   ],
   "refresh": "1m",
-  "rows": [
-    {
-      "collapse": false,
-      "height": 134,
-      "panels": [
-        {
-          "columns": [],
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fontSize": "100%",
-          "id": 9,
-          "links": [],
-          "pageSize": null,
-          "repeatIteration": 1474160391163,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": null,
-            "desc": false
-          },
-          "span": 6,
-          "styles": [
-            {
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            },
-            {
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/uptime/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "s"
-            },
-            {
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 2,
-              "link": true,
-              "linkUrl": "/dashboard/db/device?var-device=$device",
-              "pattern": "/device/",
-              "thresholds": [],
-              "type": "string",
-              "unit": "short"
-            },
-            {
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            }
-          ],
-          "targets": [
-            {
-              "_nsgTarget": {
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "device",
-                    "visible": true
-                  },
-                  {
-                    "appliedFunctions": [],
-                    "name": "Model",
-                    "visible": true
-                  },
-                  {
-                    "appliedFunctions": [],
-                    "name": "SerialNumber",
-                    "visible": true
-                  },
-                  {
-                    "alias": "uptime",
-                    "appliedFunctions": [
-                      {
-                        "name": "tslast"
-                      }
-                    ],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "appliedFunctions": [],
-                    "name": "Vendor",
-                    "visible": true
-                  }
-                ],
-                "format": "table",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": true,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "sysUpTime"
-              },
-              "alias": "",
-              "category": "SNMP",
-              "columns": "sysUpTime,Vendor,Model,SerialNumber",
-              "component": "select component",
-              "device": "$device",
-              "format": "table",
-              "formatDisplay": "Table",
-              "group": "select group",
-              "limit": "1",
-              "refId": "A",
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "variable": "sysUpTime"
-            }
-          ],
-          "title": "",
-          "transform": "table",
-          "transparent": true,
-          "type": "table"
-        },
-        {
-          "columns": [],
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fontSize": "100%",
-          "id": 8,
-          "links": [],
-          "pageSize": null,
-          "repeatIteration": 1474160391163,
-          "scroll": true,
-          "showHeader": true,
-          "sort": {
-            "col": null,
-            "desc": false
-          },
-          "span": 6,
-          "styles": [
-            {
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "pattern": "Time",
-              "type": "date"
-            },
-            {
-              "alias": "interface",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 2,
-              "pattern": "component",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            },
-            {
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 2,
-              "link": true,
-              "linkTooltip": "Automatically assigned tag that describes device and interface on the other side of the link",
-              "pattern": "Link",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            },
-            {
-              "alias": "",
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "dateFormat": "YYYY-MM-DD HH:mm:ss",
-              "decimals": 2,
-              "link": true,
-              "linkTooltip": "Interface description downloaded from the device",
-              "pattern": "ifAlias",
-              "thresholds": [],
-              "type": "number",
-              "unit": "short"
-            },
-            {
-              "colorMode": null,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "decimals": 2,
-              "pattern": "/.*/",
-              "thresholds": [],
-              "type": "string",
-              "unit": "short"
-            }
-          ],
-          "targets": [
-            {
-              "_nsgTarget": {
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "component",
-                    "visible": true
-                  },
-                  {
-                    "appliedFunctions": [],
-                    "name": "ifAdminStatus",
-                    "visible": true
-                  },
-                  {
-                    "appliedFunctions": [],
-                    "name": "ifOperStatus",
-                    "visible": true
-                  },
-                  {
-                    "appliedFunctions": [],
-                    "name": "Link",
-                    "visible": true
-                  },
-                  {
-                    "appliedFunctions": [],
-                    "name": "ifAlias",
-                    "visible": true
-                  }
-                ],
-                "format": "table",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": true,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  },
-                  {
-                    "condition": "AND",
-                    "key": "component",
-                    "operator": "=",
-                    "value": "$interface"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifOperStatus"
-              },
-              "aggregator": " -- ",
-              "alias": "",
-              "category": "Interface",
-              "columns": "ifAdminStatus,ifOperStatus,ifAlias",
-              "component": "$component",
-              "device": "$deviceName",
-              "format": "table",
-              "formatDisplay": "Table",
-              "group": "select group",
-              "limit": "1",
-              "refId": "A",
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "variable": "ifOperStatus"
-            }
-          ],
-          "title": "",
-          "transform": "table",
-          "transparent": true,
-          "type": "table"
-        }
-      ],
-      "repeat": "deviceName",
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "New row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 1,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "_nsgTarget": {
-                "alias": "$device:$component",
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
-                  }
-                ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  },
-                  {
-                    "condition": "AND",
-                    "key": "component",
-                    "operator": "=",
-                    "value": "$interface"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifInRate"
-              },
-              "aggregator": " -- ",
-              "alias": "$device / $component [$description]",
-              "category": "Interface",
-              "columns": "time,variable,device,component,metric",
-              "component": "/^$component$/",
-              "device": "$device",
-              "dsType": "influxdb",
-              "format": "time_series",
-              "formatDisplay": "Time Series",
-              "group": "select group",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "deviceName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "component"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "limit": -1,
-              "measurement": "ifInRate",
-              "query": "SELECT last(\"value\") FROM \"ifInRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "resultFormatDisplay": "Time Series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "tags": [
-                {
-                  "key": "deviceName",
-                  "operator": "=~",
-                  "value": "/$deviceName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "component",
-                  "operator": "=~",
-                  "value": "/$component$/"
-                }
-              ],
-              "targets": [],
-              "variable": "ifInRate"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Inbound Traffic",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "bps",
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 2,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "_nsgTarget": {
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
-                  }
-                ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  },
-                  {
-                    "condition": "AND",
-                    "key": "component",
-                    "operator": "=",
-                    "value": "$interface"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifOutRate"
-              },
-              "alias": "$device / $component",
-              "category": "Interface",
-              "columns": "time,variable,device,component,metric",
-              "component": "/^$component$/",
-              "device": "$device",
-              "dsType": "influxdb",
-              "format": "time_series",
-              "formatDisplay": "Time Series",
-              "group": "select group",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "deviceName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "component"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "limit": -1,
-              "measurement": "ifOutRate",
-              "query": "SELECT last(\"value\") FROM \"ifOutRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "resultFormatDisplay": "Time Series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "tags": [
-                {
-                  "key": "deviceName",
-                  "operator": "=~",
-                  "value": "/$deviceName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "component",
-                  "operator": "=~",
-                  "value": "/$component$/"
-                }
-              ],
-              "targets": [],
-              "variable": "ifOutRate"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Outbound Traffic",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "bps",
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 3,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "_nsgTarget": {
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
-                  }
-                ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  },
-                  {
-                    "condition": "AND",
-                    "key": "component",
-                    "operator": "=",
-                    "value": "$interface"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifInErrorRate"
-              },
-              "alias": "$device / $component",
-              "category": "Interface",
-              "columns": "time,variable,device,component,metric",
-              "component": "/^$component$/",
-              "device": "$device",
-              "dsType": "influxdb",
-              "format": "time_series",
-              "formatDisplay": "Time Series",
-              "group": "select group",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "deviceName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "component"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "limit": -1,
-              "measurement": "ifInErrorRate",
-              "query": "SELECT last(\"value\") FROM \"ifInErrorRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "resultFormatDisplay": "Time Series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "tags": [
-                {
-                  "key": "deviceName",
-                  "operator": "=~",
-                  "value": "/$deviceName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "component",
-                  "operator": "=~",
-                  "value": "/$component$/"
-                }
-              ],
-              "targets": [],
-              "variable": "ifInErrorRate"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Inbound Errors",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 4,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "_nsgTarget": {
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
-                  }
-                ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  },
-                  {
-                    "condition": "AND",
-                    "key": "component",
-                    "operator": "=",
-                    "value": "$interface"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifOutErrorRate"
-              },
-              "alias": "$device / $component",
-              "category": "Interface",
-              "columns": "time,variable,device,component,metric",
-              "component": "/^$component$/",
-              "device": "$device",
-              "dsType": "influxdb",
-              "format": "time_series",
-              "formatDisplay": "Time Series",
-              "group": "select group",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "deviceName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "component"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "limit": -1,
-              "measurement": "ifOutErrorRate",
-              "query": "SELECT last(\"value\") FROM \"ifOutErrorRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "resultFormatDisplay": "Time Series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "tags": [
-                {
-                  "key": "deviceName",
-                  "operator": "=~",
-                  "value": "/$deviceName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "component",
-                  "operator": "=~",
-                  "value": "/$component$/"
-                }
-              ],
-              "targets": [],
-              "variable": "ifOutErrorRate"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Outbound Errors",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "New row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 5,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "_nsgTarget": {
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
-                  }
-                ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  },
-                  {
-                    "condition": "AND",
-                    "key": "component",
-                    "operator": "=",
-                    "value": "$interface"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifInDiscardRate"
-              },
-              "alias": "$device / $component",
-              "category": "Interface",
-              "columns": "time,variable,device,component,metric",
-              "component": "/^$component$/",
-              "device": "$device",
-              "dsType": "influxdb",
-              "format": "time_series",
-              "formatDisplay": "Time Series",
-              "group": "select group",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "deviceName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "component"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "limit": -1,
-              "measurement": "ifInDiscardRate",
-              "query": "SELECT last(\"value\") FROM \"ifInDiscardRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "resultFormatDisplay": "Time Series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "tags": [
-                {
-                  "key": "deviceName",
-                  "operator": "=~",
-                  "value": "/$deviceName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "component",
-                  "operator": "=~",
-                  "value": "/$component$/"
-                }
-              ],
-              "targets": [],
-              "variable": "ifInDiscardRate"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Inbound Discards",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "NetSpyGlass-v2",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 6,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 6,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "_nsgTarget": {
-                "columns": [
-                  {
-                    "appliedFunctions": [],
-                    "name": "metric",
-                    "visible": true
-                  },
-                  {
-                    "name": "time",
-                    "visible": false
-                  }
-                ],
-                "format": "time_series",
-                "groupBy": {
-                  "type": "select type",
-                  "value": "select value"
-                },
-                "isTablePanel": false,
-                "limit": "",
-                "loading": false,
-                "orderBy": {
-                  "colName": "select value",
-                  "column": {
-                    "alias": "",
-                    "name": "",
-                    "value": ""
-                  },
-                  "sort": "ASC"
-                },
-                "rawQuery": 0,
-                "refId": "A",
-                "tags": [
-                  {
-                    "key": "device",
-                    "operator": "=",
-                    "value": "$device"
-                  },
-                  {
-                    "condition": "AND",
-                    "key": "component",
-                    "operator": "=",
-                    "value": "$interface"
-                  }
-                ],
-                "type": "nsgql",
-                "variable": "ifOutDiscardRate"
-              },
-              "alias": "$device / $component",
-              "category": "Interface",
-              "columns": "time,variable,device,component,metric",
-              "component": "/^$component$/",
-              "device": "$device",
-              "dsType": "influxdb",
-              "format": "time_series",
-              "formatDisplay": "Time Series",
-              "group": "select group",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "deviceName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "component"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "limit": -1,
-              "measurement": "ifOutDiscardRate",
-              "query": "SELECT last(\"value\") FROM \"ifOutDiscardRate\" WHERE \"deviceName\" = '$deviceName' AND \"component\" = '$component' AND $timeFilter GROUP BY time($interval), \"deviceName\", \"component\" fill(null)",
-              "rawQuery": true,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "resultFormatDisplay": "Time Series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "last"
-                  }
-                ]
-              ],
-              "selector": "choose selector",
-              "sortByEl": "none",
-              "tagData": [],
-              "tagFacet": "---",
-              "tagOperation": "==",
-              "tagWord": "---",
-              "tags": [
-                {
-                  "key": "deviceName",
-                  "operator": "=~",
-                  "value": "/$deviceName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "component",
-                  "operator": "=~",
-                  "value": "/$component$/"
-                }
-              ],
-              "targets": [],
-              "variable": "ifOutDiscardRate"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Outbound Discards",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": 0,
-              "show": true
-            },
-            {
-              "format": "short",
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "New row",
-      "titleSize": "h6"
-    }
-  ],
-  "schemaVersion": 14,
+  "schemaVersion": 36,
   "style": "dark",
-  "tags": [
-    "interfaces",
-    "nsgv2.2"
-  ],
+  "tags": ["interfaces", "nsgv2.4"],
   "templating": {
     "list": [
       {
         "allFormat": "glob",
-        "allValue": null,
         "current": {
-          "text": "dfw1-bb01",
-          "value": "dfw1-bb01"
+          "selected": true,
+          "text": "cty1-dc01",
+          "value": "cty1-dc01"
         },
-        "datasource": "NetSpyGlass-v2",
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
+        "definition": "",
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "multiFormat": "regex values",
         "name": "device",
@@ -1637,25 +1879,26 @@
         "query": "SELECT name FROM devices WHERE Role != NetSpyGlassServer AND Role != SimulatedNode AND Role != SimulatedBridge ORDER BY name",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
         "allFormat": "glob",
-        "allValue": null,
         "current": {
-          "tags": [],
-          "text": "ae0",
-          "value": "ae0"
+          "selected": false,
+          "text": "ae10",
+          "value": "ae10"
         },
-        "datasource": "NetSpyGlass-v2",
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
+        "definition": "",
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "multiFormat": "glob",
         "name": "interface",
@@ -1663,18 +1906,14 @@
         "query": "SELECT component FROM ifOperStatus WHERE device=\"$device\" ORDER BY component",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       }
     ]
-  },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
   },
   "timepicker": {
     "now": true,
@@ -1690,19 +1929,11 @@
       "2h",
       "1d"
     ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
   },
   "timezone": "browser",
   "title": "Interface Panel",
-  "version": 5
+  "uid": "DmnZ4abHz",
+  "version": 10,
+  "weekStart": ""
 }

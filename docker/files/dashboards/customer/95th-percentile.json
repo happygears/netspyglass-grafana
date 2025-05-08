@@ -17,23 +17,7 @@
   "graphTooltip": 0,
   "id": null,
   "iteration": 1523054596486,
-  "links": [
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
-      "type": "link",
-      "url": "/v2"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.netspyglass.com",
-      "type": "link",
-      "url": "http://www.netspyglass.com"
-    }
-  ],
+
   "panels": [
     {
       "content": "# Graphs that match monitoring variables by tags\n\nThese graphs demonstrate how variables can be matched by tag to help make the graph future-proof. If a new peering to the same AS is added in the future, the line will appear in the corresponding graph automatically. \n\nThese graphs use NsgQL functions to calculate 95-th percentile and draw a line using linear regression",
@@ -55,7 +39,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 0,
       "gridPos": {
         "h": 10,
@@ -245,7 +229,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 0,
       "gridPos": {
         "h": 10,
@@ -436,7 +420,7 @@
   "style": "dark",
   "tags": [
     "traffic",
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": [
@@ -446,7 +430,7 @@
           "text": "AS11404",
           "value": "AS11404"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -465,10 +449,7 @@
       }
     ]
   },
-  "time": {
-    "from": "now-24h",
-    "to": "now"
-  },
+
   "timepicker": {
     "refresh_intervals": [
       "5s",

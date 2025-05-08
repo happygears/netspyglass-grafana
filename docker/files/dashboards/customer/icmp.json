@@ -17,30 +17,14 @@
   "graphTooltip": 0,
   "id": 2,
   "iteration": 1570133697958,
-  "links": [
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
-      "type": "link",
-      "url": "/v2"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.netspyglass.com",
-      "type": "link",
-      "url": "http://www.netspyglass.com"
-    }
-  ],
+
   "panels": [
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+     "datasource": { "type": "happygears-netspyglass-datasource-v2" },
       "fill": 0,
       "gridPos": {
         "h": 7,
@@ -298,7 +282,7 @@
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": [
@@ -308,7 +292,7 @@
           "text": "br1-lhr1",
           "value": "br1-lhr1"
         },
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "definition": "",
         "hide": 0,
         "includeAll": false,
@@ -329,10 +313,7 @@
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
+
   "timepicker": {
     "refresh_intervals": [
       "5s",

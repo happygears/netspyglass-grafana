@@ -1,39 +1,60 @@
 {
-  "name": "NetSpyGlass (v2)",
-  "id": "happygears-netspyglass-datasource-v2",
-  "type": "datasource",
-  "staticRoot": ".",
-  "partials": {
-    "config": "public/app/plugins/datasource/netspyglass/partials/config.html"
-  },
-  "metrics": true,
-  "annotations": false,
-  "alerting": false,
-  "info": {
-    "description": "NetSpyGlass Datasource",
-    "author": {
-      "name": "Happy Gears Inc.",
-      "url": "http://www.netspyglass.com"
-    },
-    "links": [
-      {
-        "name": "GitHub",
-        "url": "https://github.com/happygears/netspyglass-grafana"
-      },
-      {
-        "name": "NetSpyGlass",
-        "url": "http://www.netspyglass.com"
-      }
+    "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+    "name": "Zscaler Nsg Datasource",
+    "id": "happygears-netspyglass-datasource-v2",
+    "type": "datasource",
+    "metrics": true,
+    "annotations": false,
+    "state": "beta",
+    "routes": [
+        {
+            "path": "",
+            "headers": [
+                {
+                    "name": "X-NSG-Auth-API-Token",
+                    "content": "{{ .SecureJsonData.apiKey }}"
+                }
+            ]
+        },
+        {
+            "path": "/v2/",
+            "headers": [
+                {
+                    "name": "X-NSG-Auth-API-Token",
+                    "content": "{{ .SecureJsonData.apiKey }}"
+                }
+            ]
+        }
     ],
-    "logos": {
-      "small": "img/nsg-logo-md.png",
-      "large": "img/nsg-logo-md.png"
+    "queryOptions": {
+        "maxDataPoints": true
     },
-    "version": "2.3.3",
-    "updated": "2021-11-18"
-  },
-  "dependencies": {
-    "grafanaVersion": "4.4.x",
-    "plugins": []
-  }
+    "alerting": false,
+    "info": {
+        "description": "Zscaler Datasource for NetSpyGlass",
+        "author": {
+            "name": "Zscaler inc.",
+            "url": "http://www.zscaler.com"
+        },
+        "keywords": [
+            "datasource"
+        ],
+        "links": [
+            {
+                "name": "Zscaler inc.",
+                "url": "http://www.zscaler.com"
+            }
+        ],
+        "logos": {
+            "small": "img/logo.svg",
+            "large": "img/logo.svg"
+        },
+        "version": "2.4.1",
+        "updated": "2025-05-07"
+    },
+    "dependencies": {
+        "grafanaDependency": ">=10.4.0",
+        "plugins": []
+    },
+    "buildMode": "production"
 }

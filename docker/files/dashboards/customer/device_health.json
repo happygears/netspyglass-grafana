@@ -3,42 +3,84 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
-  "iteration": 1523056485724,
-  "links": [
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
-      "type": "link",
-      "url": "/v2"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.netspyglass.com",
-      "type": "link",
-      "url": "http://www.netspyglass.com"
-    }
-  ],
+  "iteration": 1746136731189,
+
+  "liveNow": false,
   "panels": [
     {
-      "columns": [],
-      "datasource": "NetSpyGlass-v2",
-      "fontSize": "100%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "displayMode": "auto",
+            "inspect": false
+          },
+          "decimals": 2,
+          "displayName": "",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Time"
+              },
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 3,
         "w": 24,
@@ -47,35 +89,14 @@
       },
       "id": 6,
       "links": [],
-      "pageSize": null,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": null,
-        "desc": false
-      },
-      "styles": [
-        {
-          "alias": "Time",
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
         },
-        {
-          "alias": "",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
-          "pattern": "/.*/",
-          "thresholds": [],
-          "type": "number",
-          "unit": "short"
-        }
-      ],
+        "showHeader": true
+      },
       "targets": [
         {
           "_nsgTarget": {
@@ -106,11 +127,14 @@
                 "visible": true
               }
             ],
+            "disableAdHoc": false,
             "format": "table",
             "groupBy": {
               "type": "select type",
               "value": "select value"
             },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
             "isTablePanel": true,
             "limit": 100,
             "loading": false,
@@ -135,11 +159,20 @@
             "type": "nsgql",
             "variable": "lastContactTime"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
-      "title": "",
-      "transform": "table",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -147,14 +180,18 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 0,
         "y": 3
       },
+      "hiddenSeries": false,
       "id": 1,
       "legend": {
         "avg": false,
@@ -169,6 +206,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -220,12 +260,14 @@
             "type": "nsgql",
             "variable": "snmpTimeoutsPercentage"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "SNMP Timeouts [$device]",
       "tooltip": {
         "shared": true,
@@ -234,16 +276,13 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "percent",
-          "label": null,
           "logBase": 1,
           "max": "100",
           "min": "0",
@@ -251,27 +290,31 @@
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 12,
         "y": 3
       },
+      "hiddenSeries": false,
       "id": 2,
       "legend": {
         "avg": false,
@@ -286,7 +329,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -337,12 +384,14 @@
             "type": "nsgql",
             "variable": "snmpRtt"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "SNMP RTT [$device]",
       "tooltip": {
         "shared": true,
@@ -351,44 +400,44 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 0,
         "y": 8
       },
+      "hiddenSeries": false,
       "id": 7,
       "legend": {
         "avg": false,
@@ -403,7 +452,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -454,12 +507,14 @@
             "type": "nsgql",
             "variable": "icmpLoss"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "ICMP timeouts [$device]",
       "tooltip": {
         "shared": true,
@@ -468,16 +523,13 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "percent",
-          "label": null,
           "logBase": 1,
           "max": "100",
           "min": "0",
@@ -485,27 +537,31 @@
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 0,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 12,
         "y": 8
       },
+      "hiddenSeries": false,
       "id": 8,
       "legend": {
         "avg": false,
@@ -520,7 +576,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -595,6 +655,9 @@
             "type": "nsgql",
             "variable": "icmpAvgRtt"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         },
         {
@@ -639,6 +702,9 @@
             ],
             "type": "nsgql",
             "variable": "icmpMaxRtt"
+          },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
           },
           "refId": "B"
         },
@@ -685,12 +751,14 @@
             "type": "nsgql",
             "variable": "icmpMinRtt"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "C"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "ICMP RTT (min, avg, max) [$device]",
       "tooltip": {
         "shared": true,
@@ -699,44 +767,44 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
         "y": 13
       },
+      "hiddenSeries": false,
       "id": 3,
       "legend": {
         "avg": false,
@@ -751,7 +819,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -802,12 +874,14 @@
             "type": "nsgql",
             "variable": "timeSinceLastContact"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "Time since last contact [$device]",
       "tooltip": {
         "shared": true,
@@ -816,44 +890,44 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "s",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
         "y": 13
       },
+      "hiddenSeries": false,
       "id": 10,
       "legend": {
         "avg": false,
@@ -868,7 +942,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -929,6 +1007,9 @@
             "type": "nsgql",
             "variable": "minorChassisAlarm"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         },
         {
@@ -974,12 +1055,14 @@
             "type": "nsgql",
             "variable": "majorChassisAlarm"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "B"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "Chassis Alarms [$device]",
       "tooltip": {
         "shared": true,
@@ -988,44 +1071,44 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 16,
         "y": 13
       },
+      "hiddenSeries": false,
       "id": 11,
       "legend": {
         "avg": false,
@@ -1040,7 +1123,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1091,12 +1178,14 @@
             "type": "nsgql",
             "variable": "alertCount"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "Active Alerts [$device]",
       "tooltip": {
         "shared": true,
@@ -1105,44 +1194,44 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 0,
         "y": 18
       },
+      "hiddenSeries": false,
       "id": 4,
       "legend": {
         "avg": false,
@@ -1157,7 +1246,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1209,12 +1302,14 @@
             "type": "nsgql",
             "variable": "memUtil"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "Memory Utilization [$device]",
       "tooltip": {
         "shared": true,
@@ -1223,16 +1318,13 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "percent",
-          "label": null,
           "logBase": 1,
           "max": "100",
           "min": "0",
@@ -1240,27 +1332,31 @@
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 12,
         "y": 18
       },
+      "hiddenSeries": false,
       "id": 5,
       "legend": {
         "avg": false,
@@ -1275,7 +1371,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1327,12 +1427,14 @@
             "type": "nsgql",
             "variable": "cpuUtil"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "CPU Utilization [$device]",
       "tooltip": {
         "shared": true,
@@ -1341,16 +1443,13 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "percent",
-          "label": null,
           "logBase": 1,
           "max": "100",
           "min": "0",
@@ -1358,27 +1457,31 @@
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "NetSpyGlass-v2",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 6,
         "w": 24,
         "x": 0,
         "y": 23
       },
+      "hiddenSeries": false,
       "id": 9,
       "legend": {
         "alignAsTable": true,
@@ -1395,7 +1498,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
+
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1443,12 +1550,14 @@
             "type": "nsgql",
             "variable": "tempSensor"
           },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
-      "timeShift": null,
+      "timeRegions": [],
       "title": "Temperature (top 10) [$device]",
       "tooltip": {
         "shared": true,
@@ -1457,120 +1566,93 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "celsius",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false
+      }
     }
   ],
-  "schemaVersion": 16,
+  "schemaVersion": 36,
   "style": "dark",
-  "tags": [
-    "nsgv2.2"
-  ],
+  "tags": ["nsgv2.4"],
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "tags": [],
-          "text": "Cisco",
-          "value": "Cisco"
+          "selected": false,
+          "text": "juniper",
+          "value": "juniper"
         },
-        "datasource": "NetSpyGlass-v2",
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
+        "definition": "",
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "vendor",
         "options": [],
         "query": "SELECT DISTINCT Vendor FROM devices WHERE Vendor != Unknown AND Vendor != HappyGears",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
-          "tags": [],
-          "text": "cty3-cc01",
-          "value": "cty3-cc01"
+          "selected": false,
+          "text": "ams1-bb01",
+          "value": "ams1-bb01"
         },
-        "datasource": "NetSpyGlass-v2",
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
+        "definition": "",
         "hide": 0,
         "includeAll": false,
-        "label": null,
         "multi": false,
         "name": "device",
         "options": [],
         "query": "SELECT DISTINCT name FROM devices WHERE Role != SimulatedNode AND Role != SimulatedBridge AND Vendor=$vendor ORDER BY name",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
+
   "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
   },
   "timezone": "",
   "title": "Device Health",
   "uid": "vfeLl2iik",
-  "version": 3
+  "version": 2,
+  "weekStart": ""
 }

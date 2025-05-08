@@ -2,10 +2,10 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   push:
-    branches: [ "**" ]
+    branches: ['**']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['18.x']
+        node-version: ['22.x']
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -48,7 +48,7 @@ jobs:
         id: build
         run: |
           npm install
-          npm run build-prod
+          npm run build
 
       - name: Docker tag
         id: docker_tag

@@ -7,23 +7,7 @@
   "graphTooltip": 0,
   "hideControls": false,
   "id": null,
-  "links": [
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
-      "type": "link",
-      "url": "/v2"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.netspyglass.com",
-      "type": "link",
-      "url": "http://www.netspyglass.com"
-    }
-  ],
+
   "rows": [
     {
       "collapse": false,
@@ -34,7 +18,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "NetSpyGlass-v2",
+         "datasource": { "type": "happygears-netspyglass-datasource-v2" },
           "fill": 1,
           "id": 1,
           "legend": {
@@ -161,14 +145,14 @@
   "schemaVersion": 14,
   "style": "dark",
   "tags": [
-    "nsgv2.2"
+    "nsgv2.4"
   ],
   "templating": {
     "list": [
       {
         "allValue": null,
         "current": {},
-        "datasource": "NetSpyGlass-v2",
+       "datasource": { "type": "happygears-netspyglass-datasource-v2" },
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -187,10 +171,7 @@
       }
     ]
   },
-  "time": {
-    "from": "now-6h",
-    "to": "now"
-  },
+
   "timepicker": {
     "refresh_intervals": [
       "5s",

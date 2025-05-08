@@ -3,20 +3,28 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 12,
-  "iteration": 1570123358402,
+  "id": 149,
   "links": [
     {
       "icon": "dashboard",
@@ -25,71 +33,92 @@
       "title": "Interfaces",
       "tooltip": "Open Interface Dashboard for this device",
       "type": "link",
-      "url": "/dashboard/db/interface-panel"
-    },
-    {
-      "icon": "cloud",
-      "tags": [],
-      "title": "NetSpyGlass",
-      "tooltip": "Back to NetSpyGlass",
-      "type": "link",
-      "url": "/v2"
-    },
-    {
-      "icon": "external link",
-      "tags": [],
-      "title": "www.netspyglass.com",
-      "type": "link",
-      "url": "http://www.netspyglass.com"
+      "url": "/d/DmnZ4abHz/interface-panel"
     }
   ],
   "panels": [
     {
-      "columns": [],
-      "datasource": "NetSpyGlass-v2",
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*sysUpTime/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "uptime (sec)"
+              },
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 16,
         "x": 0,
         "y": 0
       },
-      "height": "",
       "id": 1,
-      "links": [],
-      "options": {},
-      "pageSize": 10,
-      "scroll": false,
-      "showHeader": true,
-      "sort": {
-        "col": null,
-        "desc": false
-      },
-      "styles": [
-        {
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
         },
-        {
-          "alias": "uptime (sec)",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
-          "link": false,
-          "pattern": "/.*sysUpTime/",
-          "thresholds": [],
-          "type": "number",
-          "unit": "dtdurations"
-        }
-      ],
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -159,6 +188,9 @@
           "category": "SNMP",
           "columns": "address,boxDescr,sysUpTime,SerialNumber,SoftwareRev",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "table",
           "formatDisplay": "Table",
@@ -175,58 +207,119 @@
         }
       ],
       "title": "Device",
-      "transform": "table",
       "transparent": true,
       "type": "table"
     },
     {
-      "columns": [],
-      "datasource": "NetSpyGlass-v2",
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*metric/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "alarms"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgba(50, 172, 45, 0.97)"
+                    },
+                    {
+                      "color": "rgba(237, 129, 40, 0.89)",
+                      "value": 0
+                    },
+                    {
+                      "color": "rgba(245, 54, 54, 0.9)",
+                      "value": 1
+                    },
+                    {
+                      "value": 1000
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 4,
         "x": 16,
         "y": 0
       },
       "id": 2,
-      "links": [],
-      "options": {},
-      "pageSize": null,
-      "repeat": null,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": null,
-        "desc": false
-      },
-      "styles": [
-        {
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
         },
-        {
-          "alias": "alarms",
-          "colorMode": "value",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "decimals": 0,
-          "pattern": "/.*metric/",
-          "thresholds": [
-            "0.1",
-            "1.1",
-            "1000"
-          ],
-          "type": "number",
-          "unit": "none"
-        }
-      ],
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -274,6 +367,9 @@
           "category": "ChassisAlarm",
           "columns": "metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "table",
           "formatDisplay": "Table",
@@ -290,57 +386,119 @@
         }
       ],
       "title": "minor chassis alarms",
-      "transform": "table",
       "transparent": true,
       "type": "table"
     },
     {
-      "columns": [],
-      "datasource": "NetSpyGlass-v2",
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*metric/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "alarms"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgba(50, 172, 45, 0.97)"
+                    },
+                    {
+                      "color": "rgba(237, 129, 40, 0.89)",
+                      "value": 0
+                    },
+                    {
+                      "color": "rgba(245, 54, 54, 0.9)",
+                      "value": 0
+                    },
+                    {
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 3,
+        "h": 4,
         "w": 4,
         "x": 20,
         "y": 0
       },
       "id": 3,
-      "links": [],
-      "options": {},
-      "pageSize": null,
-      "scroll": true,
-      "showHeader": true,
-      "sort": {
-        "col": null,
-        "desc": false
-      },
-      "styles": [
-        {
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
         },
-        {
-          "alias": "alarms",
-          "colorMode": "value",
-          "colors": [
-            "rgba(50, 172, 45, 0.97)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
-          ],
-          "decimals": 0,
-          "pattern": "/.*metric/",
-          "thresholds": [
-            "0.1",
-            "0.2",
-            "1.1"
-          ],
-          "type": "number",
-          "unit": "none"
-        }
-      ],
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -388,6 +546,9 @@
           "category": "ChassisAlarm",
           "columns": "metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "table",
           "formatDisplay": "Table",
@@ -404,16 +565,77 @@
         }
       ],
       "title": "major chassis alarms",
-      "transform": "table",
       "transparent": true,
       "type": "table"
     },
     {
-      "columns": [],
-      "datasource": "NetSpyGlass-v2",
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*metric/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temperature"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -421,36 +643,17 @@
         "y": 3
       },
       "id": 4,
-      "links": [],
-      "options": {},
-      "pageSize": 10,
-      "scroll": false,
-      "showHeader": true,
-      "sort": {
-        "col": 1,
-        "desc": true
-      },
-      "styles": [
-        {
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
         },
-        {
-          "alias": "Temperature",
-          "colorMode": null,
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 2,
-          "pattern": "/.*metric/",
-          "thresholds": [],
-          "type": "number",
-          "unit": "celsius"
-        }
-      ],
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -507,6 +710,9 @@
           "category": "Temperature",
           "columns": "component,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "table",
           "formatDisplay": "Table",
@@ -523,15 +729,100 @@
         }
       ],
       "title": "Temperature",
-      "transform": "table",
       "type": "table"
     },
     {
-      "columns": [],
-      "datasource": "NetSpyGlass-v2",
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*metric/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Status"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgba(245, 54, 54, 0.9)"
+                    },
+                    {
+                      "color": "rgba(237, 129, 40, 0.89)",
+                      "value": 0
+                    },
+                    {
+                      "color": "rgba(50, 172, 45, 0.97)",
+                      "value": 0
+                    },
+                    {
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -539,40 +830,17 @@
         "y": 3
       },
       "id": 5,
-      "links": [],
-      "options": {},
-      "pageSize": 10,
-      "scroll": false,
-      "showHeader": true,
-      "sort": {
-        "col": null,
-        "desc": false
-      },
-      "styles": [
-        {
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
         },
-        {
-          "alias": "Status",
-          "colorMode": "value",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 0,
-          "pattern": "/.*metric/",
-          "thresholds": [
-            "0.1",
-            "0.2",
-            "1.1"
-          ],
-          "type": "number",
-          "unit": "none"
-        }
-      ],
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -626,6 +894,9 @@
           "category": "PSU",
           "columns": "component,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "table",
           "formatDisplay": "Table",
@@ -642,15 +913,100 @@
         }
       ],
       "title": "PSU (1=ok, 0=failure)",
-      "transform": "table",
       "type": "table"
     },
     {
-      "columns": [],
-      "datasource": "NetSpyGlass-v2",
-      "editable": true,
-      "error": false,
-      "fontSize": "100%",
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "time: YYYY-MM-DD HH:mm:ss"
+              },
+              {
+                "id": "custom.align"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*metric/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Status"
+              },
+              {
+                "id": "unit",
+                "value": "none"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgba(245, 54, 54, 0.9)"
+                    },
+                    {
+                      "color": "rgba(237, 129, 40, 0.89)",
+                      "value": 0
+                    },
+                    {
+                      "color": "rgba(50, 172, 45, 0.97)",
+                      "value": 0
+                    },
+                    {
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -658,40 +1014,17 @@
         "y": 3
       },
       "id": 6,
-      "links": [],
-      "options": {},
-      "pageSize": 10,
-      "scroll": false,
-      "showHeader": true,
-      "sort": {
-        "col": null,
-        "desc": false
-      },
-      "styles": [
-        {
-          "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "pattern": "Time",
-          "type": "date"
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
         },
-        {
-          "alias": "Status",
-          "colorMode": "value",
-          "colors": [
-            "rgba(245, 54, 54, 0.9)",
-            "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
-          ],
-          "decimals": 0,
-          "pattern": "/.*metric/",
-          "thresholds": [
-            "0.1",
-            "0.2",
-            "1.1"
-          ],
-          "type": "number",
-          "unit": "none"
-        }
-      ],
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -745,6 +1078,9 @@
           "category": "Fan",
           "columns": "component,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "table",
           "formatDisplay": "Table",
@@ -761,19 +1097,68 @@
         }
       ],
       "title": "Fan (1=ok, 0=failure)",
-      "transform": "table",
       "type": "table"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "NetSpyGlass-v2",
-      "editable": true,
-      "error": false,
-      "fill": 1,
-      "grid": {},
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -781,30 +1166,21 @@
         "y": 11
       },
       "id": 7,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
+      "options": {
+        "alertThreshold": true,
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "connected",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -854,6 +1230,9 @@
           "category": "CPU",
           "columns": "time,variable,device,component,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "time_series",
           "formatDisplay": "Time Series",
@@ -869,59 +1248,69 @@
           "variable": "cpuUtil"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "CPU Utilization",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "NetSpyGlass-v2",
-      "decimals": 0,
-      "editable": true,
-      "error": false,
-      "fill": 1,
-      "grid": {},
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 7,
         "w": 12,
@@ -929,30 +1318,21 @@
         "y": 11
       },
       "id": 8,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
+      "options": {
+        "alertThreshold": true,
+        "legend": {
+          "calcs": ["lastNotNull", "max", "min"],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "connected",
-      "options": {},
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "_nsgTarget": {
@@ -1002,6 +1382,9 @@
           "category": "Memory",
           "columns": "time,variable,device,component,metric",
           "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
           "device": "$device",
           "format": "time_series",
           "formatDisplay": "Time Series",
@@ -1017,143 +1400,60 @@
           "variable": "memUtil"
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Memory Utilization",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 0,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "percent",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     }
   ],
+  "preload": false,
   "refresh": "1m",
-  "schemaVersion": 18,
-  "style": "dark",
-  "tags": [
-    "nsgv2.2",
-    "device",
-    "hardware"
-  ],
+  "schemaVersion": 41,
+  "tags": ["nsgv2.4", "device", "hardware"],
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "text": "Juniper",
-          "value": "Juniper"
+          "text": "juniper",
+          "value": "juniper"
         },
-        "datasource": "NetSpyGlass-v2",
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
         "definition": "SELECT DISTINCT Vendor FROM devices WHERE Vendor!=HappyGears AND Vendor!=Unknown",
-        "hide": 0,
         "includeAll": false,
-        "label": null,
-        "multi": false,
         "name": "vendor",
         "options": [],
         "query": "SELECT DISTINCT Vendor FROM devices WHERE Vendor!=HappyGears AND Vendor!=Unknown",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allValue": null,
         "current": {
-          "tags": [],
-          "text": "br2-fra1",
-          "value": "br2-fra1"
+          "text": "cty1-bb02",
+          "value": "cty1-bb02"
         },
-        "datasource": "NetSpyGlass-v2",
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
         "definition": "",
-        "hide": 0,
         "includeAll": false,
-        "label": null,
-        "multi": false,
         "name": "device",
         "options": [],
         "query": "SELECT name FROM devices WHERE Vendor=\"$vendor\" AND Role != \"NetSpyGlassServer\" AND Role != \"SimulatedNode\" AND Role!=\"SimulatedBridge\"",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "browser",
   "title": "Device",
   "uid": "BsYG-O2Zz",
-  "version": 1
+  "version": 2
 }

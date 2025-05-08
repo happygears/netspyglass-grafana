@@ -1,0 +1,1453 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "limit": 100,
+        "matchAny": true,
+        "name": "Annotations & Alerts",
+        "showIn": 0,
+        "tags": ["other"],
+        "target": {
+          "limit": 100,
+          "matchAny": true,
+          "tags": ["other"],
+          "type": "tags"
+        },
+        "type": "tags"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(255, 96, 96, 1)",
+        "limit": 100,
+        "name": "restarts",
+        "showIn": 0,
+        "tags": ["restart"],
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": ["restart"],
+          "type": "tags"
+        },
+        "type": "tags"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(255, 96, 96, 1)",
+        "limit": 100,
+        "name": "dashboard",
+        "showIn": 0,
+        "tags": [],
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": 61,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 50,
+      "panels": [],
+      "title": "NetSpyGlass",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*metric/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": " uptime"
+              },
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.align"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "rgba(245, 54, 54, 0.9)",
+                      "value": null
+                    },
+                    {
+                      "color": "rgba(237, 129, 40, 0.89)",
+                      "value": 3600
+                    },
+                    {
+                      "color": "rgba(50, 172, 45, 0.97)",
+                      "value": 86400
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 9,
+        "x": 0,
+        "y": 1
+      },
+      "id": 17,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "columns": [
+              {
+                "appliedFunctions": [],
+                "name": "device",
+                "visible": true
+              },
+              {
+                "alias": "version",
+                "appliedFunctions": [],
+                "name": "SoftwareRev",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tslast"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "table",
+            "groupBy": {
+              "type": "select type",
+              "value": "select value"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": true,
+            "limit": 50,
+            "loading": false,
+            "nsgqlString": "SELECT device,SoftwareRev as `version`,tslast(metric) as `tslast_metric` FROM processUptime WHERE (NsgRole = 'aggregator') AND $_timeFilter ORDER BY `device` DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "device",
+              "colValue": "select value",
+              "column": {
+                "alias": "",
+                "name": "device",
+                "value": "device"
+              },
+              "sort": "ASC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "=",
+                "value": "$role"
+              },
+              {
+                "condition": "AND",
+                "key": "NsgNetwork",
+                "operator": "=",
+                "value": "$customer"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "processUptime"
+          },
+          "aggregator": " -- ",
+          "alias": "",
+          "category": "Monitor",
+          "columns": "device,metric,nsgVersion",
+          "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "select device",
+          "format": "table",
+          "formatDisplay": "Table",
+          "group": "select group",
+          "limit": "100",
+          "refId": "A",
+          "selector": " -- ",
+          "sortByEl": "descending",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "variable": "processUptime"
+        }
+      ],
+      "title": "Process Uptime",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {
+            "reducers": []
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 300000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*restart/"
+            },
+            "properties": [
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 100
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#C4162A",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 9,
+        "y": 1
+      },
+      "id": 24,
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull"],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "width": 300
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "processMem",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "loess"
+                  }
+                ],
+                "id": "_col78",
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [],
+                "id": "_col79",
+                "name": "time",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "touched": true,
+              "type": "time",
+              "value": "$tavg"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT loess(metric) as `loess_metric`,time FROM procMem WHERE (NsgRole != 'agent') AND $_adhoc AND $_timeFilter GROUP BY time($tavg) ORDER BY `column` DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "!=",
+                "value": "agent"
+              },
+              {
+                "condition": "AND",
+                "key": "device",
+                "operator": "=",
+                "value": "$server"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "procMem"
+          },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "A"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "jvmTotal",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "loess"
+                  }
+                ],
+                "id": "_col80",
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [],
+                "id": "_col81",
+                "name": "time",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "touched": true,
+              "type": "time",
+              "value": "$tavg"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT loess(metric) as `loess_metric`,time FROM procMem WHERE (NsgRole != 'agent') AND $_adhoc AND $_timeFilter GROUP BY time($tavg) ORDER BY `column` DESC LIMIT 100, 0",
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "!=",
+                "value": "agent"
+              },
+              {
+                "condition": "AND",
+                "key": "device",
+                "operator": "=",
+                "value": "$server"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "jvmMemTotal"
+          },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "B"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "restart",
+            "columns": [
+              {
+                "name": "time",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "tsavg"
+                  }
+                ],
+                "name": "metric",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$_interval"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": 100,
+            "loading": false,
+            "nsgqlString": "SELECT lt(metric,150),time FROM processUptime WHERE (NsgRole != 'agent' AND device = '$server') AND $_timeFilter",
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "DESC"
+            },
+            "rawQuery": 1,
+            "refId": "C",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "!=",
+                "value": "agent"
+              },
+              {
+                "condition": "AND",
+                "key": "device",
+                "operator": "=",
+                "value": "labdcbig2-nsg-aggregator-1"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "processUptime"
+          },
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "refId": "C"
+        }
+      ],
+      "title": "Process and JVM Memory ($server)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 300000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "GC time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "max",
+                "value": 61
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 9,
+        "y": 9
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull"],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "width": 280
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "JVM mem",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "loess"
+                  }
+                ],
+                "id": "_col390",
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [],
+                "id": "_col391",
+                "name": "time",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$tavg"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "nsgqlString": "SELECT loess(metric) as `loess_metric`,time FROM jvmMemUsed WHERE (NsgRole != 'agent' AND device = 'labdcbig2-nsg-mon-1' AND stale = '0') AND $_timeFilter GROUP BY time($tavg) ORDER BY `column` DESC",
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "!=",
+                "value": "agent"
+              },
+              {
+                "condition": "AND",
+                "key": "device",
+                "operator": "=",
+                "value": "$server"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "jvmMemUsed"
+          },
+          "aggregator": " -- ",
+          "alias": "$device ($NsgRole)",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "select device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": "100",
+          "measurement": "jvmMemTotal",
+          "query": "SELECT last(\"value\") FROM \"jvmMemTotal\" WHERE \"Role.NetSpyGlassServer\" = '1' AND $timeFilter GROUP BY time($interval), \"deviceName\" fill(null)",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "Role.NetSpyGlassServer",
+              "operator": "=",
+              "value": "1"
+            }
+          ],
+          "variable": "jvmMemUsed"
+        },
+        {
+          "_nsgTarget": {
+            "alias": "GC time",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "loess"
+                  }
+                ],
+                "id": "_col392",
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "appliedFunctions": [],
+                "id": "_col393",
+                "name": "time",
+                "visible": true
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$tavg"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "select value",
+              "colValue": "select value",
+              "column": {},
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "B",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "!=",
+                "value": "agent"
+              },
+              {
+                "condition": "AND",
+                "key": "device",
+                "operator": "=",
+                "value": "$server"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "GCTimeRate"
+          },
+          "aggregator": " -- ",
+          "alias": "$device ($NsgRole)",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "select device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": "100",
+          "measurement": "jvmMemTotal",
+          "query": "SELECT last(\"value\") FROM \"jvmMemTotal\" WHERE \"Role.NetSpyGlassServer\" = '1' AND $timeFilter GROUP BY time($interval), \"deviceName\" fill(null)",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "Role.NetSpyGlassServer",
+              "operator": "=",
+              "value": "1"
+            }
+          ],
+          "variable": "jvmMemUsed"
+        }
+      ],
+      "title": "JVM used memory ($server)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "happygears-netspyglass-datasource-v2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 300000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 15,
+        "x": 9,
+        "y": 17
+      },
+      "id": 51,
+      "options": {
+        "legend": {
+          "calcs": ["lastNotNull"],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "width": 300
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "_nsgTarget": {
+            "alias": "$device",
+            "columns": [
+              {
+                "appliedFunctions": [
+                  {
+                    "name": "loess"
+                  }
+                ],
+                "id": "_col448",
+                "name": "metric",
+                "visible": true
+              },
+              {
+                "id": "_col449",
+                "name": "time",
+                "visible": false
+              }
+            ],
+            "disableAdHoc": false,
+            "format": "time_series",
+            "groupBy": {
+              "type": "time",
+              "value": "$tavg"
+            },
+            "isMultiColumnMode": true,
+            "isSeparatedColumns": false,
+            "isTablePanel": false,
+            "limit": "",
+            "loading": false,
+            "orderBy": {
+              "colName": "column",
+              "colValue": "device",
+              "column": {
+                "name": "column",
+                "value": "column"
+              },
+              "sort": "DESC"
+            },
+            "rawQuery": 0,
+            "refId": "A",
+            "tags": [
+              {
+                "key": "NsgRole",
+                "operator": "!=",
+                "value": "agent"
+              },
+              {
+                "condition": "AND",
+                "key": "device",
+                "operator": "=",
+                "value": "$server"
+              }
+            ],
+            "type": "nsgql",
+            "variable": "threadCount"
+          },
+          "aggregator": " -- ",
+          "alias": "$device ($NsgRole)",
+          "category": "Monitor",
+          "columns": "time,variable,device,component,metric",
+          "component": "select component",
+          "datasource": {
+            "type": "happygears-netspyglass-datasource-v2"
+          },
+          "device": "select device",
+          "dsType": "influxdb",
+          "format": "time_series",
+          "formatDisplay": "Time Series",
+          "group": "select group",
+          "groupBy": [
+            {
+              "params": ["$interval"],
+              "type": "time"
+            },
+            {
+              "params": ["deviceName"],
+              "type": "tag"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "limit": "100",
+          "measurement": "jvmMemTotal",
+          "query": "SELECT last(\"value\") FROM \"jvmMemTotal\" WHERE \"Role.NetSpyGlassServer\" = '1' AND $timeFilter GROUP BY time($interval), \"deviceName\" fill(null)",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "selector": "choose selector",
+          "sortByEl": "none",
+          "tagData": [
+            {
+              "tagFacet": "NsgRegion",
+              "tagOperation": "==",
+              "tagWord": "$region"
+            },
+            {
+              "tagFacet": "NsgRole",
+              "tagOperation": "==",
+              "tagWord": "$role"
+            }
+          ],
+          "tagFacet": "---",
+          "tagOperation": "==",
+          "tagWord": "---",
+          "tags": [
+            {
+              "key": "Role.NetSpyGlassServer",
+              "operator": "=",
+              "value": "1"
+            }
+          ],
+          "variable": "jvmMemUsed"
+        }
+      ],
+      "title": "Process Thread Count",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": ["nsgv2.4"],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "labqa01",
+          "value": "labqa01"
+        },
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
+        "definition": "SELECT DISTINCT NsgNetwork FROM processUptime",
+        "includeAll": false,
+        "name": "customer",
+        "options": [],
+        "query": "SELECT DISTINCT NsgNetwork FROM processUptime",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": "*",
+        "current": {
+          "text": "devicepool",
+          "value": "devicepool"
+        },
+        "includeAll": true,
+        "name": "role",
+        "options": [
+          {
+            "selected": false,
+            "text": "agentbeat",
+            "value": "agentbeat"
+          },
+          {
+            "selected": false,
+            "text": "aggregator",
+            "value": "aggregator"
+          },
+          {
+            "selected": false,
+            "text": "alertmanager",
+            "value": "alertmanager"
+          },
+          {
+            "selected": false,
+            "text": "alertstreams",
+            "value": "alertstreams"
+          },
+          {
+            "selected": false,
+            "text": "alerts",
+            "value": "alerts"
+          },
+          {
+            "selected": false,
+            "text": "api",
+            "value": "api"
+          },
+          {
+            "selected": false,
+            "text": "awsdiscovery",
+            "value": "awsdiscovery"
+          },
+          {
+            "selected": false,
+            "text": "azurediscovery",
+            "value": "azurediscovery"
+          },
+          {
+            "selected": false,
+            "text": "backyard",
+            "value": "backyard"
+          },
+          {
+            "selected": false,
+            "text": "config",
+            "value": "config"
+          },
+          {
+            "selected": false,
+            "text": "dbretention",
+            "value": "dbretention"
+          },
+          {
+            "selected": true,
+            "text": "devicepool",
+            "value": "devicepool"
+          },
+          {
+            "selected": false,
+            "text": "discovery",
+            "value": "discovery"
+          },
+          {
+            "selected": false,
+            "text": "indexer",
+            "value": "indexer"
+          },
+          {
+            "selected": false,
+            "text": "manager",
+            "value": "manager"
+          },
+          {
+            "selected": false,
+            "text": "monitor",
+            "value": "monitor"
+          },
+          {
+            "selected": false,
+            "text": "mpls",
+            "value": "mpls"
+          },
+          {
+            "selected": false,
+            "text": "netcensus",
+            "value": "netcensus"
+          },
+          {
+            "selected": false,
+            "text": "pacer",
+            "value": "pacer"
+          },
+          {
+            "selected": false,
+            "text": "pyservice",
+            "value": "pyservice"
+          },
+          {
+            "selected": false,
+            "text": "devicenameparser",
+            "value": "devicenameparser"
+          },
+          {
+            "selected": false,
+            "text": "sni",
+            "value": "sni"
+          },
+          {
+            "selected": false,
+            "text": "store",
+            "value": "store"
+          },
+          {
+            "selected": false,
+            "text": "resources",
+            "value": "resources"
+          },
+          {
+            "selected": false,
+            "text": "unknown",
+            "value": "unknown"
+          },
+          {
+            "selected": false,
+            "text": "none",
+            "value": "none"
+          }
+        ],
+        "query": "agentbeat,aggregator,alertmanager,alertstreams,alerts,api,awsdiscovery,azurediscovery,backyard,config,dbretention,devicepool,discovery,indexer,manager,monitor,mpls,netcensus,pacer,pyservice,devicenameparser,sni,store,resources,unknown,none",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "labqa01-nsg-devicepool-1",
+          "value": "labqa01-nsg-devicepool-1"
+        },
+        "datasource": {
+          "type": "happygears-netspyglass-datasource-v2"
+        },
+        "definition": "SELECT device FROM processUptime WHERE NsgNetwork=$customer AND NsgRole=$role",
+        "includeAll": false,
+        "name": "server",
+        "options": [],
+        "query": "SELECT device FROM processUptime WHERE NsgNetwork=$customer AND NsgRole=$role",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "auto": true,
+        "auto_count": 500,
+        "auto_min": "10s",
+        "current": {
+          "text": "10m",
+          "value": "10m"
+        },
+        "label": "average by time",
+        "name": "tavg",
+        "options": [
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": true,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "1m,5m,10m,30m,1h,6h,12h,1d,7d,14d,30d",
+        "refresh": 2,
+        "type": "interval"
+      }
+    ]
+  },
+  "timepicker": {
+    "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h", "2h", "1d"]
+  },
+  "title": "NSG Memory Dashboard",
+  "uid": "sC9cPHFZz",
+  "version": 5,
+  "weekStart": ""
+}

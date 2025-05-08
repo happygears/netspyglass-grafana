@@ -1,0 +1,30 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: 'NetSpyGlass-v2'
+    orgId: 1
+
+  - name: 'NetSpyGlass(v2)'
+    orgId: 1
+
+  - name: 'NetSpyGlass (v2)'
+    orgId: 1
+
+
+datasources:
+  - name: 'Zscaler NSG Datasource'
+    type: 'happygears-netspyglass-datasource-v2'
+    access: proxy
+    isDefault: true
+    orgId: 1
+    url: '${NSG_SERVICE_URL}'
+    editable: true
+
+    jsonData:
+      accessToken: ''
+      networkId: 1
+      tlsSkipVerify: true
+      useToken: true
+
+    secureJsonData:
+      apiKey: '${NSG_API_TOKEN}'

@@ -1,0 +1,16 @@
+services:
+  grafana:
+    extends:
+      file: .config/docker-compose-base.yaml
+      service: grafana
+
+    volumes:
+      - "./docker/files/dashboards/:/opt/grafana/dashboards/"
+
+    environment:
+      - NSG_API_TOKEN=$NSG_API_TOKEN
+      - NSG_SERVICE_URL=$NSG_SERVICE_URL
+
+volumes:
+  grafana-data:
+    external: true

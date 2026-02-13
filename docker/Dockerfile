@@ -3,7 +3,7 @@
 # http://docs.grafana.org/installation/docker/
 # https://hub.docker.com/r/grafana/grafana/tags/
 
-FROM grafana/grafana:11.6.1-ubuntu
+FROM grafana/grafana:11.6.10-security-01-ubuntu
 
 ENV PLUGIN_ID="happygears-netspyglass-datasource-v2"
 ENV GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="${PLUGIN_ID}"
